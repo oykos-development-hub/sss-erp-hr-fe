@@ -29,12 +29,12 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
   const item = useMemo(() => {
     return selectedItem
       ? {
-        ...selectedItem,
-        is_relevant: {id: selectedItem?.is_relevant ? 'Da' : 'Ne', title: selectedItem?.is_relevant ? 'Da' : 'Ne'},
-        date_of_evaluation: {id: selectedItem?.date_of_evaluation, title: selectedItem?.date_of_evaluation},
-        score: {id: selectedItem?.score, title: selectedItem?.score},
-        user_profile_id: Number(userProfileId),
-      }
+          ...selectedItem,
+          is_relevant: {id: selectedItem?.is_relevant ? 'Da' : 'Ne', title: selectedItem?.is_relevant ? 'Da' : 'Ne'},
+          date_of_evaluation: {id: selectedItem?.date_of_evaluation, title: selectedItem?.date_of_evaluation},
+          score: {id: selectedItem?.score, title: selectedItem?.score},
+          user_profile_id: Number(userProfileId),
+        }
       : {...initialValues, user_profile_id: Number(userProfileId)};
   }, [selectedItem]);
 

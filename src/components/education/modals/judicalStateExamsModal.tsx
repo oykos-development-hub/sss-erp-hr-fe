@@ -40,12 +40,12 @@ export const JudicalAndStateExamsModal: React.FC<JudicalAndStateExamsModal> = ({
   const item = useMemo(() => {
     return selectedItem
       ? {
-        ...selectedItem,
-        academic_title: {
-          id: selectedItem?.academic_title,
-          title: selectedItem?.academic_title,
-        },
-      }
+          ...selectedItem,
+          academic_title: {
+            id: selectedItem?.academic_title,
+            title: selectedItem?.academic_title,
+          },
+        }
       : initialValues;
   }, [selectedItem]);
 

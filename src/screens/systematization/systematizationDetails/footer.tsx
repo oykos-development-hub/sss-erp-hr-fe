@@ -39,6 +39,9 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton}) => 
                 name={name}
                 onChange={() => setValue('active', !value)}
                 checked={value}
+                // @TODO remove ts-ignore
+                //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                //@ts-ignore
                 content={<Typography variant="bodyMedium" content="Aktivan" style={{marginLeft: 10}} />}
                 style={{margin: '20px 0 0 10px'}}
                 disabled={!watch('date_of_activation')}

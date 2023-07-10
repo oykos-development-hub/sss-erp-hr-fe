@@ -11,5 +11,15 @@ export default ({mode}) => {
     server: {
       port: process.env.VITE_PORT,
     },
+    build: {
+      rollupOptions: {
+        output: {
+          entryFileNames: 'assets/main.js',
+          chunkFileNames: 'assets/[name].js',
+          assetFileNames: 'assets/[name].[ext]',
+          manualChunks: undefined, // Disable manual chunks
+        },
+      },
+    },
   });
 };

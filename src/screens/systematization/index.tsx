@@ -90,8 +90,8 @@ export const SystematizationScreen: React.FC<ScreenProps> = ({context}) => {
             onClick={() => {
               navigate('/hr/systematization/systematization-details');
               context.breadcrumbs.add({
-                name: `Napravite sistematizaciju`,
-                to: `/hr/systematization/systematization-details`,
+                name: 'Napravite sistematizaciju',
+                to: '/hr/systematization/systematization-details',
               });
             }}
           />

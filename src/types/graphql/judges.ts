@@ -72,7 +72,7 @@ export interface JudgeNormsDeleteResponse {
 export interface JudgesResolutionsOverviewQueryParams {
   page: number;
   size: number;
-  year?: string;
+  year?: DropdownDataString | null;
 }
 
 export interface JudgeResolutionItem {

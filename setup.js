@@ -23,4 +23,6 @@ exec(ClientLibraryCommand, err => {
     }
     console.log(`\nCopying /public assets from Client Library completed!\n`);
   });
+
+  exec('node ./load-environment.cjs');
 });

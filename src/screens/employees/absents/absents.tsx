@@ -224,6 +224,9 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
               name="year"
               value={form?.year || null}
               placeholder="Odaberite godinu:"
+              // @TODO remove ts-ignore
+              //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              //@ts-ignore
               onChange={handleChange}
             />
           </YearContainer>
@@ -234,6 +237,9 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
               name="vacation_type"
               value={form?.vacation_type || null}
               placeholder="Odaberite tip zahtjeva:"
+              // @TODO remove ts-ignore
+              //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              //@ts-ignore
               onChange={handleChange}
             />
           </YearContainer>

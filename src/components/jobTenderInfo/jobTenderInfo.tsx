@@ -1,3 +1,4 @@
+import React from 'react';
 import {Divider, Theme} from '@oykos-development/devkit-react-ts-styled-components';
 import {JobTender} from '../../types/graphql/jobTenders';
 import {parseDate} from '../../utils/dateUtils';

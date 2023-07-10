@@ -1,3 +1,4 @@
+import React from 'react';
 import {Divider, Pagination, Table, Theme} from 'client-library';
 import {useState} from 'react';
 import useJobTenderApplications from '../../../services/graphql/jobTenders/useJobTenderApplicationOverview';

@@ -1,3 +1,4 @@
+import React from 'react';
 import {Divider, Theme} from 'client-library';
 import useJobTenderApplications from '../../../services/graphql/jobTenders/useJobTenderApplicationOverview';
 import InfoPreview from '../../../shared/infoPreview/infoPreview';

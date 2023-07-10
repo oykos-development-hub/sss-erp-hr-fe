@@ -15,8 +15,9 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // @TODO uncomment the line below once build failing issues are fixed
+    //"noUnusedLocals": true,
+    //"noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true
   },

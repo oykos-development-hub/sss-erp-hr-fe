@@ -24,13 +24,13 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
   const item = useMemo(() => {
     return selectedItem
       ? {
-        ...selectedItem,
-        user_profile_id:
+          ...selectedItem,
+          user_profile_id:
             selectedItem.user_profile_id != 0
               ? dropdownData?.find(user => user.id === selectedItem.user_profile_id)
               : undefined,
-        area: selectedItem?.area ? areaItems.find(i => i.title === selectedItem.area) : '',
-      }
+          area: selectedItem?.area ? areaItems.find(i => i.title === selectedItem.area) : '',
+        }
       : initialValues;
   }, [selectedItem]);
 

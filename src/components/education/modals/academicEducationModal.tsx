@@ -39,16 +39,16 @@ export const AcademicEducationModal: React.FC<AcademicEducationModalProps> = ({
   const item = useMemo(() => {
     return selectedItem
       ? {
-        ...selectedItem,
-        expertise_level: {
-          id: selectedItem?.expertise_level,
-          title: selectedItem?.expertise_level,
-        },
-        academic_title: {
-          id: selectedItem?.academic_title,
-          title: selectedItem?.academic_title,
-        },
-      }
+          ...selectedItem,
+          expertise_level: {
+            id: selectedItem?.expertise_level,
+            title: selectedItem?.expertise_level,
+          },
+          academic_title: {
+            id: selectedItem?.academic_title,
+            title: selectedItem?.academic_title,
+          },
+        }
       : initialValues;
   }, [selectedItem]);
 

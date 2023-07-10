@@ -7,8 +7,8 @@ const judgeOverview = async (
   const response = await GraphQL.fetch(`   
       query {
         judges_Overview(search: "${data.search || ''}", user_profile_id: ${
-  data.user_profile_id?.id || 0
-}, organization_unit_id: ${data.organization_unit_id?.id || 0}, page: ${data.page}, size: ${data.size}) {
+    data.user_profile_id?.id || 0
+  }, organization_unit_id: ${data.organization_unit_id?.id || 0}, page: ${data.page}, size: ${data.size}) {
             message
             status
             total

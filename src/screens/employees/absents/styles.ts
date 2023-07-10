@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Typography, Theme } from 'client-library';
+import {Typography, Theme} from 'client-library';
 
 export const Container = styled.div`
   display: flex;
@@ -13,33 +13,33 @@ export const Container = styled.div`
 `;
 
 export const TableHeader = styled.div`
- display: flex;
- align-items: center;
- justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export const EditWrapper = styled.div`
- display: flex;
- align-items: center;
- justify-content: space-between;
- width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 50%;
 `;
 
 export const YearWrapper = styled.div`
- width: 650px;
- display: flex;
+  width: 650px;
+  display: flex;
 `;
 
 export const YearContainer = styled.div`
- width: 320px;
- margin-right: 8px;
+  width: 320px;
+  margin-right: 8px;
 `;
 
 export const VacationWrapper = styled.div`
-display: flex;
-align-items: center;
-justify-content: space-between;
-margin-bottom: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 50px;
 `;
 
 export const VacationContainer = styled.div`
@@ -53,10 +53,9 @@ export const VacationContainer = styled.div`
   border-radius: 8px;
   margin-right: 24px;
 
-  &:last-child{
+  &:last-child {
     margin-right: 0;
   }
-
 `;
 
 export const AlertWrapper = styled.div`
@@ -67,20 +66,20 @@ export const AlertWrapper = styled.div`
 `;
 
 export const SuperTitle = styled(Typography)`
- color: ${Theme.palette.gray600};
+  color: ${Theme.palette.gray600};
 `;
 export const Subtitle = styled(Typography)`
- color: ${Theme.palette.gray600};
- font-weight: 400;
- height: 20px;
+  color: ${Theme.palette.gray600};
+  font-weight: 400;
+  height: 20px;
 `;
 
 export const Title = styled(Typography)`
-font-weight: 600;
-color: ${Theme.palette.gray600};
+  font-weight: 600;
+  color: ${Theme.palette.gray600};
 `;
 
-export const TableTitle =styled(Typography)`
+export const TableTitle = styled(Typography)`
   font-weight: 600;
   line-height: 24px;
   margin-top: 30px;

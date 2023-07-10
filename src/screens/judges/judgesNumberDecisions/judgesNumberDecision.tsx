@@ -17,11 +17,7 @@ const initialValues: JudgesNumberListFilters = {
 const JudgesNumberDecisions: React.FC<ScreenProps> = ({context}) => {
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState<JudgesNumberListFilters>(initialValues);
-  const {
-    data: judgesResolutions,
-    total,
-    refetch,
-  } = useJudgesResolutionsOverview({page, size: 10, year: filters.year?.id});
+  const {data: judgesResolutions, total, refetch} = useJudgesResolutionsOverview({page, size: 10, year: filters.year});
 
   const onPageChange = (page: number) => {
     setPage(page + 1);

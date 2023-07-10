@@ -21,7 +21,7 @@ export interface UserProfileBasicInfo {
   single_parent: boolean;
   housing_done: boolean;
   revisor_role: boolean;
-  benefited_track: boolean;
+  benefited_track?: boolean;
   housing_description: string;
   marital_status: string;
   date_of_taking_oath: string;

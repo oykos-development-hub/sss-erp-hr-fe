@@ -20,8 +20,8 @@ const jobTenderOverview = async ({
 }: UseJobTendersParams): Promise<{data: JobTendersResponse['data']['jobTenders_Overview']}> => {
   const response = await GraphQL.fetch(`query {
         jobTenders_Overview(page: ${page}, size: ${size}, id: ${id}, organization_unit_id: ${organization_unit_id}, active: ${active},  type: "${
-  Number(type) != 0 ? type : ''
-}") {
+    Number(type) != 0 ? type : ''
+  }") {
             message
             status
             total

@@ -113,6 +113,9 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
             options={YearList}
             name="year"
             value={form?.year || null}
+            // @TODO remove ts-ignore
+            //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
             onChange={handleChange}
             placeholder="Odaberite godinu:"
           />

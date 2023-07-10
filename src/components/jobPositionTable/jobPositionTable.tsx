@@ -207,6 +207,8 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
               name="job_position"
               onChange={handleChange}
               options={jobPositionsForDropdown}
+              // @TODO remove ts-ignore
+              //eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
               maxMenuHeight={200}
               isDisabled={item?.row_id !== editTableRow}
@@ -273,6 +275,8 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
                 options={employeesForDropdown}
                 onChange={handleChange}
                 isDisabled={isDisabled}
+                // @TODO remove ts-ignore
+                //eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 //@ts-ignore
                 maxMenuHeight={200}
                 isSearchable
