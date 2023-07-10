@@ -9,7 +9,7 @@ const renderMicroService = (App: React.FC) => {
   let container: Root | null = null;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  window[`render${MICRO_SERVICE_SLUG}`] = (containerId: string, props: MicroserviceProps) => {
+  window[`render_${MICRO_SERVICE_SLUG}`] = (containerId: string, props: MicroserviceProps) => {
     if (!container) {
       container = ReactDOM.createRoot(document.getElementById(containerId) as HTMLElement);
     }
@@ -19,7 +19,7 @@ const renderMicroService = (App: React.FC) => {
   };
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  window[`unmount${MICRO_SERVICE_SLUG}`] = () => {
+  window[`unmount_${MICRO_SERVICE_SLUG}`] = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     container?.unmount();
