@@ -7,9 +7,12 @@ import {Router} from './router';
 const renderMicroService = (App: React.FC) => {
   const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
   let container: Root | null = null;
+  const renderSlug = 'render' + MICRO_SERVICE_SLUG;
+  const unmountSlug = 'unmount' + MICRO_SERVICE_SLUG;
+  const containerSlug = MICRO_SERVICE_SLUG + '-container';
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  window[`render${MICRO_SERVICE_SLUG}`] = (containerId: string, props: MicroserviceProps) => {
+  window[renderSlug] = (containerId: string, props: MicroserviceProps) => {
     if (!container) {
       container = ReactDOM.createRoot(document.getElementById(containerId) as HTMLElement);
     }
@@ -19,14 +22,14 @@ const renderMicroService = (App: React.FC) => {
   };
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  window[`unmount${MICRO_SERVICE_SLUG}`] = () => {
+  window[unmountSlug] = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     container?.unmount();
     container = null;
   };
 
-  if (!document.getElementById(`${MICRO_SERVICE_SLUG}-container`)) {
+  if (!document.getElementById(containerSlug)) {
     root.render(<App />);
   }
 };
