@@ -9,6 +9,7 @@
     "setup": "npm install && node -r dotenv/config setup.js",
     "dev": "vite",
     "preview": "vite preview",
+    "serve": "http-server dist -p 3001 --cors",
     "build": "npm run git:pull-request && node -r dotenv/config load-environment.cjs && tsc && vite build",
     "format": "npx prettier --write ./src/**/*.{js,jsx,ts,tsx,css,md,json}",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
