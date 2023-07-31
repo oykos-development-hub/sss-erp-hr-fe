@@ -27,6 +27,8 @@ export interface Norms {
   end_date?: string;
   evaluation?: string;
   evaluation_valid_to?: string;
+  date_of_evaluation?: string;
+  date_of_evaluation_validity?: string;
   relocation?: string;
   full_name?: string;
 }
