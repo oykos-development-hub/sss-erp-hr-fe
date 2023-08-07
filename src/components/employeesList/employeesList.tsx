@@ -7,8 +7,6 @@ import useOrganizationUnits from '../../services/graphql/organizationUnits/useOr
 import {EmployeeListFilters} from '../../screens/employees';
 import {yesAndNoOptions} from '../../constants';
 import useJobPositions from '../../services/graphql/jobPositions/useJobPositionOverview';
-import ScreenWrapper from '../../shared/screenWrapper';
-import {MicroserviceProps} from '../../types/micro-service-props';
 
 export interface EmployeesListProps {
   navigate: (path: string) => void;

@@ -1,8 +1,9 @@
-import React, {ReactNode, ReactElement} from 'react';
+import React, {FC, ReactElement, ReactNode} from 'react';
 import {Breadcrumbs} from 'client-library';
 import styled from 'styled-components';
 
 const Container = styled.div`
+  font-family: 'Source Sans Pro', sans-serif;
   background-color: #f8f8f8;
   padding: 28px 40px;
   height: calc(100vh - 157px);
@@ -20,9 +21,11 @@ const StyledBreadcrumbs = styled(Breadcrumbs)`
   margin: 0;
 `;
 
-const ScreenWrapper: React.FC<{children: ReactNode; context: any}> = ({children, context}) => {
+export const ScreenWrapper: FC<{children: ReactNode; context: any}> = ({children, context}) => {
   const breadcrumbs = context?.breadcrumbs;
+
   const breadcrumbItems = breadcrumbs?.get();
+
   const navigate = context?.navigation?.navigate;
 
   const handleNavigation = (
@@ -40,6 +43,7 @@ const ScreenWrapper: React.FC<{children: ReactNode; context: any}> = ({children,
     breadcrumbs.set(newBreacrumbs);
     navigate(item?.to);
   };
+
   return (
     <Container>
       <StyledBreadcrumbs items={breadcrumbItems} onClick={handleNavigation} />
@@ -47,5 +51,3 @@ const ScreenWrapper: React.FC<{children: ReactNode; context: any}> = ({children,
     </Container>
   );
 };
-
-export default ScreenWrapper;

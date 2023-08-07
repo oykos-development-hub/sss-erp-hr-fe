@@ -1,7 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {StyledTabs} from '../../../components/employeeDetails/styles';
 import {OverviewBox} from '../../../components/employeesList/styles';
-import ScreenWrapper from '../../../shared/screenWrapper';
 import {SystematizationDetailsPageProps} from '../types';
 import {ButtonWrapper, Row, TitleWrapper} from './styles';
 import {Typography, Divider, Theme, Button, Input, Dropdown} from 'client-library';
@@ -19,6 +18,7 @@ import useDeleteOrganisationUnit from '../../../services/graphql/organizationUni
 import {SectorType} from '../../../types/graphql/systematizationsGetDetailsTypes';
 import useSystematizationInsert from '../../../services/graphql/systematization/useSystematizationsInsert';
 import useOrganizationUnitJobPositionInsert from '../../../services/graphql/organizationUnitsJobPositions/useOrganizationUnitInsertJobPosition';
+import {ScreenWrapper} from '../../../shared/screenWrapper';
 
 const initialValues = {
   organization_unit: {id: 0, value: ''},
@@ -218,7 +218,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
                 textarea
               />
               <ButtonWrapper>
-                <Button variant="secondary" content="Dodaj odjel" onClick={() => setShowEditSectorModal(true)} />
+                <Button variant="secondary" content="Dodaj odjeljenje" onClick={() => setShowEditSectorModal(true)} />
               </ButtonWrapper>
               <Sectors
                 sectors={systematizationDetails?.sectors}

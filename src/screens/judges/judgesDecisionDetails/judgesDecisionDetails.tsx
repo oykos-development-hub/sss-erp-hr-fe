@@ -15,7 +15,7 @@ import {OrganizationUnit} from '../../../types/graphql/organizationUnitsTypes';
 import {nanoid} from 'nanoid';
 import {DropdownDataString} from '../../../types/dropdownData';
 import useJudgeResolutionsInsert from '../../../services/graphql/judges/useJudgeResolutionInsert';
-import ScreenWrapper from '../../../shared/screenWrapper';
+import {ScreenWrapper} from '../../../shared/screenWrapper';
 
 // If you start experiencing pain in your brain while looking at this code, talk to Petar.
 
@@ -133,7 +133,6 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       id => {
         setIsDisabled(true);
         context.alert.success('Uspješno ste sačuvali odluku');
-
         if (close) {
           context.navigation.navigate('/hr/judges/number-decision');
           context.breadcrumbs.remove();
