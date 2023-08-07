@@ -1,13 +1,13 @@
+import {Button, Divider, EditIconTwo, Table, TableHead, Theme, TrashIcon, Typography} from 'client-library';
 import React, {useEffect, useState} from 'react';
-import {Divider, Theme, Button, Table, EditIconTwo, TrashIcon, TableHead, Typography} from 'client-library';
-import {ScreenProps} from '../../types/screen-props';
-import ScreenWrapper from '../../shared/screenWrapper';
 import {MainTitle, OverviewBox} from '../../components/employeesList/styles';
-import {Header} from './styles';
-import {SystematizationFilters} from './filters/systematizationFilters';
-import {DeleteModal} from '../../shared/deleteModal/deleteModal';
-import useSystematizationsDelete from '../../services/graphql/systematization/useSystematizationsDelete';
 import useSystematizationOverview from '../../services/graphql/systematization/useSystematizations';
+import useSystematizationsDelete from '../../services/graphql/systematization/useSystematizationsDelete';
+import {DeleteModal} from '../../shared/deleteModal/deleteModal';
+import {ScreenWrapper} from '../../shared/screenWrapper';
+import {ScreenProps} from '../../types/screen-props';
+import {SystematizationFilters} from './filters/systematizationFilters';
+import {Header} from './styles';
 
 const tableHeads: TableHead[] = [
   {title: 'Broj sistematizacije', accessor: 'serial_number', type: 'text'},
@@ -86,11 +86,11 @@ export const SystematizationScreen: React.FC<ScreenProps> = ({context}) => {
           <SystematizationFilters setFilters={params => setFilters(params)} />
           <Button
             variant="secondary"
-            content="Napravite sistematizaciju"
+            content="Nova sistematizacija"
             onClick={() => {
               navigate('/hr/systematization/systematization-details');
               context.breadcrumbs.add({
-                name: 'Napravite sistematizaciju',
+                name: 'Nova sistematizacija',
                 to: '/hr/systematization/systematization-details',
               });
             }}

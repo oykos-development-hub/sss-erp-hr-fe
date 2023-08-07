@@ -2,7 +2,7 @@ import React, {useMemo, useState} from 'react';
 import {JobTenderModal} from '../../components/jobTenderModal/jobTenderModal';
 import JobTendersList from '../../components/jobTendersList/jobTendersList';
 import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
-import ScreenWrapper from '../../shared/screenWrapper';
+import {ScreenWrapper} from '../../shared/screenWrapper';
 import {JobTender} from '../../types/graphql/jobTenders';
 import {ScreenProps} from '../../types/screen-props';
 import {DropdownDataBoolean, DropdownDataNumber} from '../../types/dropdownData';

@@ -18,45 +18,36 @@ const jobTenderOverview = async ({
   organization_unit_id = 0,
   type = '',
 }: UseJobTendersParams): Promise<{data: JobTendersResponse['data']['jobTenders_Overview']}> => {
-  const query = `query JobTendersOverview($id: Int, $page: Int!, $size: Int!, $organization_unit_id: Int, $active: Boolean) {
-      jobTenders_Overview(
-          id: $id,
-          page: $page, 
-          size: $size, 
-          organization_unit_id: $organization_unit_id,
-          active: $active
-          ) {
-          message
-          status
-          total
-          items {
-              id
-              organization_unit {
-                  id
-                  title
-              }
-              job_position {
-                  id
-                  title
-              }
-              type {
-                  id
-                  title
-              }
-              description
-              serial_number
-              available_slots
-              active
-              date_of_start
-              date_of_end
-              created_at
-              updated_at
-              file_id
-          }
-      }
-  }`;
-
-  const response = await GraphQL.fetch(query, {id, page, size, organization_unit_id, active});
+  const response = await GraphQL.fetch(`query {
+        jobTenders_Overview(page: ${page}, size: ${size}, id: ${id}, organization_unit_id: ${organization_unit_id}, active: ${active},  type: "${
+    Number(type) != 0 ? type : ''
+  }") {
+            message
+            status
+            total
+            items {
+                id
+                organization_unit {
+                    id
+                    title
+                }
+                job_position {
+                    id
+                    title
+                }
+                type
+                description
+                serial_number
+                available_slots
+                active
+                date_of_start
+                date_of_end
+                created_at
+                updated_at
+                file_id
+            }
+        }
+    }`);
 
   return response?.data?.jobTenders_Overview || {};
 };
