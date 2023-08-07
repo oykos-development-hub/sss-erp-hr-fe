@@ -7,10 +7,10 @@ import EmployeesList from '../../components/employeesList/employeesList';
 import NewEmployeeSearch from '../../components/newEmployeeSearch/newEmployeeSearch';
 import useUserProfiles from '../../services/graphql/userProfile/useUserProfiles';
 import {AlertWrapper} from '../../shared/alertWrapper';
+import ScreenWrapper from '../../shared/screenWrapper';
 import {DropdownDataBoolean, DropdownDataNumber} from '../../types/dropdownData';
 import {ScreenProps} from '../../types/screen-props';
 import {useDebounce} from '../../utils/useDebounce';
-import {ScreenWrapper} from '../../shared/screenWrapper';
 
 export interface EmployeeListFilters {
   is_active?: DropdownDataBoolean | null;

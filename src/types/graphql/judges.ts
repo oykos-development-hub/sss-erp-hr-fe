@@ -111,7 +111,7 @@ export interface JudgesResolutionsOverviewResponse {
 
 export interface JudgeResolutionsInsert {
   id: number;
-  user_profile_id: number;
+  active: boolean;
   serial_number: string;
   year: string;
   items: JudgeResolutionsItem[];
@@ -130,8 +130,8 @@ export interface JudgeResolutionsResponse {
 export interface JudgeResolutionsItem {
   id: number;
   organization_unit_id: number;
-  available_slots_presidents: number;
-  available_slots_judges: number;
+  number_of_judges: number;
+  number_of_presidents: number;
 }
 
 export interface JudgeResolutionsDeleteResponse {
