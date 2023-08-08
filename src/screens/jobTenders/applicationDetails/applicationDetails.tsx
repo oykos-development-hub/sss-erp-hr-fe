@@ -3,7 +3,7 @@ import {Divider, Theme} from 'client-library';
 import useJobTenderApplications from '../../../services/graphql/jobTenders/useJobTenderApplicationOverview';
 import InfoPreview from '../../../shared/infoPreview/infoPreview';
 import {MainTitle} from '../../../shared/mainTitle';
-import {ScreenWrapper} from '../../../shared/screenWrapper';
+import ScreenWrapper from '../../../shared/screenWrapper';
 import SectionBox from '../../../shared/sectionBox';
 import {ScreenProps} from '../../../types/screen-props';
 import {parseDate} from '../../../utils/dateUtils';

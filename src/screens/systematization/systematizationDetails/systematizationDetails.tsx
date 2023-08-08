@@ -1,6 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {StyledTabs} from '../../../components/employeeDetails/styles';
 import {OverviewBox} from '../../../components/employeesList/styles';
+import ScreenWrapper from '../../../shared/screenWrapper';
 import {SystematizationDetailsPageProps} from '../types';
 import {ButtonWrapper, Row, TitleWrapper} from './styles';
 import {Typography, Divider, Theme, Button, Input, Dropdown} from 'client-library';
@@ -18,8 +19,6 @@ import useDeleteOrganisationUnit from '../../../services/graphql/organizationUni
 import {SectorType} from '../../../types/graphql/systematizationsGetDetailsTypes';
 import useSystematizationInsert from '../../../services/graphql/systematization/useSystematizationsInsert';
 import useOrganizationUnitJobPositionInsert from '../../../services/graphql/organizationUnitsJobPositions/useOrganizationUnitInsertJobPosition';
-import {ScreenWrapper} from '../../../shared/screenWrapper';
-import {usePrompt} from '../../../shared/usePrompt';
 
 const initialValues = {
   organization_unit: {id: 0, value: ''},
@@ -47,10 +46,6 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
   }, [sectorId]);
   const {mutate: insertJobPosition} = useOrganizationUnitJobPositionInsert();
 
-  let [isBlocking, setIsBlocking] = useState(false);
-
-  usePrompt('Da li ste sigurni da želite da napustite stranicu? Izmjene neće biti sačuvane!', isBlocking);
-
   const organizationUnitsList = useMemo(() => {
     return organizationUnits
       .filter(i => !i.parent_id)
@@ -68,7 +63,6 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
       navigate('/hr/systematization');
       context.alert.success('Uspješno sačuvano');
       context.breadcrumbs.remove();
-      setIsBlocking(false);
     } else if (error) {
       context.alert.error('Čuvanje nije uspješno');
     }
@@ -94,7 +88,6 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
   const handleSave = (data: any) => {
     const payload = formatDataSaveSystematization(data);
     mutate(payload);
-    setIsBlocking(false);
   };
 
   const handleCloseModal = (refetch: boolean, message: string) => {
@@ -198,7 +191,6 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
                   {...methods?.register('serial_number', {required: 'Ovo polje je obavezno'})}
                   label="BROJ SISTEMATIZACIJE:"
                   error={methods?.formState?.errors.serial_number?.message as string}
-                  onChange={(event: any) => setIsBlocking(event.target.value.length > 0)}
                 />
                 <Controller
                   name="organization_unit"
@@ -224,10 +216,9 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
                 label="OPIS:"
                 error={methods?.formState?.errors.description?.message as string}
                 textarea
-                onChange={(event: any) => setIsBlocking(event.target.value.length > 0)}
               />
               <ButtonWrapper>
-                <Button variant="secondary" content="Dodaj odjeljenje" onClick={() => setShowEditSectorModal(true)} />
+                <Button variant="secondary" content="Dodaj odjel" onClick={() => setShowEditSectorModal(true)} />
               </ButtonWrapper>
               <Sectors
                 sectors={systematizationDetails?.sectors}

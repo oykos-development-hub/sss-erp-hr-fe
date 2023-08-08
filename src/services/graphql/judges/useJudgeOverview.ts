@@ -3,7 +3,7 @@ import {GraphQL} from '..';
 import {REQUEST_STATUSES} from '../../constants';
 import {JudgesOverviewQueryParams, JudgeOverview} from '../../../types/graphql/judges';
 
-const useJudgeOverview = ({user_profile_id, organization_unit_id, page, size, search}: JudgesOverviewQueryParams) => {
+const useJudgeOverview = ({organization_unit, user_profile, page, size, search}: JudgesOverviewQueryParams) => {
   const [data, setData] = useState<JudgeOverview[]>();
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
@@ -19,8 +19,8 @@ const useJudgeOverview = ({user_profile_id, organization_unit_id, page, size, se
 
   const fetchJudgesOverview = async () => {
     const response = await GraphQL.judgeOverview({
-      user_profile_id: user_profile_id,
-      organization_unit_id: organization_unit_id,
+      user_profile: user_profile,
+      organization_unit: organization_unit,
       page: page,
       size: size,
       search: search,
@@ -45,7 +45,7 @@ const useJudgeOverview = ({user_profile_id, organization_unit_id, page, size, se
 
   useEffect(() => {
     fetchJudgesOverview();
-  }, [user_profile_id, organization_unit_id, page, size, search]);
+  }, [user_profile, organization_unit, page, size, search]);
 
   return {data, judgesUnitsList, total, loading, refetch: fetchJudgesOverview};
 };

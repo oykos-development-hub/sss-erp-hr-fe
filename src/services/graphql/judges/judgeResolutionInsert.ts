@@ -5,20 +5,15 @@ import {JudgeResolutionsInsert, JudgeResolutionsResponse} from '../../../types/g
 const judgeResolutionInsert = async (
   data: JudgeResolutionsInsert,
 ): Promise<JudgeResolutionsResponse['data']['judgeResolutions_Insert']> => {
-  const response = await GraphQL.fetch(`mutation {
-    judgeResolutions_Insert(data: {
-            id: ${data.id},
-            user_profile_id: ${data.user_profile_id},
-            serial_number: "${data.serial_number}",
-            year: "${data.year}",
-            items: ${JSON.stringify(data.items).replace(/"([^"]+)":/g, '$1:')},
-          }) { 
-            message
-            status
-            items {
+  const mutation = `mutation($data: JudgeResolutionInsertMutation!) {
+      judgeResolutions_Insert(data: $data) {
+          message
+          status
+          item {
               id
               serial_number
               year
+              active
               available_slots_judges
               number_of_judges
               items {
@@ -36,8 +31,10 @@ const judgeResolutionInsert = async (
                   number_of_suspended_judges
               }
           }
-    }}
-    `);
+      }
+  }`;
+
+  const response = await GraphQL.fetch(mutation, {data});
 
   return response?.data?.judgeResolutions_Insert || {};
 };

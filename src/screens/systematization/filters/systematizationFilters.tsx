@@ -51,7 +51,6 @@ export const SystematizationFilters: React.FC<SystematizationFiltersProps> = ({s
               name={name}
               label="ORGANIZACIONA JEDINICA:"
               options={organizationUnitsList as any}
-              placeholder={value}
             />
           );
         }}
