@@ -1,7 +1,7 @@
 import {DropdownDataNumber} from '../dropdownData';
 
 export interface JobPosition {
-  id: number;
+  id?: number | null;
   title: string;
   abbreviation: string;
   serial_number: number;

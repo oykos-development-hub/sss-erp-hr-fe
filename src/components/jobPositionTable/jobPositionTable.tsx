@@ -31,7 +31,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   refetch,
   alert,
 }) => {
-  const {data: jobPositionData} = useJobPositions('');
+  const {data: jobPositionData} = useJobPositions(1);
   const {data: allEmployees} = useUserProfiles({
     page: 1,
     size: 100,

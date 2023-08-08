@@ -1,4 +1,7 @@
-import {TableHead, Typography} from 'client-library';
+import React from 'react';
+import {Typography} from '@oykos-development/devkit-react-ts-styled-components';
+import {TableHead} from 'client-library';
+import {DropdownItemType} from '../../types/graphql/jobTenders';
 
 export const tableHeads: TableHead[] = [
   {title: 'ID', accessor: 'id'},
@@ -8,17 +11,13 @@ export const tableHeads: TableHead[] = [
     title: 'Organizaciona jedinica',
     accessor: 'organization_unit',
     type: 'custom',
-    renderContents: (item: any) => {
-      return <Typography variant="bodyMedium" content={item.title} />;
-    },
+    renderContents: (item: DropdownItemType) => <Typography variant="bodyMedium" content={item.title} />,
   },
   {
     title: 'Radno mjesto',
     accessor: 'job_position',
     type: 'custom',
-    renderContents: (item: any) => {
-      return <Typography variant="bodyMedium" content={item.title} />;
-    },
+    renderContents: (item: DropdownItemType) => <Typography variant="bodyMedium" content={item.title} />,
   },
   {title: 'Status', accessor: 'active', type: 'badge'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},

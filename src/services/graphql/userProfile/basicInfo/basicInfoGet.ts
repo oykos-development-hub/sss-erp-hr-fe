@@ -1,12 +1,12 @@
 import {GraphQL} from '../..';
 import {UserProfileBasicResponse} from '../../../../types/graphql/userProfiles';
 
-const basicInfoGet = async (id: number): Promise<UserProfileBasicResponse> => {
-  const response = await GraphQL.fetch(`query {
-    userProfile_Basic(user_profile_id: ${id}) {
-        message
-        status
-        item {
+const basicInfoGet = async (user_profile_id?: number): Promise<UserProfileBasicResponse> => {
+  const query = `query($user_profile_id: Int!) {
+    userProfile_Basic(user_profile_id: $user_profile_id) {
+      message
+      status
+      item {
           id
           first_name
           last_name
@@ -28,12 +28,10 @@ const basicInfoGet = async (id: number): Promise<UserProfileBasicResponse> => {
           gender
           single_parent
           housing_done
-          revisor_role
           housing_description
+          revisor_role
           marital_status
           date_of_taking_oath
-          date_of_start
-          date_of_end
           date_of_becoming_judge
           email
           phone
@@ -45,15 +43,42 @@ const basicInfoGet = async (id: number): Promise<UserProfileBasicResponse> => {
               id
               title
           }
-          contract_type {
+          contracts {
               id
-              title
+              user_profile_id
+              contract_type_id
+              abbreviation
+              description
+              active
+              serial_number
+              net_salary
+              gross_salary
+              bank_account
+              bank_name
+              date_of_signature
+              date_of_eligibility
+              date_of_start
+              date_of_end
+              file_id
+              contract_type {
+                  id
+                  title
+                  abbreviation
+                  description
+                  color
+                  icon
+                  created_at
+                  updated_at
+              }
+              created_at
+              updated_at
           }
-          created_at
-          updated_at
       }
-    }
-}`);
+  }
+      
+}`;
+
+  const response = GraphQL.fetch(query, {user_profile_id});
 
   return response || {};
 };

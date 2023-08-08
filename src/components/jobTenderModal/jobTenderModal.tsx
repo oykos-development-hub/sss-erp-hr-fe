@@ -34,7 +34,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
   selectedItem,
   open,
   onClose,
-  jobPositionOrganizationUnitsList,
+  organizationUnitsList,
   dropdownJobTenderType,
 }) => {
   const item = useMemo(() => {
@@ -75,7 +75,6 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
         ...values,
         id: values.id || 0,
         organization_unit: values?.organization_unit,
-        job_position: values?.organization_unit,
         type: values?.type_tender?.title,
         description: '',
         serial_number: values.serial_number,
@@ -126,9 +125,9 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
               control={control}
               render={({field: {onChange, name, value}}) => (
                 <Dropdown
-                  label="POZICIJA ORGANIZACIONA JEDINICA:"
+                  label="ORGANIZACIONA JEDINICA:"
                   name={name}
-                  options={jobPositionOrganizationUnitsList as any}
+                  options={organizationUnitsList as any}
                   value={value as any}
                   onChange={onChange}
                   rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}

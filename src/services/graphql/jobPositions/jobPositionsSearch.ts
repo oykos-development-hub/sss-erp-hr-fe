@@ -2,8 +2,8 @@ import {JobPositionResponse} from '../../../types/graphql/useJobPositions';
 import {GraphQL} from '../index';
 
 const jobPositionSearch = async (search: string): Promise<{data: JobPositionResponse}> => {
-  const response = await GraphQL.fetch(`query {
-    jobPositions(search: "${search}") {
+  const query = `query($search: String) {
+    jobPositions(search: $search) {
         message
         status
         items {
@@ -18,8 +18,9 @@ const jobPositionSearch = async (search: string): Promise<{data: JobPositionResp
             icon
         }
     }
-  }`);
+  }`;
 
+  const response = await GraphQL.fetch(query, {search});
   return response?.data?.jobPositions || {};
 };
 

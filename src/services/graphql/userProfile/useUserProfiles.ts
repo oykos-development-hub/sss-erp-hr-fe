@@ -7,7 +7,7 @@ import {PaginationProps} from '../../../types/paginationParams';
 const initialState = {items: [], total: 0, message: '', status: ''};
 
 interface UserProfileHookParams extends EmployeeListFilters, PaginationProps {
-  id?: number;
+  id?: null;
   name?: string;
 }
 
@@ -27,10 +27,10 @@ const useUserProfiles = ({
     const userProfiles: any = await GraphQL.userProfileOverview({
       page,
       size,
-      id: id ?? 0,
+      id: id ?? null,
       is_active: is_active ? is_active.id : true,
-      job_position_id: job_position_id ? job_position_id.id : 0,
-      organization_unit_id: organization_unit_id ? organization_unit_id.id : 0,
+      job_position_id: job_position_id ? job_position_id.id : null,
+      organization_unit_id: organization_unit_id ? organization_unit_id.id : null,
       name: name ?? '',
     });
     setData(userProfiles);

@@ -40,7 +40,7 @@ import useBasicInfoInsert from '../../../services/graphql/userProfile/basicInfo/
 export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const {data: profileData, refetch} = useBasicInfoGet(context.navigation.location.pathname.split('/')[3]);
-  const {data: jobPositions} = useJobPositions('');
+  const {data: jobPositions} = useJobPositions();
   const {organizationUnitsList} = useOrganizationUnits();
   const {mutate} = useBasicInfoInsert();
 
@@ -555,7 +555,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
           <FormColumn style={{flexBasis: 'calc(50% + 23px)'}}>
             <FormItem>
               {/* TODO value prop needs to be number also */}
-              <Input {...register('id')} label="SISTEMSKI ID:" disabled={true} />
+              <Input {...register('user_profile_id')} label="SISTEMSKI ID:" disabled={true} />
             </FormItem>
           </FormColumn>
         </FormRow>

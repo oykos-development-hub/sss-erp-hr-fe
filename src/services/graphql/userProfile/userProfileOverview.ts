@@ -4,47 +4,45 @@ import {GraphQL} from '..';
 const userProfileOverview = async ({
   page,
   size,
-  id = 0,
+  id = null,
   is_active = true,
-  organization_unit_id = 0,
-  job_position_id = 0,
+  organization_unit_id = null,
+  job_position_id = null,
   name = '',
 }: UserProfileParams): Promise<{data: UserProfileResponse}> => {
-  const query = `query UserProfileOverview($id: Int, $is_active: Boolean, $organization_unit_id: Int, $job_position_id: Int, $name: String, $page: Int, $size: Int) {
-    userProfiles_Overview(id: $id, is_active: $is_active, organization_unit_id: $organization_unit_id, job_position_id: $job_position_id, name: $name, page: $page, size: $size) {
-          message
-          status
-          total
-          items {
+  const query = `query($id: Int, $is_active: Boolean, $organization_unit_id: Int, $job_position_id: Int, $name: String, $page: Int, $size: Int) {
+    userProfiles_Overview(page: $page, size: $size, id: $id, is_active: $is_active, organization_unit_id: $organization_unit_id, job_position_id: $job_position_id, name: $name) {
+        message
+        status
+        total
+        items {
+            id
+            first_name
+            last_name
+            date_of_birth
+            email
+            phone
+            active
+            is_judge
+            is_judge_president
+            role {
               id
-              first_name
-              last_name
-              date_of_birth
-              email
-              phone
-              active
-              is_judge
-              is_judge_president
-              role {
-                  id
-                  title
-              }
-              organization_unit {
-                  id
-                  title
-              }
-              job_position {
-                  id
-                  title
-              }
-              created_at
-              updated_at
-          }
-      }
-  }`;
-
-  const response = await GraphQL.fetch(query, {id, is_active, organization_unit_id, job_position_id, name, page, size});
-
+              title
+            }
+            organization_unit {
+              id
+              title
+            }
+            job_position {
+              id
+              title
+            }
+            created_at
+            updated_at
+        }
+    }
+}`;
+  const response = await GraphQL.fetch(query, {page, size, id, is_active, organization_unit_id, job_position_id, name});
   return response?.data?.userProfiles_Overview || {};
 };
 
