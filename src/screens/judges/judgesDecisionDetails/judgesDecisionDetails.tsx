@@ -117,13 +117,13 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
 
     const data = {
       id: values.id,
+      user_profile_id: values.user_profile_id,
       serial_number: values.serial_number,
       year: values.year?.id ?? '',
-      active: true,
       items: Object.keys(values.items).map(key => ({
         organization_unit_id: Number(key),
-        number_of_judges: Number(values.items[key]),
-        number_of_presidents: 1,
+        available_slots_judges: Number(values.items[key]),
+        available_slots_presidents: 1,
         id: item?.items.find(i => i.organization_unit.id === Number(key))?.id ?? 0,
       })),
     };

@@ -235,16 +235,14 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
 
           <Footer activeTab={activeTab} handleSaveButton={methods?.handleSubmit(handleSave)} />
         </FormProvider>
-        {showEditSectorModal && (
-          <OrganisationalUnitModal
-            open={showEditSectorModal}
-            onClose={(refetch: boolean, message: string) => {
-              handleCloseModal(refetch, message);
-            }}
-            organizationUnit={systematizationDetails?.organization_unit}
-            selectedItem={selectedSector}
-          />
-        )}
+        <OrganisationalUnitModal
+          open={showEditSectorModal}
+          onClose={(refetch: boolean, message: string) => {
+            handleCloseModal(refetch, message);
+          }}
+          organizationUnit={systematizationDetails?.organization_unit}
+          selectedItem={selectedSector}
+        />
       </OverviewBox>
     </ScreenWrapper>
   );
