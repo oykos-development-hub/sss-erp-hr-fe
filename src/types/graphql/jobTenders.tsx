@@ -26,7 +26,7 @@ export interface JobTender {
 
 export interface JobTendersModal extends ModalProps {
   dropdownJobTenderType: JobTenderType[];
-  organizationUnitsList: {id: number | undefined; title: string | undefined}[];
+  jobPositionOrganizationUnitsList: {id: number | undefined; title: string | undefined}[];
   onClose: (refetch?: any, message?: any) => void;
 }
 

@@ -8,7 +8,7 @@ const useSystematizationDetails = (id: number) => {
   const getSystematizationDetails = async (onSuccess?: (item: any) => void) => {
     const response = await GraphQL.systematizationDetails(id);
     //Ask filip if we need array of items here
-    const data = (response?.items && response?.items[0]) || null;
+    const data = response?.item || null;
 
     setData(data);
     setLoading(false);

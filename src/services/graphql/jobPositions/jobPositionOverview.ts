@@ -1,9 +1,11 @@
 import {GraphQL} from '..';
 import {JobPositionsResponse} from '../../../types/graphql/jobPositions';
 
-const jobPositionOverview = async (id?: number): Promise<JobPositionsResponse['data']['jobPositions']> => {
-  const query = `query($id: Int) {
-        jobPositions(id: $id) {
+const jobPositionOverview = async (search?: string): Promise<JobPositionsResponse['data']['jobPositions']> => {
+  const queryIdentifier = 'jobPositions';
+  const response = await GraphQL.fetch(`   
+      query {
+        jobPositions(search: "${search}") {
             message
             status
             items {
@@ -20,11 +22,9 @@ const jobPositionOverview = async (id?: number): Promise<JobPositionsResponse['d
             }
         }
       }
-    `;
+    `);
 
-  const response = await GraphQL.fetch(query, {id});
-
-  return response?.data?.jobPositions || {};
+  return response?.data[queryIdentifier] || {};
 };
 
 export default jobPositionOverview;

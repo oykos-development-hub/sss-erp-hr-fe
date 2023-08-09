@@ -3,19 +3,19 @@ import {GraphQL} from '..';
 
 const initialState = {items: [], total: 0, message: '', status: ''};
 
-const useJobPositionOverview = (id?: number) => {
+const useJobPositionOverview = (search: string) => {
   const [data, setData] = useState<any>(initialState);
   const [loading, setLoading] = useState(true);
 
   const fetchJobPositions = async () => {
-    const jobPositions = await GraphQL.jobPositionsGet(id);
+    const jobPositions: any = await GraphQL.jobPositionsGet(search);
     setData(jobPositions);
     setLoading(false);
   };
 
   useEffect(() => {
     fetchJobPositions();
-  }, [id]);
+  }, [search]);
 
   return {data, loading, refetch: fetchJobPositions};
 };

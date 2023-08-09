@@ -1,7 +1,7 @@
 import {DropdownDataNumber} from '../dropdownData';
 
 export interface JobPosition {
-  id?: number | null;
+  id: number;
   title: string;
   abbreviation: string;
   serial_number: number;
@@ -16,6 +16,16 @@ export interface JobPosition {
 export interface JobPositionsResponse {
   data: {
     jobPositions: {
+      items: JobPosition[];
+      message: string;
+      status: string;
+    };
+  };
+}
+
+export interface JobPositionsOrganizationUnitResponse {
+  data: {
+    jobPositionsOrganizationUnit: {
       items: JobPosition[];
       message: string;
       status: string;

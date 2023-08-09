@@ -1,5 +1,7 @@
+import {DropdownDataNumber} from '../dropdownData';
+
 export interface UserProfileBasicInfo {
-  user_profile_id: number | null;
+  id: number;
   first_name: string;
   last_name: string;
   date_of_birth: string;
@@ -53,10 +55,10 @@ export interface UserProfileBasicResponse {
 export interface UserProfileParams {
   page: number;
   size: number;
-  id?: null;
+  id?: number;
   is_active?: boolean;
-  organization_unit_id?: number | null;
-  job_position_id?: number | null;
+  organization_unit_id?: number;
+  job_position_id?: number;
   name?: string;
 }
 
@@ -70,9 +72,9 @@ export interface UserProfile {
   active: boolean;
   is_judge: boolean;
   is_judge_president: boolean;
-  role: string;
-  organization_unit: string;
-  job_position: string;
+  role: DropdownDataNumber;
+  organization_unit: DropdownDataNumber;
+  job_position: DropdownDataNumber;
   created_at: string;
   updated_at: string;
 }

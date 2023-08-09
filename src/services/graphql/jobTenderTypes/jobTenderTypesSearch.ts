@@ -2,8 +2,8 @@ import {JobTenderTypeResponse} from '../../../types/graphql/useJobTendersTypes';
 import {GraphQL} from '../index';
 
 const jobTenderTypesSearch = async (search: string): Promise<{data: JobTenderTypeResponse}> => {
-  const query = `query(search: String) {
-    jobTenderTypes(search: $search) {
+  const response = await GraphQL.fetch(`query {
+    jobTenderTypes(search: "${search}") {
         message
         status
         items {
@@ -18,9 +18,8 @@ const jobTenderTypesSearch = async (search: string): Promise<{data: JobTenderTyp
           icon
         }
     }
-  }`;
+  }`);
 
-  const response = await GraphQL.fetch(query, {search});
   return response?.data?.jobTenderTypes || {};
 };
 

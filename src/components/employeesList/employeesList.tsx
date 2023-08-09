@@ -7,7 +7,8 @@ import useOrganizationUnits from '../../services/graphql/organizationUnits/useOr
 import {EmployeeListFilters} from '../../screens/employees';
 import {yesAndNoOptions} from '../../constants';
 import useJobPositions from '../../services/graphql/jobPositions/useJobPositionOverview';
-import {JobPosition} from '../../types/graphql/jobPositions';
+import ScreenWrapper from '../../shared/screenWrapper';
+import {MicroserviceProps} from '../../types/micro-service-props';
 
 export interface EmployeesListProps {
   navigate: (path: string) => void;
@@ -31,11 +32,11 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   onSearch,
 }) => {
   const {organizationUnitsList} = useOrganizationUnits();
-  const {data: jobPositions} = useJobPositions();
+  const {data: jobPositions} = useJobPositions('');
 
   const list = useMemo(
     () =>
-      data?.items?.map((item: UserProfile) => ({
+      data.items.map((item: UserProfile) => ({
         full_name: `${item.first_name} ${item.last_name}`,
         ...item,
         active: item.active ? 'Aktivan' : 'Neaktivan',
@@ -44,12 +45,9 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   );
 
   const jobPositionOptions = useMemo(() => {
-    if (!jobPositions.items) {
-      return [];
-    }
     return [
       {id: 0, title: 'Sva radna mjesta'},
-      ...jobPositions.items.map((jobPosition: JobPosition) => ({id: jobPosition.id, title: jobPosition.title})),
+      ...jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title})),
     ];
   }, [jobPositions]);
 
@@ -62,18 +60,18 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
         <Filters>
           <FilterDropdown
             label="FILTER ORGANIZACIONIH JEDINICA:"
-            options={organizationUnitsList}
+            options={organizationUnitsList as any}
             onChange={value => onFilterChange(value, 'organization_unit_id')}
-            value={filters.organization_unit_id}
+            value={filters.organization_unit_id as any}
             name="organization_unit_id"
             placeholder="Odaberite organizacionu jedinicu"
           />
 
           <FilterDropdown
             label="RADNO MJESTO:"
-            options={jobPositionOptions}
+            options={jobPositionOptions as any}
             onChange={value => onFilterChange(value, 'job_position_id')}
-            value={filters.job_position_id}
+            value={filters.job_position_id as any}
             name="job_position_id"
             placeholder="Odaberite radno mjesto"
           />
