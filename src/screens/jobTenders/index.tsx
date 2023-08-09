@@ -9,6 +9,8 @@ import {DropdownDataBoolean, DropdownDataNumber} from '../../types/dropdownData'
 import useJobTendersOverview from '../../services/graphql/jobTenders/useJobTenderOverview';
 import useJobTendersDelete from '../../services/graphql/jobTenders/useJobTenderDelete';
 import useJobTendersTypesSearch from '../../services/graphql/jobPositions/useJobTendersTypesSearch';
+import useJobPositionsOrganizationUnit from '../../services/graphql/jobPositions/useJobPositionsOrganizationUnit';
+import {JobPosition} from '../../types/graphql/jobPositions';
 
 export interface JobTendersListFilters {
   active: DropdownDataBoolean | null;
@@ -30,6 +32,8 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
   const [selectedItemId, setSelectedItemId] = useState(0);
   const {types, typesUnitsList} = useJobTendersTypesSearch('');
   const {organizationUnitsList} = useOrganizationUnits(context);
+  const {positions} = useJobPositionsOrganizationUnit(context?.organization_unit?.id);
+
   const [filters, setFilters] = useState<any>(initialValues);
 
   const {data, refreshData} = useJobTendersOverview({page, size: 10, ...filters});
@@ -102,7 +106,7 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
         onClose={(refetch, message) => handleCloseModal(refetch, message)}
         selectedItem={selectedItem}
         dropdownJobTenderType={types?.items || []}
-        organizationUnitsList={organizationUnitsList || []}
+        jobPositionOrganizationUnitsList={positions.items || []}
       />
     </ScreenWrapper>
   );

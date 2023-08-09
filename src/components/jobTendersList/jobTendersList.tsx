@@ -47,7 +47,7 @@ const JobTendersList: FC<JobTendersListProps> = ({
     () =>
       data.items.map((item: JobTender) => ({
         ...item,
-        active_badge: item.active ? 'Aktivan' : 'Neaktivan',
+        active_badge: item.active === true ? 'Aktivan' : 'Neaktivan',
       })),
     [data],
   );
@@ -62,11 +62,6 @@ const JobTendersList: FC<JobTendersListProps> = ({
     setDeleteItemID(0);
     setShowDeleteModal(false);
   };
-
-  const yearOptions = useMemo(
-    () => yearsForDropdown().map(year => ({id: year.id.toString(), title: year.title.toString()})),
-    [],
-  );
 
   return (
     <OverviewBox>

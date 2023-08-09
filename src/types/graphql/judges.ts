@@ -18,19 +18,21 @@ export interface JudgeOverview {
 export interface Norms {
   id: number;
   user_profile_id: number;
-  area: string;
+  topic: DropdownDataNumber | null;
   norm: number;
-  percentage_of_norm_decrease: string;
+  number_of_norm_decrease: string;
   number_of_items: number;
-  number_of_solved_items: number;
+  number_of_items_solved: number;
   start_date?: string;
   end_date?: string;
   evaluation?: string;
   evaluation_valid_to?: string;
   date_of_evaluation?: string;
   date_of_evaluation_validity?: string;
-  relocation?: string;
+  relocation_id?: string;
   full_name?: string;
+  file_id?: number;
+  evaluation_id?: number;
 }
 
 export interface JudgesOverviewResponse {
@@ -45,8 +47,8 @@ export interface JudgesOverviewResponse {
 }
 
 export interface JudgesOverviewQueryParams {
-  organization_unit_id: DropdownDataNumber | null;
-  user_profile_id: DropdownDataNumber | null;
+  organization_unit: DropdownDataNumber | null;
+  user_profile: DropdownDataNumber | null;
   page: number;
   size: number;
   search?: string;
@@ -111,7 +113,7 @@ export interface JudgesResolutionsOverviewResponse {
 
 export interface JudgeResolutionsInsert {
   id: number;
-  user_profile_id: number;
+  active: boolean;
   serial_number: string;
   year: string;
   items: JudgeResolutionsItem[];
@@ -130,8 +132,8 @@ export interface JudgeResolutionsResponse {
 export interface JudgeResolutionsItem {
   id: number;
   organization_unit_id: number;
-  available_slots_presidents: number;
-  available_slots_judges: number;
+  number_of_judges: number;
+  number_of_presidents: number;
 }
 
 export interface JudgeResolutionsDeleteResponse {

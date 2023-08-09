@@ -57,6 +57,7 @@ import systematizationOverview from './systematization/systematizationOverview';
 import systematizationInsert from './systematization/systematizationsInsert';
 import systematizationDelete from './systematization/systematizationsDelete';
 import userProfileOverview from './userProfile/userProfileOverview';
+import jobPositionsOrganizationUnit from './jobPositions/jobPositionsOrganizationUnit';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -66,11 +67,11 @@ export const BFF_URL = {
 };
 
 export const GraphQL = {
-  fetch: (query: string): Promise<any> => {
+  fetch: (query: string, variables?: any): Promise<any> => {
     return fetch(BFF_URL[getEnvironment()], {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({query}),
+      body: JSON.stringify({query, variables}),
     })
       .then(response => response.json())
       .catch(error => console.error(error));
@@ -106,6 +107,7 @@ export const GraphQL = {
   salaryParamsInsert: salaryParamsInsert,
   salaryParamsOverview: salaryParamsOverview,
   jobPositionsGet: jobPositionsGet,
+  jobPositionsOrganizationUnit: jobPositionsOrganizationUnit,
   resolutionOverview: resolutionOverview,
   resolutionInsert: resolutionInsert,
   resolutionDelete: resolutionDelete,

@@ -23,6 +23,16 @@ export interface JobPositionsResponse {
   };
 }
 
+export interface JobPositionsOrganizationUnitResponse {
+  data: {
+    jobPositionsOrganizationUnit: {
+      items: {id: number; title: string}[];
+      message: string;
+      status: string;
+    };
+  };
+}
+
 export type JobPositionEmployee = {
   id: number;
   title: string;

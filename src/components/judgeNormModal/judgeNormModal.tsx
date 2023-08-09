@@ -11,11 +11,11 @@ import useJudgeNormsInsert from '../../services/graphql/judges/useJudgeNormInser
 const initialValues: Norms = {
   id: 0,
   user_profile_id: 0,
-  area: '',
+  topic: null,
   norm: 0,
-  percentage_of_norm_decrease: '',
+  number_of_norm_decrease: '',
   number_of_items: 0,
-  number_of_solved_items: 0,
+  number_of_items_solved: 0,
   start_date: '',
   end_date: '',
 };
@@ -105,14 +105,14 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               )}
             />
             <Input
-              {...register('percentage_of_norm_decrease', {required: 'Ovo polje je obavezno'})}
+              {...register('number_of_norm_decrease', {required: 'Ovo polje je obavezno'})}
               label="UMANJEJE NORME:"
-              error={errors.percentage_of_norm_decrease?.message as string}
+              error={errors.number_of_norm_decrease?.message as string}
             />
           </Row>
           <Row>
             <Controller
-              name="area"
+              name="topic"
               rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
@@ -123,7 +123,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
                   value={value as any}
                   onChange={onChange}
                   rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
-                  error={errors.area?.message as string}
+                  error={errors.topic?.message as string}
                 />
               )}
             />
@@ -140,9 +140,9 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               error={errors.norm?.message as string}
             />
             <Input
-              {...register('number_of_solved_items', {required: 'Ovo polje je obavezno'})}
+              {...register('number_of_items_solved', {required: 'Ovo polje je obavezno'})}
               label="RIJEŠENO PREDMETA:"
-              error={errors.number_of_solved_items?.message as string}
+              error={errors.number_of_items_solved?.message as string}
             />
           </Row>
           <Row>

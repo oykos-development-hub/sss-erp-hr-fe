@@ -23,7 +23,7 @@ const initialValues: JobTender = {
   date_of_start: '',
   date_of_end: '',
   serial_number: '',
-  type: '',
+  type: undefined,
   description: '',
   available_slots: 0,
   active: true,
@@ -34,7 +34,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
   selectedItem,
   open,
   onClose,
-  organizationUnitsList,
+  jobPositionOrganizationUnitsList,
   dropdownJobTenderType,
 }) => {
   const item = useMemo(() => {
@@ -75,11 +75,12 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
         ...values,
         id: values.id || 0,
         organization_unit: values?.organization_unit,
+        job_position: values?.job_position,
         type: values?.type_tender?.title,
         description: '',
         serial_number: values.serial_number,
         available_slots: 0,
-        active: true,
+        active: false,
         date_of_start: parseDate(values?.date_of_start, true),
         date_of_end: parseDate(values?.date_of_end, true),
         file_id: 0,
@@ -120,14 +121,14 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
             />
 
             <Controller
-              name="organization_unit"
+              name="job_position"
               rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
                 <Dropdown
-                  label="ORGANIZACIONA JEDINICA:"
+                  label="POZICIJA ORGANIZACIONA JEDINICA:"
                   name={name}
-                  options={organizationUnitsList as any}
+                  options={jobPositionOrganizationUnitsList as any}
                   value={value as any}
                   onChange={onChange}
                   rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
