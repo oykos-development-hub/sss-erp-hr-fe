@@ -8,7 +8,25 @@ import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
 import {UserProfileExperience} from '../../../types/graphql/userProfileGetExperienceTypes';
 import useExperience from '../../../services/graphql/userProfile/experience/useExperienceOverview';
 import useExperienceDelete from '../../../services/graphql/userProfile/experience/useExperienceDelete';
-import {tableHeads} from './constants';
+
+const tableHeads: TableHead[] = [
+  {title: 'Br.', accessor: 'id', type: 'text'},
+  {
+    title: 'Sudstvo',
+    accessor: 'relevant',
+    type: 'custom',
+    renderContents: (item: any) => {
+      return item === 'hide' ? <></> : <Typography variant="bodyMedium" content={item ? 'Da' : 'Ne'} />;
+    },
+  },
+  {title: 'Organizacija', accessor: 'organization_unit', type: 'text'},
+  {title: 'Početak', accessor: 'date_of_start', type: 'text'},
+  {title: 'Kraj', accessor: 'date_of_end', type: 'text'},
+  {title: 'Radni staž', accessor: 'amount_of_insured_experience', type: 'text'},
+  {title: 'Radno iskustvo', accessor: 'amount_of_experience', type: 'text'},
+  {title: 'Dosije', accessor: 'reference_file_id', type: 'text'},
+  {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
+];
 
 export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[3];
@@ -18,12 +36,10 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
   const tableData = useMemo(() => {
     let totalInsuredExperience = 0;
     let totalExperience = 0;
-
     experienceData?.forEach((item: any) => {
       totalExperience += item.amount_of_experience;
       totalInsuredExperience += item.amount_of_insured_experience;
     });
-
     return (
       experienceData && [
         ...experienceData,
@@ -46,7 +62,6 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
 
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
-
   const selectedItem = useMemo(() => {
     return tableData?.find((item: UserProfileExperience) => item.id === selectedItemId);
   }, [selectedItemId]);

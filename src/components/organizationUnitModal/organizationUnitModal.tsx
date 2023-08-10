@@ -47,11 +47,10 @@ export const OrganisationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
   const {mutate, success, error} = useOrganizationUnitInsert(() => {
     if (success) {
       onClose(true, 'Uspješno sačuvano');
-
-      reset(initialValues);
     } else if (error) {
       onClose(false, 'Nije uspješno sačuvano');
     }
+    reset(item);
   });
 
   useEffect(() => {

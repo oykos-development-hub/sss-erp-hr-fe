@@ -1,6 +1,6 @@
-import {UserProfileBasicInfo, UserProfileBasicInfoFormValues} from '../../../types/graphql/userProfiles';
+import {UserProfileBasicInfo} from '../../../types/graphql/userProfiles';
 
-export const initialValues: UserProfileBasicInfoFormValues = {
+export const initialValues: UserProfileBasicInfo = {
   id: 0,
   first_name: '',
   last_name: '',
@@ -26,15 +26,17 @@ export const initialValues: UserProfileBasicInfoFormValues = {
   housing_description: '',
   marital_status: '',
   date_of_taking_oath: '',
+  date_of_start: '',
+  date_of_end: '',
   date_of_becoming_judge: '',
   email: '',
   phone: '',
+  organization_unit_id: 0,
+  job_position_id: 0,
+  contract_type_id: 0,
   national_minority: '',
-  secondary_email: '',
+  private_email: '',
   pin: '',
+  organization_unit_department_id: 0,
   password: '',
-  middle_name: '',
-  position_in_organization_unit_id: 0,
-  role_id: 0,
-  contracts: [],
 };

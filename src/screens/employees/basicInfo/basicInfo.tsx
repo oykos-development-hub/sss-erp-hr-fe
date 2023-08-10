@@ -23,7 +23,7 @@ import {
   yesOrNoOptionsString,
 } from '../../../constants';
 import {Controller, useForm} from 'react-hook-form';
-import {UserProfileBasicInfo, UserProfileBasicInfoFormValues} from '../../../types/graphql/userProfiles';
+import {UserProfileBasicInfo} from '../../../types/graphql/userProfiles';
 import {parseDate} from '../../../utils/dateUtils';
 import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
 import {initialValues} from './constants';
@@ -39,7 +39,7 @@ import useBasicInfoInsert from '../../../services/graphql/userProfile/basicInfo/
 
 export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const {data: profileData, refetch} = useBasicInfoGet(Number(context.navigation.location.pathname.split('/')[3]));
+  const {data: profileData, refetch} = useBasicInfoGet(context.navigation.location.pathname.split('/')[3]);
   const {data: jobPositions} = useJobPositions('');
   const {organizationUnitsList} = useOrganizationUnits();
   const {mutate} = useBasicInfoInsert();
@@ -51,16 +51,15 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
     reset,
     control,
     watch,
-    setValue,
   } = useForm({
-    defaultValues: initialValues,
+    defaultValues: profileData || initialValues,
   });
 
   const onFileUpload = (acceptedFiles: FileList) => {
     console.log('File(s) uploaded:', acceptedFiles);
   };
 
-  const handleSave = (values: UserProfileBasicInfoFormValues, close: boolean) => {
+  const handleSave = (values: UserProfileBasicInfo, close: boolean) => {
     if (isValid) {
       mutate(
         formatData(values),
@@ -81,9 +80,9 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
     }
   };
 
-  // const jobPositionOptions = useMemo(() => {
-  //   return jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title}));
-  // }, [jobPositions]);
+  const jobPositionOptions = useMemo(() => {
+    return jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title}));
+  }, [jobPositions]);
 
   const countryOptions = useMemo(() => {
     return context.countries?.map((country: any) => {
@@ -113,13 +112,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   }, [context.navigation.location]);
 
   useEffect(() => {
-    if (profileData) {
-      Object.entries(profileData).forEach(([key, value]) => {
-        if (initialValues.hasOwnProperty(key)) {
-          setValue(key as keyof typeof initialValues, value);
-        }
-      });
-    }
+    reset(profileData);
   }, [profileData]);
 
   // When coming from the job tender applications, when changing an external candidates status to accepted, it leads here to create it in the system, basically becoming an internal candidate in order to be accepted
@@ -267,7 +260,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
             <FormItem>
               <Input {...register('city_of_birth')} label="OPŠTINA ROĐENJA:" disabled={isDisabled} />
             </FormItem>
-            {/* <FormItem>
+            <FormItem>
               <Controller
                 name="national_minority"
                 control={control}
@@ -284,7 +277,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                   />
                 )}
               />
-            </FormItem> */}
+            </FormItem>
             <FormItem>
               <Input
                 {...register('address')}
@@ -393,7 +386,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
 
         <FormRow>
           <FormColumn>
-            {/* <FormItem>
+            <FormItem>
               <Controller
                 name="organization_unit_id"
                 rules={{required: 'Ovo polje je obavezno'}}
@@ -410,8 +403,8 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                   />
                 )}
               />
-            </FormItem> */}
-            {/* <FormItem>
+            </FormItem>
+            <FormItem>
               <Controller
                 name="organization_unit_department_id"
                 control={control}
@@ -428,8 +421,8 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                   />
                 )}
               />
-            </FormItem> */}
-            {/* <FormItem>
+            </FormItem>
+            <FormItem>
               <Controller
                 name="job_position_id"
                 rules={{required: 'Ovo polje je obavezno'}}
@@ -447,11 +440,11 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                   />
                 )}
               />
-            </FormItem> */}
+            </FormItem>
           </FormColumn>
 
           <FormColumn>
-            {/* <FormItem>
+            <FormItem>
               <Controller
                 name="contract_type_id"
                 rules={{required: 'Ovo polje je obavezno'}}
@@ -469,7 +462,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                   />
                 )}
               />
-            </FormItem> */}
+            </FormItem>
             <FormItem>
               <Controller
                 name="date_of_becoming_judge"
@@ -502,7 +495,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
           </FormColumn>
 
           <FormColumn>
-            {/* <FormItem>
+            <FormItem>
               <Controller
                 name="date_of_start"
                 rules={{required: 'Ovo polje je obavezno'}}
@@ -518,9 +511,9 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                   />
                 )}
               />
-            </FormItem> */}
+            </FormItem>
 
-            {/* <FormItem>
+            <FormItem>
               <Controller
                 name="date_of_end"
                 rules={{
@@ -541,7 +534,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                   />
                 )}
               />
-            </FormItem> */}
+            </FormItem>
             <FormItem>
               <Button
                 size="lg"
@@ -592,7 +585,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
 
           <FormColumn>
             <FormItem>
-              <Input {...register('secondary_email')} label="PRIVATNI E-MAIL:" disabled={isDisabled} />
+              <Input {...register('private_email')} label="PRIVATNI E-MAIL:" disabled={isDisabled} />
             </FormItem>
             <FormItem>
               <Input
@@ -616,12 +609,12 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
               <Button
                 content="Sačuvaj i zatvori"
                 variant="secondary"
-                onClick={() => handleSubmit((data: UserProfileBasicInfoFormValues) => handleSave(data, true))()}
+                onClick={() => handleSubmit((data: UserProfileBasicInfo) => handleSave(data, true))()}
               />
               <Button
                 content="Sačuvaj i nastavi"
                 variant="primary"
-                onClick={() => handleSubmit((data: UserProfileBasicInfoFormValues) => handleSave(data, false))()}
+                onClick={() => handleSubmit((data: UserProfileBasicInfo) => handleSave(data, false))()}
               />
             </>
           )}

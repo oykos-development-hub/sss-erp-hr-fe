@@ -2,14 +2,13 @@ import {CheckIcon, Dropdown, FileUpload, Modal, Theme} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
-import {UserProfileEducationFormValues, UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
+import {UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
 import {languageAcknowledgmentLevels} from './constants';
 import {ModalContentWrapper, Row} from './styles';
 import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
 
-const initialValues: UserProfileEducationFormValues = {
+const initialValues: UserProfileEducationItem = {
   id: 0,
-  title: '',
   user_profile_id: 1,
   education_type_id: 2,
   date_of_certification: '',
@@ -20,7 +19,9 @@ const initialValues: UserProfileEducationFormValues = {
   expertise_level: '',
   certificate_issuer: '',
   description: '',
-  file_id: null,
+  created_at: '',
+  updated_at: '',
+  file_id: '1',
 };
 
 interface LanguageAcknowledgmentModalProps extends ModalProps {
@@ -45,7 +46,6 @@ export const LanguageAcknowledgmentModal: React.FC<LanguageAcknowledgmentModalPr
     };
     languagesList.push(language);
   });
-
   const item = useMemo(() => {
     return selectedItem
       ? {
@@ -78,15 +78,15 @@ export const LanguageAcknowledgmentModal: React.FC<LanguageAcknowledgmentModalPr
   }, [item]);
 
   const onSubmit = async (values: any) => {
-    const data = {...values, academic_title: values.academic_title.id, expertise_level: values.expertise_level.id};
-
-    if (!selectedItem) {
-      delete data.id;
-    }
-
     try {
       mutate(
-        data,
+        {
+          ...values,
+          id: values?.id || 0,
+          academic_title: values?.academic_title?.title,
+          expertise_level: values?.expertise_level?.title,
+          file_id: values?.file_id || 1,
+        },
         () => {
           alert?.success('Uspješno sačuvano');
           refetch();

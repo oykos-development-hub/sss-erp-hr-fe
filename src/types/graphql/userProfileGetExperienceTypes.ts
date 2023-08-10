@@ -14,11 +14,6 @@ export type UserProfileExperience = {
   user_profile_id: number;
 };
 
-export interface UserProfileExperienceFormValues
-  extends Omit<UserProfileExperience, 'created_at' | 'updated_at' | 'id'> {
-  id?: number | null;
-}
-
 export interface UserProfileGetExperienceResponse {
   data: {
     userProfile_Experience: {
