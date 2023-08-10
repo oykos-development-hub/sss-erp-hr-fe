@@ -104,7 +104,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
         <ModalContentWrapper>
           <Row>
             <Controller
-              name="type"
+              name="type_tender"
               rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
