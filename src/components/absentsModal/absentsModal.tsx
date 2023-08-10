@@ -10,15 +10,17 @@ import {dropdownAbsentsOptions, dropdownOptions, dropdownVacationOptions} from '
 import useAbsentInsert from '../../services/graphql/userProfile/absents/useAbsentInsert';
 
 const initialValues: UserProfileAbsentsParams = {
-  id: null,
+  id: 0,
   user_profile_id: 0,
-  absent_type_id: null,
-  location: '',
-  target_organization_unit_id: null,
   date_of_start: '',
   date_of_end: '',
+  file_id: 0,
+  target_organization_unit: null,
+  target_organization_unit_id: 0,
+  location: '',
   description: '',
-  file_id: null,
+  vacation_type: null,
+  vacation_type_id: 0,
 };
 
 export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, onClose, userProfileId, alert}) => {
@@ -40,26 +42,34 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, on
 
   const {organizationUnitsList} = useOrganizationUnits();
 
-  const {mutate} = useAbsentInsert();
+  const {mutate: saveUserProfileAbsents} = useAbsentInsert();
 
   const handleSave = (values: any) => {
     const payload = {
       ...values,
-      id: values?.id,
+      id: values?.id || 0,
       user_profile_id: userProfileId,
-      date_of_start: parseDate(values?.date_of_start, true),
-      date_of_end: parseDate(values?.date_of_end, true),
-      absent_type_id: values?.absent_type_id?.id || null,
-      target_organization_unit_id: values?.target_organization_unit_id?.id || null,
+      date_of_start: values?.date_of_start.toISOString() || '',
+      date_of_end: values?.date_of_end.toISOString() || '',
+      file_id: values?.file_id || 1,
+      vacation_type_id: values?.vacation_type?.id || null,
+      location: values?.location || '',
+      target_organization_unit_id: values?.target_organization_unit?.id || 0,
     };
 
-    mutate(
+    delete payload.vacation_type;
+    delete payload.created_at;
+    delete payload.updated_at;
+    delete payload.target_organization_unit;
+
+    saveUserProfileAbsents(
       payload,
       () => {
         onClose(true);
         alert.success('Uspješno sačuvano');
       },
       () => {
+        onClose(false);
         alert.error('Nije uspješno sačuvano');
       },
     );
@@ -74,7 +84,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, on
     watch,
   } = useForm<UserProfileAbsentsParams>({defaultValues: selectedItem || initialValues});
 
-  const absentType = watch('absent_type_id');
+  const vacationType = watch('vacation_type');
 
   useEffect(() => {
     if (selectedItem) {
@@ -84,7 +94,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, on
         date_of_start: new Date(selectedItem.date_of_start),
       });
       if (selectedItem.id !== 0) {
-        if (dropdownVacationOptions.find(option => option.id === selectedItem.absent_type_id.id)) {
+        if (dropdownVacationOptions.find(option => option.id === selectedItem.vacation_type.id)) {
           setIsVacation(true);
         } else setIsVacation(false);
 
@@ -118,7 +128,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, on
 
           <FormGroup>
             <Controller
-              name="absent_type_id"
+              name="vacation_type"
               control={control}
               rules={{required: 'Ovo polje je obavezno'}}
               render={({field: {onChange, name, value}}) => (
@@ -128,7 +138,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, on
                   options={isVacation ? dropdownVacationOptions : dropdownAbsentsOptions}
                   value={value as any}
                   onChange={onChange}
-                  error={errors.absent_type_id?.message}
+                  error={errors.vacation_type?.message}
                   placeholder="Birajte vrstu"
                   isDisabled={!isSecondDropdownEnabled}
                 />
@@ -138,7 +148,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, on
 
           <FormGroup>
             <Controller
-              name="target_organization_unit_id"
+              name="target_organization_unit"
               control={control}
               render={({field: {onChange, name, value}}) => (
                 <Dropdown
@@ -147,8 +157,8 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, on
                   options={organizationUnitsList as any}
                   value={value as any}
                   onChange={onChange}
-                  error={errors.target_organization_unit_id?.message}
-                  isDisabled={absentType?.id !== 5}
+                  error={errors.target_organization_unit?.message}
+                  isDisabled={vacationType?.id !== 5}
                   placeholder="Birajte državni organ"
                 />
               )}

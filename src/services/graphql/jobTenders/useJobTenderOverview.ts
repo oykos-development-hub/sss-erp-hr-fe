@@ -11,7 +11,7 @@ export interface UseJobTendersParams extends JobTendersListFilters {
   size: number;
 }
 
-const useJobTenderOverview = ({page, size, id, organization_unit_id, active, type}: UseJobTendersParams) => {
+const useJobTenderOverview = ({page, size, id, organization_unit_id, active, type_id}: UseJobTendersParams) => {
   const [data, setData] = useState<JobTendersResponse['data']['jobTenders_Overview']>(initialState);
   const [loading, setLoading] = useState(true);
 
@@ -22,7 +22,7 @@ const useJobTenderOverview = ({page, size, id, organization_unit_id, active, typ
       id: id ? id : 0,
       organization_unit_id: organization_unit_id ? organization_unit_id.id : 0,
       active: active ? active.id : true,
-      type: type?.id ? type.title.toString() : '',
+      type_id: type_id?.id || 0,
     });
     setData(jobTenders);
     setLoading(false);
@@ -30,7 +30,7 @@ const useJobTenderOverview = ({page, size, id, organization_unit_id, active, typ
 
   useEffect(() => {
     fetchJobTenders();
-  }, [page, size, id, active, organization_unit_id, type]);
+  }, [page, size, id, active, organization_unit_id, type_id]);
 
   return {data, loading, refreshData: fetchJobTenders};
 };

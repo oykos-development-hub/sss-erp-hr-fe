@@ -47,7 +47,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
 
   const id = context.navigation.location.pathname.split('/')[4];
 
-  const {data} = useJudgeResolutionsOverview({page: 1, size: 1000});
+  const {data, refetch} = useJudgeResolutionsOverview({page: 1, size: 1000});
 
   const {mutate} = useJudgeResolutionsInsert();
 
@@ -137,6 +137,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
           context.navigation.navigate('/hr/judges/number-decision');
           context.breadcrumbs.remove();
         } else {
+          refetch();
           context.navigation.navigate(`/hr/judges/number-decision/${id}`);
         }
       },

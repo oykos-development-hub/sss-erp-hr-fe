@@ -1,18 +1,11 @@
 import {useState} from 'react';
 import {GraphQL} from '../..';
-import {
-  UserProfileEvaluation,
-  UserProfileEvaluationFormValues,
-} from '../../../../types/graphql/userProfileGetEvaluations';
+import {UserProfileEvaluation} from '../../../../types/graphql/userProfileGetEvaluations';
 
-const useEvaluationInsert = () => {
+const useEvaluationInsert = (onSuccess?: () => void, onError?: () => void) => {
   const [loading, setLoading] = useState(false);
 
-  const insertProfileEvaluation = async (
-    data: UserProfileEvaluationFormValues,
-    onSuccess?: () => void,
-    onError?: () => void,
-  ) => {
+  const insertProfileEvaluation = async (data: UserProfileEvaluation) => {
     setLoading(true);
     const response = await GraphQL.evaluationInsert(data);
     if (response.status === 'success') {

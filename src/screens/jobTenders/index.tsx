@@ -16,14 +16,14 @@ export interface JobTendersListFilters {
   active: DropdownDataBoolean | null;
   organization_unit_id: DropdownDataNumber | null;
   job_position_id: DropdownDataNumber | null;
-  type: DropdownDataNumber | null;
+  type_id: DropdownDataNumber | null;
 }
 
 const initialValues: JobTendersListFilters = {
   active: null,
   organization_unit_id: null,
   job_position_id: null,
-  type: null,
+  type_id: null,
 };
 
 export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
