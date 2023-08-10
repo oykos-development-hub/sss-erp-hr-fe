@@ -14,7 +14,7 @@ const useJudgeResoultionInsert = () => {
     setLoading(true);
     const response = await GraphQL.judgeResolutionInsert(data);
     if (response.status === REQUEST_STATUSES.success) {
-      const id = response.item ? response.item.id : 0;
+      const id = response.items ? response.items[0].id : 0;
       onSuccess && onSuccess(id);
     } else {
       onError && onError();

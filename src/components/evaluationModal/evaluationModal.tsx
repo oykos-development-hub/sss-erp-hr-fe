@@ -1,20 +1,22 @@
 import React, {useEffect, useMemo} from 'react';
-import {Typography, Modal, FileUpload, Dropdown} from 'client-library';
+import {Typography, Modal, FileUpload, Dropdown, Datepicker} from 'client-library';
 import {FileUploadWrapper, FormWrapper, Row} from './styles';
-import {formatData} from '../../screens/employees/evaluations/utils';
 import {Controller, useForm} from 'react-hook-form';
 import {EvaluationModalProps} from '../../screens/employees/evaluations/types';
 import {yesOrNoOptionsString} from '../../constants';
 import useEvaluationInsert from '../../services/graphql/userProfile/evaluation/useEvaluationInsert';
+import {UserProfileEvaluationFormValues} from '../../types/graphql/userProfileGetEvaluations';
+import {parseDate} from '../../utils/dateUtils';
 
-const initialValues = {
-  id: 0,
+const initialValues: UserProfileEvaluationFormValues = {
+  id: null,
   user_profile_id: 0,
   date_of_evaluation: '',
   score: '',
   evaluator: '',
   is_relevant: false,
   file_id: 1,
+  evaluation_type_id: 1,
 };
 
 export const EvaluationModal: React.FC<EvaluationModalProps> = ({
@@ -51,20 +53,35 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
     }
   }, [item]);
 
-  const {mutate} = useEvaluationInsert(
-    () => {
-      refetchList();
-      alert.success('Uspješno sačuvano');
-      onClose();
-    },
-    () => {
-      alert.error('Greška pri čuvanju podataka');
-    },
-  );
+  const {mutate} = useEvaluationInsert();
 
   const onSubmit = async (data: any) => {
-    const payload = formatData(data);
-    await mutate(payload);
+    const payload: UserProfileEvaluationFormValues = {
+      user_profile_id: data?.user_profile_id,
+      score: data?.score.id,
+      is_relevant: data?.is_relevant?.id === 'Da' ? true : false,
+      date_of_evaluation: parseDate(data?.date_of_evaluation, true),
+      file_id: data?.file_id,
+      // Where does this come from??
+      evaluation_type_id: 1,
+      evaluator: '',
+    };
+
+    if (item) {
+      payload.id = item.id;
+    }
+
+    await mutate(
+      payload,
+      () => {
+        refetchList();
+        alert.success('Uspješno sačuvano');
+        onClose();
+      },
+      () => {
+        alert.error('Greška pri čuvanju podataka');
+      },
+    );
   };
 
   return (
@@ -84,12 +101,11 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
               control={control}
               rules={{required: 'Ovo polje je obavezno'}}
               render={({field: {onChange, name, value}}) => (
-                <Dropdown
+                <Datepicker
                   onChange={onChange}
-                  value={value}
+                  value={value ? parseDate(value) : ''}
                   name={name}
-                  label="GODINA:"
-                  options={years}
+                  label="DATUM:"
                   error={errors.date_of_evaluation?.message as string}
                 />
               )}

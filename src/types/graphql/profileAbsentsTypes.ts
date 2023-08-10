@@ -32,17 +32,15 @@ export type TargetOrganisationTypes = {
 };
 
 export type UserProfileAbsentsParams = {
-  id: number;
+  id: number | null;
   user_profile_id: number;
-  vacation_type: DropdownDataNumber | null;
-  vacation_type_id: number;
+  absent_type_id: DropdownDataNumber | null;
   location: string;
-  target_organization_unit_id: number;
-  target_organization_unit: DropdownDataNumber | null;
+  target_organization_unit_id: DropdownDataNumber | null;
   date_of_start: string;
   date_of_end: string;
   description: string;
-  file_id: number;
+  file_id: number | null;
 };
 
 export interface UserProfileAbsentsResponse {

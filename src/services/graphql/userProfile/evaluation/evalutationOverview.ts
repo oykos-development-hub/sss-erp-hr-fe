@@ -4,8 +4,8 @@ import {UserProfileEvaluationResponse} from '../../../../types/graphql/userProfi
 const evaluationOverview = async (
   id: number,
 ): Promise<UserProfileEvaluationResponse['data']['userProfile_Evaluation']> => {
-  const response = await GraphQL.fetch(`query {
-    userProfile_Evaluation(user_profile_id: ${id}) {
+  const query = `query UserProfileEvaluation($user_profile_id: Int!){
+    userProfile_Evaluation(user_profile_id: $user_profile_id) {
         message
         status
         items {
@@ -24,7 +24,9 @@ const evaluationOverview = async (
             file_id
         }
     }
-}`);
+}`;
+
+  const response = await GraphQL.fetch(query, {user_profile_id: id});
 
   return response?.data?.userProfile_Evaluation || {};
 };
