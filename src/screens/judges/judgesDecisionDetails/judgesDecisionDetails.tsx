@@ -133,7 +133,6 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       id => {
         setIsDisabled(true);
         context.alert.success('Uspješno ste sačuvali odluku');
-
         if (close) {
           context.navigation.navigate('/hr/judges/number-decision');
           context.breadcrumbs.remove();

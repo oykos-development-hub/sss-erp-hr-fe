@@ -143,7 +143,7 @@ export interface JudgeResolutionsResponse {
     judgeResolutions_Insert: {
       status?: string;
       message?: string;
-      items?: JudgeResolutionOverview[];
+      item?: JudgeResolutionOverview;
     };
   };
 }
