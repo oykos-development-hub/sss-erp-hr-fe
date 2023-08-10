@@ -5,7 +5,7 @@ fs.readFile('./src/services/get-environment.ts', 'utf8', (err, data) => {
     console.error(`Error reading getEnvironment file: ${err}`);
     return;
   }
-  const environment = env.ENVIRONMENT ?? 'development';
+  const environment = env.ENVIRONMENT ?? 'local';
   const updatedData = data.replace(/(const Environment = )[^;]+(;)/, `$1'${environment}'$2`);
 
   // Write the updated contents back to the getEnvironment file
