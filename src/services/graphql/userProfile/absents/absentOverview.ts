@@ -4,10 +4,11 @@ import {UserProfileAbsentsResponse} from '../../../../types/graphql/profileAbsen
 const absentOverview = async (
   user_profile_id: number,
 ): Promise<UserProfileAbsentsResponse['data']['userProfile_Absent']> => {
-  const response = await GraphQL.fetch(`query {
-    userProfile_Absent(user_profile_id: ${user_profile_id}) {
+  const query = `query UserProfileAbsent($user_profile_id: Int){
+    userProfile_Absent(user_profile_id: $user_profile_id) {
         message
         status
+        data
         summary {
             current_available_days
             past_available_days
@@ -16,7 +17,7 @@ const absentOverview = async (
         items {
             id
             user_profile_id
-            vacation_type {
+            absent_type {
                 id
                 title
             }
@@ -33,7 +34,9 @@ const absentOverview = async (
             file_id
         }
     }
-}`);
+}`;
+
+  const response = await GraphQL.fetch(query, {user_profile_id});
 
   return response?.data?.userProfile_Absent || {};
 };

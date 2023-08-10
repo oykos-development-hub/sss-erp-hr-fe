@@ -15,37 +15,33 @@ import useSalaryParamsInsert from '../../../services/graphql/userProfile/salaryP
 
 export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const userProfileID = context.navigation.location.pathname.split('/')[3];
+  const userProfileID = Number(context.navigation.location.pathname.split('/')[3]);
   const {data, refetch} = useSalaryParamsOverview(userProfileID);
 
   const item = useMemo(() => {
-    return (
-      data && {
-        ...data,
-        benefited_track: data?.benefited_track ? {id: 'Da', title: 'Da'} : {id: 'Ne', title: 'Ne'},
-        without_raise: data?.without_raise ? {id: 'Da', title: 'Da'} : {id: 'Ne', title: 'Ne'},
-        insurance_basis: {id: data?.insurance_basis, title: data?.insurance_basis},
-        daily_work_hours: {id: data?.daily_work_hours, title: data?.daily_work_hours},
-        weekly_work_hours: {id: data?.weekly_work_hours, title: data?.weekly_work_hours},
-        salary_rank: {id: data?.salary_rank, title: data?.salary_rank},
-        user_resolution_id: data?.user_resolution_id ?? {id: data?.user_resolution_id, title: data?.user_resolution_id},
-      }
-    );
+    if (data && data.length) {
+      return {
+        ...data[0],
+        benefited_track: data[0].benefited_track ? {id: 'Da', title: 'Da'} : {id: 'Ne', title: 'Ne'},
+        without_raise: data[0].without_raise ? {id: 'Da', title: 'Da'} : {id: 'Ne', title: 'Ne'},
+        insurance_basis: {id: data[0].insurance_basis, title: data[0].insurance_basis},
+        daily_work_hours: {id: data[0].daily_work_hours, title: data[0].daily_work_hours},
+        weekly_work_hours: {id: data[0].weekly_work_hours, title: data[0].weekly_work_hours},
+        salary_rank: {id: data[0].salary_rank, title: data[0].salary_rank},
+        user_resolution_id: data[0].user_resolution_id ?? {
+          id: data[0].user_resolution_id,
+          title: data[0].user_resolution_id,
+        },
+      };
+    }
+
+    return null;
   }, [data]);
 
   const {data: jobPositions} = useJobPositions('');
   const {organizationUnitsList} = useOrganizationUnits(context);
 
-  const {mutate} = useSalaryParamsInsert(
-    () => {
-      refetch();
-      setIsDisabled(true);
-      context.alert.success('Dodavanje podataka uspješno');
-    },
-    () => {
-      context.alert.error('Greška prilikom čuvanja podataka');
-    },
-  );
+  const {mutate} = useSalaryParamsInsert();
 
   const {
     register,
@@ -67,8 +63,23 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
 
   const handleSave = (values: UserProfileGetSalaryParams) => {
     const payload = formatData({...values, user_profile_id: userProfileID});
+
+    if (!item) {
+      delete payload.id;
+    }
+
     if (isValid) {
-      mutate(payload);
+      mutate(
+        payload,
+        () => {
+          refetch();
+          setIsDisabled(true);
+          context.alert.success('Dodavanje podataka uspješno');
+        },
+        () => {
+          context.alert.error('Greška prilikom čuvanja podataka');
+        },
+      );
     }
   };
 
