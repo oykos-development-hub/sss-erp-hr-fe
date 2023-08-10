@@ -32,8 +32,6 @@ const JudgesList: React.FC<JudgesListProps> = ({
     () =>
       data?.map((item: JudgeOverview) => ({
         ...item,
-        evaluation_title: item?.norms[0]?.evaluation?.score ? item?.norms[0]?.evaluation?.score : '',
-        relocation_title: item?.norms[0]?.relocation?.location ? item?.norms[0]?.relocation?.location : '',
       })),
     [data],
   );
