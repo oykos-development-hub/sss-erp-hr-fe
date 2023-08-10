@@ -8,18 +8,9 @@ export const tableHeads: TableHead[] = [
     title: 'Organizaciona jedinica',
     accessor: 'organization_unit',
     type: 'custom',
-    renderContents: (item: any) => {
-      return <Typography variant="bodyMedium" content={item.title} />;
-    },
+    renderContents: row => row.organization_unit?.title,
   },
-  {
-    title: 'Radno mjesto',
-    accessor: 'job_position',
-    type: 'custom',
-    renderContents: (item: any) => {
-      return <Typography variant="bodyMedium" content={item.title} />;
-    },
-  },
+  {title: 'Radno mjesto', accessor: 'job_position', type: 'custom', renderContents: row => row.job_position?.title},
   {title: 'Status', accessor: 'active', type: 'badge'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];

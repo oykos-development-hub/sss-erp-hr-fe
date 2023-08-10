@@ -65,14 +65,19 @@ export const JudicalAndStateExamsModal: React.FC<JudicalAndStateExamsModal> = ({
   }, [item]);
 
   const onSubmit = async (values: any) => {
+    const data = {
+      ...values,
+      date_of_certification: parseDate(values?.date_of_certification, true),
+      academic_title: values?.academic_title?.id,
+    };
+
+    if (!selectedItem) {
+      delete data.id;
+    }
+
     try {
       mutate(
-        {
-          ...values,
-          id: values?.id || 0,
-          date_of_certification: parseDate(values?.date_of_certification, true),
-          academic_title: values?.academic_title?.title,
-        },
+        data,
         () => {
           alert.success('Uspješno sačuvano');
           refetch();
@@ -85,13 +90,18 @@ export const JudicalAndStateExamsModal: React.FC<JudicalAndStateExamsModal> = ({
       );
     } catch (e) {
       console.log(e);
+    } finally {
+      reset(initialValues);
     }
   };
 
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={() => {
+        onClose();
+        reset(initialValues);
+      }}
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(onSubmit)}

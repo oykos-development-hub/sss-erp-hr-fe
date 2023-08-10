@@ -15,6 +15,22 @@ export type UserProfileEducationItem = {
   file_id: string;
 };
 
+export interface UserProfileEducationFormValues {
+  id: number | null;
+  user_profile_id: number;
+  education_type_id: number;
+  date_of_certification: string;
+  price: number;
+  title: string;
+  date_of_start: string;
+  date_of_end: string;
+  academic_title: string;
+  expertise_level: string;
+  certificate_issuer: string;
+  description: string;
+  file_id: number | null;
+}
+
 export type UserProfileEducation = {
   id: number;
   abbreviation: string;

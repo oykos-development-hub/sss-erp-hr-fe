@@ -8,8 +8,9 @@ export interface FamilyPageProps {
 export interface FamilyMemberModalProps {
   selectedItem?: any;
   open: boolean;
-  onClose: (refetch?: any) => void;
+  onClose: () => void;
   countries?: any[];
   userProfileId?: number;
   alert: any;
+  refetch: () => void;
 }

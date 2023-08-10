@@ -4,13 +4,13 @@ import {ExperienceModalProps} from '../../screens/employees/experience/types';
 import React, {useEffect, useMemo} from 'react';
 import {parseDate} from '../../utils/dateUtils';
 import {formatData} from '../../screens/employees/experience/utils';
-import {UserProfileExperience} from '../../types/graphql/userProfileGetExperienceTypes';
+import {UserProfileExperienceFormValues} from '../../types/graphql/userProfileGetExperienceTypes';
 import {Controller, useForm} from 'react-hook-form';
 import {yesOrNoOptionsString} from '../../constants';
 import useExperienceInsert from '../../services/graphql/userProfile/experience/useExperienceInsert';
 
-const initialValues: UserProfileExperience = {
-  id: 0,
+const initialValues: UserProfileExperienceFormValues = {
+  id: null,
   user_profile_id: 0,
   relevant: false,
   amount_of_experience: 0,
@@ -21,8 +21,6 @@ const initialValues: UserProfileExperience = {
   organization_unit: '',
   organization_unit_id: 0,
   reference_file_id: 0,
-  updated_at: '',
-  created_at: '',
 };
 
 export const ExperienceModal: React.FC<ExperienceModalProps> = ({
@@ -56,17 +54,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     reset,
   } = useForm({defaultValues: item || initialValues});
 
-  const {mutate} = useExperienceInsert(
-    () => {
-      console.log('refetching');
-      refetchList();
-      alert.success('Uspješno sačuvano');
-      onClose();
-    },
-    () => {
-      alert.error('Greška pri čuvanju podataka');
-    },
-  );
+  const {mutate} = useExperienceInsert();
 
   const relevant = watch('relevant');
 
@@ -76,9 +64,27 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     }
   }, [item]);
 
-  const onSubmit = (data: any) => {
-    const payload = formatData(data);
-    mutate(payload);
+  const onSubmit = (data: UserProfileExperienceFormValues) => {
+    const payload = formatData(data, !selectedItem);
+
+    try {
+      mutate(
+        payload,
+        () => {
+          alert.success('Uspješno sačuvano');
+          refetchList();
+          onClose();
+        },
+        () => {
+          alert.error('Nije uspješno sačuvano');
+          onClose();
+        },
+      );
+    } catch (e) {
+      console.log(e);
+    } finally {
+      reset(initialValues);
+    }
   };
 
   return (
