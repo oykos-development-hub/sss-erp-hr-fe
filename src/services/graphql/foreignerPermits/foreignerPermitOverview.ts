@@ -2,8 +2,8 @@ import {GraphQL} from '..';
 import {UserProfileResponse} from '../../../types/graphql/userProfiles';
 
 const foreignerPermitOverview = async (user_profile_id: number): Promise<{data: UserProfileResponse}> => {
-  const response = await GraphQL.fetch(`query {
-    userProfile_Foreigner(user_profile_id: ${user_profile_id}) {
+  const query = `query UserProfileForeigner($user_profile_id: Int!){
+    userProfile_Foreigner(user_profile_id: $user_profile_id) {
         message
         status
         items {
@@ -17,6 +17,8 @@ const foreignerPermitOverview = async (user_profile_id: number): Promise<{data: 
             residence_permit_date_of_start
             residence_permit_date_of_end
             residence_permit_indefinite_length
+            residence_permit_number
+            residence_permit_issuer
             country_of_origin
             created_at
             updated_at
@@ -25,8 +27,10 @@ const foreignerPermitOverview = async (user_profile_id: number): Promise<{data: 
             created_at
             updated_at
         }
-      }
-}`);
+    }
+}`;
+
+  const response = await GraphQL.fetch(query, {user_profile_id});
 
   return response?.data?.userProfile_Foreigner || {};
 };

@@ -73,9 +73,9 @@ const JobTendersList: FC<JobTendersListProps> = ({
           <FilterDropdown
             label="TIP OGLASA:"
             options={dropdownJobTenderType as any}
-            value={filters.type_id as any}
-            name="type_id"
-            onChange={value => onFilterChange(value, 'type_id')}
+            value={filters.type as any}
+            name="type"
+            onChange={value => onFilterChange(value, 'type')}
             placeholder="Tip oglasa"
           />
           <FilterDropdown

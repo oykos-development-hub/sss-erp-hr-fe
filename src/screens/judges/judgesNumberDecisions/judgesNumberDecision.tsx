@@ -32,10 +32,7 @@ const JudgesNumberDecisions: React.FC<ScreenProps> = ({context}) => {
   };
 
   const yearOptions = useMemo(
-    () => [
-      {id: '', title: 'Sve godine'},
-      ...yearsForDropdown().map(year => ({id: year.id.toString(), title: year.title.toString()})),
-    ],
+    () => [...yearsForDropdown().map(year => ({id: year.id.toString(), title: year.title.toString()}))],
     [],
   );
 

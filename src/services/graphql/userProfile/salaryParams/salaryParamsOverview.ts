@@ -2,8 +2,8 @@ import {GraphQL} from '../..';
 import {UserProfileGetSalaryParamsResponse} from '../../../../types/graphql/userProfileGetSalaryParams';
 
 const salaryParamsOverview = async (id: number): Promise<UserProfileGetSalaryParamsResponse> => {
-  const response = await GraphQL.fetch(`query {
-   userProfile_SalaryParams(user_profile_id: ${id}) {
+  const query = `query UserProfileSalaryParams($user_profile_id: Int!){
+    userProfile_SalaryParams(user_profile_id: $user_profile_id) {
         message
         status
         items {
@@ -22,7 +22,9 @@ const salaryParamsOverview = async (id: number): Promise<UserProfileGetSalaryPar
             updated_at
         }
     }
-}`);
+}`;
+
+  const response = await GraphQL.fetch(query, {user_profile_id: id});
 
   return response?.data?.userProfile_SalaryParams?.items[0] || {};
 };
