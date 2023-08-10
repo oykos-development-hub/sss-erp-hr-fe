@@ -4,23 +4,36 @@ import {OrganizationUnit, OrganizationUnitInsertResponse} from '../../../types/g
 const organizationUnitInsert = async (
   data: OrganizationUnit,
 ): Promise<OrganizationUnitInsertResponse['data']['organizationUnits_Insert']> => {
-  const mutation = `mutation($data: OrganizationUnitInsertMutation!) {
-    organizationUnits_Insert(data: $data) {
+  const response = await GraphQL.fetch(`mutation {
+    organizationUnits_Insert(data: {
+        id: ${data.id},
+        parent_id: ${data.parent_id},
+        number_of_judges: ${data.number_of_judges},
+        title: "${data.title}",
+        abbreviation: "${data.abbreviation}",
+        description: "${data.description}",
+        address: "${data.address}",
+        color: "${data.color}",
+        folder_id: ${data.folder_id},
+        icon: "${data.icon}",
+      }
+      ) {
         message
         status
         item {
-            id,
-            parent_id,
-            number_of_judges,
-            title,
-            abbreviation,
-            color,
-            icon,
-            folder_id
+          id
+          parent_id
+          number_of_judges
+          title
+          abbreviation
+          description
+          address
+          color
+          folder_id
+          icon
         }
-    }
-}`;
-  const response = await GraphQL.fetch(mutation, {data});
+      }
+    }`);
   return response?.data?.organizationUnits_Insert || {};
 };
 

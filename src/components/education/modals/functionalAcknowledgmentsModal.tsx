@@ -2,14 +2,15 @@ import {CheckIcon, Datepicker, Dropdown, FileUpload, Input, Modal, Theme, Typogr
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
-import {UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
+import {UserProfileEducationFormValues, UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
 import {parseDate} from '../../../utils/dateUtils';
 import {functionalAcknowledgmentGrades} from './constants';
 import {FileUploadWrapper, ModalContentWrapper, Row} from './styles';
 import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
 
-const initialValues: UserProfileEducationItem = {
+const initialValues: UserProfileEducationFormValues = {
   id: 0,
+  title: '',
   user_profile_id: 1,
   education_type_id: 4,
   date_of_certification: '',
@@ -20,9 +21,7 @@ const initialValues: UserProfileEducationItem = {
   expertise_level: '',
   certificate_issuer: '',
   description: '',
-  created_at: '',
-  updated_at: '',
-  file_id: '1',
+  file_id: null,
 };
 
 interface FunctionalAcknowledgmentModal extends ModalProps {
@@ -66,19 +65,22 @@ export const FunctionalAcknowledgmentModal: React.FC<FunctionalAcknowledgmentMod
   }, [item]);
 
   const onSubmit = async (values: any) => {
+    const data = {
+      ...values,
+      date_of_start: parseDate(values?.date_of_start, true),
+      date_of_end: parseDate(values?.date_of_end, true),
+      academic_title: values?.academic_title,
+      expertise_level: values?.expertise_level?.title,
+      price: values?.price.toString(),
+    };
+
+    if (!selectedItem) {
+      delete data.id;
+    }
+
     try {
       mutate(
-        {
-          ...values,
-          id: values?.id || 0,
-          price: values?.price.toString(),
-          date_of_start: parseDate(values?.date_of_start, true),
-          date_of_end: parseDate(values?.date_of_end, true),
-          academic_title: values?.academic_title,
-          expertise_level: values?.expertise_level?.title,
-          certificate_issuer: values?.certificate_issuer,
-          file_id: values?.file_id || 1,
-        },
+        data,
         () => {
           alert.success('Uspješno sačuvano');
           refetch();
@@ -91,6 +93,8 @@ export const FunctionalAcknowledgmentModal: React.FC<FunctionalAcknowledgmentMod
       );
     } catch (e) {
       console.log(e);
+    } finally {
+      reset(initialValues);
     }
   };
 
@@ -99,7 +103,7 @@ export const FunctionalAcknowledgmentModal: React.FC<FunctionalAcknowledgmentMod
       open={open}
       onClose={() => {
         onClose();
-        reset(item);
+        reset(initialValues);
       }}
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"

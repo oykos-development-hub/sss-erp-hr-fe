@@ -75,6 +75,7 @@ export const AcademicEducationTable: React.FC<TableProps> = ({alert}) => {
     setSelectedItemId(item.id);
     setShowModal(true);
   };
+
   const handleDeleteIconClick = (id: number) => {
     setSelectedItemId(id);
     setShowDeleteModal(true);
@@ -117,6 +118,7 @@ export const AcademicEducationTable: React.FC<TableProps> = ({alert}) => {
       </AddIcon>
     </TableTitle>
   );
+
   return (
     <div>
       <TableContainer

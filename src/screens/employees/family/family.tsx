@@ -48,10 +48,9 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
     setShowModal(true);
   };
 
-  const handleCloseModal = (refetch: boolean) => {
+  const handleCloseModal = () => {
     setShowModal(false);
     setSelectedItemId(0);
-    refetch && refetchData();
   };
 
   return (
@@ -83,11 +82,12 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
       </div>
       <FamilyMemberModal
         open={showModal}
-        onClose={refetch => handleCloseModal(refetch)}
+        onClose={handleCloseModal}
         selectedItem={selectedItem}
         countries={context?.countries}
         userProfileId={userProfileID}
         alert={context.alert}
+        refetch={refetchData}
       />
       <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />
     </Container>

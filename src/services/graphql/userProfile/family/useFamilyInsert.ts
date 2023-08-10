@@ -3,10 +3,10 @@ import {GraphQL} from '../..';
 import {REQUEST_STATUSES} from '../../../constants';
 import {UserProfileFamily} from '../../../../types/graphql/userProfileGetFamilyTypes';
 
-const useFamilyInsert = (onSuccess?: () => void, onError?: () => void) => {
+const useFamilyInsert = () => {
   const [loading, setLoading] = useState(false);
 
-  const insertProfileFamily = async (data: UserProfileFamily) => {
+  const insertProfileFamily = async (data: UserProfileFamily, onSuccess?: () => void, onError?: () => void) => {
     setLoading(true);
     const response = await GraphQL.familyInsert(data);
     if (response.status === REQUEST_STATUSES.success) {
@@ -17,7 +17,7 @@ const useFamilyInsert = (onSuccess?: () => void, onError?: () => void) => {
     setLoading(false);
   };
 
-  return {loading, mutate: insertProfileFamily, success: onSuccess, error: onError};
+  return {loading, mutate: insertProfileFamily};
 };
 
 export default useFamilyInsert;

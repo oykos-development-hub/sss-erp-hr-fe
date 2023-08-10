@@ -36,7 +36,7 @@ export interface SystematizationGetDetailsResponse {
     systematization_Details: {
       status: string;
       message: string;
-      item: SystematizationDetails;
+      items: SystematizationDetails[];
     };
   };
 }

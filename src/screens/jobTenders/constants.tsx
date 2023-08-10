@@ -4,17 +4,12 @@ import {DropdownItemType} from '../../types/graphql/jobTenders';
 import {DropdownDataString} from '../../types/dropdownData';
 
 export const tableHeads: TableHead[] = [
-  {
-    title: 'Tip Oglasa',
-    accessor: 'type',
-    type: 'custom',
-    renderContents: (item: DropdownItemType) => <Typography content={item?.title} />,
-  },
+  {title: 'Tip Oglasa', accessor: 'type', sortable: true},
   {
     title: 'Organizaciona jedinica',
     accessor: 'organization_unit',
     type: 'custom',
-    renderContents: (item: DropdownItemType) => <Typography content={item?.title} />,
+    renderContents: (item: DropdownItemType) => <Typography content={item.title} />,
   },
   {title: 'Broj oglasa', accessor: 'serial_number'},
   {title: 'Datum objave', accessor: 'date_of_start'},

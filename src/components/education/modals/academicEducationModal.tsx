@@ -2,13 +2,14 @@ import {CheckIcon, Dropdown, FileUpload, Input, Modal, Theme, Typography} from '
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
-import {UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
+import {UserProfileEducationFormValues, UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
 import {academicTitles, educationTypes} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
 import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
 
-const initialValues: UserProfileEducationItem = {
+const initialValues: UserProfileEducationFormValues = {
   id: 0,
+  title: '',
   user_profile_id: 1,
   education_type_id: 1,
   date_of_certification: '',
@@ -19,9 +20,7 @@ const initialValues: UserProfileEducationItem = {
   expertise_level: '',
   certificate_issuer: '',
   description: '',
-  created_at: '',
-  updated_at: '',
-  file_id: '1',
+  file_id: null,
 };
 
 interface AcademicEducationModalProps extends ModalProps {
@@ -69,16 +68,15 @@ export const AcademicEducationModal: React.FC<AcademicEducationModalProps> = ({
   }, [item]);
 
   const onSubmit = async (values: any) => {
+    const data = {...values, academic_title: values.academic_title?.id, expertise_level: values.expertise_level?.id};
+
+    if (!selectedItem) {
+      delete data.id;
+    }
+
     try {
       mutate(
-        {
-          ...values,
-          id: values?.id || 0,
-          academic_title: values?.academic_title?.title,
-          expertise_level: values?.expertise_level?.title,
-          certificate_issuer: values?.certificate_issuer,
-          file_id: values?.file_id || 1,
-        },
+        data,
         () => {
           alert.success('Uspješno sačuvano');
           refetch();

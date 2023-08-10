@@ -4,8 +4,13 @@ export const tableHeads: TableHead[] = [
   {title: 'ID', accessor: 'id'},
   {title: 'Ime i Prezime', accessor: 'full_name', sortable: true},
   {title: 'Datum rođenja', accessor: 'date_of_birth'},
-  {title: 'Organizaciona jedinica', accessor: 'organization_unit'},
-  {title: 'Radno mjesto', accessor: 'job_position'},
+  {
+    title: 'Organizaciona jedinica',
+    accessor: 'organization_unit',
+    type: 'custom',
+    renderContents: row => row.organization_unit?.title,
+  },
+  {title: 'Radno mjesto', accessor: 'job_position', type: 'custom', renderContents: row => row.job_position?.title},
   {title: 'Status', accessor: 'active', type: 'badge'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];

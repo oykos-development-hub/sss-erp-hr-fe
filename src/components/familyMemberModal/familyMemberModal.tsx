@@ -40,6 +40,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
   countries,
   userProfileId,
   alert,
+  refetch,
 }) => {
   const item = useMemo(() => {
     return selectedItem
@@ -72,15 +73,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
     reset,
   } = useForm({defaultValues: item || initialValues});
 
-  const {mutate, success, error} = useFamilyInsert(() => {
-    if (success) {
-      onClose(true);
-      alert.success('Uspješno sačuvano');
-    } else if (error) {
-      onClose(true);
-      alert.error('Nije uspješno sačuvano');
-    }
-  });
+  const {mutate} = useFamilyInsert();
 
   const country_of_birth = watch('country_of_birth');
 
@@ -110,7 +103,18 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
 
   const onSubmit = (data: any) => {
     const payload = formatData(data);
-    mutate(payload);
+    mutate(
+      payload,
+      () => {
+        alert.success('Uspješno sačuvano');
+        refetch();
+        onClose();
+      },
+      () => {
+        alert.error('Nije uspješno sačuvano');
+        onClose();
+      },
+    );
   };
 
   return (

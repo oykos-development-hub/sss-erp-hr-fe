@@ -4,12 +4,14 @@ import {UserProfileDeleteExperienceResponse} from '../../../../types/graphql/use
 const experienceDelete = async (
   id: number,
 ): Promise<UserProfileDeleteExperienceResponse['data']['userProfile_Experience_Delete']> => {
-  const response = await GraphQL.fetch(`mutation {
-    userProfile_Experience_Delete(id: ${id}) {
+  const mutation = `mutation($id: Int!) {
+    userProfile_Experience_Delete(id: $id) {
         message
         status
-    }
-}`);
+      }
+  }`;
+
+  const response = await GraphQL.fetch(mutation, {id});
 
   return response.data.userProfile_Experience_Delete || {};
 };

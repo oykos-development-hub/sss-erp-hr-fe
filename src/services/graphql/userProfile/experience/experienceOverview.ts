@@ -4,27 +4,29 @@ import {UserProfileGetExperienceResponse} from '../../../../types/graphql/userPr
 const exerienceOverview = async (
   id: number,
 ): Promise<UserProfileGetExperienceResponse['data']['userProfile_Experience']> => {
-  const response = await GraphQL.fetch(`query {
-    userProfile_Experience(user_profile_id: ${id}) {
+  const query = `query UserProfileExperience($user_profile_id: Int){
+    userProfile_Experience(user_profile_id: $user_profile_id) {
         message
         status
         items {
-          id
-          user_profile_id
-          relevant
-          organization_unit
-          organization_unit_id
-          amount_of_experience
-          amount_of_insured_experience
-          date_of_signature
-          date_of_start
-          date_of_end
-          created_at
-          updated_at
-          reference_file_id
+            id
+            user_profile_id
+            relevant
+            organization_unit
+            organization_unit_id
+            amount_of_experience
+            amount_of_insured_experience
+            date_of_signature
+            date_of_start
+            date_of_end
+            created_at
+            updated_at
+            reference_file_id
+          }
       }
-    }
-}`);
+  }`;
+
+  const response = await GraphQL.fetch(query, {user_profile_id: id});
 
   return response?.data?.userProfile_Experience || {};
 };
