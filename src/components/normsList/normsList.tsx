@@ -28,7 +28,7 @@ const NormsList: React.FC<NormsListProps> = ({
       if (filters.area === null || filters.area.id === 0) {
         return true;
       }
-      return item.area === filters.area.title;
+      return item?.topic?.title === filters.area.title;
     });
   }, [data, filters.area]);
 

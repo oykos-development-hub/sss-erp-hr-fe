@@ -114,7 +114,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   };
 
   const handleEdit = (item: UserProfileAbsentsParams) => {
-    setSelectedItemId(item.id);
+    setSelectedItemId(item?.id || 0);
     setShowModal(true);
   };
 

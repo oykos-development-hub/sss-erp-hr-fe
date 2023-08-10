@@ -31,7 +31,7 @@ export interface Norms {
   date_of_evaluation?: string;
   date_of_evaluation_validity?: string;
   relocation_title?: string;
-  relocation: RelocationNorm;
+  relocation?: RelocationNorm;
   full_name?: string;
   file_id?: number;
   evaluation_id?: number;

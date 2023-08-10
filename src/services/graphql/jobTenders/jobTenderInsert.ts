@@ -2,7 +2,6 @@ import {GraphQL} from '..';
 import {JobTender, JobTendersResponse} from '../../../types/graphql/jobTenders';
 
 const jobTenderInsert = async (dataJobTender: JobTender): Promise<JobTendersResponse['data']['jobTenders_Insert']> => {
-  let data: any;
   const mutation = `mutation($data: JobTenderInsertMutation!) {
       jobTenders_Insert(data: $data) {
           message
@@ -33,7 +32,7 @@ const jobTenderInsert = async (dataJobTender: JobTender): Promise<JobTendersResp
           }
       }
   }`;
-  data = {
+  const data = {
     id: dataJobTender?.id,
     position_in_organization_unit_id: dataJobTender.job_position?.id,
     type: dataJobTender?.type_tender?.id,
@@ -45,7 +44,7 @@ const jobTenderInsert = async (dataJobTender: JobTender): Promise<JobTendersResp
     date_of_end: dataJobTender.date_of_end,
     file_id: dataJobTender.file_id,
   };
-  if (dataJobTender.id > 0) data.id = dataJobTender.id;
+
   const response = await GraphQL.fetch(mutation, {data});
   return response?.data?.jobTenders_Insert || {};
 };

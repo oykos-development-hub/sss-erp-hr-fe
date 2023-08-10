@@ -19,7 +19,7 @@ const JobTenderInfo = ({data}: JobTenderInfo) => {
         <Column>
           <InfoPreview>
             <StyledLabel variant="bodyMedium" content="Tip oglasa:" />
-            <StyledValue variant="bodyMedium" content={data?.type} />
+            <StyledValue variant="bodyMedium" content={data?.type?.title} />
           </InfoPreview>
           <InfoPreview>
             <StyledLabel variant="bodyMedium" content="Datum objave:" />

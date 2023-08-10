@@ -1,3 +1,4 @@
+import React from 'react';
 import {Typography, TableHead} from 'client-library';
 import {parseDate} from '../../../utils/dateUtils';
 

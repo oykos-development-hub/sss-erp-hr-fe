@@ -79,7 +79,7 @@ const Foreigners: React.FC<ForeignersProps> = ({context}) => {
         countries={context.countries}
         open={entryModal}
         onClose={closeModal}
-        data={editData}
+        permitData={editData}
         refetchList={refetch}
         alert={context.alert}
       />

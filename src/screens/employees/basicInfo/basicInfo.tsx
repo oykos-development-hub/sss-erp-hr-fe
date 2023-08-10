@@ -115,7 +115,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   useEffect(() => {
     if (profileData) {
       Object.entries(profileData).forEach(([key, value]) => {
-        if (initialValues.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(initialValues, key)) {
           setValue(key as keyof typeof initialValues, value);
         }
       });
