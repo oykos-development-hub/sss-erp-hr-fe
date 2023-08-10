@@ -25,14 +25,33 @@ export interface Norms {
   number_of_items_solved: number;
   start_date?: string;
   end_date?: string;
-  evaluation?: string;
+  evaluation?: EvaluationNorm;
+  evaluation_title?: string;
   evaluation_valid_to?: string;
   date_of_evaluation?: string;
   date_of_evaluation_validity?: string;
-  relocation_id?: string;
+  relocation_title?: string;
+  relocation: RelocationNorm;
   full_name?: string;
   file_id?: number;
   evaluation_id?: number;
+}
+
+export interface RelocationNorm {
+  id: number;
+  absent_type: DropdownDataNumber;
+  date_of_end: string;
+  date_of_start: string;
+  location: string;
+}
+
+export interface EvaluationNorm {
+  id: number;
+  date_of_evaluation: string;
+  evaluation_type: DropdownDataNumber;
+  evaluator: string;
+  is_relevant: boolean;
+  score: string;
 }
 
 export interface JudgesOverviewResponse {
@@ -76,7 +95,7 @@ export interface JudgeNormsDeleteResponse {
 export interface JudgesResolutionsOverviewQueryParams {
   page: number;
   size: number;
-  year?: DropdownDataString | null;
+  year?: string;
 }
 
 export interface JudgeResolutionItem {
@@ -124,7 +143,7 @@ export interface JudgeResolutionsResponse {
     judgeResolutions_Insert: {
       status?: string;
       message?: string;
-      items?: JudgeResolutionOverview[];
+      item?: JudgeResolutionOverview;
     };
   };
 }

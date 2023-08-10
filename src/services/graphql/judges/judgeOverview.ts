@@ -68,9 +68,9 @@ const judgeOverview = async ({
           }
       }
   }`;
-  const idOU = organization_unit?.id;
-  const idUP = user_profile?.id;
-  const response = await GraphQL.fetch(query, {idUP, idOU, page, size});
+  const organization_unit_id = organization_unit?.id && organization_unit?.id > 0 ? organization_unit?.id : undefined;
+  const user_profile_id = user_profile?.id && user_profile?.id > 0 ? user_profile?.id : undefined;
+  const response = await GraphQL.fetch(query, {user_profile_id, organization_unit_id, page, size});
 
   return response?.data?.judges_Overview || {};
 };
