@@ -10,6 +10,7 @@ export const formatDataSaveSystematization = (data: any) => {
     file_id: data?.file_id || 0,
   };
 
+  delete payload.user_profile;
   delete payload.organization_unit;
   delete payload.sectors;
   delete payload.created_at;

@@ -23,6 +23,8 @@ export const employeeTabs = [
   {id: 5, title: 'Dozvole', routeName: 'foreigner-permits', disabled: false},
   {id: 6, title: 'Parametri za Obračun Plata', routeName: 'salary-params', disabled: false},
   {id: 7, title: 'Lična Ocjena', routeName: 'evaluations', disabled: false},
+  {id: 8, title: 'Rekapitulacija Zarada', routeName: 'rekapitulacija-zarada', disabled: false},
+  {id: 9, title: 'Disciplinske mjere', routeName: 'disciplinske-mjere', disabled: false},
   {id: 10, title: 'Odsutnost', routeName: 'absents', disabled: false},
   {id: 12, title: 'Potvrde i Rješenja', routeName: 'confirmations', disabled: false},
 ];

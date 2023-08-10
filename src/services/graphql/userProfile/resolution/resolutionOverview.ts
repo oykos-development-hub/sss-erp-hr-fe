@@ -4,8 +4,8 @@ import {GraphQL} from '../../index';
 const ProfileResolutionGet = async (
   user_profile_id: number,
 ): Promise<UserProfileResolutionItemResponse['data']['userProfile_Resolution']> => {
-  const query = `query UserProfileResolution($user_profile_id: Int){
-    userProfile_Resolution(user_profile_id: $user_profile_id) {
+  const response = await GraphQL.fetch(`query {
+    userProfile_Resolution(user_profile_id: ${user_profile_id}) {
         message
         status
         items {
@@ -22,10 +22,8 @@ const ProfileResolutionGet = async (
                 title
             }
         }
-    }
-}`;
-
-  const response = await GraphQL.fetch(query, {user_profile_id});
+      }
+    }`);
 
   return response.data?.userProfile_Resolution || {};
 };

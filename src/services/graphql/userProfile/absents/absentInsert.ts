@@ -5,14 +5,24 @@ import {UserProfileAbsentsParams} from '../../../../types/graphql/profileAbsents
 const absentInsert = async (
   data: UserProfileAbsentsParams,
 ): Promise<UserProfileInsertAbsentsResponse['data']['userProfile_Absents_Insert']> => {
-  const mutation = `mutation UserProfileAbsentInsert($data: UserProfileAbsentInsertMutation!){
-    userProfile_Absent_Insert(data: $data) {
+  const response = await GraphQL.fetch(`mutation {
+    userProfile_Absent_Insert(data: {
+        id: ${data.id}
+        user_profile_id: ${data.user_profile_id}
+        vacation_type_id: ${data.vacation_type_id}
+        date_of_start: "${data.date_of_start}"
+        date_of_end: "${data.date_of_end}"
+        description: "${data.description}"
+        file_id: ${data.file_id}
+        location: "${data.location}"
+        target_organization_unit_id: ${data.target_organization_unit_id}
+    }) {
         message
         status
         item {
             id
             user_profile_id
-            absent_type {
+            vacation_type {
                 id
                 title
             }
@@ -29,10 +39,8 @@ const absentInsert = async (
             file_id
         }
     }
-}
-  `;
-
-  const response = await GraphQL.fetch(mutation, {data});
+    }
+  `);
 
   return response?.data?.userProfile_Absent_Insert || {};
 };

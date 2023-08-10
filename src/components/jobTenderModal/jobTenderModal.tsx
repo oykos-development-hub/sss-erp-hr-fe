@@ -41,7 +41,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
     return selectedItem
       ? {
           ...selectedItem,
-          type_tender: dropdownJobTenderType.find(item => item.title === selectedItem.type),
+          type_tender: selectedItem.type,
         }
       : initialValues;
   }, [selectedItem]);
