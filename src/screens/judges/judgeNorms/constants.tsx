@@ -54,8 +54,8 @@ export const judgeTableHeads: TableHead[] = [
     type: 'custom',
     renderContents: (item: DropdownDataNumber) => <Typography content={item.title} />,
   },
-  {title: 'Evaluation Score', accessor: 'evaluation'},
-  {title: 'Relocation', accessor: 'relocation'},
+  {title: 'Evaluation Score', accessor: 'evaluation_title'},
+  {title: 'Relocation', accessor: 'relocation_title'},
 ];
 
 export const judgesNumberResolutionTableHeads: TableHead[] = [
