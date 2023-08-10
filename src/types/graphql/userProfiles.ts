@@ -142,9 +142,9 @@ export interface UserProfile {
   active: boolean;
   is_judge: boolean;
   is_judge_president: boolean;
-  role: string;
-  organization_unit: string;
-  job_position: string;
+  role: DropdownDataNumber;
+  organization_unit: DropdownDataNumber;
+  job_position: DropdownDataNumber;
   created_at: string;
   updated_at: string;
 }

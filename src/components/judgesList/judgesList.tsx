@@ -46,17 +46,17 @@ const JudgesList: React.FC<JudgesListProps> = ({
           <FilterDropdown
             label="ORGANIZACIONA JEDINICA:"
             options={organizationUnitsList as any}
-            value={filters.organization_unit_id as any}
+            value={filters.organization_unit as any}
             name="organization_unit_id"
-            onChange={value => onFilterChange(value, 'organization_unit_id')}
+            onChange={value => onFilterChange(value, 'organization_unit')}
             placeholder="Odaberite organizacionu jedinicu"
           />
           <FilterDropdown
             label="SUDIJA:"
             options={usersUnitsList as any}
-            value={filters.user_profile_id as any}
+            value={filters.user_profile as any}
             name="user_profile_id"
-            onChange={value => onFilterChange(value, 'user_profile_id')}
+            onChange={value => onFilterChange(value, 'user_profile')}
             placeholder="Odaberite sudiju"
           />
         </Filters>

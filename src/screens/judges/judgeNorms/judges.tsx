@@ -13,13 +13,13 @@ import JudgesList from '../../../components/judgesList/judgesList';
 import useJudgeNormsDelete from '../../../services/graphql/judges/useJudgeNormDelete';
 
 export interface JudgesListFilters {
-  organization_unit_id: DropdownDataNumber | null;
-  user_profile_id: DropdownDataNumber | null;
+  organization_unit: DropdownDataNumber | null;
+  user_profile: DropdownDataNumber | null;
 }
 
 const initialValues: JudgesListFilters = {
-  organization_unit_id: null,
-  user_profile_id: null,
+  organization_unit: null,
+  user_profile: null,
 };
 
 export interface NormListFilters {

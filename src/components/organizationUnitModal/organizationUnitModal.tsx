@@ -30,7 +30,10 @@ export const OrganisationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
           ...selectedItem,
           parent_id: {id: organizationUnit?.id, title: organizationUnit?.title},
         }
-      : initialValues;
+      : {
+          ...initialValues,
+          parent_id: {id: organizationUnit?.id, title: organizationUnit?.title},
+        };
   }, [selectedItem]);
 
   const {
@@ -63,7 +66,7 @@ export const OrganisationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
         ...values,
         title: values?.title,
         abbreviation: values?.abbreviation,
-        parent_id: values?.parent_id?.id,
+        parent_id: organizationUnit?.id,
         description: values?.description,
         address: values?.address,
         number_of_judges: values?.number_of_judges || 0,
