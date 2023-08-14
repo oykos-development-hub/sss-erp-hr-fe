@@ -57,7 +57,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
 
   useEffect(() => {
     if (Array.isArray(evaluationTypes) && evaluationTypes.length > 0) {
-      let newData = evaluationTypes.map(item => ({id: item.id || 0, title: item.title || ''}));
+      const newData = evaluationTypes.map(item => ({id: item.id || 0, title: item.title || ''}));
       setEvaluationTypesOption(newData);
     }
   }, [evaluationTypes]);
