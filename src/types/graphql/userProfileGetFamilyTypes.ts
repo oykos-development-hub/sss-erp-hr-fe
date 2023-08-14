@@ -9,7 +9,6 @@ export interface UserProfileFamily {
   city_of_birth: string;
   nationality: string;
   citizenship: string;
-  address: string;
   father_name: string;
   mother_name: string;
   mother_birth_last_name: string;
@@ -18,8 +17,10 @@ export interface UserProfileFamily {
   insurance_coverage: string;
   employee_relationship: string;
   handicapped_person: boolean;
+  national_minority: any;
   created_at?: string;
   updated_at?: string;
+  address: string;
 }
 
 export interface UserProfileFamilyParams extends Omit<UserProfileFamily, 'id'> {

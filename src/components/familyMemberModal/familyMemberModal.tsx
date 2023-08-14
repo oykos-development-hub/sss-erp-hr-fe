@@ -8,6 +8,7 @@ import {parseDate} from '../../utils/dateUtils';
 import {Controller, useForm} from 'react-hook-form';
 import {UserProfileFamilyParams} from '../../types/graphql/userProfileGetFamilyTypes';
 import useFamilyInsert from '../../services/graphql/userProfile/family/useFamilyInsert';
+import {nationalMinorities} from '../../constants';
 
 const initialValues: UserProfileFamilyParams = {
   id: 0,
@@ -29,6 +30,7 @@ const initialValues: UserProfileFamilyParams = {
   insurance_coverage: '',
   handicapped_person: false,
   employee_relationship: '',
+  national_minority: null,
 };
 
 export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
@@ -182,6 +184,26 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                 );
               }}
             />
+            <Controller
+              name="handicapped_person"
+              rules={{required: 'Ovo polje je obavezno'}}
+              control={control}
+              render={({field: {onChange, name, value}}) => {
+                return (
+                  <Dropdown
+                    onChange={onChange}
+                    value={value as any}
+                    name={name}
+                    label="LICE SA INVALIDITETOM:"
+                    options={[
+                      {id: 'Da', title: 'Da'},
+                      {id: 'Ne', title: 'Ne'},
+                    ]}
+                    error={errors.handicapped_person?.message as string}
+                  />
+                );
+              }}
+            />
           </Row>
           <Row>
             <Input
@@ -207,7 +229,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
               }}
             />
             <Controller
-              name="handicapped_person"
+              name="nationality"
               rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => {
@@ -216,12 +238,26 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     onChange={onChange}
                     value={value as any}
                     name={name}
-                    label="LICE SA INVALIDITETOM:"
-                    options={[
-                      {id: 'Da', title: 'Da'},
-                      {id: 'Ne', title: 'Ne'},
-                    ]}
-                    error={errors.handicapped_person?.message as string}
+                    label="NACIONALNOST:"
+                    options={citizenshipArray || []}
+                    error={errors.nationality?.message as string}
+                  />
+                );
+              }}
+            />
+            <Controller
+              name="national_minority"
+              rules={{required: 'Ovo polje je obavezno'}}
+              control={control}
+              render={({field: {onChange, name, value}}) => {
+                return (
+                  <Dropdown
+                    onChange={onChange}
+                    value={value as any}
+                    name={name}
+                    label="NACIONALNA MANJINJA:"
+                    options={nationalMinorities || []}
+                    error={errors.national_minority?.message as string}
                   />
                 );
               }}
@@ -259,6 +295,11 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                 error={errors.city_of_birth?.message as string}
               />
             )}
+            <Input
+              {...register('address', {required: 'Ovo polje je obavezno'})}
+              label="ADRESA:"
+              error={errors.address?.message as string}
+            />
           </Row>
           <Row>
             <Controller

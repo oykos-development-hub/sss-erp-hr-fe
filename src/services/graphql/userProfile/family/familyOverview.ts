@@ -26,6 +26,7 @@ const familyOverview = async (id: number): Promise<UserProfileGetFamilyResponse[
             gender
             insurance_coverage
             handicapped_person
+            national_minority
         }
     }
 }`;

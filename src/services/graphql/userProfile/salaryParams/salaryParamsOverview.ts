@@ -8,8 +8,15 @@ const salaryParamsOverview = async (id: number): Promise<UserProfileGetSalaryPar
         status
         items {
             id
-            user_profile_id
+            user_profile {
+                id
+                title
+            }
             benefited_track
+            organization_unit {
+                id
+                title
+            }
             without_raise
             insurance_basis
             salary_rank
@@ -17,9 +24,21 @@ const salaryParamsOverview = async (id: number): Promise<UserProfileGetSalaryPar
             weekly_work_hours
             education_rank
             education_naming
-            user_resolution_id
-            created_at
-            updated_at
+            resolution {
+                id
+                user_profile {
+                    id
+                    title
+                },
+                resolution_type {
+                    id
+                    title
+                }
+                resolution_purpose,
+                date_of_start,
+                date_of_end,
+                file_id
+            }
         }
     }
 }`;
