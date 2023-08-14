@@ -183,7 +183,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                 )}
               />
             </FormItem>
-            <FormItem>
+            {/* <FormItem>
               <Controller
                 name="zk"
                 rules={{required: 'Ovo polje je obavezno'}}
@@ -200,7 +200,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                   />
                 )}
               />
-            </FormItem>
+            </FormItem> */}
             <FormItem>
               <Controller
                 name="salary_rank"

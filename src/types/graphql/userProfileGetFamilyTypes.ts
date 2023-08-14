@@ -1,4 +1,4 @@
-export type UserProfileFamily = {
+export interface UserProfileFamily {
   id: number;
   user_profile_id: number;
   first_name: string;
@@ -18,9 +18,13 @@ export type UserProfileFamily = {
   insurance_coverage: string;
   employee_relationship: string;
   handicapped_person: boolean;
-  created_at: string;
-  updated_at: string;
-};
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface UserProfileFamilyParams extends Omit<UserProfileFamily, 'id'> {
+  id: number | null;
+}
 
 export interface UserProfileGetFamilyResponse {
   data: {

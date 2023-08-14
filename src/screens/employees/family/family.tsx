@@ -14,9 +14,11 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
   const {familyData, refetchData} = useFamilyOverview(userProfileID);
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
+
   const selectedItem = useMemo(() => {
     return familyData?.find((item: UserProfileFamily) => item.id === selectedItemId);
   }, [selectedItemId]);
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const {mutate, success, error} = useFamilyDelete(() => {

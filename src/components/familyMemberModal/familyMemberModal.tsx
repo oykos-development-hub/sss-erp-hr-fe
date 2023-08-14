@@ -6,10 +6,10 @@ import {cityData, employeeRelationshipDropdownData} from '../../utils/constants'
 import {formatData} from '../../screens/employees/family/utils';
 import {parseDate} from '../../utils/dateUtils';
 import {Controller, useForm} from 'react-hook-form';
-import {UserProfileFamily} from '../../types/graphql/userProfileGetFamilyTypes';
+import {UserProfileFamilyParams} from '../../types/graphql/userProfileGetFamilyTypes';
 import useFamilyInsert from '../../services/graphql/userProfile/family/useFamilyInsert';
 
-const initialValues: UserProfileFamily = {
+const initialValues: UserProfileFamilyParams = {
   id: 0,
   user_profile_id: 0,
   first_name: '',
@@ -29,8 +29,6 @@ const initialValues: UserProfileFamily = {
   insurance_coverage: '',
   handicapped_person: false,
   employee_relationship: '',
-  created_at: '',
-  updated_at: '',
 };
 
 export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
@@ -324,7 +322,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
           </Row>
         </FormWrapper>
       }
-      title={'DODAJTE NOVO ZAPOSLENJE'}
+      title={'DODAJTE ČLANA PORODICE'}
     />
   );
 };

@@ -9,6 +9,7 @@ const absentInsert = async (
     userProfile_Absent_Insert(data: $data) {
         message
         status
+        data
         item {
             id
             user_profile_id

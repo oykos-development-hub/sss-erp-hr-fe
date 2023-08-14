@@ -1,13 +1,14 @@
 import {GraphQL} from '..';
-import {ForeignerPermit} from '../../../types/graphql/foreignerPermits';
+import {ForeignerPermitFormValues} from '../../../types/graphql/foreignerPermits';
 import {UserProfileInsertExperienceResponse} from '../../../types/graphql/userProfileInsertExperienceTypes';
 
 const foreignerPermitInsert = async (
-  data: ForeignerPermit,
+  data: ForeignerPermitFormValues,
 ): Promise<UserProfileInsertExperienceResponse['data']['userProfile_Foreigner_Insert']> => {
   const mutation = `mutation UserProfileForeignerInsert($data: UserProfileForeignerInsertMutation!){
     userProfile_Foreigner_Insert(data: $data) {
         message
+        data
         status
         item {
             id
@@ -17,11 +18,9 @@ const foreignerPermitInsert = async (
             work_permit_date_of_start
             work_permit_date_of_end
             work_permit_indefinite_length
-            residence_permit_date_of_start
             residence_permit_date_of_end
             residence_permit_indefinite_length
             residence_permit_number
-            residence_permit_issuer
             country_of_origin
             created_at
             updated_at

@@ -26,8 +26,6 @@ const familyOverview = async (id: number): Promise<UserProfileGetFamilyResponse[
             gender
             insurance_coverage
             handicapped_person
-            created_at
-            updated_at
         }
     }
 }`;

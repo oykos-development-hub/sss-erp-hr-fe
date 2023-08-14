@@ -9,6 +9,7 @@ const familyInsert = async (
     userProfile_Family_Insert(data: $data) {
         message
         status
+        data
         item {
             id
             user_profile_id
@@ -29,8 +30,6 @@ const familyInsert = async (
             insurance_coverage
             handicapped_person
             employee_relationship
-            created_at
-            updated_at
         }
     }
 }`;

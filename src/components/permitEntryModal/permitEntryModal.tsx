@@ -11,24 +11,23 @@ interface PermitEntryModalProps {
   open: boolean;
   onClose: () => void;
   permitData?: ForeignerPermit | null;
-  id?: number;
+  id: number;
   refetchList: () => void;
   countries: any[];
   alert: any;
 }
 
 const initialValues: ForeignerPermitFormValues = {
+  id: null,
   user_profile_id: null,
   work_permit_number: '',
   work_permit_issuer: '',
   work_permit_date_of_start: '',
   work_permit_date_of_end: '',
   work_permit_indefinite_length: false,
-  residence_permit_date_of_start: '',
   residence_permit_date_of_end: '',
   residence_permit_indefinite_length: false,
   residence_permit_number: '',
-  residence_permit_issuer: '',
   country_of_origin: '',
   work_permit_file_id: null,
   residence_permit_file_id: null,
@@ -68,11 +67,13 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
 
   useEffect(() => {
     if (permitData) {
-      reset({
+      const editData = {
         ...permitData,
         country_of_origin: countryOptions.find((country: any) => country.id === permitData.country_of_origin),
         work_permit_issuer: cityData.find((city: any) => city.id === permitData.work_permit_issuer),
-      } as any);
+      };
+
+      reset(editData);
     }
   }, [permitData]);
 
@@ -81,26 +82,21 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
       ...values,
       work_permit_issuer: values.work_permit_issuer.id,
       country_of_origin: values.country_of_origin.id,
-      user_profile_id: 3,
+      user_profile_id: id,
       work_permit_date_of_start: parseDate(values.work_permit_date_of_start, true),
       work_permit_date_of_end: parseDate(values.work_permit_date_of_end, true),
       residence_permit_date_of_end: parseDate(values.residence_permit_date_of_end, true),
     };
 
-    if (!permitData) {
-      delete data.id;
-    }
-
     try {
       mutate(data, () => {
         refetchList();
         alert.success('Uspješno ste dodali unos');
-        // setAlert({variant: AlertVariants.success, message: 'Uspješno ste dodali unos'});
         onClose();
+        reset(initialValues);
       });
     } catch (e) {
       alert.error('Greška prilikom dodavanja unosa');
-      // setAlert({variant: AlertVariants.success, message: 'Greška prilikom dodavanja unosa'});
       console.log(e);
     }
   };

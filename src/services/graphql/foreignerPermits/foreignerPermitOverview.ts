@@ -14,18 +14,12 @@ const foreignerPermitOverview = async (user_profile_id: number): Promise<{data: 
             work_permit_date_of_start
             work_permit_date_of_end
             work_permit_indefinite_length
-            residence_permit_date_of_start
             residence_permit_date_of_end
             residence_permit_indefinite_length
             residence_permit_number
-            residence_permit_issuer
             country_of_origin
-            created_at
-            updated_at
             work_permit_file_id
             residence_permit_file_id
-            created_at
-            updated_at
         }
     }
 }`;

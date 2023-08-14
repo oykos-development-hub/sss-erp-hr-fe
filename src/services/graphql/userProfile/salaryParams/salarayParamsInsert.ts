@@ -8,6 +8,7 @@ const salaryParamsInsert = async (
   const mutation = `mutation UserProfileSalaryParamsInsert($data: UserProfileSalaryParamsInsertMutation!){
     userProfile_SalaryParams_Insert(data: $data) {
         message
+        data
         status
         item {
             id

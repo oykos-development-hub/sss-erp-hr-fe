@@ -1,9 +1,15 @@
 import {TableHead, Typography} from 'client-library';
+import {parseDate} from '../../utils/dateUtils';
 
 export const tableHeads: TableHead[] = [
   {title: 'ID', accessor: 'id'},
   {title: 'Ime i Prezime', accessor: 'full_name', sortable: true},
-  {title: 'Datum rođenja', accessor: 'date_of_birth'},
+  {
+    title: 'Datum rođenja',
+    accessor: 'date_of_birth',
+    type: 'custom',
+    renderContents: value => parseDate(value),
+  },
   {
     title: 'Organizaciona jedinica',
     accessor: 'organization_unit',

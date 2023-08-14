@@ -113,8 +113,8 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
     refetch && refetchData();
   };
 
-  const handleEdit = (item: UserProfileAbsentsParams) => {
-    setSelectedItemId(item?.id || 0);
+  const handleEdit = (item: UserProfileAbsents) => {
+    setSelectedItemId(item.id);
     setShowModal(true);
   };
 

@@ -8,13 +8,15 @@ import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
 import {tableHeads} from './constants';
 import {ButtonContainer, TableContainer} from './styles';
 import {ForeignersProps} from './types';
+import {ForeignerPermit} from '../../../types/graphql/foreignerPermits';
 
 const Foreigners: React.FC<ForeignersProps> = ({context}) => {
   const [entryModal, setEntryModal] = useState(false);
-  const [editData, setEditData] = useState<any>();
+  const [editData, setEditData] = useState<ForeignerPermit | null>();
   const [deleteModal, setDeleteModal] = useState(0);
+  const id = Number(context?.navigation.location.pathname.split('/')[3]);
 
-  const {data, refetch} = useForeignerPermits(3);
+  const {data, refetch} = useForeignerPermits(id);
   const {mutate: deleteEntry} = useForeignerPermitDelete();
 
   const openModal = () => {
@@ -34,18 +36,16 @@ const Foreigners: React.FC<ForeignersProps> = ({context}) => {
           setDeleteModal(0);
           refetch();
           context.alert.success('Dozvola uspješno obrisana');
-          // setAlert({message: 'Dozvola uspješno obrisano', variant: AlertVariants.success});
         },
         () => {
           setDeleteModal(0);
           context.alert.error('Došlo je do greške pri brisanju dozvole');
-          // setAlert({message: 'Došlo je do greške pri brisanju dozvole', variant: AlertVariants.error});
         },
       );
     }
   };
 
-  const handleEdit = (row: any) => {
+  const handleEdit = (row: ForeignerPermit) => {
     setEditData(row);
     openModal();
   };
@@ -82,6 +82,7 @@ const Foreigners: React.FC<ForeignersProps> = ({context}) => {
         permitData={editData}
         refetchList={refetch}
         alert={context.alert}
+        id={id}
       />
       <DeleteModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleDelete={handleDelete} />
     </TableContainer>
