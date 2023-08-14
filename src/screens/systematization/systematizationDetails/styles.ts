@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {Theme} from 'client-library';
+import {Theme, Datepicker} from 'client-library';
 
 export const TitleWrapper = styled.div`
   display: flex;
@@ -15,8 +15,8 @@ export const Row = styled.div`
 
 export const ButtonWrapper = styled.div`
   display: flex;
-  justify-content: flex-end;
-  margin: 37px 0;
+  justify-content: space-between;
+  margin: 30px 0;
 `;
 
 export const SectorsWrapper = styled.div`
@@ -117,5 +117,36 @@ export const MenuItem = styled.div`
 
   :hover {
     background-color: ${Theme?.palette?.gray100};
+  }
+`;
+
+export const DatepickerElement = styled(Datepicker)`
+  .kihwdC .react-datepicker__navigation--previous {
+    margin-top: 0;
+  }
+
+  .kihwdC .react-datepicker__navigation--next {
+    margin-top: 0;
+  }
+`;
+
+export const FileUploadWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  > div > div {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    & div > p > p {
+      font-weight: 600;
+      line-height: 20px;
+    }
+  }
+
+  > div > div > div {
+    flex-direction: row-reverse;
   }
 `;

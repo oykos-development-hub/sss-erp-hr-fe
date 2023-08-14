@@ -1,9 +1,9 @@
+import {Button, Switch, Typography} from 'client-library';
 import React from 'react';
-import {FooterProps} from '../types';
-import {Activation, FooterWrapper} from './styles';
-import {Datepicker, Button, Switch, Typography} from 'client-library';
-import {parseDate} from '../../../utils/dateUtils';
 import {Controller, useFormContext} from 'react-hook-form';
+import {parseDate} from '../../../utils/dateUtils';
+import {FooterProps} from '../types';
+import {Activation, DatepickerElement, FooterWrapper} from './styles';
 
 export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton}) => {
   const {
@@ -13,6 +13,8 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton}) => 
     formState: {errors},
   } = useFormContext();
 
+  const isActive = watch('active');
+
   return (
     <FooterWrapper>
       {activeTab === 1 ? (
@@ -20,29 +22,34 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton}) => 
           <Controller
             name="date_of_activation"
             control={control}
-            rules={{required: 'Ovo polje je obavezno'}}
+            rules={isActive === true ? {required: 'Ovo polje je obavezno'} : {}}
             render={({field: {onChange, name, value}}) => (
-              <Datepicker
+              <DatepickerElement
                 onChange={onChange}
-                label="POČETAK RADNOG ODNOSA:"
+                label="DATUM USVAJANJA SISTEMATIZACIJE:"
                 name={name}
                 value={value ? parseDate(value) : ''}
                 error={errors.date_of_activation?.message as string}
               />
             )}
           />
+
           <Controller
             name="active"
             control={control}
             render={({field: {name, value}}) => (
               <Switch
                 name={name}
-                onChange={() => setValue('active', !value)}
+                onChange={() => {
+                  setValue('active', !value);
+                }}
                 checked={value}
                 // @TODO remove ts-ignore
                 //eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 //@ts-ignore
-                content={<Typography variant="bodyMedium" content="Aktivan" style={{marginLeft: 10}} />}
+                content={
+                  <Typography variant="bodyMedium" content="Aktiviraj sistematizaciju" style={{marginLeft: 10}} />
+                }
                 style={{margin: '20px 0 0 10px'}}
                 disabled={!watch('date_of_activation')}
               />

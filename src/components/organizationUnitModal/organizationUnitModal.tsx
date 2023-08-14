@@ -90,22 +90,6 @@ export const OrganisationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
       content={
         <ModalContentWrapper>
           <FormGroup>
-            <Input
-              {...register('abbreviation', {required: 'Ovo polje je obavezno'})}
-              label="SKRAĆENICA:"
-              error={errors.abbreviation?.message as string}
-            />
-          </FormGroup>
-
-          <FormGroup>
-            <Input
-              {...register('title', {required: 'Ovo polje je obavezno'})}
-              label="NAZIV:"
-              error={errors.title?.message as string}
-            />
-          </FormGroup>
-
-          <FormGroup>
             <Controller
               name="parent_id"
               control={control}
@@ -123,7 +107,20 @@ export const OrganisationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
               )}
             />
           </FormGroup>
-
+          <FormGroup>
+            <Input
+              {...register('title', {required: 'Ovo polje je obavezno'})}
+              label="NAZIV:"
+              error={errors.title?.message as string}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Input
+              {...register('abbreviation', {required: 'Ovo polje je obavezno'})}
+              label="SKRAĆENICA:"
+              error={errors.abbreviation?.message as string}
+            />
+          </FormGroup>
           <FormGroup>
             <Input {...register('address')} label="ADRESA:" error={errors.address?.message as string} />
           </FormGroup>
@@ -138,7 +135,7 @@ export const OrganisationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
           </FormGroup>
         </ModalContentWrapper>
       }
-      title={'DODAJTE NOVU ORGANIZACIONU JEDINICU'}
+      title={'DODAJ NOVO ODJELJENJE'}
     />
   );
 };

@@ -3,7 +3,7 @@ import {Divider, Pagination, Table, Theme} from 'client-library';
 import {useState} from 'react';
 import useJobTenderApplications from '../../../services/graphql/jobTenders/useJobTenderApplicationOverview';
 import {MainTitle} from '../../../shared/mainTitle';
-import ScreenWrapper from '../../../shared/screenWrapper';
+import {ScreenWrapper} from '../../../shared/screenWrapper';
 import SectionBox from '../../../shared/sectionBox';
 import {JobTenderApplication} from '../../../types/graphql/jobTenders';
 import {ScreenProps} from '../../../types/screen-props';

@@ -4,7 +4,7 @@ import useJudgesOverview from '../../../services/graphql/judges/useJudgeOverview
 import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {JudgeOverview, Norms} from '../../../types/graphql/judges';
-import ScreenWrapper from '../../../shared/screenWrapper';
+import {ScreenWrapper} from '../../../shared/screenWrapper';
 import JudgeNormModal from '../../../components/judgeNormModal/judgeNormModal';
 import NormsList from '../../../components/normsList/normsList';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
