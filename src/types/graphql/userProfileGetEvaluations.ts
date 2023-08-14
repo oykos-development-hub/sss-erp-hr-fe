@@ -23,7 +23,7 @@ export interface UserProfileEvaluationFormValues {
   evaluation_type_id: number;
   date_of_evaluation: string;
   score: string;
-  evaluator: string;
+  evaluator?: string;
   is_relevant: boolean;
   file_id: number;
 }

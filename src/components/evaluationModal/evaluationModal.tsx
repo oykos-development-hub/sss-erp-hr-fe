@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Typography, Modal, FileUpload, Dropdown, Datepicker} from 'client-library';
 import {FileUploadWrapper, FormWrapper, Row} from './styles';
 import {Controller, useForm} from 'react-hook-form';
@@ -7,15 +7,16 @@ import {yesOrNoOptionsString} from '../../constants';
 import useEvaluationInsert from '../../services/graphql/userProfile/evaluation/useEvaluationInsert';
 import {UserProfileEvaluationFormValues} from '../../types/graphql/userProfileGetEvaluations';
 import {parseDate} from '../../utils/dateUtils';
+import {DropdownDataNumber} from '../../types/dropdownData';
 
 const initialValues: UserProfileEvaluationFormValues = {
-  id: null,
+  id: 0,
   user_profile_id: 0,
   date_of_evaluation: '',
   score: '',
   evaluator: '',
   is_relevant: false,
-  file_id: 1,
+  file_id: 0,
   evaluation_type_id: 1,
 };
 
@@ -25,16 +26,17 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
   selectedItem,
   open,
   onClose,
-  years,
   userProfileId,
+  evaluationTypes,
 }) => {
+  const [evaluationTypesOption, setEvaluationTypesOption] = useState<DropdownDataNumber[]>([]);
   const item = useMemo(() => {
     return selectedItem
       ? {
           ...selectedItem,
           is_relevant: {id: selectedItem?.is_relevant ? 'Da' : 'Ne', title: selectedItem?.is_relevant ? 'Da' : 'Ne'},
-          date_of_evaluation: {id: selectedItem?.date_of_evaluation, title: selectedItem?.date_of_evaluation},
-          score: {id: selectedItem?.score, title: selectedItem?.score},
+          date_of_evaluation: new Date(selectedItem?.date_of_evaluation),
+          score: {id: selectedItem?.evaluation_type.id, title: selectedItem?.evaluation_type.title},
           user_profile_id: Number(userProfileId),
         }
       : {...initialValues, user_profile_id: Number(userProfileId)};
@@ -53,22 +55,29 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
     }
   }, [item]);
 
+  useEffect(() => {
+    if (Array.isArray(evaluationTypes) && evaluationTypes.length > 0) {
+      let newData = evaluationTypes.map(item => ({id: item.id || 0, title: item.title || ''}));
+      setEvaluationTypesOption(newData);
+    }
+  }, [evaluationTypes]);
+
   const {mutate} = useEvaluationInsert();
 
   const onSubmit = async (data: any) => {
     const payload: UserProfileEvaluationFormValues = {
       user_profile_id: data?.user_profile_id,
-      score: data?.score.id,
+      score: data?.score.title,
       is_relevant: data?.is_relevant?.id === 'Da' ? true : false,
       date_of_evaluation: parseDate(data?.date_of_evaluation, true),
       file_id: data?.file_id,
       // Where does this come from??
-      evaluation_type_id: 1,
-      evaluator: '',
+      evaluation_type_id: data?.score.id,
+      evaluator: ' ',
     };
 
     if (item) {
-      payload.id = item.id;
+      payload.id = item.id ? item.id : 0;
     }
 
     await mutate(
@@ -140,12 +149,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
                     value={value as any}
                     name={name}
                     label="OCJENA:"
-                    options={[
-                      {id: 'los', title: 'Loš'},
-                      {id: 'dobar', title: 'Dobar'},
-                      {id: 'vrlo dobar', title: 'Vrlo dobar'},
-                      {id: 'odlican', title: 'Odličan'},
-                    ]}
+                    options={evaluationTypesOption}
                     error={errors.is_relevant?.message as string}
                   />
                 );

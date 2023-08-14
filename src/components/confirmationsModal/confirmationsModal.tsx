@@ -43,10 +43,10 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     const payload = {
       ...value,
       id: value?.id || 0,
-      user_profile_id: userProfileId,
+      user_profile_id: Number(userProfileId),
       date_of_start: parseDate(value?.date_of_start, true) || '',
-      date_of_end: '',
-      file_id: value?.file_id || 1,
+      date_of_end: parseDate(value?.date_of_end, true) || '',
+      file_id: value?.file_id || 0,
       resolution_purpose: value?.resolution_purpose || '',
       resolution_type_id: value?.resolution_type.id || null,
     };
@@ -54,6 +54,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     delete payload.created_at;
     delete payload.updated_at;
     delete payload.resolution_type;
+    delete payload.user_profile;
     saveUserProfileResolution(
       payload,
       () => {
@@ -73,7 +74,15 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     control,
     formState: {errors},
     reset,
-  } = useForm<UserProfileResolutionItem>({defaultValues: selectedItem || initialValues});
+  } = useForm<UserProfileResolutionItem>({
+    defaultValues: selectedItem
+      ? {
+          ...selectedItem,
+          date_of_end: new Date(selectedItem?.date_of_end),
+          date_of_start: new Date(selectedItem?.date_of_start),
+        }
+      : initialValues,
+  });
 
   useEffect(() => {
     if (selectedItem) {
@@ -118,6 +127,23 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
                 <Datepicker
                   onChange={onChange}
                   label="DATUM RJEŠENJA/POTVRDE:"
+                  name={name}
+                  value={value ? parseDate(value) : ''}
+                  error={errors.date_of_start?.message as string}
+                />
+              )}
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <Controller
+              name="date_of_end"
+              control={control}
+              rules={{required: 'Ovo polje je obavezno'}}
+              render={({field: {onChange, name, value}}) => (
+                <Datepicker
+                  onChange={onChange}
+                  label="DATUM ZAVRSETKA RJEŠENJA/POTVRDE:"
                   name={name}
                   value={value ? parseDate(value) : ''}
                   error={errors.date_of_start?.message as string}

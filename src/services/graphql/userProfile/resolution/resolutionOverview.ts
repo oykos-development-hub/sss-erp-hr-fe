@@ -10,7 +10,10 @@ const ProfileResolutionGet = async (
         status
         items {
             id
-            user_profile_id
+            user_profile {
+                id, 
+                title
+            }
             resolution_purpose
             date_of_start
             date_of_end

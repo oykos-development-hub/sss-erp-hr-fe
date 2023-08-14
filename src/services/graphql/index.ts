@@ -59,6 +59,7 @@ import systematizationDelete from './systematization/systematizationsDelete';
 import userProfileOverview from './userProfile/userProfileOverview';
 import jobPositionsOrganizationUnit from './jobPositions/jobPositionsOrganizationUnit';
 import absentTypesOverview from './userProfile/absents/absentsType';
+import settingsDropdownOverview from './settingsDropdown/settingsDropdownOverview';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -136,4 +137,5 @@ export const GraphQL = {
   judgeResolutionInsert: judgeResolutionInsert,
   judgeResolutionOverview: judgeResolutionOverview,
   jobTenderDetails: jobTenderDetails,
+  settingsDropdownOverview: settingsDropdownOverview,
 };

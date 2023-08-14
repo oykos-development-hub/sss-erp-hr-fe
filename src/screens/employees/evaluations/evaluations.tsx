@@ -8,19 +8,26 @@ import {EvaluationModal} from '../../../components/evaluationModal/evaluationMod
 import {yearsForDropdown} from '../../../utils/constants';
 import useEvaluationOverview from '../../../services/graphql/userProfile/evaluation/useEvaluationOverview';
 import useEvaluationDelete from '../../../services/graphql/userProfile/evaluation/useEvaluationDelete';
+import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 
 const tableHeads: TableHead[] = [
   {title: 'Br.', accessor: 'id', type: 'text'},
   {title: 'Godina', accessor: 'date_of_evaluation', type: 'text'},
   {title: 'Ocjena', accessor: 'score', type: 'text'},
   {title: 'Pravosnažnost', accessor: 'is_relevant', type: 'text'},
-  {title: 'Dosije', accessor: 'file_id', type: 'text'},
+  {
+    title: 'Pravosnažnost',
+    accessor: 'is_relevant',
+    type: 'custom',
+    renderContents: (item: any) => <Typography variant="bodyMedium" content={item ? 'Da' : 'Ne'} />,
+  },
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];
 
 export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[3];
   const {data: userEvaluationData, refetchData} = useEvaluationOverview(userProfileID);
+  const {data: evaluationTypes} = useSettingsDropdownOverview('evaluation_types');
 
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
@@ -97,8 +104,8 @@ export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
         open={showModal}
         onClose={closeModal}
         selectedItem={selectedItem}
-        years={yearsForDropdown()}
         userProfileId={userProfileID}
+        evaluationTypes={evaluationTypes || []}
       />
       <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />
     </Container>

@@ -11,7 +11,10 @@ const resolutionInsert = async (
         status
         item {
             id
-            user_profile_id
+            user_profile {
+                id
+                title
+            }
             resolution_purpose
             date_of_start
             date_of_end

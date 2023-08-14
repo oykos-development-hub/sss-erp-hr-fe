@@ -76,7 +76,7 @@ export const yesOrNoOptionsNumber = [
 
 export const yesOrNoOptionsString = [
   {id: 'Da', title: 'Da'},
-  {id: 'Da', title: 'Ne'},
+  {id: 'Ne', title: 'Ne'},
 ];
 
 //TODO: remove this later
