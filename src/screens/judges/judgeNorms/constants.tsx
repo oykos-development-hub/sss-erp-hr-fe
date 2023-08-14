@@ -28,15 +28,28 @@ export const judgeResolutionTableHeads: TableHead[] = [
 ];
 
 export const judgeNormsTableHeads: TableHead[] = [
-  {title: 'Sudija', accessor: 'full_name'},
-  {title: 'Materija', accessor: 'area'},
-  {title: 'Norma', accessor: 'norm'},
-  {title: 'Umanjenje norme', accessor: 'percentage_of_norm_decrease'},
+  {
+    title: 'Sudija',
+    accessor: 'full_name',
+  },
+  {title: 'Materija', accessor: 'topic'},
+  {title: 'Norma', accessor: 'title'},
+  {title: 'Umanjenje norme', accessor: 'number_of_norm_decrease'},
   {title: 'Umanjena norma', accessor: 'number_of_items'},
-  {title: 'Riješeno predmeta', accessor: 'number_of_solved_items'},
-  {title: 'Ocjena', accessor: 'evaluation'},
-  {title: 'Datum ocjene', accessor: 'evaluation_valid_to'},
-  {title: 'Upućenje', accessor: 'relocation'},
+  {title: 'Riješeno predmeta', accessor: 'number_of_items_solved'},
+  {
+    title: 'Ocjena',
+    accessor: 'evaluation',
+    type: 'custom',
+    renderContents: (item: any) => <Typography variant="bodyMedium" content={item.score} />,
+  },
+  {title: 'Datum ocjene', accessor: 'date_of_evaluation_validity'},
+  {
+    title: 'Upućenje',
+    accessor: 'relocation',
+    type: 'custom',
+    renderContents: (item: any) => <Typography variant="bodyMedium" content={item.location} />,
+  },
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];
 
@@ -54,8 +67,14 @@ export const judgeTableHeads: TableHead[] = [
     type: 'custom',
     renderContents: (item: DropdownDataNumber) => <Typography content={item.title} />,
   },
-  {title: 'Evaluation Score', accessor: 'evaluation_title'},
-  {title: 'Relocation', accessor: 'relocation_title'},
+  {
+    title: 'Evaluation Score',
+    accessor: 'evaluation_title',
+  },
+  {
+    title: 'Relocation',
+    accessor: 'relocation_title',
+  },
 ];
 
 export const judgesNumberResolutionTableHeads: TableHead[] = [

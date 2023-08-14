@@ -48,26 +48,26 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({context}) => {
 
   const employeesRoute = useMemo(() => {
     switch (employeesPath) {
-      case 'basic-info':
-        return <BasicInfo context={context} />;
-      case 'salary-params':
-        return <SalaryParams context={context} />;
-      case 'education':
-        return <EducationPage context={context} />;
-      case 'experience':
-        return <ExperiencePage context={context} />;
-      case 'family-members':
-        return <FamilyPage context={context} />;
-      case 'foreigner-permits':
-        return <Foreigners context={context} />;
-      case 'confirmations':
-        return <ConfirmationsPage context={context} />;
-      case 'evaluations':
-        return <EvaluationsPage context={context} />;
-      case 'absents':
-        return <Absents context={context} />;
-      default:
-        return <></>;
+    case 'basic-info':
+      return <BasicInfo context={context} />;
+    case 'salary-params':
+      return <SalaryParams context={context} />;
+    case 'education':
+      return <EducationPage context={context} />;
+    case 'experience':
+      return <ExperiencePage context={context} />;
+    case 'family-members':
+      return <FamilyPage context={context} />;
+    case 'foreigner-permits':
+      return <Foreigners context={context} />;
+    case 'confirmations':
+      return <ConfirmationsPage context={context} />;
+    case 'evaluations':
+      return <EvaluationsPage context={context} />;
+    case 'absents':
+      return <Absents context={context} />;
+    default:
+      return <></>;
     }
   }, [employeesPath, context]);
 

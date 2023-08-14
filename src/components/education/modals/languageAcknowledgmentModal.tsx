@@ -49,16 +49,16 @@ export const LanguageAcknowledgmentModal: React.FC<LanguageAcknowledgmentModalPr
   const item = useMemo(() => {
     return selectedItem
       ? {
-          ...selectedItem,
-          expertise_level: {
-            id: selectedItem?.expertise_level ? selectedItem.expertise_level : '',
-            title: selectedItem?.expertise_level ? selectedItem?.expertise_level : '',
-          },
-          academic_title: {
-            id: selectedItem?.academic_title ? selectedItem.academic_title : '',
-            title: selectedItem?.academic_title ? selectedItem.academic_title : '',
-          },
-        }
+        ...selectedItem,
+        expertise_level: {
+          id: selectedItem?.expertise_level ? selectedItem.expertise_level : '',
+          title: selectedItem?.expertise_level ? selectedItem?.expertise_level : '',
+        },
+        academic_title: {
+          id: selectedItem?.academic_title ? selectedItem.academic_title : '',
+          title: selectedItem?.academic_title ? selectedItem.academic_title : '',
+        },
+      }
       : initialValues;
   }, [selectedItem]);
 

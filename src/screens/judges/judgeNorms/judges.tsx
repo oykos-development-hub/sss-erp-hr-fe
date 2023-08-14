@@ -61,7 +61,7 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
 
   useEffect(() => {
     normsListSet();
-  }, [data]);
+  }, [data, selectedItemId]);
 
   const {mutate: deleteJudgeNorm} = useJudgeNormsDelete(
     () => {

@@ -37,6 +37,7 @@ const JudgesList: React.FC<JudgesListProps> = ({
       })),
     [data],
   );
+  console.log(list);
 
   return (
     <OverviewBox>

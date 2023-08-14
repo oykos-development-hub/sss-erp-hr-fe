@@ -40,7 +40,7 @@ const NormsList: React.FC<NormsListProps> = ({
             label="MATERIJA:"
             options={areas}
             value={filters.area as any}
-            name="area"
+            name="topic"
             onChange={value => onFilterChange(value, 'area')}
             placeholder="Odaberite materiju"
           />

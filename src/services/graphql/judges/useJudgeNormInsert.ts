@@ -1,13 +1,13 @@
 import {useState} from 'react';
 import {GraphQL} from '..';
-import {Norms} from '../../../types/graphql/judges';
+import {JudgeNormInsertParams} from '../../../types/graphql/judges';
 
 const useJudgeNormInsert = () => {
   const [loading, setLoading] = useState(false);
 
-  const insertJudgeNorms = async (data: Norms, onSuccess?: () => void, onError?: () => void) => {
+  const insertJudgeNorms = async (data: JudgeNormInsertParams, onSuccess?: () => void, onError?: () => void) => {
     setLoading(true);
-    const response = await GraphQL.judgeNormInsert(data);
+    const response = await GraphQL.judgeNormInsert({data});
     if (response.status === 'success') {
       onSuccess && onSuccess();
     } else {

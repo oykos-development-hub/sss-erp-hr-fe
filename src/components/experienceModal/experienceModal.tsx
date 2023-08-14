@@ -35,13 +35,13 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
   const item = useMemo(() => {
     return selectedItem
       ? {
-          ...selectedItem,
-          relevant: {id: selectedItem?.relevant ? 'Da' : 'Ne', title: selectedItem?.relevant ? 'Da' : 'Ne'},
-          selectedOrganizationUnit: {
-            id: selectedItem?.relevant ? selectedItem?.organization_unit_id : 0,
-            title: selectedItem?.relevant ? selectedItem?.organization_unit : '',
-          },
-        }
+        ...selectedItem,
+        relevant: {id: selectedItem?.relevant ? 'Da' : 'Ne', title: selectedItem?.relevant ? 'Da' : 'Ne'},
+        selectedOrganizationUnit: {
+          id: selectedItem?.relevant ? selectedItem?.organization_unit_id : 0,
+          title: selectedItem?.relevant ? selectedItem?.organization_unit : '',
+        },
+      }
       : {...initialValues, user_profile_id: Number(userProfileId)};
   }, [selectedItem]);
 

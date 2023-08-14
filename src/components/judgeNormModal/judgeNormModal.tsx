@@ -10,14 +10,16 @@ import useJudgeNormsInsert from '../../services/graphql/judges/useJudgeNormInser
 
 const initialValues: Norms = {
   id: 0,
+  title: '',
   user_profile_id: 0,
-  topic: null,
-  norm: 0,
-  number_of_norm_decrease: '',
+  topic: '',
+  number_of_norm_decrease: 0,
   number_of_items: 0,
   number_of_items_solved: 0,
-  start_date: '',
-  end_date: '',
+  evaluation_id: 0,
+  relocation_id: 0,
+  date_of_evaluation: '',
+  date_of_evaluation_validity: '',
 };
 
 const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose, selectedItem, dropdownData}) => {
@@ -55,14 +57,21 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
     try {
       await mutate(
         {
-          ...values,
-          user_profile_id: values?.user_profile_id?.id,
-          area: values?.area?.title,
-          start_date: parseDate(values?.start_date, true) || '',
-          end_date: parseDate(values?.end_date, true) || '',
+          id: values?.id,
+          title: values?.title,
+          user_profile_id: values?.user_profile?.id,
+          topic: values?.topic?.title,
+          number_of_norm_decrease: values?.number_of_norm_decrease || 1,
+          number_of_items: values?.number_of_items || 1,
+          number_of_items_solved: values?.number_of_items_solved || 1,
+          evaluation_id: values?.evaluation?.id || 1,
+          relocation_id: values?.relocation?.id || 1,
+          date_of_evaluation: parseDate(values?.date_of_start, true) || '',
+          date_of_evaluation_validity: parseDate(values?.date_of_end, true) || '',
         },
         () => {
           refetchList && refetchList();
+          reset();
           alert.success('Uspješno sačuvano');
           onClose();
         },
@@ -89,7 +98,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
         <ModalContentWrapper>
           <Row>
             <Controller
-              name="user_profile_id"
+              name="user_profile"
               rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
@@ -135,7 +144,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
           </Row>
           <Row>
             <Input
-              {...register('norm', {required: 'Ovo polje je obavezno'})}
+              {...register('title', {required: 'Ovo polje je obavezno'})}
               label="NORMA:"
               error={errors.norm?.message as string}
             />
@@ -147,7 +156,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
           </Row>
           <Row>
             <Controller
-              name="start_date"
+              name="date_of_start"
               control={control}
               rules={{required: 'Ovo polje je obavezno'}}
               render={({field: {onChange, name, value}}) => (
@@ -161,12 +170,12 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               )}
             />
             <Controller
-              name="end_date"
+              name="date_of_end"
               control={control}
               rules={{
                 required: 'Ovo polje je obavezno',
                 validate: value =>
-                  !value || !watch('start_date') || new Date(value) >= new Date(watch('start_date'))
+                  !value || !watch('date_of_start') || new Date(value) >= new Date(watch('date_of_start'))
                     ? true
                     : 'Datum kraja ne može biti prije datuma početka.',
               }}

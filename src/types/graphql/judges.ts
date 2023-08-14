@@ -15,23 +15,35 @@ export interface JudgeOverview {
   norms: Norms[];
 }
 
-export interface Norms {
+export interface JudgeNormInsertParams {
   id: number;
+  title: string;
   user_profile_id: number;
-  topic: DropdownDataNumber | null;
-  norm: number;
-  number_of_norm_decrease: string;
+  topic: string;
+  number_of_norm_decrease: number;
   number_of_items: number;
   number_of_items_solved: number;
-  start_date?: string;
-  end_date?: string;
-  evaluation?: EvaluationNorm;
-  evaluation_title?: string;
-  evaluation_valid_to?: string;
   date_of_evaluation?: string;
   date_of_evaluation_validity?: string;
-  relocation_title?: string;
+  relocation_id: number;
+  file_id?: number;
+  evaluation_id?: number;
+}
+
+export interface Norms {
+  id: number;
+  title: string;
+  user_profile_id: number;
+  topic: string;
+  number_of_norm_decrease: number;
+  number_of_items: number;
+  number_of_items_solved: number;
+  evaluation?: EvaluationNorm;
+  date_of_evaluation?: string;
+  date_of_evaluation_validity?: string;
   relocation?: RelocationNorm;
+  relocation_id: number;
+  relocation_title?: string;
   full_name?: string;
   file_id?: number;
   evaluation_id?: number;
