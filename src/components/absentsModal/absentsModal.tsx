@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
 import {parseDate} from '../../utils/dateUtils';
 import {Controller, useForm} from 'react-hook-form';
-import {UserProfileAbsentsParams} from '../../types/graphql/profileAbsentsTypes';
+import {AbsentType, UserProfileAbsentsParams} from '../../types/graphql/profileAbsentsTypes';
 import {AbsentsModalProps} from '../../screens/employees/absents/types';
 import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
 import {dropdownAbsentsOptions, dropdownOptions, dropdownVacationOptions} from './constants';
@@ -21,10 +21,17 @@ const initialValues: UserProfileAbsentsParams = {
   file_id: null,
 };
 
-export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, onClose, userProfileId, alert}) => {
+export const AbsentModal: React.FC<AbsentsModalProps> = ({
+  selectedItem,
+  absentTypes,
+  open,
+  onClose,
+  userProfileId,
+  alert,
+}) => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [absentChildType, setAbsentChildType] = useState<AbsentType[]>([]);
   const [isVacation, setIsVacation] = useState<boolean>(true);
-  const [isSecondDropdownEnabled, setIsSecondDropdownEnabled] = useState<boolean>(false);
 
   const handleUpload = (files: FileList) => {
     const fileList = Array.from(files);
@@ -32,10 +39,11 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, on
   };
 
   const handleTypeChange = (selectedValue: any) => {
+    let vacation = selectedValue.id === 1;
     if (selectedValue.id === 1) {
       setIsVacation(true);
     } else setIsVacation(false);
-    setIsSecondDropdownEnabled(!!selectedValue);
+    setAbsentChildType([...absentTypes.filter(item => item.accounting_days_off === vacation)]);
   };
 
   const {organizationUnitsList} = useOrganizationUnits();
@@ -45,12 +53,12 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, on
   const handleSave = (values: any) => {
     const payload = {
       ...values,
-      id: values?.id,
+      id: values?.id || 0,
       user_profile_id: userProfileId,
       date_of_start: parseDate(values?.date_of_start, true),
       date_of_end: parseDate(values?.date_of_end, true),
-      absent_type_id: values?.absent_type_id?.id || null,
-      target_organization_unit_id: values?.target_organization_unit_id?.id || null,
+      absent_type_id: values?.absent_type_id?.id || 0,
+      target_organization_unit_id: values?.target_organization_unit_id?.id || 1,
     };
 
     mutate(
@@ -87,11 +95,13 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, on
         if (dropdownVacationOptions.find(option => option.id === selectedItem.absent_type_id.id)) {
           setIsVacation(true);
         } else setIsVacation(false);
-
-        setIsSecondDropdownEnabled(true);
       }
     }
   }, [selectedItem, reset]);
+
+  useEffect(() => {
+    setAbsentChildType([...absentTypes.filter(item => item.accounting_days_off === true)]);
+  }, [absentTypes]);
 
   return (
     <Modal
@@ -125,12 +135,11 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, on
                 <Dropdown
                   label="VRSTA:"
                   name={name}
-                  options={isVacation ? dropdownVacationOptions : dropdownAbsentsOptions}
+                  options={absentChildType}
                   value={value as any}
                   onChange={onChange}
                   error={errors.absent_type_id?.message}
                   placeholder="Birajte vrstu"
-                  isDisabled={!isSecondDropdownEnabled}
                 />
               )}
             />
@@ -148,7 +157,6 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({selectedItem, open, on
                   value={value as any}
                   onChange={onChange}
                   error={errors.target_organization_unit_id?.message}
-                  isDisabled={absentType?.id !== 5}
                   placeholder="Birajte državni organ"
                 />
               )}

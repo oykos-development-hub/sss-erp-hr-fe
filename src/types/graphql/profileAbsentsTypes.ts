@@ -4,7 +4,7 @@ export type UserProfileAbsents = {
   id: number;
   user_profile_id: number;
   summary: SumaryTypes;
-  vacation_type: VacationType;
+  absent_type: VacationType;
   location: string;
   target_organization_unit: TargetOrganisationTypes;
   date_of_start: string;
@@ -24,6 +24,7 @@ export type SumaryTypes = {
 export type VacationType = {
   id: number;
   title: string;
+  accounting_days_off: boolean;
 };
 
 export type TargetOrganisationTypes = {
@@ -50,6 +51,27 @@ export interface UserProfileAbsentsResponse {
       message?: string;
       items: UserProfileAbsents[];
       summary: SumaryTypes;
+    };
+  };
+}
+
+export interface AbsentType {
+  id: number;
+  title: string;
+  abbreviation: string;
+  accounting_days_off: boolean;
+  description: string;
+  color: string;
+  icon: string;
+}
+
+export interface AbsentTypeResponse {
+  data: {
+    absentType: {
+      status?: string;
+      message?: string;
+      total?: number;
+      items: AbsentType[];
     };
   };
 }

@@ -17,15 +17,11 @@ import {Divider, ValueType} from '@oykos-development/devkit-react-ts-styled-comp
 import {AbsentModal} from '../../../components/absentsModal/absentsModal';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
 import {MicroserviceProps} from '../../../types/micro-service-props';
-import {
-  dropdownAbsentsOptions,
-  dropdownVacationOptions,
-  vacationTypeList,
-} from '../../../components/absentsModal/constants';
 import {parseDate} from '../../../utils/dateUtils';
 import {DropdownDataString} from '../../../types/dropdownData';
 import useAbsentOverview from '../../../services/graphql/userProfile/absents/useAbsentOverview';
 import useAbsentDelete from '../../../services/graphql/userProfile/absents/useAbsentDelete';
+import useAbsentTypesOverview from '../../../services/graphql/userProfile/absents/useAbsentsType';
 
 const tableHeads: TableHead[] = [
   {
@@ -38,7 +34,7 @@ const tableHeads: TableHead[] = [
   },
   {
     title: 'Vrsta prilagodbe',
-    accessor: 'vacation_type',
+    accessor: 'absent_type',
     type: 'custom',
     renderContents: (item: any) => {
       return <Typography variant="bodyMedium" content={item.title} />;
@@ -63,10 +59,13 @@ const tableHeads: TableHead[] = [
 
 const currentYear = new Date().getFullYear();
 
-const YearList: DropdownDataString[] = Array.from({length: 10}, (_, index) => {
-  const year = currentYear - index;
-  return {id: year.toString(), title: year.toString()};
-});
+const YearList: DropdownDataString[] = [
+  {id: '', title: 'Sve Godine'},
+  ...Array.from({length: 10}, (_, index) => {
+    const year = currentYear - index;
+    return {id: year.toString(), title: year.toString()};
+  }),
+];
 
 const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[3];
@@ -78,6 +77,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const [selectedItemId, setSelectedItemId] = useState(0);
   const [form, setForm] = useState<any>();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const {absentsTypeData} = useAbsentTypesOverview();
   const {mutate} = useAbsentDelete();
 
   const selectedItem = useMemo(() => {
@@ -94,7 +94,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const handleDelete = async () => {
     mutate(
       selectedItemId,
-      selectedItem?.vacation_type.id || 0,
+      selectedItem?.absent_type.id || 0,
       () => {
         refetchData();
         context.alert.success('Uspješno obrisano');
@@ -113,8 +113,8 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
     refetch && refetchData();
   };
 
-  const handleEdit = (item: UserProfileAbsents) => {
-    setSelectedItemId(item.id);
+  const handleEdit = (item: UserProfileAbsentsParams) => {
+    setSelectedItemId(item?.id || 0);
     setShowModal(true);
   };
 
@@ -132,9 +132,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
 
   const filterFirstTableData = () => {
     if (absentsData) {
-      const filteredData = absentsData.filter(item =>
-        dropdownAbsentsOptions.some(option => option.id === item.vacation_type?.id),
-      );
+      const filteredData = [...absentsData].filter(absent => !absent?.absent_type?.accounting_days_off);
       setFirstTableData(filteredData);
       return filteredData;
     } else {
@@ -145,9 +143,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
 
   const filterSecondTableData = () => {
     if (absentsData) {
-      const filteredData = absentsData.filter(item =>
-        dropdownVacationOptions.some(option => option.id === item.vacation_type?.id),
-      );
+      const filteredData = [...absentsData].filter(absent => absent?.absent_type?.accounting_days_off);
       setSecondTableData(filteredData);
       return filteredData;
     } else {
@@ -157,30 +153,30 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   };
 
   const filteredFirstTableData = useMemo(() => {
-    if (form?.year?.id && form?.vacation_type?.id) {
+    if (form?.year?.id && form?.absent_type?.id) {
       return firstTableData.filter((item: UserProfileAbsents) => {
-        return item.date_of_start.includes(form.year.id) && item.vacation_type.id === form.vacation_type.id;
+        return item.date_of_start.includes(form.year.id) && item.absent_type.id === form.absent_type.id;
       });
     } else if (form?.year?.id) {
       return firstTableData.filter((item: UserProfileAbsents) => item.date_of_start.includes(form.year.id));
-    } else if (form?.vacation_type?.id) {
-      return firstTableData.filter((item: UserProfileAbsents) => item.vacation_type.id === form.vacation_type.id);
+    } else if (form?.absent_type?.id) {
+      return firstTableData.filter((item: UserProfileAbsents) => item.absent_type.id === form.absent_type.id);
     }
     return firstTableData;
-  }, [firstTableData, form?.year?.id, form?.vacation_type?.id]);
+  }, [firstTableData, form?.year?.id, form?.absent_type?.id]);
 
   const filteredSecondTableData = useMemo(() => {
-    if (form?.year?.id && form?.vacation_type?.id) {
+    if (form?.year?.id && form?.absent_type?.id) {
       return secondTableData.filter((item: UserProfileAbsents) => {
-        return item.date_of_start.includes(form.year.id) && item.vacation_type.id === form.vacation_type.id;
+        return item.date_of_start.includes(form.year.id) && item.absent_type.id === form.absent_type.id;
       });
     } else if (form?.year?.id) {
       return secondTableData.filter((item: UserProfileAbsents) => item.date_of_start.includes(form.year.id));
-    } else if (form?.vacation_type?.id) {
-      return secondTableData.filter((item: UserProfileAbsents) => item.vacation_type.id === form.vacation_type.id);
+    } else if (form?.absent_type?.id) {
+      return secondTableData.filter((item: UserProfileAbsents) => item.absent_type.id === form.absent_type.id);
     }
     return secondTableData;
-  }, [firstTableData, form?.year?.id, form?.vacation_type?.id]);
+  }, [firstTableData, form?.year?.id, form?.absent_type?.id]);
 
   useEffect(() => {
     filterFirstTableData();
@@ -233,9 +229,9 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
           <YearContainer>
             <Dropdown
               label={<Typography variant="bodySmall" content="TIP ZAHTJEVA:" />}
-              options={vacationTypeList}
-              name="vacation_type"
-              value={form?.vacation_type || null}
+              options={absentsTypeData || []}
+              name="absent_type"
+              value={form?.absent_type || null}
               placeholder="Odaberite tip zahtjeva:"
               // @TODO remove ts-ignore
               //eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -303,9 +299,10 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
         open={showModal}
         onClose={refetch => handleCloseModal(refetch)}
         selectedItem={selectedItem}
-        userProfileId={userProfileID}
+        userProfileId={Number(userProfileID)}
         key={selectedItem ? selectedItem.id : ''}
         alert={context.alert}
+        absentTypes={absentsTypeData || []}
       />
 
       <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />

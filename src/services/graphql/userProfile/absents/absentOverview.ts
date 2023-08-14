@@ -20,6 +20,7 @@ const absentOverview = async (
             absent_type {
                 id
                 title
+                accounting_days_off
             }
             location
             target_organization_unit {

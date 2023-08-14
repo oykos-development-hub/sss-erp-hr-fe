@@ -58,6 +58,7 @@ import systematizationInsert from './systematization/systematizationsInsert';
 import systematizationDelete from './systematization/systematizationsDelete';
 import userProfileOverview from './userProfile/userProfileOverview';
 import jobPositionsOrganizationUnit from './jobPositions/jobPositionsOrganizationUnit';
+import absentTypesOverview from './userProfile/absents/absentsType';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -125,6 +126,7 @@ export const GraphQL = {
   employeeInOrganizationUnitInsert: employeeInOrganizationUnitInsert,
   employeeInOrganizationUnitDelete: employeeInOrganizationUnitDelete,
   absentOverview: absentOverview,
+  absentTypesOverview: absentTypesOverview,
   absentInsert: absentInsert,
   absentDelete: absentDelete,
   judgeOverview: judgeOverview,

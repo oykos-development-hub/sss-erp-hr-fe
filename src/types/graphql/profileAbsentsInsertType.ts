@@ -3,8 +3,8 @@ import {DropdownDataNumber} from '../dropdownData';
 export type UserProfileAbsentsItem = {
   id: number;
   user_profile_id: number;
-  vacation_type_id: number;
-  vacation_type: DropdownDataNumber;
+  absent_type_id: number;
+  absent_type: DropdownDataNumber;
   location?: string;
   target_organization_unit_id?: number;
   date_of_start: string;
