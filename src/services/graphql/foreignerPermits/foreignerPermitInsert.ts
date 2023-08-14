@@ -1,9 +1,9 @@
 import {GraphQL} from '..';
-import {ForeignerPermitFormValues} from '../../../types/graphql/foreignerPermits';
+import {ForeignerPermit} from '../../../types/graphql/foreignerPermits';
 import {UserProfileInsertExperienceResponse} from '../../../types/graphql/userProfileInsertExperienceTypes';
 
 const foreignerPermitInsert = async (
-  data: ForeignerPermitFormValues,
+  data: ForeignerPermit,
 ): Promise<UserProfileInsertExperienceResponse['data']['userProfile_Foreigner_Insert']> => {
   const mutation = `mutation UserProfileForeignerInsert($data: UserProfileForeignerInsertMutation!){
     userProfile_Foreigner_Insert(data: $data) {

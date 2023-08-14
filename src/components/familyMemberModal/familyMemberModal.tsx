@@ -43,22 +43,22 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
   const item = useMemo(() => {
     return selectedItem
       ? {
-        ...selectedItem,
-        handicapped_person: {
-          id: selectedItem?.handicapped_person ? 'Da' : 'Ne',
-          title: selectedItem?.handicapped_person ? 'Da' : 'Ne',
-        },
-        insurance_coverage: {
-          id: selectedItem?.insurance_coverage === 'Ne' ? 'Ne' : 'Da',
-          title: selectedItem?.insurance_coverage === 'Ne' ? 'Ne' : 'Da',
-        },
-        employee_relationship: {id: selectedItem?.employee_relationship, title: selectedItem?.employee_relationship},
-        country_of_birth: {id: selectedItem?.country_of_birth, title: selectedItem?.country_of_birth},
-        citizenship: {id: selectedItem?.citizenship, title: selectedItem?.citizenship},
-        gender: {id: selectedItem?.gender, title: selectedItem?.gender},
-        //To-do Get user_profile_id from props when employee is selected
-        user_profile_id: selectedItem?.user_profile_id,
-      }
+          ...selectedItem,
+          handicapped_person: {
+            id: selectedItem?.handicapped_person ? 'Da' : 'Ne',
+            title: selectedItem?.handicapped_person ? 'Da' : 'Ne',
+          },
+          insurance_coverage: {
+            id: selectedItem?.insurance_coverage === 'Ne' ? 'Ne' : 'Da',
+            title: selectedItem?.insurance_coverage === 'Ne' ? 'Ne' : 'Da',
+          },
+          employee_relationship: {id: selectedItem?.employee_relationship, title: selectedItem?.employee_relationship},
+          country_of_birth: {id: selectedItem?.country_of_birth, title: selectedItem?.country_of_birth},
+          citizenship: {id: selectedItem?.citizenship, title: selectedItem?.citizenship},
+          gender: {id: selectedItem?.gender, title: selectedItem?.gender},
+          //To-do Get user_profile_id from props when employee is selected
+          user_profile_id: selectedItem?.user_profile_id,
+        }
       : {...initialValues, user_profile_id: Number(userProfileId)};
   }, [selectedItem]);
 

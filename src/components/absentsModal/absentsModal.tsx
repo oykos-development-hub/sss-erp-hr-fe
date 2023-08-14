@@ -39,7 +39,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
   };
 
   const handleTypeChange = (selectedValue: any) => {
-    let vacation = selectedValue.id === 1;
+    const vacation = selectedValue.id === 1;
     if (selectedValue.id === 1) {
       setIsVacation(true);
     } else setIsVacation(false);

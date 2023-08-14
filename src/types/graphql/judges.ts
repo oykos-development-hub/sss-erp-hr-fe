@@ -34,7 +34,7 @@ export interface Norms {
   id: number;
   title: string;
   user_profile_id: number;
-  topic: string;
+  topic?: DropdownDataNumber;
   number_of_norm_decrease: number;
   number_of_items: number;
   number_of_items_solved: number;

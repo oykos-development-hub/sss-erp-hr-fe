@@ -49,7 +49,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
 
   const {mutate: insertJobPosition} = useOrganizationUnitJobPositionInsert();
 
-  let [isBlocking, setIsBlocking] = useState(false);
+  const [isBlocking, setIsBlocking] = useState(false);
 
   usePrompt('Da li ste sigurni da želite da napustite stranicu? Izmjene neće biti sačuvane!', isBlocking);
 

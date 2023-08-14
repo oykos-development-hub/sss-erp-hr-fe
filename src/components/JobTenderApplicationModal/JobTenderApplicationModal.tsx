@@ -99,16 +99,16 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 
     return selectedItem
       ? {
-        ...selectedItem,
-        status: selectedItem?.status ? applicationStatusOptions.find(st => st.title === selectedItem?.status) : null,
-        type: selectedItem?.type ? applicationTypeOptions.find(st => st.id === selectedItem?.type) : null,
-        evaluation: selectedItem?.evaluation
-          ? evaluationTypeOptions.find(st => st.title === selectedItem?.evaluation)
-          : null,
-        nationality: selectedItem?.nationality
-          ? citizenshipArray?.find(st => st.title === selectedItem.nationality)
-          : null,
-      }
+          ...selectedItem,
+          status: selectedItem?.status ? applicationStatusOptions.find(st => st.title === selectedItem?.status) : null,
+          type: selectedItem?.type ? applicationTypeOptions.find(st => st.id === selectedItem?.type) : null,
+          evaluation: selectedItem?.evaluation
+            ? evaluationTypeOptions.find(st => st.title === selectedItem?.evaluation)
+            : null,
+          nationality: selectedItem?.nationality
+            ? citizenshipArray?.find(st => st.title === selectedItem.nationality)
+            : null,
+        }
       : initialValues;
   }, [selectedItem]);
 

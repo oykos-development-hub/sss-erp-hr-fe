@@ -12,7 +12,6 @@ const initialValues: Norms = {
   id: 0,
   title: '',
   user_profile_id: 0,
-  topic: '',
   number_of_norm_decrease: 0,
   number_of_items: 0,
   number_of_items_solved: 0,

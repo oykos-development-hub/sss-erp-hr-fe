@@ -39,12 +39,12 @@ export const FunctionalAcknowledgmentModal: React.FC<FunctionalAcknowledgmentMod
   const item = useMemo(() => {
     return selectedItem
       ? {
-        ...selectedItem,
-        expertise_level: {
-          id: selectedItem?.expertise_level,
-          title: selectedItem?.expertise_level,
-        },
-      }
+          ...selectedItem,
+          expertise_level: {
+            id: selectedItem?.expertise_level,
+            title: selectedItem?.expertise_level,
+          },
+        }
       : initialValues;
   }, [selectedItem]);
 

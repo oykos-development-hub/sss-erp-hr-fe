@@ -62,8 +62,8 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       .forEach((unit: OrganizationUnit) => {
         values[unit.id] = item
           ? item?.items?.find((i: JudgeResolutionItem) => {
-            return i.organization_unit.id === unit.id;
-          })?.available_slots_judges
+              return i.organization_unit.id === unit.id;
+            })?.available_slots_judges
           : '';
       });
 
