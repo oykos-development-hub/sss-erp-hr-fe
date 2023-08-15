@@ -5,8 +5,6 @@ export interface InternalRevision {
   revision_type: DropdownDataNumber | null;
   revisor_user_profile: DropdownDataNumber | null;
   revision_organization_unit: DropdownDataNumber | null;
-  created_at?: string;
-  updated_at?: string;
   revision_type_id: number;
   revisor_user_profile_id: number;
   revision_organization_unit_id: number;
@@ -61,17 +59,21 @@ export interface InternalRevisionsParams {
   id?: number;
   organization_unit_id?: number;
   revisor_user_profile_id?: number;
-  page: number;
-  size: number;
+  page?: number;
+  size?: number;
 }
 
 export interface InternalRevisionDetails {
   id: number;
   revision_type_id: number;
   revisor_user_profile_id: number;
-  revision_organization_unit_id: number;
+  revisor_user_profile: DropdownDataNumber;
+  internal_organization_unit_id?: number;
+  external_organization_unit_id?: number;
   responsible_user_profile_id: number;
+  responsible_user_profile: string;
   implementation_user_profile_id: number;
+  implementation_user_profile: string;
   title: string;
   planned_year: string;
   planned_quarter: string;
@@ -88,4 +90,5 @@ export interface InternalRevisionDetails {
   second_implementation_month_span: string;
   second_date_of_revision: string;
   file_id: number;
+  ref_document: string;
 }

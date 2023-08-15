@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {GraphQL} from '..';
 import {SettingsDropdown} from '../../../types/graphql/settingsDropdownType';
 
-const useSettingsDropdownOverview = (entity?: string, page?: number, size?: number, id?: number) => {
+const useSettingsDropdownOverview = (entity: string, page?: number, size?: number, id?: number) => {
   const [data, setData] = useState<SettingsDropdown[]>();
   const [loading, setLoading] = useState(true);
 

@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {FormGroup, ModalForm, ModalSection, ModalSectionTitle, RevisionModal, Row} from './styles';
 import {Dropdown, Input, FileUpload, Datepicker} from 'client-library';
 import {InternalRevisionFormValues} from '../../screens/internalRevision/types';
@@ -13,10 +13,11 @@ import {
   revisionStatusOptions,
   revisionTypeOptions,
 } from '../../constants';
-import {DropdownDataNumber} from '../../types/dropdownData';
+import {DropdownDataNumber, DropdownDataString} from '../../types/dropdownData';
 import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
 import useRevisionDetails from '../../services/graphql/internalRevision/useRevision';
 import useRevisionInsert from '../../services/graphql/internalRevision/useRevisionInsert';
+import useSettingsDropdownOverview from '../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 
 interface InternalRevisionModalProps {
   open: boolean;
@@ -53,28 +54,29 @@ const initialValues: InternalRevisionFormValues = {
   revision_type_id: 0,
   revisor_user_profile: null,
   revisor_user_profile_id: 0,
-  revision_organization_unit: null,
-  revision_organization_unit_id: 0,
-  responsible_user_profile: null,
-  responsible_user_profile_id: 0,
+  internal_organization_unit_id: null,
+  external_organization_unit_id: null,
+  responsible_user_profile: '',
+  responsible_user_profile_id: null,
   implementation_user_profile: null,
-  implementation_user_profile_id: 0,
+  implementation_user_profile_id: null,
   title: '',
   planned_year: null,
   planned_quarter: null,
   serial_number: '',
-  priority: '',
+  priority: null,
   date_of_revision: '',
   date_of_acceptance: '',
   date_of_rejection: '',
   implementation_suggestion: '',
-  implementation_month_span: '',
+  implementation_month_span: null,
   date_of_implementation: '',
   state_of_implementation: null,
   implementation_failed_description: '',
-  second_implementation_month_span: '',
+  second_implementation_month_span: null,
   second_date_of_revision: '',
   file_id: 0,
+  ref_document: '',
 };
 
 const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
@@ -88,12 +90,29 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
   const {data} = useRevisionDetails(id);
   const {mutate} = useRevisionInsert();
   const {organizationUnitsList} = useOrganizationUnits();
+  const {data: settingsTypes} = useSettingsDropdownOverview("revision_organization_units_types");
+
+  const externalOrganizationUnitsList = useMemo(() => {
+    if (!settingsTypes) {
+      return [
+        {id: 0, title: 'Sve organizacione jedinice'}
+      ]
+    } 
+
+    return [
+      {id: 0, title: 'Sve organizacione jedinice'},
+      ...settingsTypes.map(unit => {
+        return {id: unit.id, title: unit.title};
+      }),
+    ];
+  }, [settingsTypes]);
 
   const {
     register,
     handleSubmit,
     formState: {errors, dirtyFields},
     control,
+    setValue,
     reset,
     watch,
   } = useForm({
@@ -103,24 +122,33 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
   const onSubmit = (values: InternalRevisionFormValues) => {
     const data = {
       ...values,
-      implementation_user_profile_id: 1,
+      implementation_user_profile_id: values.implementation_user_profile?.id || null,
       revision_type_id: values.revision_type?.id || 0,
       revisor_user_profile_id: values.revisor_user_profile?.id || 0,
-      revision_organization_unit_id: values.revision_organization_unit?.id || 0,
-      responsible_user_profile_id: values.responsible_user_profile?.id || 0,
+      internal_organization_unit_id: values.internal_organization_unit_id?.id || null,
+      external_organization_unit_id: values.external_organization_unit_id?.id || null,
+      responsible_user_profile: values.responsible_user_profile || '',
       planned_year: values.planned_year?.id || '',
       planned_quarter: values.planned_quarter?.id || '',
       state_of_implementation: values.state_of_implementation?.id || '',
+      priority: values.priority?.id,
+      date_of_revision: values.date_of_revision ? parseDate(values?.date_of_revision, true) : null,
+      date_of_acceptance: values.date_of_acceptance ?  parseDate(values?.date_of_acceptance, true) : null,
+      date_of_rejection: values.date_of_rejection ?  parseDate(values?.date_of_rejection, true) : null,
+      date_of_implementation: values.date_of_implementation ? parseDate(values?.date_of_implementation, true) : null,
+      implementation_month_span: values.implementation_month_span?.id,
+      second_date_of_revision: values.second_date_of_revision ?  parseDate(values?.second_date_of_revision, true) : null,
+      second_implementation_month_span: values.second_implementation_month_span?.id,
       id,
     };
 
+    delete data.implementation_user_profile;
     delete data.revision_type;
     delete data.revisor_user_profile;
     delete data.revision_organization_unit;
-    delete data.responsible_user_profile;
-    delete data.implementation_user_profile;
 
     mutate(
+    //@ts-ignore
       data,
       () => {
         refetchList();
@@ -167,25 +195,80 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
   };
 
   useEffect(() => {
-    if (data && data.items && id) {
+    if (data && data.item && id && data.status === "success") {
+
       reset({
-        ...data.items[0],
+        ...data.item,
         planned_year: {
-          id: data.items[0].planned_year,
-          title: data.items[0].planned_year,
+          id: data.item.planned_year,
+          title: data.item.planned_year,
         },
-        planned_quarter: {id: data.items[0].planned_quarter, title: data.items[0].planned_quarter},
-        priority: revisionPriorityOptions.find(option => option.id === data.items[0].priority),
+        internal_organization_unit_id: data.item.revision_organization_unit?.value === "internal" ? {
+          id: data.item.revision_organization_unit.id,
+          title: data.item.revision_organization_unit.title,
+        } : null,
+        external_organization_unit_id: data.item.revision_organization_unit?.value === "external" ? {
+          id: data.item.revision_organization_unit.id,
+          title: data.item.revision_organization_unit.title,
+        } : null,
+        planned_quarter: {id: data.item.planned_quarter, title: data.item.planned_quarter},
+        priority: revisionPriorityOptions.find(option => option.id === data.item.priority),
+        responsible_user_profile: data.item.responsible_user_profile?.title,
+        implementation_month_span: revisionDeadlineOptions.find(option => option.id === data.item.implementation_month_span), 
+        state_of_implementation: revisionStatusOptions.find(option => option.id === data.item.state_of_implementation),
+        second_implementation_month_span: revisionDeadlineOptions.find(option => option.id === data.item.second_implementation_month_span),
       });
     }
   }, [data]);
 
+ const [dateOfImplementation, setDateOfImplementation] = useState<string | undefined>(undefined);
+
+ const dateOfRevision = watch('date_of_revision');
+ const implementationMonthSpan = watch('implementation_month_span');
+ 
+ 
+ const calculateDateOfImplementation = (revisionDate: string, monthSpan: DropdownDataString | null) => {
+   const parsedDateOfRevision = new Date(revisionDate);
+   const monthsToAdd = Number(monthSpan?.id);
+   parsedDateOfRevision.setMonth(parsedDateOfRevision.getMonth() + monthsToAdd);
+   
+   const day = parsedDateOfRevision.getDate().toString().padStart(2, '0');
+   const month = (parsedDateOfRevision.getMonth() + 1).toString().padStart(2, '0');
+   const year = parsedDateOfRevision.getFullYear();
+   
+   return `${day}/${month}/${year}`; 
+  };
+  
+  useEffect(() => {
+    if (dateOfRevision && implementationMonthSpan) {
+      const formattedDate = calculateDateOfImplementation(dateOfRevision, implementationMonthSpan);
+      setDateOfImplementation(formattedDate);
+      console.log('datumm: ', dateOfImplementation);
+    }
+  }, [dateOfRevision, implementationMonthSpan]);
+  
+  
   const yearOptions = useMemo(
     () => yearsForDropdown().map(year => ({id: year.id.toString(), title: year.title.toString()})),
     [],
-  );
+    );
+    
+    const implemented = watch('state_of_implementation')?.id === 'implemented';
+    const internalSubject = watch('internal_organization_unit_id');
+    const externalSubject = watch('external_organization_unit_id');
 
-  const implemented = watch('state_of_implementation')?.id === 'implemented';
+    useEffect(() => {
+      if (internalSubject) {
+        setValue('external_organization_unit_id', null);
+      }
+    }, [internalSubject, setValue]);
+  
+    useEffect(() => {
+      if (externalSubject) {
+        setValue('internal_organization_unit_id', null);
+      }
+    }, [externalSubject, setValue]);
+    
 
   return (
     <RevisionModal
@@ -249,20 +332,38 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                   error={errors.title?.message as string}
                 />
               </FormGroup>
+            </Row>
+            <Row>
               <FormGroup>
                 <Controller
                   control={control}
-                  name="revision_organization_unit"
-                  rules={{required: 'Ovo polje je obavezno'}}
+                  name="internal_organization_unit_id"
                   render={({field: {name, value, onChange}}) => (
                     <Dropdown
                       name={name}
                       value={value as any}
                       onChange={onChange}
                       options={organizationUnitsList as any}
-                      error={errors.revision_organization_unit?.message as string}
+                      error={errors.internal_organization_unit_id?.message as string}
                       placeholder="Izaberite subjekt"
-                      label="SUBJEKT REVIZIJE:"
+                      label="SUBJEKT REVIZIJE (interna OJ):"
+                    />
+                  )}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Controller
+                  control={control}
+                  name="external_organization_unit_id"
+                  render={({field: {name, value, onChange}}) => (
+                    <Dropdown
+                      name={name}
+                      value={value as any}
+                      onChange={onChange}
+                      options={externalOrganizationUnitsList as any}
+                      error={errors.external_organization_unit_id?.message as string}
+                      placeholder="Izaberite subjekt"
+                      label="SUBJEKT REVIZIJE (eksterna OJ):"
                     />
                   )}
                 />
@@ -393,7 +494,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
               <FormGroup>
                 <Controller
                   control={control}
-                  name="date_of_implementation"
+                  name="implementation_month_span"
                   rules={{required: {value: shouldValidateSecondSection(), message: 'Ovo polje je obavezno'}}}
                   render={({field: {name, value, onChange}}) => (
                     <Dropdown
@@ -401,7 +502,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                       value={value as any}
                       onChange={onChange}
                       options={revisionDeadlineOptions}
-                      error={errors.date_of_implementation?.message as string}
+                      error={errors.implementation_month_span?.message as string}
                       placeholder="Izaberite rok"
                       label="ROK SPROVOĐENJA PREPORUKE:"
                     />
@@ -426,19 +527,11 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                 />
               </FormGroup>
               <FormGroup>
-                <Controller
-                  control={control}
-                  name="date_of_implementation"
-                  rules={{required: {value: shouldValidateSecondSection(), message: 'Ovo polje je obavezno'}}}
-                  render={({field: {name, value, onChange}}) => (
-                    <Datepicker
-                      onChange={onChange}
-                      label="DATUM SPROVOĐENJA PREPORUKE:"
-                      name={name}
-                      value={value ? parseDate(value) : ''}
-                      error={errors.date_of_implementation?.message as string}
-                    />
-                  )}
+                 <Input
+                  {...register('date_of_implementation')}
+                  label="DATUM SPROVOĐENJA PREPORUKE:"
+                  value={dateOfImplementation}
+                  disabled
                 />
               </FormGroup>
             </Row>
@@ -496,10 +589,9 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
               </FormGroup>
               <FormGroup>
                 <Input
-                  // {...register('title')}
+                  {...register('ref_document')}
                   label="REF. DOKUMENTA ZA PRAĆENJE SPROVOĐENJE PREPORUKA:"
                   placeholder="Unesite dokumenta za praćenje"
-                  error={errors.title?.message as string}
                 />
               </FormGroup>
             </Row>
@@ -514,7 +606,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                       name={name}
                       value={value as any}
                       onChange={onChange}
-                      options={revisionStatusOptions}
+                      options={revisorOptions}
                       error={errors.implementation_user_profile?.message as string}
                       placeholder="Izaberite opciju"
                       label="IMPLEMENTACIJU PREPORUKE POTVRDIO:"

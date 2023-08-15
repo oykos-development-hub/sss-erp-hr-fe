@@ -9,10 +9,10 @@ const useRevisionDetails = (id: number) => {
 
   const fetchInternalRevisionDetails = async () => {
     if (!id) {
-      setData({items: []});
+      setData({item: []});
       return;
     }
-    const internalRevisionDetails: any = await GraphQL.revisionDetails(id);
+    const internalRevisionDetails = await GraphQL.revisionDetails(id);
     setData(internalRevisionDetails);
     setLoading(false);
   };
