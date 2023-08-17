@@ -41,7 +41,7 @@ export const Sectors: React.FC<SectorsProps> = ({
     const jobPositions = sectors?.find(
       (sector: any) => sector?.id === selectedItemId,
     )?.job_positions_organization_units;
-    debugger;
+
     setJobPositions(jobPositions);
     setShowMenu(0);
     jobPositions &&

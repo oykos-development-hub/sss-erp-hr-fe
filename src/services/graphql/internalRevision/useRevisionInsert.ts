@@ -1,12 +1,12 @@
 import {useState} from 'react';
 import {GraphQL} from '..';
-import {InternalRevisionDetails} from '../../../types/graphql/internalRevision';
+import {InternalRevisionInsertParams} from '../../../screens/internalRevision/types';
 
 const useRevisionInsert = () => {
   const [loading, setLoading] = useState(false);
 
   const insertInternalRevision = async (
-    data: InternalRevisionDetails,
+    data: InternalRevisionInsertParams,
     onSuccess?: () => void,
     onError?: () => void,
   ) => {

@@ -17,7 +17,7 @@ export const PrintPage: React.FC<PrintPageProps> = ({sectorDetails}) => {
               <Divider height="2px" color={Theme?.palette?.gray200} />
             </div>
             <div>
-              {sector?.job_positions?.map((jobPosition: any) => {
+              {sector?.job_positions_organization_units?.map((jobPosition: any) => {
                 return (
                   <>
                     <JobInfo key={`job-position-${jobPosition?.id}`}>

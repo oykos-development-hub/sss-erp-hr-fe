@@ -2,9 +2,9 @@ import {DropdownDataNumber} from '../dropdownData';
 
 export interface UserProfileGetSalaryParams {
   id: number;
-  user_profile: DropdownDataNumber;
+  user_profile?: DropdownDataNumber;
   benefited_track: boolean;
-  organization_unit: DropdownDataNumber;
+  organization_unit?: DropdownDataNumber;
   without_raise: boolean;
   insurance_basis: string;
   salary_rank: string;
@@ -12,7 +12,7 @@ export interface UserProfileGetSalaryParams {
   weekly_work_hours: string;
   education_rank: string;
   education_naming: string;
-  resolution: SalaryParamsResolution;
+  resolution?: SalaryParamsResolution;
 }
 
 export interface UserProfileSalaryParams {

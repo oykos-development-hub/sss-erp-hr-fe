@@ -21,7 +21,6 @@ export const formatData = (data: any) => {
 
 export const initialValues: UserProfileGetSalaryParams = {
   id: 0,
-  user_profile_id: 0,
   benefited_track: false,
   without_raise: false,
   insurance_basis: '',
@@ -30,7 +29,4 @@ export const initialValues: UserProfileGetSalaryParams = {
   weekly_work_hours: '',
   education_rank: '',
   education_naming: '',
-  user_resolution_id: 0,
-  created_at: '',
-  updated_at: '',
 };

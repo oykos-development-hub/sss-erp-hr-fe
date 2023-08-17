@@ -156,7 +156,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
         let newItem = tableDataState.find(item => item.id === 0);
 
         if (newItem) {
-          let newTableData = tableDataState.filter(item => item.id !== 0);
+          const newTableData = tableDataState.filter(item => item.id !== 0);
 
           const jobPosition = jobPositionData?.find((jobPosition: any) => jobPosition.id === newItem.job_position.id);
           newItem = {

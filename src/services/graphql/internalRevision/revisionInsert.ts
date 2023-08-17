@@ -1,8 +1,9 @@
 import {GraphQL} from '..';
+import {InternalRevisionFormValues, InternalRevisionInsertParams} from '../../../screens/internalRevision/types';
 import {InternalRevisionDetails, InternalRevisionResponse} from '../../../types/graphql/internalRevision';
 
 const revisionInsert = async (
-  data: InternalRevisionDetails,
+  data: InternalRevisionInsertParams,
 ): Promise<InternalRevisionResponse['data']['revisions_Insert']> => {
   const queryIdentifier = 'revisions_Insert';
 
@@ -55,7 +56,7 @@ const revisionInsert = async (
     }
 }`;
 
-const response = await GraphQL.fetch(mutation, {data});
+  const response = await GraphQL.fetch(mutation, {data});
 
   return response?.data?.[queryIdentifier] || {};
 };

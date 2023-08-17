@@ -3,7 +3,7 @@ import {InternalRevisionResponse} from '../../../types/graphql/internalRevision'
 
 const revisionDetails = async (id: number): Promise<InternalRevisionResponse['data']['revision_Details']> => {
   const queryIdentifier = 'revision_Details';
-  
+
   const query = `query RevisionDetails($id: Int!){
     revision_Details(id: $id) {
         message
@@ -52,8 +52,7 @@ const revisionDetails = async (id: number): Promise<InternalRevisionResponse['da
     }
 }`;
 
-
-const response = await GraphQL.fetch(query, {id});
+  const response = await GraphQL.fetch(query, {id});
 
   return response?.data[queryIdentifier] || {};
 };
