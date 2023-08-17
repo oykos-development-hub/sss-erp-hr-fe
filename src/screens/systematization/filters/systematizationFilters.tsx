@@ -28,15 +28,12 @@ export const SystematizationFilters: React.FC<SystematizationFiltersProps> = ({s
         {...register('systematization_number', {required: 'Ovo polje je obavezno'})}
         label="BROJ SISTEMATIZACIJE:"
         rightContent={<SearchIcon style={{marginLeft: 10, marginRight: 10}} stroke={Theme.palette.gray300} />}
-        disabled
       />
       <Controller
         name="year"
         control={control}
         render={({field: {onChange, name, value}}) => {
-          return (
-            <Dropdown onChange={onChange} value={value as any} name={name} label="GODINA:" options={years} isDisabled />
-          );
+          return <Dropdown onChange={onChange} value={value as any} name={name} label="GODINA:" options={years} />;
         }}
       />
 

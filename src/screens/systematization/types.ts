@@ -1,5 +1,7 @@
 import {SectorType} from '../../types/graphql/systematizationsGetDetailsTypes';
 import {MicroserviceProps} from '../../types/micro-service-props';
+import {JobPosition, SystematizationJobPositions} from '../../types/graphql/jobPositions';
+import {UserProfile} from '../../types/graphql/userProfiles';
 
 export interface SystematizationDetailsPageProps {
   context: MicroserviceProps;
@@ -12,6 +14,8 @@ export interface SectorsProps {
   systematizationID: number;
   refreshData?: (availableSlotsChanged?: boolean) => void;
   context?: MicroserviceProps;
+  jobPositionData: JobPosition[];
+  allEmployees: UserProfile[];
 }
 
 export interface SystematizationFiltersProps {

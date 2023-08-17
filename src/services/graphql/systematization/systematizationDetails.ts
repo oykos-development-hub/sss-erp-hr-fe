@@ -31,9 +31,9 @@ const systematizationDetails = async (
                 abbreviation
                 color
                 icon
-                job_positions {
+                job_positions_organization_units {
                     id
-                    job_position {
+                    job_positions {
                         title
                         id
                     }
@@ -43,7 +43,6 @@ const systematizationDetails = async (
                     available_slots
                     employees {
                         title
-                        user_profile_id
                         id
                     }
                 }

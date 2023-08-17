@@ -20,6 +20,8 @@ import useSystematizationInsert from '../../../services/graphql/systematization/
 import useOrganizationUnitJobPositionInsert from '../../../services/graphql/organizationUnitsJobPositions/useOrganizationUnitInsertJobPosition';
 import {ScreenWrapper} from '../../../shared/screenWrapper';
 import {usePrompt} from '../../../shared/usePrompt';
+import useJobPositions from '../../../services/graphql/jobPositions/useJobPositionOverview';
+import useUserProfiles from '../../../services/graphql/userProfile/useUserProfiles';
 
 const initialValues = {
   organization_unit: {id: 0, value: ''},
@@ -46,6 +48,16 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
     return systematizationDetails?.sectors?.find((i: SectorType) => i.id === sectorId);
   }, [sectorId]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+
+  const {data: jobPositionData} = useJobPositions('');
+  const {data: allEmployees} = useUserProfiles({
+    page: 1,
+    size: 100,
+    is_active: null,
+    organization_unit_id: null,
+    job_position_id: null,
+    type: null,
+  });
 
   const {mutate: insertJobPosition} = useOrganizationUnitJobPositionInsert();
 
@@ -135,19 +147,19 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
     );
 
     updatedData.sectors.forEach((sector: SectorType) => {
-      sector.job_positions.forEach(job_position => {
-        const available_slots = job_position.available_slots;
+      sector.job_positions_organization_units.forEach(job_positions_organization_units => {
+        const available_slots = job_positions_organization_units.available_slots;
         const end = start + available_slots - 1;
         const serial_number = `${start}-${end}`;
         start = end + 1;
         const payload = {
-          id: job_position.id || 0,
-          available_slots: Number(job_position?.available_slots) || 1,
+          id: job_positions_organization_units.id || 0,
+          available_slots: Number(job_positions_organization_units?.available_slots) || 1,
           parent_job_position_id: 0,
-          job_position_id: job_position?.job_position?.id,
+          job_position_id: job_positions_organization_units?.job_position?.id,
           system_permission_id: 0,
-          description: job_position?.description,
-          requirements: job_position?.requirements,
+          description: job_positions_organization_units?.description,
+          requirements: job_positions_organization_units?.requirements,
           icon: '',
           systematization_id: updatedData?.id,
           parent_organization_unit_id: sector?.id,
@@ -253,6 +265,8 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
                 refreshData={availableSlotsChanged => refetchDataOnSectorChanged(availableSlotsChanged)}
                 handleEditSector={(id: number) => editSector(id)}
                 context={context}
+                jobPositionData={jobPositionData?.items}
+                allEmployees={allEmployees?.items}
               />
             </div>
           ) : (

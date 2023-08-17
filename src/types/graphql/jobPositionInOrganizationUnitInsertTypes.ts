@@ -3,13 +3,8 @@ export type JobPositionInOrganizationUnitInsert = {
   systematization_id: number;
   parent_organization_unit_id: number;
   job_position_id: number;
-  parent_job_position_id: number;
-  system_permission_id: number;
   available_slots: number;
-  description: string;
-  serial_number: string;
-  requirements: string;
-  icon: string;
+  employees: number[];
 };
 
 export type JobPositionInOrganizationUnitInsertResponse = {

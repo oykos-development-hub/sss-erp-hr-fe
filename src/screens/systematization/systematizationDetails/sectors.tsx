@@ -14,6 +14,8 @@ export const Sectors: React.FC<SectorsProps> = ({
   refreshData,
   handleEditSector,
   context,
+  jobPositionData,
+  allEmployees,
 }) => {
   const [isOpen, setIsOpen] = useState<number>(0);
   const [showMenu, setShowMenu] = useState<number>(0);
@@ -36,6 +38,11 @@ export const Sectors: React.FC<SectorsProps> = ({
   const addJobPosition = (e: any, sector: any) => {
     e.stopPropagation();
     setSelectedItemId(sector?.id);
+    const jobPositions = sectors?.find(
+      (sector: any) => sector?.id === selectedItemId,
+    )?.job_positions_organization_units;
+    debugger;
+    setJobPositions(jobPositions);
     setShowMenu(0);
     jobPositions &&
       setJobPositions([
@@ -60,7 +67,9 @@ export const Sectors: React.FC<SectorsProps> = ({
 
   useEffect(() => {
     if (selectedItemId) {
-      const jobPositions = sectors?.find((sector: any) => sector?.id === selectedItemId)?.job_positions;
+      const jobPositions = sectors?.find(
+        (sector: any) => sector?.id === selectedItemId,
+      )?.job_positions_organization_units;
       setJobPositions(jobPositions);
     }
   }, [selectedItemId]);
@@ -140,6 +149,8 @@ export const Sectors: React.FC<SectorsProps> = ({
                   systematizationID={systematizationID}
                   refetch={availableSlotsChanged => refreshData && refreshData(availableSlotsChanged)}
                   alert={context?.alert}
+                  jobPositionData={jobPositionData}
+                  allEmployees={allEmployees}
                 />
               }
             />

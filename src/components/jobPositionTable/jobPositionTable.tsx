@@ -1,28 +1,24 @@
+import {
+  CheckIcon,
+  Dropdown,
+  EditIconTwo,
+  Input,
+  MinusCircleIcon,
+  PlusCircleIcon,
+  TableHead,
+  Theme,
+  TrashIcon,
+  XIcon,
+} from 'client-library';
 import React, {useEffect, useState} from 'react';
-import useJobPositions from '../../services/graphql/jobPositions/useJobPositionOverview';
+import useEmployeeInOrganizationUnitDelete from '../../services/graphql/organizationUnitsEmployees/useOrganizationUnitEmployeeDelete';
+import useOrganizationUnitEmployeeInsert from '../../services/graphql/organizationUnitsEmployees/useOrganizationUnitEmployeeInsert';
+import useOrganizationUnitDeleteJobPosition from '../../services/graphql/organizationUnitsJobPositions/useOrganizationUnitDeleteJobPosition';
+import useOrganizationUnitInsertJobPosition from '../../services/graphql/organizationUnitsJobPositions/useOrganizationUnitInsertJobPosition';
+import {DeleteModal} from '../../shared/deleteModal/deleteModal';
+import {DropdownDataNumber} from '../../types/dropdownData';
 import {EmployeeDropdownWrapper, StyledTable} from './styles';
 import {JobPositionTableProps} from './types';
-import {
-  TableHead,
-  EditIconTwo,
-  TrashIcon,
-  Theme,
-  Input,
-  Dropdown,
-  MinusCircleIcon,
-  CheckIcon,
-  XIcon,
-  PlusCircleIcon,
-  Typography,
-} from 'client-library';
-import useUserProfiles from '../../services/graphql/userProfile/useUserProfiles';
-import {DropdownDataNumber} from '../../types/dropdownData';
-import {formatDataAddJobPosition} from '../../screens/systematization/utils';
-import useEmployeeInOrganizationUnitDelete from '../../services/graphql/organizationUnitsEmployees/useOrganizationUnitEmployeeDelete';
-import useOrganizationUnitDeleteJobPosition from '../../services/graphql/organizationUnitsJobPositions/useOrganizationUnitDeleteJobPosition';
-import {DeleteModal} from '../../shared/deleteModal/deleteModal';
-import useOrganizationUnitInsertJobPosition from '../../services/graphql/organizationUnitsJobPositions/useOrganizationUnitInsertJobPosition';
-import useOrganizationUnitEmployeeInsert from '../../services/graphql/organizationUnitsEmployees/useOrganizationUnitEmployeeInsert';
 
 export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   data,
@@ -30,24 +26,17 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   systematizationID,
   refetch,
   alert,
+  jobPositionData,
+  allEmployees,
 }) => {
-  const {data: jobPositionData} = useJobPositions('');
-  const {data: allEmployees} = useUserProfiles({
-    page: 1,
-    size: 100,
-    is_active: null,
-    organization_unit_id: null,
-    job_position_id: null,
-    type: null,
-  });
   const {mutate: insertJobPosition} = useOrganizationUnitInsertJobPosition();
   const {mutate: deleteJobPosition} = useOrganizationUnitDeleteJobPosition();
 
   const {mutate: insertEmployee} = useOrganizationUnitEmployeeInsert();
   const {mutate: deleteEmployee} = useEmployeeInOrganizationUnitDelete();
 
-  const jobPositionsForDropdown = jobPositionData?.items?.map((item: any) => ({id: item.id, title: item.title}));
-  const employeesForDropdown = allEmployees?.items?.map((item: any) => ({
+  const jobPositionsForDropdown = jobPositionData?.map((item: any) => ({id: item.id, title: item.title}));
+  const employeesForDropdown = allEmployees?.map((item: any) => ({
     id: item.id,
     title: `${item.first_name} ${item.last_name}`,
   }));
@@ -71,7 +60,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
       setSelectedEmployee(value);
     } else {
       const updatedTableData = tableDataState.map((item: any) => {
-        const jobPositon = jobPositionData?.items?.find((i: any) => i.id === value?.id);
+        const jobPosition = jobPositionData?.find((i: any) => i.id === value?.id);
 
         if (item.id !== editTableRow) return item;
         if (name === 'available_slots') {
@@ -86,8 +75,9 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
               ...item[name],
               id: value?.id,
               title: value?.title,
-              description: jobPositon?.description,
-              requirements: jobPositon?.requirements,
+              description: jobPosition?.description,
+              requirements: jobPosition?.requirements,
+              job_position: {id: jobPosition?.id, title: jobPosition?.title},
             },
           };
         }
@@ -140,6 +130,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
         setShowDeleteModal(false);
         setDeleteItemId(null);
         setTableDataState(tableDataState.filter((item: any) => item.id !== deleteItemId));
+
         alert.success('Uspješno ste obrisali radno mjesto!');
       },
       () => {
@@ -150,40 +141,39 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
 
   const handleSave = () => {
     const selectedItem = tableDataState.find((item: any) => item.id === editTableRow);
-    const originalItem = data?.find((item: any) => item.id === editTableRow);
-    const availableSlotsChanged = Number(selectedItem?.available_slots?.value) !== originalItem?.available_slots;
 
-    const payload = formatDataAddJobPosition({
-      ...selectedItem,
+    const payload = {
+      id: selectedItem.id ? selectedItem.id : 0,
       systematization_id: systematizationID,
       parent_organization_unit_id: sectorID,
-    });
+      job_position_id: selectedItem?.job_position?.id,
+      available_slots: Number(selectedItem?.available_slots.value),
+      employees: selectedItem?.employees?.map((item: any) => item.id),
+    };
     insertJobPosition(
       payload,
       jobPositionResponse => {
-        if (selectedItem?.id === 0 && selectedItem?.employees?.length !== 0) {
-          const employeeInsertPromises = selectedItem?.employees?.map((item: any) => {
-            return insertEmployee(
-              {
-                id: 0,
-                user_profile_id: item?.id || 0,
-                position_in_organization_unit_id: jobPositionResponse?.id || 0,
-                active: true,
-              },
-              undefined,
-              () => {
-                alert.error('Greška prilikom čuvanja radnog mjesta!');
-              },
-            );
-          });
+        let newItem = tableDataState.find(item => item.id === 0);
 
-          Promise.all(employeeInsertPromises).then(() => {
-            alert.success('Uspješno sačuvano radno mjesto!');
-            refetch && refetch(availableSlotsChanged);
-          });
-        } else {
-          refetch && refetch(availableSlotsChanged);
-          alert.success('Uspješno sačuvano radno mjesto!');
+        if (newItem) {
+          let newTableData = tableDataState.filter(item => item.id !== 0);
+
+          const jobPosition = jobPositionData?.find((jobPosition: any) => jobPosition.id === newItem.job_position.id);
+          newItem = {
+            ...newItem,
+            serial_number: jobPosition?.serial_number || 0,
+            description: jobPosition?.description,
+            requirements: jobPosition?.requirements,
+            job_position: {id: jobPosition?.id, title: jobPosition?.title},
+            employees: selectedItem?.employees.map((item: any) => ({
+              id: item?.id,
+              title: item?.title,
+              row_id: jobPositionResponse?.id,
+            })),
+            available_slots: {value: jobPositionResponse?.available_slots, row_id: jobPositionResponse?.id},
+          };
+          newTableData.push(newItem);
+          setTableDataState([...newTableData]);
         }
       },
       () => {
@@ -211,24 +201,13 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
               //eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
               maxMenuHeight={200}
-              isDisabled={item?.row_id !== editTableRow}
+              isDisabled={item.id > 0}
             />
           </div>
         );
       },
     },
-    {
-      title: 'Uvjeti',
-      accessor: 'job_position',
-      type: 'custom',
-      renderContents: (item: any) => {
-        return (
-          <div key={`item-requirements-${item.id}`}>
-            <Typography content={item?.requirements} variant="bodyMedium" />
-          </div>
-        );
-      },
-    },
+    {title: 'Uvjeti', accessor: 'requirements', type: 'text'},
     {
       title: 'Broj izvršilaca',
       accessor: 'available_slots',
@@ -245,19 +224,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
         );
       },
     },
-
-    {
-      title: 'Opis poslova',
-      accessor: 'job_position',
-      type: 'custom',
-      renderContents: (item: any) => {
-        return (
-          <div key={`item-description-${item.id}`}>
-            <Typography content={item?.description} variant="bodyMedium" />
-          </div>
-        );
-      },
-    },
+    {title: 'Opis poslova', accessor: 'description', type: 'text'},
     {
       title: 'Zaposleni',
       accessor: 'employees',
@@ -290,22 +257,23 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
                 />
               )}
             </EmployeeDropdownWrapper>
-            {item?.map((employee: any) => {
-              return (
-                <div key={`employee-${employee?.id}`}>
-                  <Input
-                    value={employee.title}
-                    rightContent={
-                      <MinusCircleIcon
-                        stroke={Theme?.palette?.gray500}
-                        onClick={() => handleEditEmployees(employee?.id)}
-                      />
-                    }
-                    disabled={employee?.row_id !== editTableRow}
-                  />
-                </div>
-              );
-            })}
+            {Array.isArray(item) &&
+              item?.map((employee: any) => {
+                return (
+                  <div key={`employee-${employee?.id}`}>
+                    <Input
+                      value={employee.title}
+                      rightContent={
+                        <MinusCircleIcon
+                          stroke={Theme?.palette?.gray500}
+                          onClick={() => handleEditEmployees(employee?.id)}
+                        />
+                      }
+                      disabled={employee?.row_id !== editTableRow}
+                    />
+                  </div>
+                );
+              })}
           </div>
         );
       },
@@ -316,17 +284,10 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   useEffect(() => {
     const transformedData = data?.map((item: any) => {
       if (item.id === 0) setEditTableRow(0);
-      const jobPosition = jobPositionData?.items?.find((jobPosition: any) => jobPosition.id === item.job_position.id);
       return {
         ...item,
         serial_number: item?.serial_number || 0,
-        job_position: {
-          id: jobPosition?.id,
-          title: jobPosition?.title,
-          requirements: jobPosition?.requirements,
-          description: jobPosition?.description,
-          row_id: item?.id,
-        },
+        job_position: {...item.job_positions},
         employees: item?.employees?.map((employee: any) => ({
           ...employee,
           row_id: item?.id,
@@ -344,18 +305,24 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
         tableHeads={tableHeads}
         data={tableDataState}
         tableActions={[
-          {name: 'edit', onClick: item => selectRow(item.id), icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
-          {name: 'save', onClick: handleSave, icon: <CheckIcon />, shouldRender: item => editTableRow !== item.id},
+          {
+            name: 'edit',
+            onClick: item => selectRow(item.id),
+            icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+            shouldRender: item => editTableRow !== item.id,
+          },
+          {name: 'save', onClick: handleSave, icon: <CheckIcon />, shouldRender: item => editTableRow === item.id},
           {
             name: 'delete',
             onClick: item => deleteIconClick(item.id),
             icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+            shouldRender: item => editTableRow !== item.id,
           },
           {
             name: 'cancel',
             onClick: () => setEditTableRow(null),
             icon: <XIcon />,
-            shouldRender: item => editTableRow !== item.id,
+            shouldRender: item => editTableRow === item.id,
           },
         ]}
       />

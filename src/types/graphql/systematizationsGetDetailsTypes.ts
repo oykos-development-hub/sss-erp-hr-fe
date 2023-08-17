@@ -8,7 +8,7 @@ export interface SectorType {
   abbreviation: string;
   color: string;
   icon: string;
-  job_positions: SystematizationJobPositions[];
+  job_positions_organization_units: SystematizationJobPositions[];
 }
 
 export interface SystematizationDetails {

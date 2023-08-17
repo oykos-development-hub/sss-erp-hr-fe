@@ -42,7 +42,7 @@ export type JobPositionEmployee = {
 export interface SystematizationJobPositions {
   available_slots: number;
   description: string;
-  employees: JobPositionEmployee[];
+  employees: DropdownDataNumber[];
   id: number;
   job_position: DropdownDataNumber;
   requirements: string;
