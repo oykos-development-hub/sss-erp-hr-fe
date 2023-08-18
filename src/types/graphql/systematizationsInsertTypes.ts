@@ -16,7 +16,7 @@ export interface SystematizationsInsertResponse {
     systematizations_Insert: {
       status?: string;
       message?: string;
-      items: SystematizationDetails[];
+      item: SystematizationDetails;
     };
   };
 }

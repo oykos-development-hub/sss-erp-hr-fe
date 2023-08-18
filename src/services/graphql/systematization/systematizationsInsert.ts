@@ -35,20 +35,20 @@ const systematizationInsert = async (
                   abbreviation
                   color
                   icon
-                  job_positions {
-                      id
-                      job_position {
-                          title
-                          id
-                      }
-                      description
-                      serial_number
-                      requirements
-                      available_slots
-                      employees {
-                          title
-                          id
-                      }
+                  job_positions_organization_units {
+                    id
+                    job_positions {
+                        title
+                        id
+                    }
+                    description
+                    serial_number
+                    requirements
+                    available_slots
+                    employees {
+                        title
+                        id
+                    }
                   }
               }
           } 

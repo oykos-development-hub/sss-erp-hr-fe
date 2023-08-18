@@ -5,7 +5,7 @@ import {parseDate} from '../../../utils/dateUtils';
 import {FooterProps} from '../types';
 import {Activation, DatepickerElement, FooterWrapper} from './styles';
 
-export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton}) => {
+export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id = 0}) => {
   const {
     control,
     watch,
@@ -59,7 +59,11 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton}) => 
       ) : (
         <div></div>
       )}
-      <Button content={activeTab === 1 ? 'Sačuvaj' : 'Ispis'} variant="primary" onClick={handleSaveButton} />
+      {id > 0 ? (
+        <Button content={activeTab === 1 ? 'Sačuvaj' : 'Ispis'} variant="primary" onClick={handleSaveButton} />
+      ) : (
+        <Button content={'Nastavi'} variant="primary" onClick={handleSaveButton} />
+      )}
     </FooterWrapper>
   );
 };

@@ -26,11 +26,21 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
     return selectedItem
       ? {
           ...selectedItem,
-          user_profile_id:
+          user_profile_id: selectedItem.user_profile_id,
+          user_profile:
             selectedItem.user_profile_id != 0
               ? dropdownData?.find(user => user.id === selectedItem.user_profile_id)
               : undefined,
+          topic: selectedItem.topic ? areaItems?.find(item => item.title === selectedItem.topic) : undefined,
           area: selectedItem?.area ? areaItems.find(i => i.title === selectedItem.area) : '',
+          date_of_start:
+            selectedItem?.relocation && selectedItem?.relocation?.date_of_start
+              ? new Date(selectedItem?.relocation?.date_of_start)
+              : '',
+          date_of_end:
+            selectedItem?.relocation && selectedItem?.relocation?.date_of_end
+              ? new Date(selectedItem?.relocation?.date_of_end)
+              : '',
         }
       : initialValues;
   }, [selectedItem]);

@@ -28,6 +28,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   alert,
   jobPositionData,
   allEmployees,
+  cancel,
 }) => {
   const {mutate: insertJobPosition} = useOrganizationUnitInsertJobPosition();
   const {mutate: deleteJobPosition} = useOrganizationUnitDeleteJobPosition();
@@ -139,6 +140,11 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
     );
   };
 
+  const getEmployeesForDropdown = (item: any): DropdownDataNumber[] => {
+    const itemIds = item.map((elem: DropdownDataNumber) => elem?.id);
+    return employeesForDropdown.filter(emp => !itemIds.includes(emp.id));
+  };
+
   const handleSave = () => {
     const selectedItem = tableDataState.find((item: any) => item.id === editTableRow);
 
@@ -189,7 +195,8 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
       title: 'Naziv radnog mjesta',
       accessor: 'job_position',
       type: 'custom',
-      renderContents: (item: any) => {
+      renderContents: (item: any, row) => {
+        const isDisabled = row?.id !== editTableRow || Number(row.id) > 0;
         return (
           <div key={`item-job-position-${item.id}`}>
             <Dropdown
@@ -201,7 +208,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
               //eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
               maxMenuHeight={200}
-              isDisabled={item.id > 0}
+              isDisabled={isDisabled}
             />
           </div>
         );
@@ -239,7 +246,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
               <Dropdown
                 value={selectedEmployee}
                 name="employees"
-                options={employeesForDropdown}
+                options={getEmployeesForDropdown(item)}
                 onChange={handleChange}
                 isDisabled={isDisabled}
                 // @TODO remove ts-ignore
@@ -320,7 +327,10 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
           },
           {
             name: 'cancel',
-            onClick: () => setEditTableRow(null),
+            onClick: () => {
+              if (cancel) cancel();
+              setEditTableRow(null);
+            },
             icon: <XIcon />,
             shouldRender: item => editTableRow === item.id,
           },

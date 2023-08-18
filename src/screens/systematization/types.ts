@@ -31,6 +31,7 @@ export interface PrintPageProps {
 export interface FooterProps {
   activeTab: number;
   handleSaveButton: () => void;
+  id: number;
 }
 
 export interface SectorModalProps {

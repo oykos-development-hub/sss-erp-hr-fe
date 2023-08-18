@@ -59,6 +59,11 @@ export const Sectors: React.FC<SectorsProps> = ({
       ]);
   };
 
+  const cancelJobPosition = () => {
+    const newArray = jobPositions?.filter(item => item.id !== 0) || [];
+    setJobPositions([...newArray]);
+  };
+
   const deleteSector = () => {
     handleDeleteSector(deleteItemId);
     setShowDeleteModal(false);
@@ -151,6 +156,7 @@ export const Sectors: React.FC<SectorsProps> = ({
                   alert={context?.alert}
                   jobPositionData={jobPositionData}
                   allEmployees={allEmployees}
+                  cancel={cancelJobPosition}
                 />
               }
             />

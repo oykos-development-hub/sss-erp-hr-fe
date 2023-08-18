@@ -8,10 +8,18 @@ import {ScreenWrapper} from '../../shared/screenWrapper';
 import {ScreenProps} from '../../types/screen-props';
 import {SystematizationFilters} from './filters/systematizationFilters';
 import {Header} from './styles';
+import {parseDate} from '../../utils/dateUtils';
 
 const tableHeads: TableHead[] = [
   {title: 'Broj sistematizacije', accessor: 'serial_number', type: 'text'},
-  {title: 'Datum izdavanja', accessor: 'date_of_activation', type: 'text'},
+  {
+    title: 'Datum izdavanja',
+    accessor: 'date_of_activation',
+    type: 'custom',
+    renderContents: (item: any) => {
+      return <Typography variant="bodyMedium" content={parseDate(item)} />;
+    },
+  },
   {
     title: 'Status',
     accessor: 'active',

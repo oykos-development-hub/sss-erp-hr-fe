@@ -82,11 +82,14 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
     navigation: {navigate},
   } = context;
 
-  const {mutate, success, error} = useSystematizationInsert(() => {
+  const {mutate, success, error} = useSystematizationInsert(id => {
     if (success) {
-      navigate('/hr/systematization');
-      context.alert.success('Uspješno sačuvano');
+      const route = id > 0 ? `/hr/systematization/systematization-details/${id}` : '/hr/systematization';
+      navigate(route);
+
       context.breadcrumbs.remove();
+      context.alert.success('Uspješno sačuvano');
+
       setIsBlocking(false);
     } else if (error) {
       context.alert.error('Čuvanje nije uspješno');
@@ -273,7 +276,11 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
             <PrintPage sectorDetails={systematizationDetails?.sectors} />
           )}
 
-          <Footer activeTab={activeTab} handleSaveButton={methods?.handleSubmit(handleSave)} />
+          <Footer
+            activeTab={activeTab}
+            handleSaveButton={methods?.handleSubmit(handleSave)}
+            id={Number(systematizationID)}
+          />
         </FormProvider>
         {showEditSectorModal && (
           <OrganisationalUnitModal
