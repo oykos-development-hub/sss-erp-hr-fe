@@ -2,54 +2,36 @@ import {CheckIcon, Dropdown, FileUpload, Input, Modal, Theme, Typography} from '
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
-import {UserProfileEducationFormValues, UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
-import {academicTitles, educationTypes} from './constants';
+import {UserProfileEducationFormValues} from '../../../types/graphql/userProfileGetEducation';
+import {academicTitles, educationTypes, initialValues} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
 import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
+import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 
-const initialValues: UserProfileEducationFormValues = {
-  id: 0,
-  title: '',
-  user_profile_id: 1,
-  education_type_id: 1,
-  date_of_certification: '',
-  price: 0,
-  date_of_start: '',
-  date_of_end: '',
-  academic_title: '',
-  expertise_level: '',
-  certificate_issuer: '',
-  description: '',
-  file_id: null,
-};
-
-interface AcademicEducationModalProps extends ModalProps {
-  alert: any;
-  refetch: () => void;
-}
-
-export const AcademicEducationModal: React.FC<AcademicEducationModalProps> = ({
+export const AcademicEducationModal: React.FC<ModalProps> = ({
   selectedItem,
   open,
   onClose,
   alert,
-  refetch,
+  refetchList,
+  navigation,
 }) => {
-  const item = useMemo(() => {
-    return selectedItem
-      ? {
-          ...selectedItem,
-          expertise_level: {
-            id: selectedItem?.expertise_level,
-            title: selectedItem?.expertise_level,
-          },
-          academic_title: {
-            id: selectedItem?.academic_title,
-            title: selectedItem?.academic_title,
-          },
-        }
-      : initialValues;
-  }, [selectedItem]);
+  const {data: types} = useSettingsDropdownOverview(educationTypes.education_academic_types);
+
+  const typesOptions = useMemo(() => {
+    return types?.map(type => ({id: type.id as number, title: type.title})) || [];
+  }, [types]);
+
+  const item = useMemo(
+    () =>
+      selectedItem
+        ? {
+            ...selectedItem,
+            academic_title: {id: selectedItem.academic_title, title: selectedItem.academic_title},
+          }
+        : initialValues,
+    [selectedItem],
+  );
 
   const {
     register,
@@ -57,7 +39,7 @@ export const AcademicEducationModal: React.FC<AcademicEducationModalProps> = ({
     control,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: item || initialValues});
+  } = useForm({defaultValues: selectedItem});
 
   const {mutate} = useEducationInsert();
 
@@ -67,19 +49,29 @@ export const AcademicEducationModal: React.FC<AcademicEducationModalProps> = ({
     }
   }, [item]);
 
-  const onSubmit = async (values: any) => {
-    const data = {...values, academic_title: values.academic_title?.id, expertise_level: values.expertise_level?.id};
-
-    if (!selectedItem) {
-      delete data.id;
-    }
+  const onSubmit = async (values: UserProfileEducationFormValues) => {
+    const data = {
+      id: values.id,
+      title: values.title,
+      date_of_certification: values.date_of_certification,
+      price: values.price,
+      date_of_start: values.date_of_start,
+      date_of_end: values.date_of_end,
+      expertise_level: values.expertise_level,
+      certificate_issuer: values.certificate_issuer,
+      description: values.description,
+      file_id: values.file_id,
+      academic_title: values.academic_title?.id || '',
+      type_id: values.type?.id || 0,
+      user_profile_id: Number(navigation.location.pathname.split('/')[3]),
+    };
 
     try {
       mutate(
         data,
         () => {
           alert.success('Uspješno sačuvano');
-          refetch();
+          refetchList && refetchList();
           onClose();
         },
         () => {
@@ -111,20 +103,22 @@ export const AcademicEducationModal: React.FC<AcademicEducationModalProps> = ({
 
           <FormGroup>
             <Controller
-              name="expertise_level"
+              name="type"
               rules={{required: 'Ovo polje je obavezno'}}
               control={control}
-              render={({field: {onChange, name, value}}) => (
-                <Dropdown
-                  onChange={onChange}
-                  value={value as any}
-                  name={name}
-                  label="STEPEN ŠKOLSKOG OBRAZOVANJA:"
-                  options={educationTypes}
-                  rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
-                  error={errors.expertise_level?.message as string}
-                />
-              )}
+              render={({field: {onChange, name, value}}) => {
+                return (
+                  <Dropdown
+                    onChange={onChange}
+                    value={value as any}
+                    name={name}
+                    label="STEPEN ŠKOLSKOG OBRAZOVANJA:"
+                    options={typesOptions}
+                    rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
+                    error={errors.type?.message as string}
+                  />
+                );
+              }}
             />
           </FormGroup>
 

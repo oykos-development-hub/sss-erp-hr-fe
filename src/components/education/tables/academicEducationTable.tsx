@@ -1,7 +1,6 @@
 import {EditIconTwo, PlusIcon, TableHead, Theme, TrashIconTwo, Typography} from 'client-library';
 import React, {useMemo, useState} from 'react';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
-import {UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
 import {AcademicEducationModal} from '../modals/academicEducationModal';
 import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './styles';
 import {TableProps} from '../../../screens/employees/education/types';
@@ -17,9 +16,9 @@ const tableHeads: TableHead[] = [
   },
   {
     title: 'Stepen školskog obrazovanja',
-    accessor: 'expertise_level',
+    accessor: 'type',
     type: 'custom',
-    renderContents: (item: any) => <Typography variant="bodyMedium" content={item} />,
+    renderContents: (item: any) => <Typography variant="bodyMedium" content={item.title} />,
   },
   {
     title: 'Izdavač sertifikata',
@@ -39,36 +38,19 @@ const tableHeads: TableHead[] = [
   },
 ];
 
-const mockedTableData = [
-  {
-    id: '001',
-    academic_title: 'test',
-    certificate_issuer: 'test',
-    expertise_level: 'test',
-    file_id: 'test.csv',
-  },
-];
-
-export const AcademicEducationTable: React.FC<TableProps> = ({alert}) => {
-  const {employeeEducationData, refetchData} = useEducationOverview(1);
+export const AcademicEducationTable: React.FC<TableProps> = ({alert, navigation}) => {
+  const {employeeEducationData, refetchData} = useEducationOverview(
+    Number(navigation.location.pathname.split('/')[3]),
+    'education_academic_types',
+  );
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = React.useState(0);
 
-  let academicEducationTableData: UserProfileEducationItem[] = [] || mockedTableData;
-
   const {mutate: deleteEducation} = useEducationDelete();
 
-  if (typeof employeeEducationData !== 'undefined') {
-    employeeEducationData.forEach(tableData => {
-      if (tableData.abbreviation === 'AKDOB') {
-        academicEducationTableData = tableData.items ? tableData.items : [];
-      }
-    });
-  }
-
   const selectedItem = useMemo(() => {
-    return academicEducationTableData.find((item: UserProfileEducationItem) => item.id === selectedItemId);
+    return employeeEducationData?.find((item: any) => item.id === selectedItemId);
   }, [selectedItemId]);
 
   const handleEdit = (item: any) => {
@@ -123,7 +105,7 @@ export const AcademicEducationTable: React.FC<TableProps> = ({alert}) => {
     <div>
       <TableContainer
         tableHeads={tableHeads}
-        data={academicEducationTableData}
+        data={employeeEducationData || []}
         tableActions={[
           {name: 'edit', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
           {
@@ -139,7 +121,8 @@ export const AcademicEducationTable: React.FC<TableProps> = ({alert}) => {
           onClose={handleCloseModal}
           alert={alert}
           selectedItem={selectedItem}
-          refetch={refetchData}
+          refetchList={refetchData}
+          navigation={navigation}
         />
       )}
       <DeleteModal

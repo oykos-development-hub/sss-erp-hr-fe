@@ -1,22 +1,27 @@
-export const educationTypes = [
-  {id: '01-Bez škole', title: '01-Bez škole'},
-  {id: '02-Od 1 do 3 razreda osnovne škole', title: '02-Od 1 do 3 razreda osnovne škole'},
-  {id: '03-Od 4 do 7 razreda osnovne škole', title: '03-Od 4 do 7 razreda osnovne škole'},
-  {id: '04-Osnovna škola', title: '04-Osnovna škola'},
-  {id: '05-Škola za kvalifikovane radnike', title: '05-Škola za kvalifikovane radnike'},
-  {id: '06-Gimnazija ili srednja stručna škola', title: '06-Gimnazija ili srednja stručna škola'},
-  {id: '07-Škola za visokokvalifikovane radnike', title: '07-Škola za visokokvalifikovane radnike'},
-  {id: '08-Prvi stepen srednje usmjerenog obrazovanja', title: '08-Prvi stepen srednje usmjerenog obrazovanja'},
-  {id: '09-Drugi stepen srednje usmjerenog obrazovanja', title: '09-Drugi stepen srednje usmjerenog obrazovanja'},
-  {id: '10-Treći stepen srednje usmjerenog obrazovanja', title: 'VIII stepen'},
-  {id: '11-Četvrti stepen srednje usmjerenog obrazovanja', title: '11-Četvrti stepen srednje usmjerenog obrazovanja'},
-  {id: '12-Peti stepen srednje usmjerenog obrazovanja', title: '12-Peti stepen srednje usmjerenog obrazovanja'},
-  {id: '13-Viša škola ili prvi stepen fakulteta', title: '13-Viša škola ili prvi stepen fakulteta'},
-  {
-    id: '14-Visoka škola, fakultet ili akademija umjetnosti',
-    title: '14-Visoka škola, fakultet ili akademija umjetnosti',
-  },
-];
+import {UserProfileEducationFormValues} from '../../../types/graphql/userProfileGetEducation';
+
+export const initialValues: UserProfileEducationFormValues = {
+  id: 0,
+  title: '',
+  user_profile_id: 0,
+  type: null,
+  date_of_certification: '',
+  price: 0,
+  date_of_start: '',
+  date_of_end: '',
+  academic_title: null,
+  expertise_level: '',
+  certificate_issuer: '',
+  description: '',
+  file_id: 0,
+};
+
+export enum educationTypes {
+  education_academic_types = 'education_academic_types',
+  education_language_types = 'education_language_types',
+  education_functional_types = 'education_functional_types',
+  education_exam_types = 'education_exam_types',
+}
 
 export const academicTitles = [
   {

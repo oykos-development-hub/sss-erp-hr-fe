@@ -50,8 +50,11 @@ const mockedTableData = [
   },
 ];
 
-export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert}) => {
-  const {employeeEducationData, refetchData} = useEducationOverview(1);
+export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert, navigation}) => {
+  const {employeeEducationData, refetchData} = useEducationOverview(
+    Number(navigation.location.pathname.split('/')[3]),
+    'education_exam_types',
+  );
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = React.useState(0);
@@ -60,13 +63,9 @@ export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert}) => {
 
   const {mutate: deleteEducation} = useEducationDelete();
 
-  if (typeof employeeEducationData !== 'undefined') {
-    employeeEducationData.forEach(tableData => {
-      if (tableData.abbreviation === 'PRISP') {
-        judicalAndStateExamsTableData = tableData.items ? tableData.items : [];
-      }
-    });
-  }
+  employeeEducationData?.forEach(tableData => {
+    judicalAndStateExamsTableData = tableData.items || [];
+  });
 
   const selectedItem = useMemo(() => {
     return judicalAndStateExamsTableData.find((item: UserProfileEducationItem) => item.id === selectedItemId);
@@ -139,7 +138,8 @@ export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert}) => {
           open={showModal}
           onClose={handleCloseModal}
           selectedItem={selectedItem}
-          refetch={refetchData}
+          refetchList={refetchData}
+          navigation={navigation}
           alert={alert}
         />
       )}

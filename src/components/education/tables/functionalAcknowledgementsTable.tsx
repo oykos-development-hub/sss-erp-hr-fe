@@ -1,7 +1,6 @@
 import {EditIconTwo, PlusIcon, TableHead, Theme, TrashIconTwo, Typography} from 'client-library';
 import React, {useMemo, useState} from 'react';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
-import {UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
 import {FunctionalAcknowledgmentModal} from '../modals/functionalAcknowledgmentsModal';
 import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './styles';
 import {TableProps} from '../../../screens/employees/education/types';
@@ -61,48 +60,19 @@ const tableHeads: TableHead[] = [
   },
 ];
 
-const mockedTableData = [
-  {
-    id: '001',
-    certificate_issuer: {label: 'Scrum master', value: 'Scrum master'},
-    contractor: {label: 'Agile Human', value: 'Agile Human'},
-    price: '100 €',
-    date_of_end: {label: '6 mjeseci', value: '6 mjeseci'},
-    expertise_level: {label: 'Položio', value: 'Položio'},
-    file_id: 'sertifikat.pdf',
-  },
-  {
-    id: '002',
-    certificate_issuer: {label: 'Project manager', value: 'Project manager'},
-    contractor: {label: 'Agile Human', value: 'Agile Human'},
-    price: '100 €',
-    date_of_end: {label: '6 mjeseci', value: '6 mjeseci'},
-    expertise_level: {label: 'Položio', value: 'Položio'},
-    file: 'sertifikat.pdf',
-  },
-];
-
-export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert}) => {
-  const {employeeEducationData, refetchData} = useEducationOverview(1);
+export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navigation}) => {
+  const {employeeEducationData, refetchData} = useEducationOverview(
+    Number(navigation.location.pathname.split('/')[3]),
+    'education_functional_types',
+  );
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
   const [selectedItemId, setSelectedItemId] = React.useState(0);
-
-  let functionalAcknowledgementTableData: UserProfileEducationItem[] = [] || mockedTableData;
 
   const {mutate: deleteEducation} = useEducationDelete();
 
-  if (typeof employeeEducationData !== 'undefined') {
-    employeeEducationData.forEach(tableData => {
-      if (tableData.abbreviation === 'FUZNA') {
-        functionalAcknowledgementTableData = tableData.items ? tableData.items : [];
-      }
-    });
-  }
-
   const selectedItem = useMemo(() => {
-    return functionalAcknowledgementTableData.find((item: UserProfileEducationItem) => item.id === selectedItemId);
+    return employeeEducationData?.find((item: any) => item.id === selectedItemId);
   }, [selectedItemId]);
 
   const handleEdit = (item: any) => {
@@ -157,7 +127,7 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert}) => 
     <div>
       <TableContainer
         tableHeads={tableHeads}
-        data={functionalAcknowledgementTableData}
+        data={employeeEducationData || []}
         tableActions={[
           {name: 'edit', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
           {
@@ -172,7 +142,8 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert}) => 
         open={showModal}
         onClose={handleCloseModal}
         selectedItem={selectedItem}
-        refetch={refetchData}
+        refetchList={refetchData}
+        navigation={navigation}
         alert={alert}
       />
       <DeleteModal

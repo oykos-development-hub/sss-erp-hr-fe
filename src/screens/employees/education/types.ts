@@ -9,6 +9,7 @@ export interface EducationPageProps {
 export interface ModalProps {
   selectedItem?: any;
   alert?: any;
+  navigation?: any;
   open: boolean;
   onClose: () => void;
   dropdownData?: any[];
@@ -20,4 +21,5 @@ export interface ModalProps {
 export interface TableProps {
   languages?: any[];
   alert?: any;
+  navigation?: any;
 }

@@ -2,61 +2,32 @@ import {CheckIcon, Dropdown, FileUpload, Modal, Theme} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
-import {UserProfileEducationFormValues, UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
-import {languageAcknowledgmentLevels} from './constants';
+import {educationTypes, initialValues, languageAcknowledgmentLevels} from './constants';
 import {ModalContentWrapper, Row} from './styles';
 import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
+import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 
-const initialValues: UserProfileEducationFormValues = {
-  id: 0,
-  title: '',
-  user_profile_id: 1,
-  education_type_id: 2,
-  date_of_certification: '',
-  price: 0,
-  date_of_start: '',
-  date_of_end: '',
-  academic_title: '',
-  expertise_level: '',
-  certificate_issuer: '',
-  description: '',
-  file_id: null,
-};
-
-interface LanguageAcknowledgmentModalProps extends ModalProps {
-  alert: any;
-  refetch: () => void;
-}
-
-export const LanguageAcknowledgmentModal: React.FC<LanguageAcknowledgmentModalProps> = ({
+export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
   selectedItem,
   open,
   onClose,
-  dropdownData,
   alert,
-  refetch,
+  refetchList,
+  navigation,
 }) => {
-  const languagesList: any[] = [];
+  const {data: languages} = useSettingsDropdownOverview(educationTypes.education_language_types);
 
-  dropdownData?.forEach(item => {
-    const language = {
-      id: item.alpha_3_code + '(' + item.en_short_name + ')',
-      title: item.alpha_3_code + '(' + item.en_short_name + ')',
-    };
-    languagesList.push(language);
-  });
+  const languagesOptions = useMemo(() => {
+    return languages?.map(type => ({id: type.id as number, title: type.title})) || [];
+  }, [languages]);
 
   const item = useMemo(() => {
     return selectedItem
       ? {
           ...selectedItem,
           expertise_level: {
-            id: selectedItem?.expertise_level ? selectedItem.expertise_level : '',
-            title: selectedItem?.expertise_level ? selectedItem?.expertise_level : '',
-          },
-          academic_title: {
-            id: selectedItem?.academic_title ? selectedItem.academic_title : '',
-            title: selectedItem?.academic_title ? selectedItem.academic_title : '',
+            id: selectedItem.expertise_level || '',
+            title: selectedItem?.expertise_level || '',
           },
         }
       : initialValues;
@@ -67,7 +38,7 @@ export const LanguageAcknowledgmentModal: React.FC<LanguageAcknowledgmentModalPr
     control,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: item || initialValues});
+  } = useForm({defaultValues: item});
 
   const {mutate} = useEducationInsert();
 
@@ -78,18 +49,28 @@ export const LanguageAcknowledgmentModal: React.FC<LanguageAcknowledgmentModalPr
   }, [item]);
 
   const onSubmit = async (values: any) => {
-    const data = {...values, academic_title: values.academic_title.id, expertise_level: values.expertise_level.id};
-
-    if (!selectedItem) {
-      delete data.id;
-    }
+    const data = {
+      id: values.id,
+      title: values.title,
+      date_of_certification: values.date_of_certification,
+      price: values.price,
+      date_of_start: values.date_of_start,
+      date_of_end: values.date_of_end,
+      expertise_level: values.expertise_level.id,
+      certificate_issuer: values.certificate_issuer,
+      description: values.description,
+      file_id: values.file_id,
+      academic_title: values.academic_title?.id || '',
+      type_id: values.type?.id || 0,
+      user_profile_id: Number(navigation.location.pathname.split('/')[3]),
+    };
 
     try {
       mutate(
         data,
         () => {
           alert?.success('Uspješno sačuvano');
-          refetch();
+          refetchList && refetchList();
           onClose();
         },
         () => {
@@ -114,7 +95,7 @@ export const LanguageAcknowledgmentModal: React.FC<LanguageAcknowledgmentModalPr
         <ModalContentWrapper>
           <Row>
             <Controller
-              name="academic_title"
+              name="type"
               rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
@@ -124,9 +105,9 @@ export const LanguageAcknowledgmentModal: React.FC<LanguageAcknowledgmentModalPr
                   name={name}
                   label="ZNANJE STRANOG JEZIKA:"
                   isSearchable
-                  options={languagesList}
+                  options={languagesOptions}
                   rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
-                  error={errors.academic_title?.message as string}
+                  error={errors.type?.message as string}
                 />
               )}
             />

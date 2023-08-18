@@ -2,41 +2,26 @@ import {CheckIcon, Datepicker, Dropdown, FileUpload, Modal, Theme, Typography} f
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
-import {UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
 import {parseDate} from '../../../utils/dateUtils';
-import {examTypes} from './constants';
+import {educationTypes, examTypes, initialValues} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
 import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
+import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 
-const initialValues: UserProfileEducationItem = {
-  id: 0,
-  user_profile_id: 1,
-  education_type_id: 3,
-  date_of_certification: '',
-  price: 0,
-  date_of_start: '',
-  date_of_end: '',
-  academic_title: '',
-  expertise_level: '',
-  certificate_issuer: '',
-  description: '',
-  created_at: '',
-  updated_at: '',
-  file_id: '1',
-};
-
-interface JudicalAndStateExamsModal extends ModalProps {
-  alert: any;
-  refetch: () => void;
-}
-
-export const JudicalAndStateExamsModal: React.FC<JudicalAndStateExamsModal> = ({
+export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   selectedItem,
   open,
   onClose,
   alert,
-  refetch,
+  refetchList,
+  navigation,
 }) => {
+  const {data: types} = useSettingsDropdownOverview(educationTypes.education_exam_types);
+
+  const typesOptions = useMemo(() => {
+    return types?.map(type => ({id: type.id as number, title: type.title})) || [];
+  }, [types]);
+
   const item = useMemo(() => {
     return selectedItem
       ? {
@@ -54,7 +39,7 @@ export const JudicalAndStateExamsModal: React.FC<JudicalAndStateExamsModal> = ({
     control,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: item || initialValues});
+  } = useForm({defaultValues: item});
 
   const {mutate} = useEducationInsert();
 
@@ -66,21 +51,27 @@ export const JudicalAndStateExamsModal: React.FC<JudicalAndStateExamsModal> = ({
 
   const onSubmit = async (values: any) => {
     const data = {
-      ...values,
-      date_of_certification: parseDate(values?.date_of_certification, true),
-      academic_title: values?.academic_title?.id,
+      id: values.id,
+      title: values.title,
+      date_of_certification: values.date_of_certification,
+      price: values.price,
+      date_of_start: parseDate(values?.date_of_start, true),
+      date_of_end: parseDate(values?.date_of_end, true),
+      expertise_level: values.expertise_level,
+      certificate_issuer: values.certificate_issuer,
+      description: values.description,
+      file_id: values.file_id,
+      academic_title: values.academic_title?.id || '',
+      type_id: values.type?.id || 0,
+      user_profile_id: Number(navigation.location.pathname.split('/')[3]),
     };
-
-    if (!selectedItem) {
-      delete data.id;
-    }
 
     try {
       mutate(
         data,
         () => {
           alert.success('Uspješno sačuvano');
-          refetch();
+          refetchList && refetchList();
           onClose();
         },
         () => {

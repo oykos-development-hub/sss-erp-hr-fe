@@ -2,47 +2,34 @@ import {CheckIcon, Datepicker, Dropdown, FileUpload, Input, Modal, Theme, Typogr
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
-import {UserProfileEducationFormValues, UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
+import {UserProfileEducationFormValues} from '../../../types/graphql/userProfileGetEducation';
 import {parseDate} from '../../../utils/dateUtils';
-import {functionalAcknowledgmentGrades} from './constants';
+import {educationTypes, functionalAcknowledgmentGrades, initialValues} from './constants';
 import {FileUploadWrapper, ModalContentWrapper, Row} from './styles';
 import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
+import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 
-const initialValues: UserProfileEducationFormValues = {
-  id: 0,
-  title: '',
-  user_profile_id: 1,
-  education_type_id: 4,
-  date_of_certification: '',
-  price: 0,
-  date_of_start: '',
-  date_of_end: '',
-  academic_title: '',
-  expertise_level: '',
-  certificate_issuer: '',
-  description: '',
-  file_id: null,
-};
-
-interface FunctionalAcknowledgmentModal extends ModalProps {
-  alert: any;
-  refetch: () => void;
-}
-
-export const FunctionalAcknowledgmentModal: React.FC<FunctionalAcknowledgmentModal> = ({
+export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
   selectedItem,
   open,
   onClose,
   alert,
-  refetch,
+  refetchList,
+  navigation,
 }) => {
+  const {data: types} = useSettingsDropdownOverview(educationTypes.education_functional_types);
+
+  const typesOptions = useMemo(() => {
+    return types?.map(type => ({id: type.id as number, title: type.title})) || [];
+  }, [types]);
+
   const item = useMemo(() => {
     return selectedItem
       ? {
           ...selectedItem,
           expertise_level: {
-            id: selectedItem?.expertise_level,
-            title: selectedItem?.expertise_level,
+            id: selectedItem?.expertise_level.id,
+            title: selectedItem?.expertise_level.title,
           },
         }
       : initialValues;
@@ -54,7 +41,7 @@ export const FunctionalAcknowledgmentModal: React.FC<FunctionalAcknowledgmentMod
     control,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: item || initialValues});
+  } = useForm({defaultValues: item});
 
   const {mutate} = useEducationInsert();
 
@@ -64,26 +51,29 @@ export const FunctionalAcknowledgmentModal: React.FC<FunctionalAcknowledgmentMod
     }
   }, [item]);
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: UserProfileEducationFormValues) => {
     const data = {
-      ...values,
+      id: values.id,
+      title: values.title,
+      date_of_certification: parseDate(values.date_of_certification, true),
+      price: values.price,
       date_of_start: parseDate(values?.date_of_start, true),
       date_of_end: parseDate(values?.date_of_end, true),
-      academic_title: values?.academic_title,
-      expertise_level: values?.expertise_level?.title,
-      price: values?.price.toString(),
+      expertise_level: values.expertise_level,
+      certificate_issuer: values.certificate_issuer,
+      description: values.description,
+      file_id: values.file_id,
+      academic_title: values.academic_title?.id || '',
+      type_id: values.type?.id || 0,
+      user_profile_id: Number(navigation.location.pathname.split('/')[3]),
     };
-
-    if (!selectedItem) {
-      delete data.id;
-    }
 
     try {
       mutate(
         data,
         () => {
           alert.success('Uspješno sačuvano');
-          refetch();
+          refetchList && refetchList();
           onClose();
         },
         () => {

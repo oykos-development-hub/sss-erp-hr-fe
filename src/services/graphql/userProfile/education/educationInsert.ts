@@ -12,7 +12,10 @@ const educationInsert = async (
         item {
             id
             user_profile_id
-            education_type_id
+            type {
+              id
+              title
+            }
             date_of_certification
             price
             date_of_start
@@ -24,9 +27,9 @@ const educationInsert = async (
             created_at
             updated_at
             file_id
-          }
-      }
-  }`;
+        }
+    }
+}`;
 
   const response = await GraphQL.fetch(mutation, {data});
 

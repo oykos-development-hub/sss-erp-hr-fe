@@ -2,7 +2,6 @@ import {EditIconTwo, PlusIcon, TableHead, Theme, TrashIconTwo, Typography} from 
 import React, {useMemo, useState} from 'react';
 import {TableProps} from '../../../screens/employees/education/types';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
-import {UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
 import {LanguageAcknowledgmentModal} from '../modals/languageAcknowledgmentModal';
 import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './styles';
 import useEducationOverview from '../../../services/graphql/userProfile/education/useEducationOverview';
@@ -16,10 +15,10 @@ const tableHeads: TableHead[] = [
   },
   {
     title: 'Jezik',
-    accessor: 'academic_title',
+    accessor: 'type',
     sortable: true,
     type: 'custom',
-    renderContents: (item: any) => <Typography variant="bodyMedium" content={item} />,
+    renderContents: (item: any) => <Typography variant="bodyMedium" content={item.title} />,
   },
   {
     title: 'Stepen',
@@ -41,43 +40,19 @@ const tableHeads: TableHead[] = [
   },
 ];
 
-const mockedTableData = [
-  {
-    id: '001',
-    number: '001',
-    language: {label: 'Engleski', value: 'Engleski'},
-    degree: {label: 'C1', value: 'C1'},
-    file: 'sertifikat.pdf',
-  },
-  {
-    id: '002',
-    number: '002',
-    language: {label: 'Francuski', value: 'Francuski'},
-    degree: {label: 'C2', value: 'C2'},
-    file: 'sertifikat.pdf',
-  },
-];
-
-export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({languages, alert}) => {
-  const {employeeEducationData, refetchData} = useEducationOverview(1);
+export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({languages, alert, navigation}) => {
+  const {employeeEducationData, refetchData} = useEducationOverview(
+    Number(navigation.location.pathname.split('/')[3]),
+    'education_language_types',
+  );
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = React.useState(0);
 
-  let languageAcknowledgementTableData: UserProfileEducationItem[] = [] || mockedTableData;
-
   const {mutate: deleteEducation} = useEducationDelete();
 
-  if (typeof employeeEducationData !== 'undefined') {
-    employeeEducationData.forEach(tableData => {
-      if (tableData.abbreviation === 'POJEZ') {
-        languageAcknowledgementTableData = tableData.items ? tableData.items : [];
-      }
-    });
-  }
-
   const selectedItem = useMemo(() => {
-    return languageAcknowledgementTableData.find((item: UserProfileEducationItem) => item.id === selectedItemId);
+    return employeeEducationData?.find((item: any) => item.id === selectedItemId);
   }, [selectedItemId]);
 
   const handleEdit = (item: any) => {
@@ -131,7 +106,7 @@ export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({languages, al
     <div>
       <TableContainer
         tableHeads={tableHeads}
-        data={languageAcknowledgementTableData}
+        data={employeeEducationData || []}
         tableActions={[
           {name: 'edit', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
           {
@@ -146,9 +121,9 @@ export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({languages, al
           open={showModal}
           onClose={handleCloseModal}
           selectedItem={selectedItem}
-          dropdownData={languages}
-          refetch={refetchData}
+          refetchList={refetchData}
           alert={alert}
+          navigation={navigation}
         />
       )}
       <DeleteModal
