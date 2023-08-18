@@ -1,3 +1,4 @@
+import {yesOrNoOptionsString} from '../../../constants';
 import {parseDate} from '../../../utils/dateUtils';
 
 export const formatData = (data: any) => {
@@ -30,7 +31,7 @@ export const formatData = (data: any) => {
     date_of_becoming_judge: parseDate(data?.date_of_becoming_judge, true),
     national_minority: data?.national_minority.id,
     official_personal_document_issuer: data?.official_personal_document_issuer?.id,
-    user_account_id: 1,
+    // user_account_id: 1,
     contract: {
       organization_unit_id: data?.contract?.organization_unit_id?.id || null,
       department_id: data?.contract.department_id?.id || null,
@@ -52,4 +53,8 @@ export const formatData = (data: any) => {
   }
 
   return payload;
+};
+
+export const booleanToYesOrNo = (value: boolean) => {
+  return value !== null ? (value ? yesOrNoOptionsString[1] : yesOrNoOptionsString[2]) : null;
 };

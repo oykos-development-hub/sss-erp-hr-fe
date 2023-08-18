@@ -1,4 +1,4 @@
-import {DropdownDataNumber, DropdownDataString} from '../dropdownData';
+import {DropdownDataBoolean, DropdownDataNumber, DropdownDataString} from '../dropdownData';
 
 export interface UserProfileBasicInfo {
   id: number;
@@ -31,7 +31,8 @@ export interface UserProfileBasicInfo {
   phone: string;
   organization_unit: DropdownDataNumber;
   job_position: DropdownDataNumber;
-  contracts: UserContract[];
+  contract: UserContract;
+  national_minority: string;
 }
 
 export interface UserProfileBasicInfoFormValues {
@@ -50,13 +51,13 @@ export interface UserProfileBasicInfoFormValues {
   mother_birth_last_name: string;
   official_personal_id: string;
   official_personal_document_number: string;
-  official_personal_document_issuer: string;
+  official_personal_document_issuer: DropdownDataString | null;
   gender: DropdownDataString | null;
-  single_parent: boolean;
-  housing_done: boolean;
-  revisor_role: boolean;
+  single_parent: DropdownDataString | null;
+  housing_done: DropdownDataString | null;
+  revisor_role: DropdownDataString | null;
   housing_description: string;
-  marital_status: string;
+  marital_status: DropdownDataString | null;
   date_of_becoming_judge: string;
   email: string;
   phone: string;
@@ -71,8 +72,11 @@ export interface UserProfileBasicInfoFormValues {
 
 export interface UserContract {
   id: number;
-  user_profile_id: number;
-  contract_type_id: number;
+  user_profile: DropdownDataNumber | null;
+  contract_type: DropdownDataNumber | null;
+  job_position_in_organization_unit: DropdownDataNumber | null;
+  organization_unit: DropdownDataNumber | null;
+  department: DropdownDataNumber | null;
   abbreviation: string;
   description: string;
   active: boolean;
@@ -86,7 +90,6 @@ export interface UserContract {
   date_of_start: string;
   date_of_end: string;
   file_id: number;
-  contract_type: ContractType | null;
 }
 
 export interface BasicInfoUserContractValues {
