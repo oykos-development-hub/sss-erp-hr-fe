@@ -15,13 +15,12 @@ const basicInfoGet = async (user_profile_id: number): Promise<UserProfileBasicRe
             country_of_birth
             city_of_birth
             nationality
+            national_minority
             citizenship
             address
             father_name
             mother_name
             mother_birth_last_name
-            bank_account
-            bank_name
             official_personal_id
             official_personal_document_number
             official_personal_document_issuer
@@ -31,47 +30,39 @@ const basicInfoGet = async (user_profile_id: number): Promise<UserProfileBasicRe
             housing_description
             revisor_role
             marital_status
-            date_of_taking_oath
             date_of_becoming_judge
             email
             phone
             organization_unit {
-                id
-                title
+              id
+              title
             }
             job_position {
-                id
-                title
+              id
+              title
             }
-            contracts {
-                id
-                user_profile_id
-                contract_type_id
-                abbreviation
-                description
-                active
-                serial_number
-                net_salary
-                gross_salary
-                bank_account
-                bank_name
-                date_of_signature
-                date_of_eligibility
-                date_of_start
-                date_of_end
-                file_id
-                contract_type {
-                    id
-                    title
-                    abbreviation
-                    description
-                    color
-                    icon
-                    created_at
-                    updated_at
-                }
-                created_at
-                updated_at
+            contract {
+              id
+              contract_type {
+                  id
+                  title
+              }
+              job_position_in_organization_unit {
+                  id
+                  title
+              }
+              organization_unit {
+                  id
+                  title
+              }
+              department {
+                  id
+                  title
+              }
+              active
+              date_of_start
+              date_of_end
+              file_id
             }
         }
     }

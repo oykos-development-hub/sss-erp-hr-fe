@@ -1,9 +1,11 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '..';
 import {SettingsDropdown} from '../../../types/graphql/settingsDropdownType';
+import {DropdownDataNumber} from '../../../types/dropdownData';
 
 const useSettingsDropdownOverview = (entity: string, page?: number, size?: number, id?: number) => {
   const [data, setData] = useState<SettingsDropdown[]>();
+  const [options, setOptions] = useState<DropdownDataNumber[]>([]);
   const [loading, setLoading] = useState(true);
 
   const getSettingsDropdownOverview = async (onSuccess?: (item: any) => void) => {
@@ -12,6 +14,7 @@ const useSettingsDropdownOverview = (entity: string, page?: number, size?: numbe
     const data = response?.items || null;
 
     setData(data || []);
+    setOptions(data?.map((item: any) => ({title: item.title, id: item.id})) || []);
     setLoading(false);
     onSuccess && onSuccess(data);
   };
@@ -20,7 +23,7 @@ const useSettingsDropdownOverview = (entity: string, page?: number, size?: numbe
     getSettingsDropdownOverview();
   }, [id]);
 
-  return {data: data, loading, refetch: getSettingsDropdownOverview};
+  return {data: data, loading, refetch: getSettingsDropdownOverview, options};
 };
 
 export default useSettingsDropdownOverview;

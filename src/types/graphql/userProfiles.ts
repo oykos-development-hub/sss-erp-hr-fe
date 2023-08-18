@@ -1,4 +1,4 @@
-import {DropdownDataNumber} from '../dropdownData';
+import {DropdownDataNumber, DropdownDataString} from '../dropdownData';
 
 export interface UserProfileBasicInfo {
   id: number;
@@ -41,58 +41,65 @@ export interface UserProfileBasicInfoFormValues {
   date_of_birth: string;
   birth_last_name: string;
   country_of_birth: string;
-  city_of_birth: string;
-  nationality: string;
-  citizenship: string;
+  city_of_birth: DropdownDataString | null;
+  nationality: DropdownDataString | null;
+  citizenship: DropdownDataString | null;
   address: string;
   father_name: string;
   mother_name: string;
   mother_birth_last_name: string;
-  bank_account: string;
-  bank_name: string;
   official_personal_id: string;
   official_personal_document_number: string;
   official_personal_document_issuer: string;
-  gender: string;
+  gender: DropdownDataString | null;
   single_parent: boolean;
   housing_done: boolean;
   revisor_role: boolean;
   housing_description: string;
   marital_status: string;
-  date_of_taking_oath: string;
   date_of_becoming_judge: string;
   email: string;
   phone: string;
-  national_minority: string;
+  national_minority: DropdownDataString | null;
   secondary_email: string;
   pin: string;
   password: string;
   middle_name: string;
-  position_in_organization_unit_id: number;
   role_id: number;
-  contracts: UserContractItem[];
+  contract: BasicInfoUserContractValues;
 }
 
 export interface UserContract {
+  id: number;
+  user_profile_id: number;
+  contract_type_id: number;
   abbreviation: string;
+  description: string;
   active: boolean;
+  serial_number: string;
+  net_salary: string;
+  gross_salary: string;
   bank_account: string;
   bank_name: string;
-  contract_type: any[];
-  contract_type_id: number;
-  created_at: string;
-  date_of_eligibility: string;
-  date_of_end: string;
   date_of_signature: string;
+  date_of_eligibility: string;
   date_of_start: string;
-  description: string;
-  file_id: string;
-  gross_salary: string;
-  id: number;
-  net_salary: string;
-  serial_number: string;
-  updated_at: string;
-  user_profile_id: number;
+  date_of_end: string;
+  file_id: number;
+  contract_type: ContractType | null;
+}
+
+export interface BasicInfoUserContractValues {
+  contract_type_id: DropdownDataNumber | null;
+  organization_unit_id: DropdownDataNumber | null;
+  department_id: DropdownDataNumber | null;
+  date_of_start: string;
+  date_of_end: string;
+  date_of_eligibility: string;
+  file_id: number | null;
+  job_position_in_organization_unit_id: DropdownDataNumber | null;
+  user_profile_id: DropdownDataNumber | null;
+  active: boolean;
 }
 
 export interface ContractType {
@@ -104,12 +111,6 @@ export interface ContractType {
   id: number;
   title: string;
   updated_at: string;
-}
-
-export interface UserContractItem {
-  date_of_start: string;
-  date_of_end: string;
-  contract_type_id: number;
 }
 
 export interface UserProfileBasicResponse {

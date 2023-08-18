@@ -1,14 +1,15 @@
 import {GraphQL} from '../..';
 import {UserProfileInsertBasicInfoResponse} from '../../../../types/graphql/userProfileInsertBasicInfo';
-import {UserProfileBasicInfo, UserProfileBasicInfoFormValues} from '../../../../types/graphql/userProfiles';
+import {UserProfileBasicInfoFormValues} from '../../../../types/graphql/userProfiles';
 
-const basicInfoInsert = async (
+const basicInfoUpdate = async (
   data: UserProfileBasicInfoFormValues,
-): Promise<UserProfileInsertBasicInfoResponse['data']['userProfile_Basic_Insert']> => {
-  const mutation = `mutation($data: UserProfileBasicInsertMutation!) {
-    userProfile_Basic_Insert(data: $data) {
+): Promise<UserProfileInsertBasicInfoResponse['data']['userProfile_Update']> => {
+  const mutation = `mutation($data: UserProfileUpdateMutation!) {
+    userProfile_Update(data: $data) {
         message
         status
+        data
         item {
             id
             first_name
@@ -92,7 +93,7 @@ const basicInfoInsert = async (
 
   const response = await GraphQL.fetch(mutation, {data});
 
-  return response?.data?.userProfile_Basic_Insert || {};
+  return response?.data?.userProfile_Update || {};
 };
 
-export default basicInfoInsert;
+export default basicInfoUpdate;

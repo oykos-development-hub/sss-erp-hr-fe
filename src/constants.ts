@@ -36,26 +36,31 @@ export const countriesData: DropdownDataString[] = [
 ];
 
 export const maleMaritalStatusOptions: DropdownDataString[] = [
-  {id: 'ozenjen', title: 'Oženjen'},
-  {id: 'neozenjen', title: 'Neoženjen'},
+  {id: 'Oženjen', title: 'Oženjen'},
+  {id: 'Neoženjen', title: 'Neoženjen'},
 ];
 
 export const femaleMaritalStatusOptions: DropdownDataString[] = [
-  {id: 'udata', title: 'Udata'},
-  {id: 'neudata', title: 'Neudata'},
+  {id: 'Udata', title: 'Udata'},
+  {id: 'Neudata', title: 'Neudata'},
 ];
 
 export const genderOptions: DropdownDataString[] = [
-  {id: 'muski', title: 'Muški'},
-  {id: 'zenski', title: 'Ženski'},
+  {id: 'M', title: 'M'},
+  {id: 'Ž', title: 'Ž'},
 ];
 
 export const nationalMinorities: DropdownDataString[] = [
-  {id: 'albanska', title: 'Albanska'},
-  {id: 'bosnjačka', title: 'Bošnjačka'},
-  {id: 'hrvatska', title: 'Hrvatska'},
-  {id: 'romska', title: 'Romska'},
-  {id: 'srpska', title: 'Srpska'},
+  {id: 'Srbin/Srpkinja', title: 'Srbin/Srpkinja'},
+  {id: 'Bošnjak/Bošnjakinja', title: 'Bošnjak/Bošnjakinja'},
+  {id: 'Albanac/Albanka', title: 'Albanac/Albanka'},
+  {id: 'Hrvat/Hrvatica', title: 'Hrvat/Hrvatica'},
+  {id: 'Musliman/Muslimanka', title: 'Musliman/Muslimanka'},
+  {id: 'Bosanac/Bosanka', title: 'Bosanac/Bosanka'},
+  {id: 'Makedonas/Makedonka', title: 'Makedonas/Makedonka'},
+  {id: 'Egipćanin/Egipćanka', title: 'Egipćanin/Egipćanka'},
+  {id: 'Rom/Romkinja', title: 'Rom/Romkinja'},
+  {id: 'Ostalo', title: 'Ostalo'},
 ];
 
 export const yesAndNoOptions = [
@@ -78,9 +83,6 @@ export const yesOrNoOptionsString = [
   {id: 'Da', title: 'Da'},
   {id: 'Ne', title: 'Ne'},
 ];
-
-//TODO: remove this later
-export const departmentOptions = [{id: 'Odjeljenje za lkt', title: 'Odjeljenje za lkt'}];
 
 export const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
@@ -110,30 +112,30 @@ export const quarterOptions = [
 ];
 
 export const revisionPriorityOptions: DropdownDataString[] = [
-  {id: 'low', title: 'Nizak'},
-  {id: 'normal', title: 'Srednji'},
-  {id: 'high', title: 'Visok'},
+  {id: 'Nizak', title: 'Nizak'},
+  {id: 'Srednji', title: 'Srednji'},
+  {id: 'Visok', title: 'Visok'},
 ];
 
 export const revisionDeadlineOptions: DropdownDataString[] = [
-  {id: '1', title: '1 mjesec'},
-  {id: '2', title: '2 mjeseca'},
-  {id: '3', title: '3 mjeseca'},
-  {id: '4', title: '4 mjeseca'},
-  {id: '5', title: '5 mjeseci'},
-  {id: '6', title: '6 mjeseci'},
-  {id: '7', title: '7 mjeseci'},
-  {id: '8', title: '8 mjeseci'},
-  {id: '9', title: '9 mjeseci'},
-  {id: '10', title: '10 mjeseci'},
-  {id: '11', title: '11 mjeseci'},
-  {id: '12', title: '12 mjeseci'},
+  {id: '1 mjesec', title: '1 mjesec'},
+  {id: '2 mjeseca', title: '2 mjeseca'},
+  {id: '3 mjeseca', title: '3 mjeseca'},
+  {id: '4 mjeseca', title: '4 mjeseca'},
+  {id: '5 mjeseci', title: '5 mjeseci'},
+  {id: '6 mjeseci', title: '6 mjeseci'},
+  {id: '7 mjeseci', title: '7 mjeseci'},
+  {id: '8 mjeseci', title: '8 mjeseci'},
+  {id: '9 mjeseci', title: '9 mjeseci'},
+  {id: '10 mjeseci', title: '10 mjeseci'},
+  {id: '11 mjeseci', title: '11 mjeseci'},
+  {id: '12 mjeseci', title: '12 mjeseci'},
 ];
 
 export const revisionStatusOptions: DropdownDataString[] = [
-  {id: 'implemented', title: 'Sprovedena'},
-  {id: 'failed', title: 'Neuspješna'},
-  {id: 'waiting', title: 'Na čekanju'},
+  {id: 'Sprovedena', title: 'Sprovedena'},
+  {id: 'Neuspješna', title: 'Neuspješna'},
+  {id: 'Na čekanju', title: 'Na čekanju'},
 ];
 
 export const revisionTypeOptions: DropdownDataNumber[] = [

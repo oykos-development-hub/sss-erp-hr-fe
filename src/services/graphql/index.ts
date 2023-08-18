@@ -60,6 +60,7 @@ import userProfileOverview from './userProfile/userProfileOverview';
 import jobPositionsOrganizationUnit from './jobPositions/jobPositionsOrganizationUnit';
 import absentTypesOverview from './userProfile/absents/absentsType';
 import settingsDropdownOverview from './settingsDropdown/settingsDropdownOverview';
+import basicInfoUpdate from './userProfile/basicInfo/basicInfoUpdate';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -79,6 +80,7 @@ export const GraphQL = {
       .catch(error => console.error(error));
   },
   organizationUnits: organizationUnits,
+  basicInfoUpdate: basicInfoUpdate,
   basicInfoGet: basicInfoGet,
   basicInfoInsert: basicInfoInsert,
   experienceOverview: experienceOverview,

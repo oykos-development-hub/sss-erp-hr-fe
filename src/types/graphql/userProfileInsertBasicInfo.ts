@@ -7,5 +7,10 @@ export interface UserProfileInsertBasicInfoResponse {
       message?: string;
       item?: UserProfileBasicInfo;
     };
+    userProfile_Update: {
+      status?: string;
+      message?: string;
+      item?: UserProfileBasicInfo;
+    };
   };
 }

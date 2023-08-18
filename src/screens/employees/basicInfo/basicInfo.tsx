@@ -14,8 +14,6 @@ import {Typography, Input, Button, Dropdown, Datepicker} from 'client-library';
 import {BasicInfoPageProps} from './types';
 import {
   cityData,
-  contractTypes,
-  departmentOptions,
   femaleMaritalStatusOptions,
   genderOptions,
   maleMaritalStatusOptions,
@@ -23,7 +21,7 @@ import {
   yesOrNoOptionsString,
 } from '../../../constants';
 import {Controller, useForm} from 'react-hook-form';
-import {UserProfileBasicInfo, UserProfileBasicInfoFormValues} from '../../../types/graphql/userProfiles';
+import {UserProfileBasicInfoFormValues} from '../../../types/graphql/userProfiles';
 import {parseDate} from '../../../utils/dateUtils';
 import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
 import {initialValues} from './constants';
@@ -31,18 +29,17 @@ import useJobPositions from '../../../services/graphql/jobPositions/useJobPositi
 import {formatData} from './utils';
 import useBasicInfoGet from '../../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
 import useBasicInfoInsert from '../../../services/graphql/userProfile/basicInfo/useBasicInfoInsert';
-
-//TODO For the department field (odjeljenje), create an option for fetching all the departments of a certain organization unit (by its ID) in the BFF
-//TODO Fix checkbox to work in the react hook form without the reset function
-//TODO Fix all as any down below (and in rest of the forms)
-//TODO Make name prop on the dropdown and datepicker to be optional
+import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import useBasicInfoUpdate from '../../../services/graphql/userProfile/basicInfo/useBasicInfoUpdate';
 
 export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const {data: profileData, refetch} = useBasicInfoGet(Number(context.navigation.location.pathname.split('/')[3]));
   const {data: jobPositions} = useJobPositions('');
   const {organizationUnitsList} = useOrganizationUnits();
-  const {mutate} = useBasicInfoInsert();
+  const {options: contractTypes} = useSettingsDropdownOverview('contract_types');
+  const {mutate: createBasicInfo} = useBasicInfoInsert();
+  const {mutate: updateBasicInfo} = useBasicInfoUpdate();
 
   const {
     register,
@@ -56,34 +53,9 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
     defaultValues: initialValues,
   });
 
-  const onFileUpload = (acceptedFiles: FileList) => {
-    console.log('File(s) uploaded:', acceptedFiles);
-  };
-
-  const handleSave = (values: UserProfileBasicInfoFormValues, close: boolean) => {
-    if (isValid) {
-      mutate(
-        formatData(values),
-        () => {
-          refetch();
-          context.alert.success('Čuvanje podataka uspješno');
-          setIsDisabled(true);
-
-          if (close) {
-            const overviewPathname = context.navigation.location.pathname.split('/').slice(0, 3).join('/');
-            context.navigation.navigate(overviewPathname);
-          }
-        },
-        () => {
-          context.alert.error('Greška prilikom čuvanja podataka');
-        },
-      );
-    }
-  };
-
-  // const jobPositionOptions = useMemo(() => {
-  //   return jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title}));
-  // }, [jobPositions]);
+  const jobPositionOptions = useMemo(() => {
+    return jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title}));
+  }, [jobPositions]);
 
   const countryOptions = useMemo(() => {
     return context.countries?.map((country: any) => {
@@ -94,7 +66,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
     });
   }, [context.countries]);
 
-  const citizenshipArray = useMemo(() => {
+  const citizenshipOptions = useMemo(() => {
     return context.countries?.map((country: any) => {
       return {
         id: country.alpha_3_code,
@@ -102,6 +74,73 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
       };
     });
   }, [context.countries]);
+
+  const validateDateOfEnd = (value: string) =>
+    !value || !watch('contract.date_of_start') || new Date(value) >= new Date(watch('contract.date_of_start'))
+      ? true
+      : 'Kraj radnog odnosa ne može biti prije početka radnog odnosa.';
+
+  const gender = watch('gender')?.id;
+  const contract = watch('contract');
+
+  const maritalOptions = gender === 'M' ? maleMaritalStatusOptions : femaleMaritalStatusOptions;
+
+  const departmentOptions = useMemo(() => {
+    if (!contract?.organization_unit_id) return [];
+
+    if (contract?.organization_unit_id) {
+      return organizationUnitsList.filter(
+        (organizationUnit: any) => organizationUnit.id === contract.organization_unit_id,
+      );
+    } else {
+      return organizationUnitsList;
+    }
+  }, [contract?.organization_unit_id, organizationUnitsList]);
+
+  const onFileUpload = (acceptedFiles: FileList) => {
+    console.log('File(s) uploaded:', acceptedFiles);
+  };
+
+  const handleSave = (values: UserProfileBasicInfoFormValues, close: boolean) => {
+    if (isValid) {
+      if (!profileData?.id) {
+        createBasicInfo(
+          formatData(values),
+          () => {
+            refetch();
+            context.alert.success('Čuvanje podataka uspješno');
+            setIsDisabled(true);
+
+            if (close) {
+              const overviewPathname = context.navigation.location.pathname.split('/').slice(0, 3).join('/');
+              context.navigation.navigate(overviewPathname);
+            }
+          },
+          () => {
+            context.alert.error('Greška prilikom čuvanja podataka');
+          },
+        );
+      } else {
+        console.log('asdasdasdasdasd');
+        updateBasicInfo(
+          formatData(values),
+          () => {
+            refetch();
+            context.alert.success('Čuvanje podataka uspješno');
+            setIsDisabled(true);
+
+            if (close) {
+              const overviewPathname = context.navigation.location.pathname.split('/').slice(0, 3).join('/');
+              context.navigation.navigate(overviewPathname);
+            }
+          },
+          () => {
+            context.alert.error('Greška prilikom čuvanja podataka');
+          },
+        );
+      }
+    }
+  };
 
   useEffect(() => {
     refetch();
@@ -125,14 +164,14 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   // When coming from the job tender applications, when changing an external candidates status to accepted, it leads here to create it in the system, basically becoming an internal candidate in order to be accepted
   useEffect(() => {
     if (!context.navigation.location.state) return;
+
     reset({
       ...initialValues,
       ...context.navigation.location.state.user,
     });
   }, [context.navigation.location.state]);
 
-  const gender = watch('gender')['id' as any];
-  const maritalOptions = gender === 'muski' ? maleMaritalStatusOptions : femaleMaritalStatusOptions;
+  const isNew = !profileData?.id;
 
   return (
     <FormContainer>
@@ -140,7 +179,6 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
         <TextWrapper>
           <Typography content="PERSONALNI PODACI" variant="bodyMedium" />
         </TextWrapper>
-
         <FormRow>
           <FormColumn>
             <FormItem>
@@ -210,7 +248,6 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
               />
             </FormItem>
           </FormColumn>
-
           <FormColumn>
             <FormItem>
               <Controller
@@ -257,7 +294,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     onChange={onChange}
                     label="DRŽAVLJANSTVO:"
                     value={value as any}
-                    options={citizenshipArray}
+                    options={citizenshipOptions}
                     isDisabled={isDisabled}
                     error={errors.nationality?.message}
                   />
@@ -267,7 +304,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
             <FormItem>
               <Input {...register('city_of_birth')} label="OPŠTINA ROĐENJA:" disabled={isDisabled} />
             </FormItem>
-            {/* <FormItem>
+            <FormItem>
               <Controller
                 name="national_minority"
                 control={control}
@@ -284,7 +321,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                   />
                 )}
               />
-            </FormItem> */}
+            </FormItem>
             <FormItem>
               <Input
                 {...register('address')}
@@ -294,7 +331,6 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
               />
             </FormItem>
           </FormColumn>
-
           <FormColumn>
             <FormItem>
               <Input
@@ -320,8 +356,24 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 error={errors.birth_last_name?.message}
               />
             </FormItem>
+            <FormItem>
+              <Controller
+                name="nationality"
+                control={control}
+                render={({field: {onChange, name, value}}) => (
+                  <Dropdown
+                    name={name}
+                    label="NACIONALNOST:"
+                    value={value as any}
+                    onChange={onChange}
+                    options={countryOptions}
+                    isDisabled={isDisabled}
+                    error={errors.nationality?.message}
+                  />
+                )}
+              />
+            </FormItem>
           </FormColumn>
-
           <FormColumn>
             <FormItem>
               <Controller
@@ -385,17 +437,15 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
           </FormColumn>
         </FormRow>
       </FormWrapper>
-
       <FormWrapper>
         <TextWrapper>
           <Typography content="PODACI O ZAPOSLENJU" variant="bodyMedium" />
         </TextWrapper>
-
         <FormRow>
           <FormColumn>
-            {/* <FormItem>
+            <FormItem>
               <Controller
-                name="organization_unit_id"
+                name="contract.organization_unit_id"
                 rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
@@ -406,14 +456,14 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     isDisabled={isDisabled}
                     value={value as any}
                     options={organizationUnitsList as any}
-                    error={errors.organization_unit_id?.message}
+                    error={errors.contract?.organization_unit_id?.message}
                   />
                 )}
               />
-            </FormItem> */}
-            {/* <FormItem>
+            </FormItem>
+            <FormItem>
               <Controller
-                name="organization_unit_department_id"
+                name="contract.department_id"
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -423,15 +473,15 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     onChange={onChange}
                     noOptionsText="Prazno"
                     options={departmentOptions as any}
-                    isDisabled={isDisabled}
-                    error={errors.organization_unit_id?.message}
+                    isDisabled={isDisabled || !contract?.organization_unit_id}
+                    error={errors.contract?.department_id?.message}
                   />
                 )}
               />
-            </FormItem> */}
-            {/* <FormItem>
+            </FormItem>
+            <FormItem>
               <Controller
-                name="job_position_id"
+                name="contract.job_position_in_organization_unit_id"
                 rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
@@ -443,17 +493,16 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     noOptionsText="Prazno"
                     options={jobPositionOptions}
                     isDisabled={isDisabled}
-                    error={errors.job_position_id?.message}
+                    error={errors.contract?.job_position_in_organization_unit_id?.message}
                   />
                 )}
               />
-            </FormItem> */}
+            </FormItem>
           </FormColumn>
-
           <FormColumn>
-            {/* <FormItem>
+            <FormItem>
               <Controller
-                name="contract_type_id"
+                name="contract.contract_type_id"
                 rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
@@ -465,14 +514,14 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     noOptionsText="Prazno"
                     options={contractTypes}
                     isDisabled={isDisabled}
-                    error={errors.contract_type_id?.message}
+                    error={errors.contract?.contract_type_id?.message}
                   />
                 )}
               />
-            </FormItem> */}
+            </FormItem>
             <FormItem>
               <Controller
-                name="date_of_becoming_judge"
+                name="contract.date_of_eligibility"
                 rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
@@ -482,7 +531,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     onChange={onChange}
                     label="DATUM IZBORA:"
                     disabled={isDisabled}
-                    error={errors.date_of_becoming_judge?.message}
+                    error={errors.contract?.date_of_eligibility?.message}
                   />
                 )}
               />
@@ -500,11 +549,10 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
               />
             </FormItem>
           </FormColumn>
-
           <FormColumn>
-            {/* <FormItem>
+            <FormItem>
               <Controller
-                name="date_of_start"
+                name="contract.date_of_start"
                 rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
@@ -514,20 +562,16 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     value={value ? parseDate(value) : ''}
                     onChange={onChange}
                     disabled={isDisabled}
-                    error={errors.date_of_start?.message}
+                    error={errors.contract?.date_of_start?.message}
                   />
                 )}
               />
-            </FormItem> */}
-
-            {/* <FormItem>
+            </FormItem>
+            <FormItem>
               <Controller
-                name="date_of_end"
+                name="contract.date_of_end"
                 rules={{
-                  validate: value =>
-                    !value || !watch('date_of_start') || new Date(value) >= new Date(watch('date_of_start'))
-                      ? true
-                      : 'Kraj radnog odnosa ne može biti prije početka radnog odnosa.',
+                  validate: validateDateOfEnd,
                 }}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
@@ -537,75 +581,84 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     value={value ? parseDate(value) : ''}
                     onChange={onChange}
                     disabled={isDisabled}
-                    error={errors.date_of_end?.message}
+                    error={errors.contract?.date_of_end?.message}
                   />
                 )}
               />
-            </FormItem> */}
+            </FormItem>
             <FormItem>
               <Button
                 size="lg"
-                content={<Typography variant="bodyMedium" content="Prekid radnog odnosa:" />}
-                disabled={isDisabled}
+                content={<Typography variant="bodyMedium" content="Prekid radnog odnosa" />}
+                disabled={!contract}
               />
             </FormItem>
           </FormColumn>
         </FormRow>
       </FormWrapper>
 
-      <FormWrapper>
-        <TextWrapper>
-          <Typography content="KORISNIČKI NALOG" variant="bodyMedium" />
-        </TextWrapper>
-
-        <FormRow style={{paddingBottom: 0}}>
-          <FormColumn style={{flexBasis: 'calc(50% + 23px)'}}>
-            <FormItem>
-              {/* TODO value prop needs to be number also */}
-              <Input {...register('id')} label="SISTEMSKI ID:" disabled={true} />
-            </FormItem>
-          </FormColumn>
-        </FormRow>
-
-        <FormRow style={{padding: 0}}>
-          <FormColumn>
-            <FormItem>
-              <Input {...register('email')} label="E-MAIL:" disabled={isDisabled} />
-            </FormItem>
-            <FormItem>
-              <Input
-                {...register('password', {required: 'Ovo polje je obavezno'})}
-                label="LOZINKA:"
-                type="password"
-                placeholder="******"
-                disabled={isDisabled}
-              />
-            </FormItem>
-            <FormItem>
-              <Input
-                {...register('phone', {required: 'Ovo polje je obavezno'})}
-                label="BROJ TELEFONA:"
-                disabled={isDisabled}
-              />
-            </FormItem>
-          </FormColumn>
-
-          <FormColumn>
-            <FormItem>
-              <Input {...register('secondary_email')} label="PRIVATNI E-MAIL:" disabled={isDisabled} />
-            </FormItem>
-            <FormItem>
-              <Input
-                {...register('pin', {required: 'Ovo polje je obavezno'})}
-                type="number"
-                maxLength={4}
-                label="PIN:"
-                disabled={isDisabled}
-              />
-            </FormItem>
-          </FormColumn>
-        </FormRow>
-      </FormWrapper>
+      {isNew && (
+        <FormWrapper>
+          <TextWrapper>
+            <Typography content="KORISNIČKI NALOG" variant="bodyMedium" />
+          </TextWrapper>
+          <FormRow style={{paddingBottom: 0}}>
+            <FormColumn style={{flexBasis: 'calc(50% + 23px)'}}>
+              <FormItem>
+                {/* TODO value prop needs to be number also */}
+                <Input {...register('id')} label="SISTEMSKI ID:" disabled={true} />
+              </FormItem>
+            </FormColumn>
+          </FormRow>
+          <FormRow style={{padding: 0}}>
+            <FormColumn>
+              <FormItem>
+                <Input {...register('email')} label="E-MAIL:" disabled={isDisabled} />
+              </FormItem>
+              <FormItem>
+                <Input
+                  {...register('password', {required: 'Ovo polje je obavezno'})}
+                  label="LOZINKA:"
+                  type="password"
+                  placeholder="******"
+                  disabled={isDisabled}
+                />
+              </FormItem>
+              <FormItem>
+                <Input
+                  {...register('phone', {required: 'Ovo polje je obavezno'})}
+                  label="BROJ TELEFONA:"
+                  disabled={isDisabled}
+                />
+              </FormItem>
+            </FormColumn>
+            <FormColumn>
+              <FormItem>
+                <Input {...register('secondary_email')} label="PRIVATNI E-MAIL:" disabled={isDisabled} />
+              </FormItem>
+              <FormItem>
+                <Controller
+                  name="pin"
+                  control={control}
+                  render={({field: {onChange, value, name}}) => (
+                    <Input
+                      onChange={e => {
+                        if (e.target.value.match(/^(0|[1-9]\d*)(\.\d+)?$/)) {
+                          setValue('pin', e.target.value);
+                        }
+                      }}
+                      value={value}
+                      name="name"
+                      maxLength={4}
+                      label="PIN:"
+                      disabled={isDisabled}
+                    />
+                  )}></Controller>
+              </FormItem>
+            </FormColumn>
+          </FormRow>
+        </FormWrapper>
+      )}
 
       <FormFooter>
         <Controls>
