@@ -47,6 +47,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   const [editTableRow, setEditTableRow] = useState<null | number>(null);
   const [deleteItemId, setDeleteItemId] = useState<null | number>(null);
   const selectRow = (id: number) => {
+    setSelectedEmployee(undefined);
     setEditTableRow(id);
   };
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -62,7 +63,6 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
     } else {
       const updatedTableData = tableDataState.map((item: any) => {
         const jobPosition = jobPositionData?.find((i: any) => i.id === value?.id);
-
         if (item.id !== editTableRow) return item;
         if (name === 'available_slots') {
           return {
@@ -72,14 +72,9 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
         } else {
           return {
             ...item,
-            [name]: {
-              ...item[name],
-              id: value?.id,
-              title: value?.title,
-              description: jobPosition?.description,
-              requirements: jobPosition?.requirements,
-              job_position: {id: jobPosition?.id, title: jobPosition?.title},
-            },
+            description: jobPosition?.description,
+            requirements: jobPosition?.requirements,
+            job_position: {id: jobPosition?.id, title: jobPosition?.title},
           };
         }
       });
@@ -190,7 +185,6 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   };
 
   const tableHeads: TableHead[] = [
-    {title: 'Redni Broj', accessor: 'serial_number', type: 'text'},
     {
       title: 'Naziv radnog mjesta',
       accessor: 'job_position',
@@ -238,32 +232,32 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
       type: 'custom',
       renderContents: (item: any, row) => {
         const selectedItem = tableDataState.find((i: any) => i.id === editTableRow);
-        const isDisabled = row?.id !== editTableRow;
 
         return (
           <div>
-            <EmployeeDropdownWrapper>
-              <Dropdown
-                value={selectedEmployee}
-                name="employees"
-                options={getEmployeesForDropdown(item)}
-                onChange={handleChange}
-                isDisabled={isDisabled}
-                // @TODO remove ts-ignore
-                //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                //@ts-ignore
-                maxMenuHeight={200}
-                isSearchable
-              />
-              {selectedEmployee && item.length < selectedItem?.available_slots?.value && (
-                <PlusCircleIcon
-                  stroke={Theme?.palette?.gray500}
-                  height="17px"
-                  width="17px"
-                  onClick={() => handleEditEmployees()}
+            {row?.id === editTableRow && item.length < selectedItem?.available_slots?.value && (
+              <EmployeeDropdownWrapper>
+                <Dropdown
+                  value={selectedEmployee}
+                  name="employees"
+                  options={getEmployeesForDropdown(item)}
+                  onChange={handleChange}
+                  // @TODO remove ts-ignore
+                  //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  //@ts-ignore
+                  maxMenuHeight={200}
+                  isSearchable
                 />
-              )}
-            </EmployeeDropdownWrapper>
+                {selectedEmployee && item.length < selectedItem?.available_slots?.value && (
+                  <PlusCircleIcon
+                    stroke={Theme?.palette?.gray500}
+                    height="17px"
+                    width="17px"
+                    onClick={() => handleEditEmployees()}
+                  />
+                )}
+              </EmployeeDropdownWrapper>
+            )}
             {Array.isArray(item) &&
               item?.map((employee: any) => {
                 return (
