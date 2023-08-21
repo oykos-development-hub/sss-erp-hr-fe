@@ -1,7 +1,7 @@
 import {AlertVariants} from '@oykos-development/devkit-react-ts-styled-components';
 import {Alert, CircleCheckIcon, DangerIcon, Typography} from 'client-library';
 import {ValueType} from 'client-library/dist/components/dropdown/types';
-import React, {useMemo, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import EmployeeDetails from '../../components/employeeDetails/employeeDetails';
 import EmployeesList from '../../components/employeesList/employeesList';
 import NewEmployeeSearch from '../../components/newEmployeeSearch/newEmployeeSearch';
@@ -34,6 +34,8 @@ export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
   });
   const [filters, setFilters] = useState<any>(initialValues);
   const [search, setSearch] = useState('');
+
+  const screenWrapperRef = useRef<HTMLDivElement>(null);
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -73,7 +75,7 @@ export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
   };
 
   return (
-    <ScreenWrapper context={context}>
+    <ScreenWrapper context={context} ref={screenWrapperRef}>
       <EmployeesList
         onPageChange={onPageChange}
         toggleEmployeeImportModal={toggleEmployeeImportModal}
@@ -83,6 +85,7 @@ export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
         search={search}
         onFilterChange={onFilterChange}
         onSearch={e => setSearch(e.target.value)}
+        parentRef={screenWrapperRef}
       />
       {isNewEmployeeRoute && <NewEmployeeSearch onSearch={onSearch} />}
       <EmployeeDetails context={context} setAlert={(alert: any) => setAlert(alert)} />

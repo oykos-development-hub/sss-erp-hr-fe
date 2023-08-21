@@ -1,4 +1,4 @@
-import React, {FC, ReactElement, ReactNode} from 'react';
+import React, {ReactElement, ReactNode, forwardRef} from 'react';
 import {Breadcrumbs} from 'client-library';
 import styled from 'styled-components';
 
@@ -21,7 +21,12 @@ const StyledBreadcrumbs = styled(Breadcrumbs)`
   margin: 0;
 `;
 
-export const ScreenWrapper: FC<{children: ReactNode; context: any}> = ({children, context}) => {
+interface ScreenWrapperProps {
+  children: ReactNode;
+  context: any;
+}
+
+export const ScreenWrapper = forwardRef<HTMLDivElement, ScreenWrapperProps>(({children, context}, ref) => {
   const breadcrumbs = context?.breadcrumbs;
 
   const breadcrumbItems = breadcrumbs?.get();
@@ -45,9 +50,9 @@ export const ScreenWrapper: FC<{children: ReactNode; context: any}> = ({children
   };
 
   return (
-    <Container>
+    <Container ref={ref}>
       <StyledBreadcrumbs items={breadcrumbItems} onClick={handleNavigation} />
       {children}
     </Container>
   );
-};
+});

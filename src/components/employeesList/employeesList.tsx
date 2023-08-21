@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useMemo} from 'react';
+import React, {ChangeEvent, RefObject, useMemo, useRef} from 'react';
 import {Controls, FilterDropdown, FilterInput, Filters, Header, MainTitle, OverviewBox} from './styles';
 import {tableHeads} from '../../screens/employees/constants';
 import {Button, Pagination, Table, Divider, Theme, SearchIcon} from 'client-library';
@@ -7,6 +7,7 @@ import useOrganizationUnits from '../../services/graphql/organizationUnits/useOr
 import {EmployeeListFilters} from '../../screens/employees';
 import {yesAndNoOptions} from '../../constants';
 import useJobPositions from '../../services/graphql/jobPositions/useJobPositionOverview';
+import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
 
 export interface EmployeesListProps {
   navigate: (path: string) => void;
@@ -17,6 +18,7 @@ export interface EmployeesListProps {
   filters: EmployeeListFilters;
   onFilterChange: (value: any, name: string) => void;
   onSearch: (e: ChangeEvent<HTMLInputElement>) => void;
+  parentRef: RefObject<HTMLDivElement>;
 }
 
 const EmployeesList: React.FC<EmployeesListProps> = ({
@@ -28,7 +30,10 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   filters,
   onFilterChange,
   onSearch,
+  parentRef,
 }) => {
+  const overviewRef = useRef<HTMLDivElement>(null);
+
   const {organizationUnitsList} = useOrganizationUnits();
   const {data: jobPositions} = useJobPositions('');
 
@@ -50,7 +55,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   }, [jobPositions]);
 
   return (
-    <OverviewBox>
+    <OverviewBox ref={overviewRef}>
       <MainTitle variant="bodyMedium" content="PREGLED SVIH ZAPOSLENIH" />
       {/*TODO: theme color */}
       <Divider color={Theme?.palette?.gray200} height="1px" />
@@ -110,7 +115,10 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
         tableHeads={tableHeads}
         data={list}
         style={{marginBottom: 22}}
-        onRowClick={row => navigate(`/hr/employees/${row.id}/basic-info`)}
+        onRowClick={row => {
+          navigate(`/hr/employees/${row.id}/basic-info`);
+          scrollToTheNextElement(parentRef, overviewRef);
+        }}
       />
       <Pagination
         pageCount={Math.ceil(data.total / 10)}
