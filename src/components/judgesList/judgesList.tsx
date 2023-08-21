@@ -37,7 +37,6 @@ const JudgesList: React.FC<JudgesListProps> = ({
       })),
     [data],
   );
-  console.log(list);
 
   return (
     <OverviewBox>
@@ -61,6 +60,7 @@ const JudgesList: React.FC<JudgesListProps> = ({
             name="user_profile_id"
             onChange={value => onFilterChange(value, 'user_profile')}
             placeholder="Odaberite sudiju"
+            isSearchable
           />
         </Filters>
         <Controls>

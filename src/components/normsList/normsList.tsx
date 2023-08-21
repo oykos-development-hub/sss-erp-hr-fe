@@ -1,36 +1,29 @@
 import {EditIconTwo, Table, Theme, TrashIcon} from 'client-library';
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 import {Norms} from '../../types/graphql/judges';
 import {FilterDropdown, Filters, Header, OverviewBox} from '../judgesList/styles';
-import {NormListFilters} from '../../screens/judges/judgeNorms/judges';
-import {DropdownDataNumber} from '../../types/dropdownData';
+import {DropdownDataString} from '../../types/dropdownData';
 import {judgeNormsTableHeads} from '../../screens/judges/judgeNorms/constants';
+import {topicOptions} from '../../screens/judges/constants';
 
 interface NormsListProps {
   data: Norms[];
   toggleNormsModal: (item: Norms) => void;
   handleDeleteIconClick: (id: number) => void;
-  onFilterChange: (value: any, name: string) => void;
-  filters: NormListFilters;
-  areas: DropdownDataNumber[];
 }
 
-const NormsList: React.FC<NormsListProps> = ({
-  data,
-  filters,
-  areas,
-  onFilterChange,
-  toggleNormsModal,
-  handleDeleteIconClick,
-}) => {
-  const list: Norms[] = useMemo(() => {
-    return data?.filter((item: Norms) => {
-      if (filters.area === null || filters.area.id === 0) {
-        return true;
-      }
-      return item?.topic?.title === filters.area.title;
-    });
-  }, [data, filters.area]);
+const NormsList: React.FC<NormsListProps> = ({data, toggleNormsModal, handleDeleteIconClick}) => {
+  const [topic, setTopic] = useState<DropdownDataString | null>(null);
+
+  const onTopicChange = (value: any) => {
+    if (value.id === 'Sve') {
+      setTopic(null);
+      return;
+    }
+    setTopic(value);
+  };
+
+  const list = useMemo(() => (topic ? data?.filter(norm => norm.topic === topic?.id) : data), [data, topic]);
 
   return (
     <OverviewBox>
@@ -38,10 +31,10 @@ const NormsList: React.FC<NormsListProps> = ({
         <Filters>
           <FilterDropdown
             label="MATERIJA:"
-            options={areas}
-            value={filters.area as any}
+            options={topicOptions}
+            value={topic}
             name="topic"
-            onChange={value => onFilterChange(value, 'area')}
+            onChange={value => onTopicChange(value)}
             placeholder="Odaberite materiju"
           />
         </Filters>

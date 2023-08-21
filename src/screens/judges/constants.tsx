@@ -1,28 +1,17 @@
 import React from 'react';
-import {DropdownDataNumber} from '../../types/dropdownData';
+import {DropdownDataString} from '../../types/dropdownData';
 
-export const areaItems: DropdownDataNumber[] = [
+export const topicOptions: DropdownDataString[] = [
   {
-    id: 1,
-    title: 'Krivica',
-  },
-  {
-    id: 2,
-    title: 'Parnica',
-  },
-];
-
-export const areaFilterItems: DropdownDataNumber[] = [
-  {
-    id: 0,
+    id: 'Sve',
     title: 'Sve',
   },
   {
-    id: 1,
+    id: 'Krivica',
     title: 'Krivica',
   },
   {
-    id: 2,
+    id: 'Parnica',
     title: 'Parnica',
   },
 ];

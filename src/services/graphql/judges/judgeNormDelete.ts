@@ -4,7 +4,7 @@ import {JudgeNormsDeleteResponse} from '../../../types/graphql/judges';
 const judgeNormDelete = async (id: number): Promise<JudgeNormsDeleteResponse['data']['judgeNorms_Delete']> => {
   const mutation = `
     mutation($id: Int!) {
-      judgeNorms_Delete(id: ${id}) {
+      judgeNorms_Delete(id: $id) {
         message
         status
       }

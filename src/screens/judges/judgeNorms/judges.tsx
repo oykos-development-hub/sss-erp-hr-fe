@@ -8,7 +8,6 @@ import {ScreenWrapper} from '../../../shared/screenWrapper';
 import JudgeNormModal from '../../../components/judgeNormModal/judgeNormModal';
 import NormsList from '../../../components/normsList/normsList';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
-import {areaFilterItems} from '../constants';
 import JudgesList from '../../../components/judgesList/judgesList';
 import useJudgeNormsDelete from '../../../services/graphql/judges/useJudgeNormDelete';
 
@@ -22,14 +21,6 @@ const initialValues: JudgesListFilters = {
   user_profile: null,
 };
 
-export interface NormListFilters {
-  area: DropdownDataNumber | null;
-}
-
-const initialNormValues: NormListFilters = {
-  area: null,
-};
-
 const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
   const [showModal, setShowModal] = useState(false);
   const [page, setPage] = useState(1);
@@ -39,7 +30,6 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
   const {organizationUnitsList} = useOrganizationUnits(context);
 
   const [filters, setFilters] = useState<JudgesListFilters>(initialValues);
-  const [filtersNorm, setFiltersNorm] = useState<NormListFilters>(initialNormValues);
 
   const {data, total, refetch} = useJudgesOverview({page, size: 10, ...filters});
   const {judgesUnitsList} = useJudgesOverview({page, size: 1000, ...initialValues});
@@ -91,10 +81,6 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
     setFilters({...filters, [name]: value});
   };
 
-  const onFilterNormChange = (value: any, name: string) => {
-    setFiltersNorm({...filtersNorm, [name]: value});
-  };
-
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedNormItemId(0);
@@ -127,9 +113,6 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
       {normsList.length > 0 && (
         <NormsList
           data={normsList}
-          filters={filtersNorm}
-          areas={areaFilterItems}
-          onFilterChange={onFilterNormChange}
           toggleNormsModal={item => openNormModal(item)}
           handleDeleteIconClick={handleDeleteIconClick}
         />

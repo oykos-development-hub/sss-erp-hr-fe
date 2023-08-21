@@ -5,8 +5,8 @@ import {Norms} from '../../types/graphql/judges';
 import {parseDate} from '../../utils/dateUtils';
 import {ModalContentWrapper, Row} from '../education/modals/styles';
 import {ModalProps} from '../../screens/employees/education/types';
-import {areaItems} from '../../screens/judges/constants';
 import useJudgeNormsInsert from '../../services/graphql/judges/useJudgeNormInsert';
+import {topicOptions} from '../../screens/judges/constants';
 
 const initialValues: Norms = {
   id: 0,
@@ -19,6 +19,7 @@ const initialValues: Norms = {
   relocation_id: 0,
   date_of_evaluation: '',
   date_of_evaluation_validity: '',
+  topic: '',
 };
 
 const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose, selectedItem, dropdownData}) => {
@@ -31,8 +32,8 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
             selectedItem.user_profile_id != 0
               ? dropdownData?.find(user => user.id === selectedItem.user_profile_id)
               : undefined,
-          topic: selectedItem.topic ? areaItems?.find(item => item.title === selectedItem.topic) : undefined,
-          area: selectedItem?.area ? areaItems.find(i => i.title === selectedItem.area) : '',
+          topic: selectedItem.topic ? topicOptions?.find(item => item.title === selectedItem.topic) : undefined,
+          area: selectedItem?.area ? topicOptions.find(i => i.title === selectedItem.area) : '',
           date_of_start:
             selectedItem?.relocation && selectedItem?.relocation?.date_of_start
               ? new Date(selectedItem?.relocation?.date_of_start)
@@ -137,7 +138,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
                 <Dropdown
                   label="MATERIJA:"
                   name={name}
-                  options={areaItems as any}
+                  options={topicOptions as any}
                   value={value as any}
                   onChange={onChange}
                   rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
