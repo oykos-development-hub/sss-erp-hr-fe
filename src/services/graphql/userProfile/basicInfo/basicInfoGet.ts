@@ -62,6 +62,7 @@ const basicInfoGet = async (user_profile_id: number): Promise<UserProfileBasicRe
               active
               date_of_start
               date_of_end
+              date_of_eligibility
               file_id
             }
         }

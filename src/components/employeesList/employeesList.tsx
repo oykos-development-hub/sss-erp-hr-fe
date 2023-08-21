@@ -107,7 +107,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
             content="Dodaj zaposlenog"
             variant="secondary"
             style={{width: 170}}
-            onClick={() => navigate('/hr/employees/new-employee/basic-info')}
+            onClick={() => navigate('/hr/employees/details/basic-info')}
           />
         </Controls>
       </Header>
@@ -116,7 +116,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
         data={list}
         style={{marginBottom: 22}}
         onRowClick={row => {
-          navigate(`/hr/employees/${row.id}/basic-info`);
+          navigate(`/hr/employees/details/${row.id}/basic-info`);
           scrollToTheNextElement(parentRef, overviewRef);
         }}
       />

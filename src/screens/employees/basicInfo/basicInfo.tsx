@@ -32,11 +32,11 @@ import useBasicInfoInsert from '../../../services/graphql/userProfile/basicInfo/
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 import useBasicInfoUpdate from '../../../services/graphql/userProfile/basicInfo/useBasicInfoUpdate';
 import {DropdownDataString} from '../../../types/dropdownData';
-import {OrganizationUnit} from '../../../types/graphql/organizationUnitsTypes';
 
 export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const {data: profileData, refetch} = useBasicInfoGet(Number(context.navigation.location.pathname.split('/')[3]));
+  const {data: profileData, refetch} = useBasicInfoGet(Number(context.navigation.location.pathname.split('/')[4]));
+  const isNew = !profileData?.id;
+  const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
   const {data: jobPositions} = useJobPositions('');
   const {organizationUnitsList} = useOrganizationUnits();
   const {options: contractTypes} = useSettingsDropdownOverview('contract_types');
@@ -198,8 +198,6 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
     });
   }, [context.navigation.location.state]);
 
-  const isNew = !profileData?.id;
-
   return (
     <FormContainer>
       <FormWrapper>
@@ -261,6 +259,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
               <Controller
                 name="official_personal_document_issuer"
                 control={control}
+                rules={{required: 'Ovo polje je obavezno'}}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
                     name={name}
@@ -284,7 +283,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 render={({field: {onChange, name, value}}) => (
                   <Datepicker
                     name={name}
-                    value={value ? parseDate(value) : ''}
+                    value={value}
                     onChange={onChange}
                     label="DATUM ROĐENJA:"
                     disabled={isDisabled}
@@ -297,6 +296,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
               <Controller
                 name="country_of_birth"
                 control={control}
+                rules={{required: 'Ovo polje je obavezno'}}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
                     name={name}
@@ -351,7 +351,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
             </FormItem>
             <FormItem>
               <Input
-                {...register('address')}
+                {...register('address', {required: 'Ovo polje je obavezno'})}
                 label="ADRESA STANOVANJA:"
                 disabled={isDisabled}
                 error={errors.address?.message}
@@ -386,6 +386,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
             <FormItem>
               <Controller
                 name="nationality"
+                rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown

@@ -23,13 +23,13 @@ export const formatData = (data: any) => {
     nationality: data?.nationality?.id,
     citizenship: data?.citizenship?.id,
     gender: data?.gender?.id,
-    single_parent: data?.single_parent === 'Da' ? true : false,
-    housing_done: data?.housing_done === 'Da' ? true : false,
+    single_parent: data?.single_parent.id === 'Da' ? true : false,
+    housing_done: data?.housing_done.id === 'Da' ? true : false,
     revisor_role: data?.revisor_role === 'Da' ? true : false,
     marital_status: data?.marital_status?.id,
     date_of_taking_oath: parseDate(new Date(), true),
     date_of_becoming_judge: parseDate(data?.date_of_becoming_judge, true),
-    national_minority: data?.national_minority.id,
+    national_minority: data?.national_minority?.id,
     official_personal_document_issuer: data?.official_personal_document_issuer?.id,
     // user_account_id: 1,
     contract: {
@@ -41,6 +41,7 @@ export const formatData = (data: any) => {
       date_of_start: parseDate(data?.contract?.date_of_start, true),
       user_profile_id: data?.id,
       active: data?.contract?.active === false ? false : true,
+      date_of_eligibility: parseDate(data?.contract.date_of_eligibility, true),
     },
   };
 
@@ -56,5 +57,5 @@ export const formatData = (data: any) => {
 };
 
 export const booleanToYesOrNo = (value: boolean) => {
-  return value !== null ? (value ? yesOrNoOptionsString[1] : yesOrNoOptionsString[2]) : null;
+  return value !== null ? (value ? yesOrNoOptionsString[0] : yesOrNoOptionsString[1]) : null;
 };

@@ -57,10 +57,12 @@ export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
 
   const isNewEmployeeRoute = useMemo(() => {
     const paths = pathname.split('/');
-    if (paths[paths.length - 2] === 'new-employee') {
+    if (Number(paths[paths.length - 1])) {
       return true;
     }
   }, [pathname]);
+
+  const isDetails = pathname.split('/')[3] === 'details';
 
   const onSearch = (value: ValueType, name: string) => {
     console.log(value, name);
@@ -88,7 +90,7 @@ export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
         parentRef={screenWrapperRef}
       />
       {isNewEmployeeRoute && <NewEmployeeSearch onSearch={onSearch} />}
-      <EmployeeDetails context={context} setAlert={(alert: any) => setAlert(alert)} />
+      {isDetails && <EmployeeDetails context={context} setAlert={(alert: any) => setAlert(alert)} />}
       {alert.message && (
         <AlertWrapper>
           <Alert
