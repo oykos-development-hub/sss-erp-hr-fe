@@ -3,10 +3,11 @@ import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
 import {parseDate} from '../../../utils/dateUtils';
-import {educationTypes, examTypes, initialValues} from './constants';
+import {educationTypes, initialValues} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
 import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import {UserProfileEducationFormValues} from '../../../types/graphql/userProfileGetEducation';
 
 export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   selectedItem,
@@ -17,22 +18,21 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   navigation,
 }) => {
   const {data: types} = useSettingsDropdownOverview(educationTypes.education_exam_types);
+  const typesOptions = useMemo(() => types?.map(type => ({id: type.id as number, title: type.title})) || [], [types]);
 
-  const typesOptions = useMemo(() => {
-    return types?.map(type => ({id: type.id as number, title: type.title})) || [];
-  }, [types]);
-
-  const item = useMemo(() => {
-    return selectedItem
-      ? {
-          ...selectedItem,
-          academic_title: {
-            id: selectedItem?.academic_title,
-            title: selectedItem?.academic_title,
-          },
-        }
-      : initialValues;
-  }, [selectedItem]);
+  const item = useMemo(
+    () =>
+      selectedItem
+        ? {
+            ...selectedItem,
+            academic_title: {
+              id: selectedItem?.academic_title,
+              title: selectedItem?.academic_title,
+            },
+          }
+        : initialValues,
+    [selectedItem],
+  );
 
   const {
     handleSubmit,
@@ -44,19 +44,17 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   const {mutate} = useEducationInsert();
 
   useEffect(() => {
-    if (item) {
-      reset(item);
-    }
+    item && reset(item);
   }, [item]);
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: UserProfileEducationFormValues) => {
     const data = {
       id: values.id,
       title: values.title,
-      date_of_certification: values.date_of_certification,
+      date_of_certification: parseDate(values.date_of_certification, true) || '',
       price: values.price,
-      date_of_start: parseDate(values?.date_of_start, true),
-      date_of_end: parseDate(values?.date_of_end, true),
+      date_of_start: '',
+      date_of_end: '',
       expertise_level: values.expertise_level,
       certificate_issuer: values.certificate_issuer,
       description: values.description,
@@ -100,7 +98,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
         <ModalContentWrapper>
           <FormGroup>
             <Controller
-              name="academic_title"
+              name="type"
               rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
@@ -109,9 +107,9 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
                   value={value as any}
                   name={name}
                   label="VRSTA ISPITA"
-                  options={examTypes}
+                  options={typesOptions}
                   rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
-                  error={errors.academic_title?.message as string}
+                  error={errors.type?.message as string}
                 />
               )}
             />

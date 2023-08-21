@@ -66,13 +66,6 @@ export const academicTitles = [
   },
 ];
 
-export const languages = [
-  {id: 'Engleski', title: 'Engleski'},
-  {id: 'Francuski', title: 'Francuski'},
-  {id: 'Ruski', title: 'Ruski'},
-  {id: 'Njemacki', title: 'Njemacki'},
-];
-
 export const languageAcknowledgmentLevels = [
   {id: 'A1 - Beginner', title: 'A1 - Beginner'},
   {id: 'A2 - Elementary', title: 'A2 - Elementary'},
@@ -80,18 +73,4 @@ export const languageAcknowledgmentLevels = [
   {id: 'B2 - Upper-Intermediate', title: 'B2 - Upper-Intermediate'},
   {id: 'C1 - Advanced', title: 'C1 - Advanced'},
   {id: 'C2 - Proficient User', title: 'C2 - Proficient User'},
-];
-
-export const examTypes = [
-  {id: 'Državni ispit', title: 'Državni ispit'},
-  {id: 'Stručni ispit', title: 'Stručni ispit'},
-  {id: 'Pravosudni ispit', title: 'Pravosudni ispit'},
-];
-
-export const functionalAcknowledgmentGrades = [
-  {
-    id: 'Položio',
-    title: 'Položio',
-  },
-  {id: 'Nije položio', title: 'Nije položio'},
 ];

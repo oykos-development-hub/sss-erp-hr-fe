@@ -1,20 +1,22 @@
 import {EditIconTwo, PlusIcon, TableHead, Theme, TrashIconTwo, Typography} from 'client-library';
 import React, {useMemo, useState} from 'react';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
-import {UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
+import {UserProfileEducation, UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
 import {JudicalAndStateExamsModal} from '../modals/judicalStateExamsModal';
 import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './styles';
 import {TableProps} from '../../../screens/employees/education/types';
 import useEducationOverview from '../../../services/graphql/userProfile/education/useEducationOverview';
 import useEducationDelete from '../../../services/graphql/userProfile/education/useEducationDelete';
+import {DropdownDataNumber} from '../../../types/dropdownData';
+import {educationTypes} from '../modals/constants';
 
 const tableHeads: TableHead[] = [
   {
     title: 'Tip',
-    accessor: 'academic_title',
+    accessor: 'type',
     sortable: true,
     type: 'custom',
-    renderContents: (item: any) => <Typography variant="bodyMedium" content={item} />,
+    renderContents: (item: DropdownDataNumber) => <Typography variant="bodyMedium" content={item.title} />,
   },
   {
     title: 'Datum polaganja',
@@ -35,43 +37,23 @@ const tableHeads: TableHead[] = [
   },
 ];
 
-const mockedTableData = [
-  {
-    id: '001',
-    type: {label: 'Pravosudni ispit', value: 'Pravosudni ispit'},
-    date: '01.01.2022',
-    file: 'sertifikat.pdf',
-  },
-  {
-    id: '002',
-    type: {label: 'Drzavni ispit', value: 'Drzavni ispit'},
-    date: '01.01.2022',
-    file: 'sertifikat.pdf',
-  },
-];
-
 export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert, navigation}) => {
   const {employeeEducationData, refetchData} = useEducationOverview(
     Number(navigation.location.pathname.split('/')[3]),
-    'education_exam_types',
+    educationTypes.education_exam_types,
   );
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedItemId, setSelectedItemId] = React.useState(0);
-
-  let judicalAndStateExamsTableData: UserProfileEducationItem[] = [] || mockedTableData;
+  const [selectedItemId, setSelectedItemId] = useState(0);
 
   const {mutate: deleteEducation} = useEducationDelete();
 
-  employeeEducationData?.forEach(tableData => {
-    judicalAndStateExamsTableData = tableData.items || [];
-  });
+  const selectedItem = useMemo(
+    () => employeeEducationData?.find((item: UserProfileEducation) => item.id === selectedItemId),
+    [selectedItemId],
+  );
 
-  const selectedItem = useMemo(() => {
-    return judicalAndStateExamsTableData.find((item: UserProfileEducationItem) => item.id === selectedItemId);
-  }, [selectedItemId]);
-
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: UserProfileEducationItem) => {
     setSelectedItemId(item.id);
     setShowModal(true);
   };
@@ -123,7 +105,7 @@ export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert, navigati
     <div>
       <TableContainer
         tableHeads={tableHeads}
-        data={judicalAndStateExamsTableData}
+        data={employeeEducationData || []}
         tableActions={[
           {name: 'edit', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
           {

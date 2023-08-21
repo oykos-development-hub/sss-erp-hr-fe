@@ -4,7 +4,7 @@ import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
 import {UserProfileEducationFormValues} from '../../../types/graphql/userProfileGetEducation';
 import {parseDate} from '../../../utils/dateUtils';
-import {educationTypes, functionalAcknowledgmentGrades, initialValues} from './constants';
+import {educationTypes, initialValues} from './constants';
 import {FileUploadWrapper, ModalContentWrapper, Row} from './styles';
 import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
@@ -18,22 +18,9 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
   navigation,
 }) => {
   const {data: types} = useSettingsDropdownOverview(educationTypes.education_functional_types);
+  const typesOptions = useMemo(() => types?.map(type => ({id: type.id as number, title: type.title})) || [], [types]);
 
-  const typesOptions = useMemo(() => {
-    return types?.map(type => ({id: type.id as number, title: type.title})) || [];
-  }, [types]);
-
-  const item = useMemo(() => {
-    return selectedItem
-      ? {
-          ...selectedItem,
-          expertise_level: {
-            id: selectedItem?.expertise_level.id,
-            title: selectedItem?.expertise_level.title,
-          },
-        }
-      : initialValues;
-  }, [selectedItem]);
+  const item = useMemo(() => selectedItem || initialValues, [selectedItem]);
 
   const {
     register,
@@ -46,20 +33,18 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
   const {mutate} = useEducationInsert();
 
   useEffect(() => {
-    if (item) {
-      reset(item);
-    }
+    item && reset(item);
   }, [item]);
 
   const onSubmit = async (values: UserProfileEducationFormValues) => {
     const data = {
       id: values.id,
       title: values.title,
-      date_of_certification: parseDate(values.date_of_certification, true),
-      price: values.price,
-      date_of_start: parseDate(values?.date_of_start, true),
-      date_of_end: parseDate(values?.date_of_end, true),
-      expertise_level: values.expertise_level,
+      date_of_certification: '',
+      price: Number(values.price),
+      date_of_start: parseDate(values?.date_of_start, true) || '',
+      date_of_end: parseDate(values?.date_of_end, true || ''),
+      expertise_level: values?.expertise_level,
       certificate_issuer: values.certificate_issuer,
       description: values.description,
       file_id: values.file_id,
@@ -102,9 +87,9 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
         <ModalContentWrapper>
           <Row>
             <Input
-              {...register('academic_title', {required: 'Ovo polje je obavezno'})}
+              {...register('expertise_level', {required: 'Ovo polje je obavezno'})}
               label="FUNKCIONALNA ZNANJA:"
-              error={errors.academic_title?.message as string}
+              error={errors.expertise_level?.message as string}
             />
             <Input
               {...register('certificate_issuer', {required: 'Ovo polje je obavezno'})}
@@ -114,7 +99,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
           </Row>
           <Row>
             <Controller
-              name="expertise_level"
+              name="type"
               rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
@@ -123,19 +108,19 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
                   value={value as any}
                   name={name}
                   label="OCJENA:"
-                  options={functionalAcknowledgmentGrades}
+                  options={typesOptions}
                   rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
-                  error={errors.expertise_level?.message as string}
+                  error={errors.type?.message as string}
                 />
               )}
             />
             <Input
               {...register('price', {required: 'Ovo polje je obavezno'})}
               label="KOTIZACIJA:"
-              name="price"
               leftContent={<Typography content={<div>&euro;</div>} />}
               style={{maxWidth: '300px'}}
               error={errors.price?.message as string}
+              type="number"
             />
           </Row>
           <Row>

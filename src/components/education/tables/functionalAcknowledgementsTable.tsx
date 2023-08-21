@@ -6,21 +6,22 @@ import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './style
 import {TableProps} from '../../../screens/employees/education/types';
 import useEducationOverview from '../../../services/graphql/userProfile/education/useEducationOverview';
 import useEducationDelete from '../../../services/graphql/userProfile/education/useEducationDelete';
+import {DropdownDataNumber} from '../../../types/dropdownData';
+import {UserProfileEducation, UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
+import {educationTypes} from '../modals/constants';
 
 const tableHeads: TableHead[] = [
   {
     title: 'Funkcionalna znanja',
-    accessor: 'academic_title',
+    accessor: 'expertise_level',
     sortable: true,
-    type: 'custom',
-    renderContents: (item: any) => <Typography content={item}></Typography>,
+    type: 'text',
   },
   {
     title: 'Izvođač',
     accessor: 'certificate_issuer',
     sortable: true,
-    type: 'custom',
-    renderContents: (item: any) => <Typography content={item}></Typography>,
+    type: 'text',
   },
   {
     title: 'Kotizacija',
@@ -42,10 +43,10 @@ const tableHeads: TableHead[] = [
   },
   {
     title: 'Ocjena',
-    accessor: 'expertise_level',
+    accessor: 'type',
     sortable: true,
     type: 'custom',
-    renderContents: (item: any) => <Typography content={item}></Typography>,
+    renderContents: (item: DropdownDataNumber) => <Typography content={item.title}></Typography>,
   },
   {
     title: 'Datoteka',
@@ -63,19 +64,20 @@ const tableHeads: TableHead[] = [
 export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navigation}) => {
   const {employeeEducationData, refetchData} = useEducationOverview(
     Number(navigation.location.pathname.split('/')[3]),
-    'education_functional_types',
+    educationTypes.education_functional_types,
   );
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedItemId, setSelectedItemId] = React.useState(0);
+  const [selectedItemId, setSelectedItemId] = useState(0);
 
   const {mutate: deleteEducation} = useEducationDelete();
 
-  const selectedItem = useMemo(() => {
-    return employeeEducationData?.find((item: any) => item.id === selectedItemId);
-  }, [selectedItemId]);
+  const selectedItem = useMemo(
+    () => employeeEducationData?.find((item: UserProfileEducation) => item.id === selectedItemId),
+    [selectedItemId],
+  );
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: UserProfileEducationItem) => {
     setSelectedItemId(item.id);
     setShowModal(true);
   };

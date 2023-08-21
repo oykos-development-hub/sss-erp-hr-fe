@@ -1,10 +1,7 @@
 import {useState} from 'react';
 import {GraphQL} from '../..';
 import {REQUEST_STATUSES} from '../../../constants';
-import {
-  UserProfileEducationFormValues,
-  UserProfileEducationItem,
-} from '../../../../types/graphql/userProfileGetEducation';
+import {UserProfileEducationItem} from '../../../../types/graphql/userProfileGetEducation';
 
 const useEducationInsert = () => {
   const [loading, setLoading] = useState(false);

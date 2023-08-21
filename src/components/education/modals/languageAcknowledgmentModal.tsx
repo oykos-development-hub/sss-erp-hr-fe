@@ -16,22 +16,24 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
   navigation,
 }) => {
   const {data: languages} = useSettingsDropdownOverview(educationTypes.education_language_types);
+  const languagesOptions = useMemo(
+    () => languages?.map(type => ({id: type.id as number, title: type.title})) || [],
+    [languages],
+  );
 
-  const languagesOptions = useMemo(() => {
-    return languages?.map(type => ({id: type.id as number, title: type.title})) || [];
-  }, [languages]);
-
-  const item = useMemo(() => {
-    return selectedItem
-      ? {
-          ...selectedItem,
-          expertise_level: {
-            id: selectedItem.expertise_level || '',
-            title: selectedItem?.expertise_level || '',
-          },
-        }
-      : initialValues;
-  }, [selectedItem]);
+  const item = useMemo(
+    () =>
+      selectedItem
+        ? {
+            ...selectedItem,
+            expertise_level: {
+              id: selectedItem.expertise_level || '',
+              title: selectedItem?.expertise_level || '',
+            },
+          }
+        : initialValues,
+    [selectedItem],
+  );
 
   const {
     handleSubmit,
@@ -42,20 +44,14 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
 
   const {mutate} = useEducationInsert();
 
-  useEffect(() => {
-    if (item) {
-      reset(item);
-    }
-  }, [item]);
-
   const onSubmit = async (values: any) => {
     const data = {
       id: values.id,
       title: values.title,
-      date_of_certification: values.date_of_certification,
+      date_of_certification: '',
       price: values.price,
-      date_of_start: values.date_of_start,
-      date_of_end: values.date_of_end,
+      date_of_start: '',
+      date_of_end: '',
       expertise_level: values.expertise_level.id,
       certificate_issuer: values.certificate_issuer,
       description: values.description,
@@ -82,6 +78,10 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
       console.log(e);
     }
   };
+
+  useEffect(() => {
+    item && reset(item);
+  }, [item]);
 
   return (
     <Modal

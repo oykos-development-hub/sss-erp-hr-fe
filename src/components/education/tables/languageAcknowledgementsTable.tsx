@@ -6,6 +6,9 @@ import {LanguageAcknowledgmentModal} from '../modals/languageAcknowledgmentModal
 import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './styles';
 import useEducationOverview from '../../../services/graphql/userProfile/education/useEducationOverview';
 import useEducationDelete from '../../../services/graphql/userProfile/education/useEducationDelete';
+import {DropdownDataNumber} from '../../../types/dropdownData';
+import {UserProfileEducation, UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
+import {educationTypes} from '../modals/constants';
 
 const tableHeads: TableHead[] = [
   {
@@ -18,14 +21,13 @@ const tableHeads: TableHead[] = [
     accessor: 'type',
     sortable: true,
     type: 'custom',
-    renderContents: (item: any) => <Typography variant="bodyMedium" content={item.title} />,
+    renderContents: (item: DropdownDataNumber) => <Typography variant="bodyMedium" content={item.title} />,
   },
   {
     title: 'Stepen',
     accessor: 'expertise_level',
     sortable: true,
-    type: 'custom',
-    renderContents: (item: any) => <Typography variant="bodyMedium" content={item} />,
+    type: 'text',
   },
   {
     title: 'Datoteka',
@@ -40,22 +42,23 @@ const tableHeads: TableHead[] = [
   },
 ];
 
-export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({languages, alert, navigation}) => {
+export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({alert, navigation}) => {
   const {employeeEducationData, refetchData} = useEducationOverview(
     Number(navigation.location.pathname.split('/')[3]),
-    'education_language_types',
+    educationTypes.education_language_types,
   );
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedItemId, setSelectedItemId] = React.useState(0);
+  const [selectedItemId, setSelectedItemId] = useState(0);
 
   const {mutate: deleteEducation} = useEducationDelete();
 
-  const selectedItem = useMemo(() => {
-    return employeeEducationData?.find((item: any) => item.id === selectedItemId);
-  }, [selectedItemId]);
+  const selectedItem = useMemo(
+    () => employeeEducationData?.find((item: UserProfileEducation) => item.id === selectedItemId),
+    [selectedItemId],
+  );
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: UserProfileEducationItem) => {
     setSelectedItemId(item.id);
     setShowModal(true);
   };

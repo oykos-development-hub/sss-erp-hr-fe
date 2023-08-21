@@ -17,10 +17,7 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
   navigation,
 }) => {
   const {data: types} = useSettingsDropdownOverview(educationTypes.education_academic_types);
-
-  const typesOptions = useMemo(() => {
-    return types?.map(type => ({id: type.id as number, title: type.title})) || [];
-  }, [types]);
+  const typesOptions = useMemo(() => types?.map(type => ({id: type.id as number, title: type.title})) || [], [types]);
 
   const item = useMemo(
     () =>
@@ -44,19 +41,17 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
   const {mutate} = useEducationInsert();
 
   useEffect(() => {
-    if (item) {
-      reset(item);
-    }
+    item && reset(item);
   }, [item]);
 
   const onSubmit = async (values: UserProfileEducationFormValues) => {
     const data = {
       id: values.id,
       title: values.title,
-      date_of_certification: values.date_of_certification,
+      date_of_certification: '',
       price: values.price,
-      date_of_start: values.date_of_start,
-      date_of_end: values.date_of_end,
+      date_of_start: '',
+      date_of_end: '',
       expertise_level: values.expertise_level,
       certificate_issuer: values.certificate_issuer,
       description: values.description,
