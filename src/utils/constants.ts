@@ -35,9 +35,9 @@ export const cityData = [
   {id: 'Žabljak', title: 'Žabljak'},
 ];
 
-export const yearsForDropdown = () => {
-  const maxOffset = 10;
-  const thisYear = new Date().getFullYear();
+export const yearsForDropdown = (numYearsToAdd?: number) => {
+  const maxOffset = 10 + (numYearsToAdd || 0);
+  const thisYear = new Date().getFullYear() + (numYearsToAdd || 0);
   const allYears = [];
   for (let x = 0; x <= maxOffset; x++) {
     allYears.push(thisYear - x);

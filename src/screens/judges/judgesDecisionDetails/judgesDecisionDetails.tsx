@@ -148,7 +148,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
   };
 
   const availableYears = useMemo(() => {
-    const yearOptions = [...yearsForDropdown().map(year => ({id: year.id.toString(), title: year.title.toString()}))];
+    const yearOptions = [...yearsForDropdown(2).map(year => ({id: year.id.toString(), title: year.title.toString()}))];
     return data ? yearOptions.filter(year => !data.find(resolution => resolution.year === year.id)) : [];
   }, [data]);
 

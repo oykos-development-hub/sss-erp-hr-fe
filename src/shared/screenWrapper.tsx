@@ -56,3 +56,5 @@ export const ScreenWrapper = forwardRef<HTMLDivElement, ScreenWrapperProps>(({ch
     </Container>
   );
 });
+
+ScreenWrapper.displayName = 'ScreenWrapper';
