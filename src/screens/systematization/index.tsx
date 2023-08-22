@@ -17,7 +17,7 @@ const tableHeads: TableHead[] = [
     accessor: 'date_of_activation',
     type: 'custom',
     renderContents: (item: any) => {
-      return <Typography variant="bodyMedium" content={parseDate(item)} />;
+      return <Typography variant="bodyMedium" content={item !== '' ? parseDate(item) : ''} />;
     },
   },
   {
