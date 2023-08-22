@@ -40,7 +40,7 @@ const tableHeads: TableHead[] = [
 ];
 
 export const SystematizationScreen: React.FC<ScreenProps> = ({context}) => {
-  const [params, setParams] = useState({page: 1, size: 10, organization_unit_id: 0, active: ''});
+  const [params, setParams] = useState({page: 1, size: 10, organization_unit_id: 0, active: '', year: '', search: ''});
   const {data, refetch} = useSystematizationOverview(params);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);

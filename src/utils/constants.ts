@@ -39,8 +39,9 @@ export const yearsForDropdown = (numYearsToAdd?: number) => {
   const maxOffset = 10 + (numYearsToAdd || 0);
   const thisYear = new Date().getFullYear() + (numYearsToAdd || 0);
   const allYears = [];
-  for (let x = 0; x <= maxOffset; x++) {
-    allYears.push(thisYear - x);
+  allYears.push({id: null, title: 'Sve'});
+  for (let x = 0; x < maxOffset; x++) {
+    allYears.push({id: Number(thisYear - x), title: (thisYear - x).toString()});
   }
-  return allYears.map(year => ({id: year.toString(), title: year.toString()}));
+  return allYears;
 };

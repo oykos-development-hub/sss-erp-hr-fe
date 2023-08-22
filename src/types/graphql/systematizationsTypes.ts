@@ -17,6 +17,8 @@ export interface SystematizationsParams {
   size: number;
   id?: number;
   organization_unit_id?: number;
+  year: string;
+  search: string;
 }
 
 export interface SystematizationsResponse {

@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {GraphQL} from '..';
 import {SystematizationsParams, SystematizationType} from '../../../types/graphql/systematizationsTypes';
 
-const useSystematizationOverview = ({page, size, id, organization_unit_id}: SystematizationsParams) => {
+const useSystematizationOverview = ({page, size, id, organization_unit_id, year, search}: SystematizationsParams) => {
   const [data, setData] = useState<SystematizationType[]>();
   const [loading, setLoading] = useState(true);
 
@@ -12,6 +12,8 @@ const useSystematizationOverview = ({page, size, id, organization_unit_id}: Syst
       size,
       id,
       organization_unit_id,
+      year,
+      search,
     });
 
     setData(systematizations?.items);
@@ -20,7 +22,7 @@ const useSystematizationOverview = ({page, size, id, organization_unit_id}: Syst
 
   useEffect(() => {
     fetchSystematizations();
-  }, [page, size, id, organization_unit_id]);
+  }, [page, size, id, organization_unit_id, year, search]);
 
   return {data, loading, refetch: fetchSystematizations};
 };

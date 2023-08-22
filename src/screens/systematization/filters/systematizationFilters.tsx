@@ -7,9 +7,9 @@ import useOrganizationUnits from '../../../services/graphql/organizationUnits/us
 import {SystematizationFiltersProps} from '../types';
 
 const initialValues = {
-  systematization_number: 0,
-  year: 0,
+  systematization_number: null,
   organization_unit_id: 0,
+  year: null,
 };
 
 export const SystematizationFilters: React.FC<SystematizationFiltersProps> = ({setFilters, data, context}: any) => {
@@ -17,15 +17,20 @@ export const SystematizationFilters: React.FC<SystematizationFiltersProps> = ({s
   const years = yearsForDropdown();
   const {organizationUnitsList} = useOrganizationUnits(context);
   const unit = watch('organization_unit_id');
+  const search = watch('systematization_number');
+  const year = watch('year');
 
   useEffect(() => {
-    unit !== 0 && setFilters({organization_unit_id: unit?.id});
-  }, [unit]);
+    if (unit !== 0) {
+      setFilters({organization_unit_id: unit?.id, search: null, year: null});
+    }
+    setFilters({search: search, year: year?.id});
+  }, [unit, year, search]);
 
   return (
     <Wrapper>
       <Input
-        {...register('systematization_number', {required: 'Ovo polje je obavezno'})}
+        {...register('systematization_number')}
         label="BROJ SISTEMATIZACIJE:"
         rightContent={<SearchIcon style={{marginLeft: 10, marginRight: 10}} stroke={Theme.palette.gray300} />}
       />
@@ -33,7 +38,9 @@ export const SystematizationFilters: React.FC<SystematizationFiltersProps> = ({s
         name="year"
         control={control}
         render={({field: {onChange, name, value}}) => {
-          return <Dropdown onChange={onChange} value={value as any} name={name} label="GODINA:" options={years} />;
+          return (
+            <Dropdown onChange={onChange} value={value as any} name={name} label="GODINA:" options={years as any} />
+          );
         }}
       />
 

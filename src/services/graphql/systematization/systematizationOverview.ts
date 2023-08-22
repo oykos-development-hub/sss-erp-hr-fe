@@ -4,34 +4,40 @@ import {SystematizationsParams, SystematizationsResponse} from '../../../types/g
 const systematizationOverview = async ({
   page,
   size,
-  id = 0,
-  organization_unit_id = 0,
+  id,
+  organization_unit_id,
+  year,
+  search,
 }: SystematizationsParams): Promise<SystematizationsResponse['data']['systematizations_Overview']> => {
-  const response = await GraphQL.fetch(`query {
-    systematizations_Overview(page: ${page}, size: ${size}, id: ${id}, organization_unit_id: ${organization_unit_id}) {
-      status 
-      message
-      total 
-      items {
-          id 
-          user_profile { 
-             id 
-             title 
-          } 
-          organization_unit { 
+  const query = `query SystematizationOverview($page: Int, $size: Int, $id: Int, $organization_unit_id: Int, $year: String, $search: String){
+      systematizations_Overview(
+      page:$page,
+      size:$size, 
+      id: $id, 
+      organization_unit_id: $organization_unit_id,
+      year:$year,
+      search: $search 
+      ) {
+          message
+          status
+          items {
               id 
-              title
-          }
-          description
-          serial_number 
-          active 
-          date_of_activation 
-          created_at 
-          updated_at 
-      } 
-    }
-}`);
+              organization_unit { 
+                  id 
+                  title
+              }
+              description
+              serial_number 
+              active 
+              date_of_activation 
+              created_at 
+              updated_at    
+          } 
+          total
+      }
+    }`;
 
+  const response = await GraphQL.fetch(query, {page, size, id, organization_unit_id, year, search});
   return response?.data?.systematizations_Overview || {};
 };
 
