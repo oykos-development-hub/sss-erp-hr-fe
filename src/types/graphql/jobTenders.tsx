@@ -31,27 +31,28 @@ export interface JobTendersModal extends ModalProps {
 }
 
 export interface JobTenderApplication {
-  id: number;
+  id?: number;
   status: string;
-  job_tender: DropdownItemType | null;
-  user_profile: DropdownItemType | null;
+  job_tender?: DropdownItemType | null;
+  user_profile?: DropdownItemType | null;
   type: 'external' | 'internal';
-  first_name: string;
-  last_name: string;
-  official_personal_id: string;
-  date_of_birth: string;
-  nationality: string;
-  evaluation: string;
+  first_name?: string;
+  last_name?: string;
+  official_personal_id?: string;
+  date_of_birth?: string;
+  nationality?: string;
+  evaluation?: string;
   date_of_application: string;
-  created_at: string;
-  updated_at: string;
-  file_id: number;
+  created_at?: string;
+  updated_at?: string;
+  file_id?: number;
 }
 
 export interface JobTenderApplicationInsertParams
   extends Omit<JobTenderApplication, 'job_tender' | 'user_profile' | 'create_at' | 'updated_at'> {
-  job_tender_id: number;
-  user_profile_id: number;
+  job_tender_id?: number;
+  user_profile_id?: number;
+  active?: boolean;
 }
 
 export interface JobTenderApplicationsParams {

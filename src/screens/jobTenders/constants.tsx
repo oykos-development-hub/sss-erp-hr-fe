@@ -2,6 +2,7 @@ import React from 'react';
 import {TableHead, Typography} from 'client-library';
 import {DropdownItemType} from '../../types/graphql/jobTenders';
 import {DropdownDataString} from '../../types/dropdownData';
+import {parseDate} from '../../utils/dateUtils';
 
 export const tableHeads: TableHead[] = [
   {
@@ -43,9 +44,25 @@ export const applicationsTableHeads: TableHead[] = [
     accessor: 'first_name',
   },
   {title: 'Prezime', accessor: 'last_name'},
-  {title: 'Datum rođenja', accessor: 'date_of_birth'},
+  {
+    title: 'Datum rođenja',
+    accessor: 'date_of_birth',
+    sortable: true,
+    type: 'custom',
+    renderContents: (date_of_birth: string) => {
+      return <Typography content={parseDate(date_of_birth)} />;
+    },
+  },
   {title: 'Broj lične karte', accessor: 'official_personal_id'},
-  {title: 'Datum prijave', accessor: 'date_of_application'},
+  {
+    title: 'Datum prijave',
+    accessor: 'date_of_application',
+    sortable: true,
+    type: 'custom',
+    renderContents: (date_of_application: string) => {
+      return <Typography content={parseDate(date_of_application)} />;
+    },
+  },
   {title: 'Ocjena', accessor: 'evaluation'},
   {title: 'Status', accessor: 'status'},
   {

@@ -3,7 +3,7 @@ import {GraphQL} from '..';
 import {OrganizationUnit} from '../../../types/graphql/organizationUnitsTypes';
 import {REQUEST_STATUSES} from '../../constants';
 
-const useOrganizationUnitOverview = (props?: any) => {
+const useOrganizationUnitOverview = (props?: any, notParent?: boolean) => {
   const [organizationUnits, setOrganizationUnits] = useState<OrganizationUnit[]>([]);
   const organizationUnitsList = useMemo(() => {
     return [
@@ -19,6 +19,7 @@ const useOrganizationUnitOverview = (props?: any) => {
       if (response?.status === REQUEST_STATUSES.success) {
         delete response.message;
         delete response.status;
+        if (notParent) response.items = response.items?.filter(item => !item.parent_id);
         setOrganizationUnits(response.items as OrganizationUnit[]);
       } else {
         alert(`Login failed due to error - ${response.message}`);

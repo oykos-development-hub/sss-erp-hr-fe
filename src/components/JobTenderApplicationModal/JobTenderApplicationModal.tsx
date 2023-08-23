@@ -12,7 +12,7 @@ import {
   RowFullWidth,
   TriangleIcon,
 } from '../JobTenderApplicationModal/styles';
-import {JobTenderApplication} from '../../types/graphql/jobTenders';
+import {JobTenderApplication, JobTenderApplicationInsertParams} from '../../types/graphql/jobTenders';
 import {
   applicationStatusOptions,
   applicationTypeOptions,
@@ -77,7 +77,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   const [selectedUserId, setSelectedIdUser] = useState<number>(0);
   const [selectedUser, setSelectedUser] = useState<UserProfile>();
   const [confirmationModal, setConfirmationModal] = useState<boolean>(false);
-  const [applicationType, setApplicationType] = useState<DropdownDataString>({
+  const [applicationType, setApplicationType] = useState<{id: 'external' | 'internal'; title: string}>({
     id: 'internal',
     title: 'Interni',
   });
@@ -96,14 +96,13 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 
   const item = useMemo(() => {
     if (selectedItem?.type === 'external') setApplicationType({id: 'external', title: 'Eksterni'});
-
     return selectedItem
       ? {
           ...selectedItem,
           status: selectedItem?.status ? applicationStatusOptions.find(st => st.title === selectedItem?.status) : null,
           type: selectedItem?.type ? applicationTypeOptions.find(st => st.id === selectedItem?.type) : null,
           evaluation: selectedItem?.evaluation
-            ? evaluationTypeOptions.find(st => st.title === selectedItem?.evaluation)
+            ? evaluationTypeOptions.find(st => st.id === selectedItem?.evaluation)
             : null,
           nationality: selectedItem?.nationality
             ? citizenshipArray?.find(st => st.title === selectedItem.nationality)
@@ -152,23 +151,25 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   };
 
   const onSubmit = (values: any) => {
-    const data = {
-      ...values,
-      evaluation: values?.evaluation?.id,
+    const data: JobTenderApplicationInsertParams = {
+      type: applicationType.id,
+      date_of_application: parseDate(values?.date_of_application, true),
       status: values?.status?.title,
       job_tender_id: jobTenderId,
-      date_of_birth: applicationType.id === 'external' ? parseDate(values?.date_of_birth, true) : values?.date_of_birth,
-      date_of_application: parseDate(values?.date_of_application, true),
-      type: applicationType.id,
-      file_id: 0,
-      user_profile_id: values.user_profile_id || 0,
-      nationality: values.nationality.title,
+      active: true,
     };
 
-    delete data.user_profile;
-    delete data.job_tender;
-    delete data.updated_at;
-    delete data.created_at;
+    if (values?.id) data.id = values?.id;
+    if (data.type === 'external') {
+      data.evaluation = values?.evaluation?.id;
+      data.first_name = first_name;
+      data.last_name = last_name;
+      data.nationality = values?.nationality?.title;
+      data.date_of_birth = parseDate(values?.date_of_birth, true);
+      data.official_personal_id = values?.official_personal_id;
+    } else {
+      data.user_profile_id = values?.user_profile?.id;
+    }
 
     try {
       mutate(

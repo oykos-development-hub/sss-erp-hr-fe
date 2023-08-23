@@ -13,10 +13,10 @@ import useJobPositionsOrganizationUnit from '../../services/graphql/jobPositions
 import {JobPosition} from '../../types/graphql/jobPositions';
 
 export interface JobTendersListFilters {
-  active: DropdownDataBoolean | null;
-  organization_unit_id: DropdownDataNumber | null;
-  job_position_id: DropdownDataNumber | null;
-  type_id: DropdownDataNumber | null;
+  active?: DropdownDataBoolean | null;
+  organization_unit_id?: DropdownDataNumber | null;
+  job_position_id?: DropdownDataNumber | null;
+  type_id?: DropdownDataNumber | null;
 }
 
 const initialValues: JobTendersListFilters = {

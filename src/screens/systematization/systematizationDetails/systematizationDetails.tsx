@@ -259,7 +259,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
                     note="Izaberite datoteku ili je prevucite ovdje"
                   />
                 </FileUploadWrapper>
-                {systematizationID && Number(systematizationID) > 0 && (
+                {systematizationID && Number(systematizationID) > 0 && !systematizationDetails?.active && (
                   <Button variant="secondary" content="Dodaj odjeljenje" onClick={() => setShowEditSectorModal(true)} />
                 )}
               </ButtonWrapper>

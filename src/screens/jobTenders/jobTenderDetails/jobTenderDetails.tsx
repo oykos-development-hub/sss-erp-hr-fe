@@ -1,18 +1,22 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScreenWrapper} from '../../../shared/screenWrapper';
 import {ScreenProps} from '../../../types/screen-props';
 import JobTenderInfo from '../../../components/jobTenderInfo/jobTenderInfo';
 import SectionBox from '../../../shared/sectionBox';
-import useJobTender from '../../../services/graphql/jobTenders/useJobTender';
+import useJobTendersOverview from '../../../services/graphql/jobTenders/useJobTenderOverview';
 import JobTenderApplicationsList from '../../../components/jobTenderApplicationsList/jobTenderApplicationsList';
+import {JobTender} from '../../../types/graphql/jobTenders';
 
 export const JobTenderDetailsScreen: React.FC<ScreenProps> = ({context}) => {
-  const jobTenderId = Number(context?.navigation?.location?.pathname.split('/')[3]) || 0;
+  const jobTenderId = Number(context?.navigation?.location?.pathname.split('/')[4]) || 0;
+  const [jobTender, setJobTender] = useState<JobTender>();
 
   const {alert} = context.alert;
 
-  const {data: jobTender} = useJobTender(jobTenderId);
-
+  const {data} = useJobTendersOverview({page: 1, size: 10, id: jobTenderId});
+  useEffect(() => {
+    if (data.items.length > 0) setJobTender(data.items[0]);
+  }, [data]);
   return (
     <ScreenWrapper context={context}>
       <SectionBox style={{marginTop: 25}}>

@@ -56,9 +56,8 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({jobTend
 
   const toggleApplicationModal = (id?: number) => {
     setShowModal(prev => !prev);
-    if (id) {
-      handleEdit(id);
-    }
+
+    handleEdit(id || 0);
   };
 
   const editItem = useMemo(

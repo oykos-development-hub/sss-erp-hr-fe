@@ -2,12 +2,12 @@ import {JobTendersResponse} from '../../../types/graphql/jobTenders';
 import {GraphQL} from '../index';
 
 interface UseJobTendersParams {
-  page: number;
-  size: number;
-  id: number;
-  active: boolean;
-  organization_unit_id: number;
-  type_id: number;
+  page?: number;
+  size?: number;
+  id?: number;
+  active?: boolean;
+  organization_unit_id?: number;
+  type_id?: number;
 }
 
 const jobTenderOverview = async ({
@@ -46,7 +46,6 @@ const jobTenderOverview = async ({
             }
             description
             serial_number
-            available_slots
             active
             date_of_start
             date_of_end

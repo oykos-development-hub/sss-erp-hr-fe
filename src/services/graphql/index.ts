@@ -51,7 +51,6 @@ import jobTenderDelete from './jobTenders/jobTenderDelete';
 import jobTenderOverview from './jobTenders/jobTenderOverview';
 import jobTenderApplicationOverview from './jobTenders/jobTenderApplicationOverview';
 import jobTenderApplicationInsert from './jobTenders/jobTenderApplicationInsert';
-import jobTenderDetails from './jobTenders/jobTenderDetails';
 import systematizationDetails from './systematization/systematizationDetails';
 import systematizationOverview from './systematization/systematizationOverview';
 import systematizationInsert from './systematization/systematizationsInsert';
@@ -138,6 +137,5 @@ export const GraphQL = {
   judgeResolutionDelete: judgeResolutionDelete,
   judgeResolutionInsert: judgeResolutionInsert,
   judgeResolutionOverview: judgeResolutionOverview,
-  jobTenderDetails: jobTenderDetails,
   settingsDropdownOverview: settingsDropdownOverview,
 };

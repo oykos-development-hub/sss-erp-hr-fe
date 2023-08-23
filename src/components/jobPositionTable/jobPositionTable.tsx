@@ -47,6 +47,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   const [editTableRow, setEditTableRow] = useState<null | number>(null);
   const [deleteItemId, setDeleteItemId] = useState<null | number>(null);
   const selectRow = (id: number) => {
+    debugger;
     setSelectedEmployee(undefined);
     setEditTableRow(id);
   };
@@ -162,6 +163,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
           const jobPosition = jobPositionData?.find((jobPosition: any) => jobPosition.id === newItem.job_position.id);
           newItem = {
             ...newItem,
+            id: jobPositionResponse?.id,
             serial_number: jobPosition?.serial_number || 0,
             description: jobPosition?.description,
             requirements: jobPosition?.requirements,
@@ -174,6 +176,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
             available_slots: {value: jobPositionResponse?.available_slots, row_id: jobPositionResponse?.id},
           };
           newTableData.push(newItem);
+          debugger;
           setTableDataState([...newTableData]);
         }
       },

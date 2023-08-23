@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {Dropdown, Input, SearchIcon, Theme} from 'client-library';
 import {Wrapper} from './style';
@@ -8,14 +8,15 @@ import {SystematizationFiltersProps} from '../types';
 
 const initialValues = {
   systematization_number: null,
-  organization_unit_id: 0,
+  organization_unit_id: null,
   year: null,
 };
 
 export const SystematizationFilters: React.FC<SystematizationFiltersProps> = ({setFilters, data, context}: any) => {
   const {register, control, watch} = useForm({defaultValues: data || initialValues});
   const years = yearsForDropdown();
-  const {organizationUnitsList} = useOrganizationUnits(context);
+
+  const {organizationUnitsList} = useOrganizationUnits(context, true);
   const unit = watch('organization_unit_id');
   const search = watch('systematization_number');
   const year = watch('year');
