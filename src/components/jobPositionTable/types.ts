@@ -10,4 +10,5 @@ export interface JobPositionTableProps {
   jobPositionData: JobPosition[];
   allEmployees: UserProfile[];
   cancel?: () => void;
+  isActive: boolean;
 }

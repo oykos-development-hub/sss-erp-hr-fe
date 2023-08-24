@@ -86,7 +86,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
     if (success) {
       const route = id > 0 ? `/hr/systematization/systematization-details/${id}` : '/hr/systematization';
       navigate(route);
-
+      if (systematizationDetails && systematizationDetails.id) refreshData();
       context.breadcrumbs.remove();
       context.alert.success('Uspješno sačuvano');
 
@@ -272,6 +272,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
                 context={context}
                 jobPositionData={jobPositionData?.items}
                 allEmployees={allEmployees?.items}
+                isActive={systematizationDetails?.active}
               />
             </div>
           ) : (

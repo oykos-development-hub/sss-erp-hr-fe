@@ -16,6 +16,7 @@ export const Sectors: React.FC<SectorsProps> = ({
   context,
   jobPositionData,
   allEmployees,
+  isActive,
 }) => {
   const [isOpen, setIsOpen] = useState<number>(0);
   const [showMenu, setShowMenu] = useState<number>(0);
@@ -37,16 +38,15 @@ export const Sectors: React.FC<SectorsProps> = ({
 
   const addJobPosition = (e: any, sector: any) => {
     e.stopPropagation();
-    setSelectedItemId(sector?.id);
-    const jobPositions = sectors?.find(
-      (sector: any) => sector?.id === selectedItemId,
-    )?.job_positions_organization_units;
 
-    setJobPositions(jobPositions);
+    if (selectedItemId !== sector.id) {
+      setIsOpen(sector?.id);
+    }
+    const jobPositions = sectors?.find((item: any) => item?.id === sector?.id)?.job_positions_organization_units;
+
     setShowMenu(0);
     jobPositions &&
       setJobPositions([
-        ...jobPositions,
         {
           available_slots: 0,
           description: '',
@@ -56,9 +56,9 @@ export const Sectors: React.FC<SectorsProps> = ({
           requirements: '',
           serial_number: '',
         },
+        ...jobPositions,
       ]);
   };
-
   const cancelJobPosition = () => {
     const newArray = jobPositions?.filter(item => item.id !== 0) || [];
     setJobPositions([...newArray]);
@@ -114,35 +114,27 @@ export const Sectors: React.FC<SectorsProps> = ({
                     />
                   </AccordionIconsWrapper>
                   <Menu open={showMenu === sector?.id}>
-                    <MenuItem>
-                      <Typography
-                        content="Uredi"
-                        variant="bodyMedium"
-                        onClick={(e: any) => {
-                          e.stopPropagation();
-                          handleEditSector(sector.id);
-                          setShowMenu(0);
-                        }}
-                      />
+                    <MenuItem
+                      onClick={(e: any) => {
+                        e.stopPropagation();
+                        handleEditSector(sector.id);
+                        setShowMenu(0);
+                      }}>
+                      <Typography content="Uredi" variant="bodyMedium" />
                     </MenuItem>
-                    <MenuItem>
-                      <Typography
-                        content="Dodaj radno mjesto"
-                        variant="bodyMedium"
-                        onClick={(e: any) => addJobPosition(e, sector)}
-                      />
-                    </MenuItem>
-                    <MenuItem>
-                      <Typography
-                        content="Obriši"
-                        variant="bodyMedium"
-                        onClick={(e: any) => {
-                          e.stopPropagation();
-                          setShowDeleteModal(true);
-                          setDeleteItemId(sector?.id);
-                          setShowMenu(0);
-                        }}
-                      />
+                    {!isActive && (
+                      <MenuItem onClick={(e: any) => addJobPosition(e, sector)}>
+                        <Typography content="Dodaj radno mjesto" variant="bodyMedium" />
+                      </MenuItem>
+                    )}
+                    <MenuItem
+                      onClick={(e: any) => {
+                        e.stopPropagation();
+                        setShowDeleteModal(true);
+                        setDeleteItemId(sector?.id);
+                        setShowMenu(0);
+                      }}>
+                      <Typography content="Obriši" variant="bodyMedium" />
                     </MenuItem>
                   </Menu>
                 </AccordionHeader>
@@ -157,6 +149,7 @@ export const Sectors: React.FC<SectorsProps> = ({
                   jobPositionData={jobPositionData}
                   allEmployees={allEmployees}
                   cancel={cancelJobPosition}
+                  isActive={isActive}
                 />
               }
             />

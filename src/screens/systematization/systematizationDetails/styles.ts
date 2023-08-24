@@ -107,6 +107,7 @@ export const Menu = styled.div<{open: boolean}>`
   height: ${props => (props.open ? 'auto' : '0')};
   overflow: hidden;
   transition: height 0.3s ease;
+  min-width: 200px;
 `;
 
 export const MenuItem = styled.div`

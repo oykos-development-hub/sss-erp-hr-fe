@@ -29,6 +29,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   jobPositionData,
   allEmployees,
   cancel,
+  isActive,
 }) => {
   const {mutate: insertJobPosition} = useOrganizationUnitInsertJobPosition();
   const {mutate: deleteJobPosition} = useOrganizationUnitDeleteJobPosition();
@@ -220,7 +221,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
             value={item.value}
             name="available_slots"
             style={{width: 100}}
-            disabled={item?.row_id !== editTableRow}
+            disabled={item?.row_id !== editTableRow || isActive}
             onChange={ev => handleChange(ev.target.value, 'available_slots')}
           />
         );

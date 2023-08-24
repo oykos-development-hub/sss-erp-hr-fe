@@ -16,6 +16,7 @@ export interface SectorsProps {
   context?: MicroserviceProps;
   jobPositionData: JobPosition[];
   allEmployees: UserProfile[];
+  isActive: boolean;
 }
 
 export interface SystematizationFiltersProps {

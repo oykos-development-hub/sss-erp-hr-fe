@@ -239,7 +239,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
     const monthsToAdd = Number(monthSpan?.id);
     parsedDateOfRevision.setMonth(parsedDateOfRevision.getMonth() + monthsToAdd);
 
-    return parseDate(parsedDateOfRevision)
+    return parseDate(parsedDateOfRevision);
   };
 
   useEffect(() => {
