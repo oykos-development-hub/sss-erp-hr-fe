@@ -13,7 +13,7 @@ import {tableHeads} from './constants';
 export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[3];
   const {experienceData, refetchData} = useExperience(userProfileID);
-  const {organizationUnitsList} = useOrganizationUnits(context);
+  const {organizationUnits} = useOrganizationUnits(context);
 
   const tableData = useMemo(() => {
     let totalInsuredExperience = 0;
@@ -85,6 +85,14 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
     setShowDeleteModal(false);
     setSelectedItemId(0);
   };
+
+  const organizationUnitsList = useMemo(() => {
+    return organizationUnits
+      .filter(i => !i.parent_id)
+      .map(unit => {
+        return {id: unit.id, title: unit.title};
+      });
+  }, [organizationUnits]);
 
   return (
     <Container>

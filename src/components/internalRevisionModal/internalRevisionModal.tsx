@@ -3,7 +3,7 @@ import {FormGroup, ModalForm, ModalSection, ModalSectionTitle, RevisionModal, Ro
 import {Dropdown, Input, FileUpload, Datepicker} from 'client-library';
 import {InternalRevisionFormValues, InternalRevisionInsertParams} from '../../screens/internalRevision/types';
 import {Controller, useForm} from 'react-hook-form';
-import {yearsInternalRevision} from '../../utils/constants';
+import {yearsForDropdown} from '../../utils/constants';
 import {FileUploadVariants} from '@oykos-development/devkit-react-ts-styled-components';
 import {parseDate} from '../../utils/dateUtils';
 import {
@@ -88,7 +88,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
 }) => {
   const {data} = useRevisionDetails(id);
   const {mutate} = useRevisionInsert();
-  const {organizationUnitsList} = useOrganizationUnits();
+  const {organizationUnits} = useOrganizationUnits();
   const {data: settingsTypes} = useSettingsDropdownOverview('revision_organization_units_types');
 
   const externalOrganizationUnitsList = useMemo(() => {
@@ -250,13 +250,21 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
   }, [dateOfRevision, implementationMonthSpan]);
 
   const yearOptions = useMemo(
-    () => yearsInternalRevision().map(year => ({id: year.id.toString(), title: year.title.toString()})),
+    () => yearsForDropdown().map(year => ({id: year.id.toString(), title: year.title.toString()})),
     [],
   );
 
   const implemented = watch('state_of_implementation')?.id === 'implemented';
   const internalSubject = watch('internal_organization_unit_id');
   const externalSubject = watch('external_organization_unit_id');
+
+  const organizationUnitsList = useMemo(() => {
+    return organizationUnits
+      .filter(i => !i.parent_id)
+      .map(unit => {
+        return {id: unit.id, title: unit.title};
+      });
+  }, [organizationUnits]);
 
   useEffect(() => {
     if (internalSubject) {

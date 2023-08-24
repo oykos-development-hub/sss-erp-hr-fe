@@ -34,8 +34,17 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
 }) => {
   const overviewRef = useRef<HTMLDivElement>(null);
 
-  const {organizationUnitsList} = useOrganizationUnits();
+  const {organizationUnits} = useOrganizationUnits();
+
   const {data: jobPositions} = useJobPositions('');
+
+  const organizationUnitsList = useMemo(() => {
+    return organizationUnits
+      .filter(i => !i.parent_id)
+      .map(unit => {
+        return {id: unit.id, title: unit.title};
+      });
+  }, [organizationUnits]);
 
   const list = useMemo(
     () =>

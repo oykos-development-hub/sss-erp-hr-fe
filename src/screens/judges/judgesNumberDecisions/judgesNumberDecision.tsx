@@ -3,7 +3,7 @@ import JudgesNumbersList from '../../../components/judgesNumbersList/judgesNumbe
 import {ScreenWrapper} from '../../../shared/screenWrapper';
 import {DropdownDataString} from '../../../types/dropdownData';
 import {ScreenProps} from '../../../types/screen-props';
-import {yearsForDropdown} from '../../../utils/constants';
+import {yearsForDropdown, yearsForDropdownFilter} from '../../../utils/constants';
 import useJudgesResolutionsOverview from '../../../services/graphql/judges/useJudgeResolutionOverview';
 
 export interface JudgesNumberListFilters {
@@ -32,10 +32,7 @@ const JudgesNumberDecisions: React.FC<ScreenProps> = ({context}) => {
   };
 
   const yearOptions = useMemo(
-    () => [
-      {id: '', title: 'Sve godine'},
-      ...yearsForDropdown().map(year => ({id: year.id.toString(), title: year.title.toString()})),
-    ],
+    () => [...yearsForDropdownFilter(5).map(year => ({id: year.id.toString(), title: year.title.toString()}))],
     [],
   );
 

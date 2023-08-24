@@ -40,19 +40,19 @@ export const yearsForDropdown = (numYearsToAdd?: number) => {
   const maxOffset = 10 + (numYearsToAdd || 0);
   const thisYear = new Date().getFullYear() + (numYearsToAdd || 0);
   const allYears = [];
-  allYears.push({id: '', title: 'Sve'});
   for (let x = 0; x < maxOffset; x++) {
     allYears.push({id: Number(thisYear - x), title: (thisYear - x).toString()});
   }
   return allYears;
 };
 
-export const yearsInternalRevision = () => {
-  const maxOffset = 10;
-  const thisYear = new Date().getFullYear();
+export const yearsForDropdownFilter = (numYearsToAdd?: number) => {
+  const maxOffset = 10 + (numYearsToAdd || 0);
+  const thisYear = new Date().getFullYear() + (numYearsToAdd || 0);
   const allYears = [];
-  for (let x = 0; x <= maxOffset; x++) {
-    allYears.push(thisYear - x);
+  allYears.push({id: '', title: 'Sve'});
+  for (let x = 0; x < maxOffset; x++) {
+    allYears.push({id: Number(thisYear - x), title: (thisYear - x).toString()});
   }
-  return allYears.map(year => ({id: year.toString(), title: year.toString()}));
+  return allYears;
 };

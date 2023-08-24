@@ -27,13 +27,21 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
   const [selectedItemId, setSelectedItemId] = useState(0);
   const [selectedNormItemId, setSelectedNormItemId] = useState(0);
   const [normsList, setNormsList] = useState<Norms[]>([]);
-  const {organizationUnitsList} = useOrganizationUnits(context);
+  const {organizationUnits} = useOrganizationUnits(context);
 
   const [filters, setFilters] = useState<JudgesListFilters>(initialValues);
 
   const {data, total, refetch} = useJudgesOverview({page, size: 10, ...filters});
   const {judgesUnitsList} = useJudgesOverview({page, size: 1000, ...initialValues});
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const organizationUnitsList = useMemo(() => {
+    return organizationUnits
+      .filter(i => !i.parent_id)
+      .map(unit => {
+        return {id: unit.id, title: unit.title};
+      });
+  }, [organizationUnits]);
 
   const selectedNormItem = useMemo(() => {
     return normsList?.find((item: Norms) => item.id === selectedNormItemId);

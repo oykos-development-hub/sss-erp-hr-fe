@@ -148,7 +148,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
   };
 
   const availableYears = useMemo(() => {
-    const yearOptions = [...yearsForDropdown(2).map(year => ({id: year.id.toString(), title: year.title.toString()}))];
+    const yearOptions = [...yearsForDropdown(5).map(year => ({id: year.id.toString(), title: year.title.toString()}))];
     return data ? yearOptions.filter(year => !data.find(resolution => resolution.year === year.id)) : [];
   }, [data]);
 
@@ -208,18 +208,11 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
             {isDisabled ? (
               <Button content="Uredi" variant="secondary" onClick={() => setIsDisabled(false)} />
             ) : (
-              <>
-                <Button
-                  content="Sačuvaj i zatvori"
-                  variant="secondary"
-                  onClick={handleSubmit(values => handleSave(values, true))}
-                />
-                <Button
-                  content="Sačuvaj i nastavi"
-                  variant="primary"
-                  onClick={handleSubmit(values => handleSave(values, false))}
-                />
-              </>
+              <Button
+                content="Sačuvaj "
+                variant="secondary"
+                onClick={handleSubmit(values => handleSave(values, true))}
+              />
             )}
           </Controls>
         </FormFooter>

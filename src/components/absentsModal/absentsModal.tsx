@@ -1,5 +1,5 @@
 import {Typography, Modal, FileUpload, Dropdown, Datepicker, Input} from 'client-library';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
 import {parseDate} from '../../utils/dateUtils';
 import {Controller, useForm} from 'react-hook-form';
@@ -46,7 +46,15 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
     setAbsentChildType([...absentTypes.filter(item => item.accounting_days_off === vacation)]);
   };
 
-  const {organizationUnitsList} = useOrganizationUnits();
+  const {organizationUnits} = useOrganizationUnits();
+
+  const organizationUnitsList = useMemo(() => {
+    return organizationUnits
+      .filter(i => !i.parent_id)
+      .map(unit => {
+        return {id: unit.id, title: unit.title};
+      });
+  }, [organizationUnits]);
 
   const {mutate} = useAbsentInsert();
 

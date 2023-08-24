@@ -39,7 +39,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
   }, [data]);
 
   const {data: jobPositions} = useJobPositions('');
-  const {organizationUnitsList} = useOrganizationUnits(context);
+  const {organizationUnits} = useOrganizationUnits(context);
 
   const {mutate} = useSalaryParamsInsert();
 
@@ -86,6 +86,14 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
   const jobPositionOptions = useMemo(() => {
     return jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title}));
   }, [jobPositions]);
+
+  const organizationUnitsList = useMemo(() => {
+    return organizationUnits
+      .filter(i => !i.parent_id)
+      .map(unit => {
+        return {id: unit.id, title: unit.title};
+      });
+  }, [organizationUnits]);
 
   return (
     <FormContainer>

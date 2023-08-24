@@ -9,6 +9,7 @@ import {DropdownDataBoolean, DropdownDataNumber} from '../../types/dropdownData'
 import useJobTendersOverview from '../../services/graphql/jobTenders/useJobTenderOverview';
 import useJobTendersDelete from '../../services/graphql/jobTenders/useJobTenderDelete';
 import useJobTendersTypesSearch from '../../services/graphql/jobPositions/useJobTendersTypesSearch';
+import useJobPositionsOrganizationUnit from '../../services/graphql/jobPositions/useJobPositionsOrganizationUnit';
 
 export interface JobTendersListFilters {
   active?: DropdownDataBoolean | null;
@@ -29,7 +30,8 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
   const [page, setPage] = useState(1);
   const [selectedItemId, setSelectedItemId] = useState(0);
   const {types, typesUnitsList} = useJobTendersTypesSearch('');
-  const {organizationUnitsList} = useOrganizationUnits(context);
+  const {organizationUnits} = useOrganizationUnits(context);
+  const {positions} = useJobPositionsOrganizationUnit(context?.organization_unit?.id);
 
   const [filters, setFilters] = useState<any>(initialValues);
 
@@ -77,6 +79,14 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
     setShowModal(false);
     setSelectedItemId(0);
   };
+
+  const organizationUnitsList = useMemo(() => {
+    return organizationUnits
+      .filter(i => !i.parent_id)
+      .map(unit => {
+        return {id: unit.id, title: unit.title};
+      });
+  }, [organizationUnits]);
 
   return (
     <ScreenWrapper context={context}>

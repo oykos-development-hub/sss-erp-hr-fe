@@ -2,7 +2,7 @@ import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {Dropdown, Input, SearchIcon, Theme} from 'client-library';
 import {Wrapper} from './style';
-import {yearsForDropdown} from '../../../utils/constants';
+import {yearsForDropdownFilter} from '../../../utils/constants';
 import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
 import {SystematizationFiltersProps} from '../types';
 
@@ -14,7 +14,7 @@ const initialValues = {
 
 export const SystematizationFilters: React.FC<SystematizationFiltersProps> = ({setFilters, data, context}: any) => {
   const {register, control, watch} = useForm({defaultValues: data || initialValues});
-  const years = yearsForDropdown();
+  const years = yearsForDropdownFilter();
 
   const {organizationUnitsList} = useOrganizationUnits(context, true);
   const unit = watch('organization_unit_id');

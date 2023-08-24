@@ -38,7 +38,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   const isNew = !profileData?.id;
   const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
   const {data: jobPositions} = useJobPositions('');
-  const {organizationUnitsList} = useOrganizationUnits();
+  const {organizationUnits} = useOrganizationUnits();
   const {options: contractTypes} = useSettingsDropdownOverview('contract_types');
   const {mutate: createBasicInfo} = useBasicInfoInsert();
   const {mutate: updateBasicInfo} = useBasicInfoUpdate();
@@ -54,6 +54,14 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   } = useForm({
     defaultValues: initialValues,
   });
+
+  const organizationUnitsList = useMemo(() => {
+    return organizationUnits
+      .filter(i => !i.parent_id)
+      .map(unit => {
+        return {id: unit.id, title: unit.title};
+      });
+  }, [organizationUnits]);
 
   const jobPositionOptions = useMemo(() => {
     return jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title}));
