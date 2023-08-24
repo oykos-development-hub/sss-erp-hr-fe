@@ -205,6 +205,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
               //eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
               maxMenuHeight={200}
+              style={{width: '235px'}}
               isDisabled={isDisabled}
             />
           </div>
@@ -221,7 +222,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
           <Input
             value={item.value}
             name="available_slots"
-            style={{width: 100}}
+            style={{width: 40, textAlign: 'center'}}
             disabled={item?.row_id !== editTableRow || isActive}
             onChange={ev => handleChange(ev.target.value, 'available_slots')}
           />
@@ -249,6 +250,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
                   //eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   //@ts-ignore
                   maxMenuHeight={200}
+                  style={{width: '235px'}}
                   isSearchable
                 />
                 {selectedEmployee && item.length < selectedItem?.available_slots?.value && (
@@ -273,6 +275,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
                           onClick={() => handleEditEmployees(employee?.id)}
                         />
                       }
+                      style={{width: '235px'}}
                       disabled={employee?.row_id !== editTableRow}
                     />
                   </div>

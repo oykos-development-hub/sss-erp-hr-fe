@@ -346,7 +346,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                       options={organizationUnitsList as any}
                       error={errors.internal_organization_unit_id?.message as string}
                       placeholder="Izaberite subjekt"
-                      label="SUBJEKT REVIZIJE (interna OJ):"
+                      label="SUBJEKT REVIZIJE (interna):"
                     />
                   )}
                 />
@@ -363,7 +363,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                       options={externalOrganizationUnitsList as any}
                       error={errors.external_organization_unit_id?.message as string}
                       placeholder="Izaberite subjekt"
-                      label="SUBJEKT REVIZIJE (eksterna OJ):"
+                      label="SUBJEKT REVIZIJE (eksterna):"
                     />
                   )}
                 />
