@@ -8,7 +8,6 @@ export interface InternalRevisionFormValues {
   internal_organization_unit_id?: DropdownDataNumber | null;
   external_organization_unit_id?: DropdownDataNumber | null;
   responsible_user_profile?: string;
-  responsible_user_profile_id?: DropdownDataNumber;
   implementation_user_profile?: DropdownDataNumber | null;
   implementation_user_profile_id?: number | null;
   revision_organization_unit?: DropdownDataNumber | null;
@@ -37,8 +36,8 @@ export interface InternalRevisionInsertParams {
   revisor_user_profile_id: number | null;
   internal_organization_unit_id: number | null;
   external_organization_unit_id: number | null;
-  responsible_user_profile_id?: number;
-  implementation_user_profile_id?: number;
+  responsible_user_profile: string;
+  implementation_user_profile_id?: number | null;
   title: string;
   planned_year: string;
   planned_quarter: string;

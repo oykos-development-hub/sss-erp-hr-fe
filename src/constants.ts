@@ -117,19 +117,19 @@ export const revisionPriorityOptions: DropdownDataString[] = [
   {id: 'Visok', title: 'Visok'},
 ];
 
-export const revisionDeadlineOptions: DropdownDataString[] = [
-  {id: '1 mjesec', title: '1 mjesec'},
-  {id: '2 mjeseca', title: '2 mjeseca'},
-  {id: '3 mjeseca', title: '3 mjeseca'},
-  {id: '4 mjeseca', title: '4 mjeseca'},
-  {id: '5 mjeseci', title: '5 mjeseci'},
-  {id: '6 mjeseci', title: '6 mjeseci'},
-  {id: '7 mjeseci', title: '7 mjeseci'},
-  {id: '8 mjeseci', title: '8 mjeseci'},
-  {id: '9 mjeseci', title: '9 mjeseci'},
-  {id: '10 mjeseci', title: '10 mjeseci'},
-  {id: '11 mjeseci', title: '11 mjeseci'},
-  {id: '12 mjeseci', title: '12 mjeseci'},
+export const revisionDeadlineOptions: DropdownDataNumber[] = [
+  {id: 1, title: '1 mjesec'},
+  {id: 2, title: '2 mjeseca'},
+  {id: 3, title: '3 mjeseca'},
+  {id: 4, title: '4 mjeseca'},
+  {id: 5, title: '5 mjeseci'},
+  {id: 6, title: '6 mjeseci'},
+  {id: 7, title: '7 mjeseci'},
+  {id: 8, title: '8 mjeseci'},
+  {id: 9, title: '9 mjeseci'},
+  {id: 10, title: '10 mjeseci'},
+  {id: 11, title: '11 mjeseci'},
+  {id: 12, title: '12 mjeseci'},
 ];
 
 export const revisionStatusOptions: DropdownDataString[] = [

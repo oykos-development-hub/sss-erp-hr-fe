@@ -3,7 +3,7 @@ import {FormGroup, ModalForm, ModalSection, ModalSectionTitle, RevisionModal, Ro
 import {Dropdown, Input, FileUpload, Datepicker} from 'client-library';
 import {InternalRevisionFormValues, InternalRevisionInsertParams} from '../../screens/internalRevision/types';
 import {Controller, useForm} from 'react-hook-form';
-import {yearsForDropdown} from '../../utils/constants';
+import {yearsInternalRevision} from '../../utils/constants';
 import {FileUploadVariants} from '@oykos-development/devkit-react-ts-styled-components';
 import {parseDate} from '../../utils/dateUtils';
 import {
@@ -57,7 +57,6 @@ const initialValues: InternalRevisionFormValues = {
   internal_organization_unit_id: null,
   external_organization_unit_id: null,
   responsible_user_profile: '',
-  responsible_user_profile_id: undefined,
   implementation_user_profile: null,
   implementation_user_profile_id: null,
   title: '',
@@ -119,9 +118,9 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
 
   const onSubmit = (values: InternalRevisionFormValues) => {
     const data: InternalRevisionInsertParams = {
-      implementation_user_profile_id: values?.implementation_user_profile?.id,
+      implementation_user_profile_id: values?.implementation_user_profile?.id || null,
       revision_type_id: values?.revision_type?.id,
-      responsible_user_profile_id: values?.responsible_user_profile_id?.id,
+      responsible_user_profile: values?.responsible_user_profile || '',
       revisor_user_profile_id: values.revisor_user_profile?.id || null,
       internal_organization_unit_id: values.internal_organization_unit_id?.id || null,
       external_organization_unit_id: values.external_organization_unit_id?.id || null,
@@ -135,11 +134,11 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
       date_of_implementation: values?.date_of_implementation
         ? parseDate(values?.date_of_implementation, true)
         : undefined,
-      implementation_month_span: values?.implementation_month_span?.title,
+      implementation_month_span: values?.implementation_month_span?.id || '',
       second_date_of_revision: values?.second_date_of_revision
         ? parseDate(values?.second_date_of_revision, true)
         : undefined,
-      second_implementation_month_span: values?.second_implementation_month_span?.title,
+      second_implementation_month_span: values?.second_implementation_month_span?.id || '',
       id: id,
       title: values?.title,
       serial_number: values?.serial_number,
@@ -220,11 +219,11 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
         priority: revisionPriorityOptions.find(option => option.id === data.item.priority),
         responsible_user_profile: data.item.responsible_user_profile?.title,
         implementation_month_span: revisionDeadlineOptions.find(
-          option => option.id === data.item.implementation_month_span,
+          option => option.id == data.item.implementation_month_span,
         ),
         state_of_implementation: revisionStatusOptions.find(option => option.id === data.item.state_of_implementation),
         second_implementation_month_span: revisionDeadlineOptions.find(
-          option => option.id === data.item.second_implementation_month_span,
+          option => option.id == data.item.second_implementation_month_span,
         ),
       });
     }
@@ -240,23 +239,18 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
     const monthsToAdd = Number(monthSpan?.id);
     parsedDateOfRevision.setMonth(parsedDateOfRevision.getMonth() + monthsToAdd);
 
-    const day = parsedDateOfRevision.getDate().toString().padStart(2, '0');
-    const month = (parsedDateOfRevision.getMonth() + 1).toString().padStart(2, '0');
-    const year = parsedDateOfRevision.getFullYear();
-
-    return `${day}/${month}/${year}`;
+    return parseDate(parsedDateOfRevision)
   };
 
   useEffect(() => {
     if (dateOfRevision && implementationMonthSpan) {
       const formattedDate = calculateDateOfImplementation(dateOfRevision, implementationMonthSpan);
       setDateOfImplementation(formattedDate);
-      console.log('datumm: ', dateOfImplementation);
     }
   }, [dateOfRevision, implementationMonthSpan]);
 
   const yearOptions = useMemo(
-    () => yearsForDropdown().map(year => ({id: year.id.toString(), title: year.title.toString()})),
+    () => yearsInternalRevision().map(year => ({id: year.id.toString(), title: year.title.toString()})),
     [],
   );
 
@@ -613,7 +607,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                       value={value as any}
                       onChange={onChange}
                       options={revisorOptions}
-                      error={errors.implementation_user_profile?.message as string}
+                      // error={errors.implementation_user_profile?.message as string}
                       placeholder="Izaberite opciju"
                       label="IMPLEMENTACIJU PREPORUKE POTVRDIO:"
                     />

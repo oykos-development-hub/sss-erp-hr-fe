@@ -46,3 +46,13 @@ export const yearsForDropdown = (numYearsToAdd?: number) => {
   }
   return allYears;
 };
+
+export const yearsInternalRevision = () => {
+  const maxOffset = 10;
+  const thisYear = new Date().getFullYear();
+  const allYears = [];
+  for (let x = 0; x <= maxOffset; x++) {
+    allYears.push(thisYear - x);
+  }
+  return allYears.map(year => ({id: year.toString(), title: year.toString()}));
+};
