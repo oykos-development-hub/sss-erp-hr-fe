@@ -11,6 +11,7 @@ export interface DropdownItemType {
 export interface JobTender {
   id: number;
   organization_unit_id: number;
+  organization_unit?: DropdownItemType;
   type?: DropdownItemType;
   description: string;
   serial_number: string;
