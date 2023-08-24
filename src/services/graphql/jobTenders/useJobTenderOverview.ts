@@ -32,7 +32,7 @@ const useJobTenderOverview = ({page, size, id, organization_unit_id, active, typ
     fetchJobTenders();
   }, [page, size, id, active, organization_unit_id, type_id]);
 
-  return {data, loading, refreshData: fetchJobTenders};
+  return {data, loading, refetch: fetchJobTenders};
 };
 
 export default useJobTenderOverview;

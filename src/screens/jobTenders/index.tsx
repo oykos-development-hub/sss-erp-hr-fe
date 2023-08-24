@@ -9,8 +9,6 @@ import {DropdownDataBoolean, DropdownDataNumber} from '../../types/dropdownData'
 import useJobTendersOverview from '../../services/graphql/jobTenders/useJobTenderOverview';
 import useJobTendersDelete from '../../services/graphql/jobTenders/useJobTenderDelete';
 import useJobTendersTypesSearch from '../../services/graphql/jobPositions/useJobTendersTypesSearch';
-import useJobPositionsOrganizationUnit from '../../services/graphql/jobPositions/useJobPositionsOrganizationUnit';
-import {JobPosition} from '../../types/graphql/jobPositions';
 
 export interface JobTendersListFilters {
   active?: DropdownDataBoolean | null;
@@ -32,17 +30,16 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
   const [selectedItemId, setSelectedItemId] = useState(0);
   const {types, typesUnitsList} = useJobTendersTypesSearch('');
   const {organizationUnitsList} = useOrganizationUnits(context);
-  const {positions} = useJobPositionsOrganizationUnit(context?.organization_unit?.id);
 
   const [filters, setFilters] = useState<any>(initialValues);
 
-  const {data, refreshData} = useJobTendersOverview({page, size: 10, ...filters});
+  const {data, refetch} = useJobTendersOverview({page, size: 10, ...filters});
 
   const selectedItem = useMemo(() => {
     return data?.items?.find((item: JobTender) => item.id === selectedItemId);
   }, [selectedItemId]);
 
-  const {alert} = context.contextMain;
+  const {alert} = context;
 
   const handleEdit = (item?: JobTender) => {
     setSelectedItemId(item?.id ? item.id : 0);
@@ -51,7 +48,7 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
 
   const {mutate: deleteJobTenders} = useJobTendersDelete(
     () => {
-      refreshData();
+      refetch();
       alert.success('Uspješno obrisano');
     },
     () => {
@@ -76,15 +73,9 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
     handleEdit(item);
   };
 
-  const handleCloseModal = (refetch: boolean, message: string) => {
+  const handleCloseModal = () => {
     setShowModal(false);
     setSelectedItemId(0);
-    if (refetch) {
-      refreshData();
-      alert.success(message);
-    } else {
-      alert.error(message);
-    }
   };
 
   return (
@@ -103,10 +94,12 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
       />
       <JobTenderModal
         open={showModal}
-        onClose={(refetch, message) => handleCloseModal(refetch, message)}
+        onClose={handleCloseModal}
         selectedItem={selectedItem}
         dropdownJobTenderType={types?.items || []}
-        jobPositionOrganizationUnitsList={positions.items || []}
+        organizationUnitsList={organizationUnitsList || []}
+        refetch={refetch}
+        alert={alert}
       />
     </ScreenWrapper>
   );

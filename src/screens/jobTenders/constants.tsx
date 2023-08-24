@@ -19,9 +19,8 @@ export const tableHeads: TableHead[] = [
   },
   {title: 'Broj oglasa', accessor: 'serial_number'},
   {title: 'Datum objave', accessor: 'date_of_start'},
-  {title: 'Kandidati', accessor: 'available_slots'},
   {title: 'Dokumenta', accessor: 'file_id'},
-  {title: 'Status', accessor: 'active_badge', type: 'badge'},
+  {title: 'Status', accessor: 'active', type: 'badge'},
   {
     title: '',
     accessor: 'TABLE_ACTIONS',

@@ -1,4 +1,5 @@
 import {ModalProps} from '../../screens/employees/education/types';
+import {OrganizationUnit} from './organizationUnitsTypes';
 
 import {JobTenderType} from './useJobTendersTypes';
 
@@ -9,13 +10,10 @@ export interface DropdownItemType {
 
 export interface JobTender {
   id: number;
-  organization_unit: DropdownItemType;
-  type_tender?: DropdownItemType;
+  organization_unit_id: number;
   type?: DropdownItemType;
   description: string;
   serial_number: string;
-  available_slots: number;
-  active: boolean;
   date_of_start: string;
   date_of_end: string;
   created_at?: string;
@@ -24,10 +22,25 @@ export interface JobTender {
   job_position?: DropdownItemType;
 }
 
+export interface JobTenderParams {
+  id: number;
+  organization_unit_id: number;
+  type?: DropdownItemType;
+  description: string;
+  serial_number: string;
+  date_of_start: string;
+  date_of_end: string;
+  created_at?: string;
+  updated_at?: string;
+  file_id: number;
+}
+
 export interface JobTendersModal extends ModalProps {
   dropdownJobTenderType: JobTenderType[];
-  jobPositionOrganizationUnitsList: {id: number; title: string}[];
-  onClose: (refetch?: any, message?: any) => void;
+  organizationUnitsList: OrganizationUnit[];
+  onClose: () => void;
+  refetch: () => void;
+  alert: any;
 }
 
 export interface JobTenderApplication {

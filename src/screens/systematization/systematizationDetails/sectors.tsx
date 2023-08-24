@@ -42,22 +42,21 @@ export const Sectors: React.FC<SectorsProps> = ({
     if (selectedItemId !== sector.id) {
       setIsOpen(sector?.id);
     }
-    const jobPositions = sectors?.find((item: any) => item?.id === sector?.id)?.job_positions_organization_units;
+    const jobPositions = sectors?.find((item: any) => item?.id === sector?.id)?.job_positions_organization_units || [];
 
     setShowMenu(0);
-    jobPositions &&
-      setJobPositions([
-        {
-          available_slots: 0,
-          description: '',
-          employees: [],
-          id: 0,
-          job_position: {id: 0, title: ''},
-          requirements: '',
-          serial_number: '',
-        },
-        ...jobPositions,
-      ]);
+    setJobPositions([
+      {
+        available_slots: 0,
+        description: '',
+        employees: [],
+        id: 0,
+        job_position: {id: 0, title: ''},
+        requirements: '',
+        serial_number: '',
+      },
+      ...jobPositions,
+    ]);
   };
   const cancelJobPosition = () => {
     const newArray = jobPositions?.filter(item => item.id !== 0) || [];

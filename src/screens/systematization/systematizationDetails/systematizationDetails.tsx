@@ -17,7 +17,6 @@ import {OrganisationalUnitModal} from '../../../components/organizationUnitModal
 import useDeleteOrganisationUnit from '../../../services/graphql/organizationUnits/useOrganizationUnitDelete';
 import {SectorType} from '../../../types/graphql/systematizationsGetDetailsTypes';
 import useSystematizationInsert from '../../../services/graphql/systematization/useSystematizationsInsert';
-import useOrganizationUnitJobPositionInsert from '../../../services/graphql/organizationUnitsJobPositions/useOrganizationUnitInsertJobPosition';
 import {ScreenWrapper} from '../../../shared/screenWrapper';
 import {usePrompt} from '../../../shared/usePrompt';
 import useJobPositions from '../../../services/graphql/jobPositions/useJobPositionOverview';
@@ -50,16 +49,14 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const {data: jobPositionData} = useJobPositions('');
-  const {data: allEmployees} = useUserProfiles({
+  const {data: allEmployees, refetch: refetchEmployees} = useUserProfiles({
     page: 1,
     size: 100,
     is_active: null,
-    organization_unit_id: null,
+    organization_unit_id: systematizationDetails?.organizationUnit?.id,
     job_position_id: null,
     type: null,
   });
-
-  const {mutate: insertJobPosition} = useOrganizationUnitJobPositionInsert();
 
   const [isBlocking, setIsBlocking] = useState(false);
 
@@ -191,6 +188,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
   useEffect(() => {
     if (systematizationDetails) {
       methods.reset(systematizationDetails);
+      refetchEmployees();
     }
   }, [systematizationDetails]);
 

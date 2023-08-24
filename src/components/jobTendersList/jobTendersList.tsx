@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Divider, EditIconTwo, Pagination, Table, Theme, TrashIcon} from 'client-library';
-import {FC, useMemo, useState} from 'react';
+import {FC, useState} from 'react';
 import {JobTendersListFilters} from '../../screens/jobTenders';
 import {tableHeads} from '../../screens/jobTenders/constants';
 import {DeleteModal} from '../../shared/deleteModal/deleteModal';
@@ -42,15 +42,6 @@ const JobTendersList: FC<JobTendersListProps> = ({
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteItemID, setDeleteItemID] = useState(0);
-
-  const list: JobTender[] = useMemo(
-    () =>
-      data.items.map((item: JobTender) => ({
-        ...item,
-        active_badge: item.active === true ? 'Aktivan' : 'Neaktivan',
-      })),
-    [data],
-  );
 
   const handleCloseDeleteModal = () => {
     setDeleteItemID(0);
@@ -106,7 +97,7 @@ const JobTendersList: FC<JobTendersListProps> = ({
       </Header>
       <Table
         tableHeads={tableHeads}
-        data={list}
+        data={data.items || []}
         style={{marginBottom: 22}}
         onRowClick={item => {
           navigate(`/hr/job-tenders/job-tenders-list/${item.id}`);
@@ -132,7 +123,7 @@ const JobTendersList: FC<JobTendersListProps> = ({
         ]}
       />
       <Pagination
-        pageCount={data.total * 10}
+        pageCount={data.total / 10}
         onChange={onPageChange}
         variant="filled"
         itemsPerPage={2}

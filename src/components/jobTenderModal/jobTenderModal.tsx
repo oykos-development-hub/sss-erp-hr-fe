@@ -2,31 +2,18 @@ import {CheckIcon, Datepicker, Dropdown, FileUpload, Input, Modal, Theme, Typogr
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import useJobTenderInsert from '../../services/graphql/jobTenders/useJobTenderInsert';
-import {JobTender, JobTendersModal} from '../../types/graphql/jobTenders';
+import {JobTenderParams, JobTendersModal} from '../../types/graphql/jobTenders';
 import {parseDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, ModalContentWrapper, Row} from '../education/modals/styles';
 
-const initialValues: JobTender = {
+const initialValues: JobTenderParams = {
   id: 0,
-  organization_unit: {
-    id: 0,
-    title: '',
-  },
-  job_position: {
-    id: 0,
-    title: '',
-  },
-  type_tender: {
-    id: 0,
-    title: '',
-  },
+  organization_unit_id: 0,
   date_of_start: '',
   date_of_end: '',
   serial_number: '',
   type: undefined,
   description: '',
-  available_slots: 0,
-  active: true,
   file_id: 0,
 };
 
@@ -34,8 +21,10 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
   selectedItem,
   open,
   onClose,
-  jobPositionOrganizationUnitsList,
+  organizationUnitsList,
   dropdownJobTenderType,
+  alert,
+  refetch,
 }) => {
   const item = useMemo(() => {
     return selectedItem
@@ -54,14 +43,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
     reset,
   } = useForm({defaultValues: item || initialValues});
 
-  const {mutate, success, error} = useJobTenderInsert(() => {
-    if (success) {
-      onClose(true, 'Uspješno sačuvano');
-    } else if (error) {
-      onClose(false, 'Nije uspješno sašuvano');
-    }
-    reset(item);
-  });
+  const {mutate} = useJobTenderInsert();
 
   useEffect(() => {
     if (item) {
@@ -71,20 +53,27 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
 
   const onSubmit = (values: any) => {
     try {
-      mutate({
-        ...values,
-        id: values.id || 0,
-        organization_unit: values?.organization_unit,
-        job_position: values?.job_position,
-        type: values?.type_tender?.title,
-        description: '',
-        serial_number: values.serial_number,
-        available_slots: 0,
-        active: false,
-        date_of_start: parseDate(values?.date_of_start, true),
-        date_of_end: parseDate(values?.date_of_end, true),
-        file_id: 0,
-      });
+      mutate(
+        {
+          id: values.id,
+          organization_unit_id: values?.organization_unit?.id,
+          type: values?.type?.id,
+          description: '',
+          serial_number: values.serial_number,
+          date_of_start: parseDate(values?.date_of_start, true),
+          date_of_end: parseDate(values?.date_of_end, true),
+          file_id: values.file_id,
+        },
+        () => {
+          reset(initialValues);
+          alert.success('Uspješno ste dodali oglas.');
+          refetch();
+          onClose();
+        },
+        () => {
+          alert.success('Uspješno ste dodali oglas.');
+        },
+      );
     } catch (e) {
       console.log(e);
     }
@@ -94,7 +83,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
     <Modal
       open={open}
       onClose={() => {
-        onClose(true);
+        onClose();
         reset(item);
       }}
       leftButtonText="Otkaži"
@@ -104,7 +93,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
         <ModalContentWrapper>
           <Row>
             <Controller
-              name="type_tender"
+              name="type"
               rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
@@ -121,14 +110,14 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
             />
 
             <Controller
-              name="job_position"
+              name="organization_unit"
               rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
                 <Dropdown
-                  label="POZICIJA ORGANIZACIONA JEDINICA:"
+                  label="ORGANIZACIONA JEDINICA:"
                   name={name}
-                  options={jobPositionOrganizationUnitsList as any}
+                  options={organizationUnitsList as any}
                   value={value as any}
                   onChange={onChange}
                   rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}

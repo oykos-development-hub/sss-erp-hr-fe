@@ -177,6 +177,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
           };
           newTableData.push(newItem);
           setTableDataState([...newTableData]);
+          refetch && refetch(true);
         }
       },
       () => {
