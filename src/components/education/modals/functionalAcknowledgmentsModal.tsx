@@ -17,7 +17,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
   refetchList,
   navigation,
 }) => {
-  const {data: types} = useSettingsDropdownOverview(educationTypes.education_functional_types);
+  const {data: types} = useSettingsDropdownOverview({entity: educationTypes.education_functional_types});
   const typesOptions = useMemo(() => types?.map(type => ({id: type.id as number, title: type.title})) || [], [types]);
 
   const item = useMemo(() => selectedItem || initialValues, [selectedItem]);

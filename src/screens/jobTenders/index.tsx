@@ -84,7 +84,6 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
     return organizationUnits
       ? [
           {id: 0, title: 'Sve organizacione jedinice'},
-          ,
           ...organizationUnits
             .filter(i => !i.parent_id)
             .map(unit => {

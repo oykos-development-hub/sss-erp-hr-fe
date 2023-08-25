@@ -39,7 +39,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
   const {data: jobPositions} = useJobPositions('');
   const {organizationUnits} = useOrganizationUnits();
-  const {options: contractTypes} = useSettingsDropdownOverview('contract_types');
+  const {options: contractTypes} = useSettingsDropdownOverview({entity: 'contract_types'});
   const {mutate: createBasicInfo} = useBasicInfoInsert();
   const {mutate: updateBasicInfo} = useBasicInfoUpdate();
 

@@ -17,7 +17,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   refetchList,
   navigation,
 }) => {
-  const {data: types} = useSettingsDropdownOverview(educationTypes.education_exam_types);
+  const {data: types} = useSettingsDropdownOverview({entity: educationTypes.education_exam_types});
   const typesOptions = useMemo(() => types?.map(type => ({id: type.id as number, title: type.title})) || [], [types]);
 
   const item = useMemo(

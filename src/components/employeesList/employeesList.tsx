@@ -42,7 +42,6 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
     return organizationUnits
       ? [
           {id: 0, title: 'Sve organizacione jedinice'},
-          ,
           ...organizationUnits
             .filter(i => !i.parent_id)
             .map(unit => {

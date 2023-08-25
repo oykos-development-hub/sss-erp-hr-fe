@@ -15,7 +15,7 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
   refetchList,
   navigation,
 }) => {
-  const {data: languages} = useSettingsDropdownOverview(educationTypes.education_language_types);
+  const {data: languages} = useSettingsDropdownOverview({entity: educationTypes.education_language_types});
   const languagesOptions = useMemo(
     () => languages?.map(type => ({id: type.id as number, title: type.title})) || [],
     [languages],

@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
-
 export const ParentContainer = styled.div`
-  background-color: rgba(174, 60, 24, .2);
+  background-color: rgba(174, 60, 24, 0.2);
   position: absolute;
   top: 0;
   right: 0;
@@ -13,7 +12,7 @@ export const ParentContainer = styled.div`
 export const RedDiv = styled.div`
   height: 40%;
   display: flex;
-  background-color: rgba(174, 60, 24, .79);
+  background-color: rgba(174, 60, 24, 0.79);
   -webkit-clip-path: polygon(0 0, 100% 0, 100% 65%, 0% 100%);
   clip-path: polygon(0 0, 100% 0, 100% 65%, 0% 100%);
 `;
@@ -25,23 +24,24 @@ export const Title = styled.div`
   justify-content: center;
   align-items: center;
   gap: 1rem;
- 
- h1, h6 {
-  margin: 0;
- }
 
- h1 {
-  font-weight: bold;
-  color: rgba(255,255,255, .25);
-  letter-spacing: 2px;
-  font-size: 36px;
- }
+  h1,
+  h6 {
+    margin: 0;
+  }
 
- h6 {
-  color: rgba(255,255,255, .25);
-  letter-spacing: 1px;
-  font-size: 10px;
- }
+  h1 {
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.25);
+    letter-spacing: 2px;
+    font-size: 36px;
+  }
+
+  h6 {
+    color: rgba(255, 255, 255, 0.25);
+    letter-spacing: 1px;
+    font-size: 10px;
+  }
 `;
 
 export const AnimationWrapper = styled.div`

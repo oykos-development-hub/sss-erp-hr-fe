@@ -1,6 +1,3 @@
-import {useMemo} from 'react';
-import {DropdownDataString} from '../types/dropdownData';
-
 export const employeeRelationshipDropdownData = [
   {id: 'Ćerka', title: 'Ćerka'},
   {id: 'Sin', title: 'Sin'},
