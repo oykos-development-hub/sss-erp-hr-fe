@@ -62,7 +62,12 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   const handleChange = (value: any, name: string) => {
     if (name === 'employees') {
       const index = activeEmployees.findIndex(item => item.id === value.id);
-      if (index > -1) {
+      const position = tableDataState?.find(item => item.id === editTableRow);
+      const is_judge_president = jobPositionData.find(
+        item => item.id === position?.job_position?.id,
+      )?.is_judge_president;
+
+      if (index > -1 && !is_judge_president) {
         alert.error(
           `Zaposleni ${activeEmployees[index].full_name} već pokriva radno mjesto ${activeEmployees[index]?.job_position?.title} u odjeljenju ${activeEmployees[index]?.sector}!`,
         );
@@ -334,7 +339,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
             name: 'delete',
             onClick: item => deleteIconClick(item.id),
             icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-            shouldRender: item => editTableRow !== item.id,
+            shouldRender: item => editTableRow !== item.id && !isActive,
           },
           {
             name: 'cancel',

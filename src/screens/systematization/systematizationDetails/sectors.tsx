@@ -111,40 +111,44 @@ export const Sectors: React.FC<SectorsProps> = ({
                         openAccordion(sector.id);
                       }}
                     />
-                    <MoreVerticalIcon
-                      width="5px"
-                      height="16px"
-                      onClick={(e: any) => {
-                        e.stopPropagation();
-                        showMenuHandler(sector.id);
-                      }}
-                      style={{padding: '10px'}}
-                    />
-                  </AccordionIconsWrapper>
-                  <Menu open={showMenu === sector?.id}>
-                    <MenuItem
-                      onClick={(e: any) => {
-                        e.stopPropagation();
-                        handleEditSector(sector.id);
-                        setShowMenu(0);
-                      }}>
-                      <Typography content="Uredi" variant="bodyMedium" />
-                    </MenuItem>
                     {!isActive && (
+                      <MoreVerticalIcon
+                        width="5px"
+                        height="16px"
+                        onClick={(e: any) => {
+                          e.stopPropagation();
+                          showMenuHandler(sector.id);
+                        }}
+                        style={{padding: '10px'}}
+                      />
+                    )}
+                  </AccordionIconsWrapper>
+                  {!isActive && (
+                    <Menu open={showMenu === sector?.id}>
+                      <MenuItem
+                        onClick={(e: any) => {
+                          e.stopPropagation();
+                          handleEditSector(sector.id);
+                          setShowMenu(0);
+                        }}>
+                        <Typography content="Uredi" variant="bodyMedium" />
+                      </MenuItem>
+
                       <MenuItem onClick={(e: any) => addJobPosition(e, sector)}>
                         <Typography content="Dodaj radno mjesto" variant="bodyMedium" />
                       </MenuItem>
-                    )}
-                    <MenuItem
-                      onClick={(e: any) => {
-                        e.stopPropagation();
-                        setShowDeleteModal(true);
-                        setDeleteItemId(sector?.id);
-                        setShowMenu(0);
-                      }}>
-                      <Typography content="Obriši" variant="bodyMedium" />
-                    </MenuItem>
-                  </Menu>
+
+                      <MenuItem
+                        onClick={(e: any) => {
+                          e.stopPropagation();
+                          setShowDeleteModal(true);
+                          setDeleteItemId(sector?.id);
+                          setShowMenu(0);
+                        }}>
+                        <Typography content="Obriši" variant="bodyMedium" />
+                      </MenuItem>
+                    </Menu>
+                  )}
                 </AccordionHeader>
               }
               content={

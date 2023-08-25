@@ -281,6 +281,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
           <Footer
             activeTab={activeTab}
             handleSaveButton={methods?.handleSubmit(handleSave)}
+            active={systematizationDetails?.active}
             id={Number(systematizationID)}
           />
         </FormProvider>

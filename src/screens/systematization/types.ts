@@ -33,6 +33,7 @@ export interface PrintPageProps {
 export interface FooterProps {
   activeTab: number;
   handleSaveButton: () => void;
+  active: boolean;
   id: number;
 }
 
