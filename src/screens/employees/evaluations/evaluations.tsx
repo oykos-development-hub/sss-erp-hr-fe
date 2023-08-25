@@ -13,12 +13,11 @@ const tableHeads: TableHead[] = [
   {title: 'Br.', accessor: 'id', type: 'text'},
   {title: 'Godina', accessor: 'date_of_evaluation', type: 'text'},
   {title: 'Ocjena', accessor: 'score', type: 'text'},
-  {title: 'Pravosnažnost', accessor: 'is_relevant', type: 'text'},
   {
     title: 'Pravosnažnost',
     accessor: 'is_relevant',
     type: 'custom',
-    renderContents: (item: any) => <Typography variant="bodyMedium" content={item ? 'Da' : 'Ne'} />,
+    renderContents: (is_relevant: any) => <Typography variant="bodyMedium" content={is_relevant ? 'Da' : 'Ne'} />,
   },
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];

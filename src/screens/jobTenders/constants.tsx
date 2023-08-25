@@ -18,7 +18,12 @@ export const tableHeads: TableHead[] = [
     renderContents: (item: DropdownItemType) => <Typography content={item?.title} />,
   },
   {title: 'Broj oglasa', accessor: 'serial_number'},
-  {title: 'Datum objave', accessor: 'date_of_start'},
+  {
+    title: 'Datum objave',
+    accessor: 'date_of_start',
+    type: 'custom',
+    renderContents: (date_of_start: string) => <Typography content={date_of_start ? parseDate(date_of_start) : ''} />,
+  },
   {title: 'Dokumenta', accessor: 'file_id'},
   {title: 'Status', accessor: 'active', type: 'badge'},
   {
@@ -49,7 +54,7 @@ export const applicationsTableHeads: TableHead[] = [
     sortable: true,
     type: 'custom',
     renderContents: (date_of_birth: string) => {
-      return <Typography content={parseDate(date_of_birth)} />;
+      return <Typography content={date_of_birth ? parseDate(date_of_birth) : ''} />;
     },
   },
   {title: 'Broj lične karte', accessor: 'official_personal_id'},
@@ -59,7 +64,7 @@ export const applicationsTableHeads: TableHead[] = [
     sortable: true,
     type: 'custom',
     renderContents: (date_of_application: string) => {
-      return <Typography content={parseDate(date_of_application)} />;
+      return <Typography content={date_of_application ? parseDate(date_of_application) : ''} />;
     },
   },
   {title: 'Ocjena', accessor: 'evaluation'},

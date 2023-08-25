@@ -7,6 +7,8 @@ import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import useResolutionOverview from '../../../services/graphql/userProfile/resolution/useResolutionOverview';
 import useResolutionDelete from '../../../services/graphql/userProfile/resolution/useResolutionDelete';
+import {parseDate} from '../../../utils/dateUtils';
+
 interface ValueType {
   id: number | string;
   title: ReactNode;
@@ -21,7 +23,12 @@ const tableHeads: TableHead[] = [
       return <Typography variant="bodyMedium" content={item.title} />;
     },
   },
-  {title: 'Datum izdavanja', accessor: 'date_of_start', type: 'text'},
+  {
+    title: 'Datum izdavanja',
+    accessor: 'date_of_start',
+    type: 'custom',
+    renderContents: (date_of_start: string) => <Typography content={date_of_start ? parseDate(date_of_start) : ''} />,
+  },
   {title: 'Svrha', accessor: 'resolution_purpose', type: 'text'},
   {title: 'Datoteka', accessor: 'file_id', type: 'text'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},

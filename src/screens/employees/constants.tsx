@@ -14,9 +14,14 @@ export const tableHeads: TableHead[] = [
     title: 'Organizaciona jedinica',
     accessor: 'organization_unit',
     type: 'custom',
-    renderContents: row => row.organization_unit?.title,
+    renderContents: organization_unit => organization_unit?.title,
   },
-  {title: 'Radno mjesto', accessor: 'job_position', type: 'custom', renderContents: row => row.job_position?.title},
+  {
+    title: 'Radno mjesto',
+    accessor: 'job_position',
+    type: 'custom',
+    renderContents: job_position => job_position?.title,
+  },
   {title: 'Status', accessor: 'active', type: 'badge'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];
