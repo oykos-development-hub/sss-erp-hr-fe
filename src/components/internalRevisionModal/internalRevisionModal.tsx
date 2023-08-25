@@ -104,13 +104,13 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
       }),
     [revisionTypes],
   );
+
   const externalOrganizationUnitsList = useMemo(() => {
     if (!settingsTypes) {
-      return [{id: 0, title: 'Sve organizacione jedinice'}];
+      return [];
     }
 
     return [
-      {id: 0, title: 'Sve organizacione jedinice'},
       ...settingsTypes.map(unit => {
         return {id: unit.id, title: unit.title};
       }),
@@ -285,7 +285,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
         onClose();
       }}
       open={open}
-      title="DODAJTE REGISTAR PREPORUKA"
+      title={id ? 'IZMJENA REVIZIJE' : 'DODAVANJE REVIZIJE'}
       style={{width: '805px'}}
       rightButtonOnClick={handleSubmit(onSubmit)}
       content={

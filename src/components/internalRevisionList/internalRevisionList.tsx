@@ -36,8 +36,6 @@ const InternalRevisionList: React.FC<InternalRevisionListProps> = ({
   const {mutate} = useInternalRevisionDelete();
 
   const handleEdit = (id: number) => {
-    console.log(id);
-
     toggleInternalRevisionModal(id);
   };
 
@@ -81,6 +79,7 @@ const InternalRevisionList: React.FC<InternalRevisionListProps> = ({
         tableHeads={internalRevisionTableHeads}
         data={data}
         style={{marginBottom: 22}}
+        onRowClick={item => handleEdit(item.id)}
         tableActions={[
           {name: 'edit', onClick: item => handleEdit(item.id), icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
           {
