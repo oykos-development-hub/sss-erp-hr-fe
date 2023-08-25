@@ -35,7 +35,7 @@ const YearList: ValueType[] = Array.from({length: 10}, (_, index) => {
 });
 
 export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({context}) => {
-  const userProfileID = context.navigation.location.pathname.split('/')[3];
+  const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {data, fetch} = useResolutionOverview(userProfileID);
   const tableData = data;
 

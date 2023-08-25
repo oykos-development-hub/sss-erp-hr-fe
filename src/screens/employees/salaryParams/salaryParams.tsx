@@ -15,7 +15,7 @@ import useSalaryParamsInsert from '../../../services/graphql/userProfile/salaryP
 
 export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const userProfileID = Number(context.navigation.location.pathname.split('/')[3]);
+  const userProfileID = Number(context.navigation.location.pathname.split('/')[4]);
   const {data, refetch} = useSalaryParamsOverview(userProfileID);
 
   const item = useMemo(() => {

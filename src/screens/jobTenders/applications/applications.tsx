@@ -33,7 +33,7 @@ const ApplicationsScreen = (props: ScreenProps) => {
 
         <Table
           tableHeads={applicationsTableHeads}
-          data={applications.items}
+          data={applications.items || []}
           style={{marginBottom: 22}}
           onRowClick={navigateToDetails}
         />

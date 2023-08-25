@@ -10,7 +10,7 @@ import useFamilyOverview from '../../../services/graphql/userProfile/family/useF
 import useFamilyDelete from '../../../services/graphql/userProfile/family/useFamilyDelete';
 
 export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
-  const userProfileID = context.navigation.location.pathname.split('/')[3];
+  const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {familyData, refetchData} = useFamilyOverview(userProfileID);
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
@@ -24,9 +24,9 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
   const {mutate, success, error} = useFamilyDelete(() => {
     if (success) {
       refetchData();
-      context.alert.success('Uspješno obrisano');
+      context.alert.success('Uspješno obrisan član porodice');
     } else if (error) {
-      context.alert.error('Brisanje nije uspješno');
+      context.alert.error('Brisanje člana porodice nije uspješno');
     }
   });
 

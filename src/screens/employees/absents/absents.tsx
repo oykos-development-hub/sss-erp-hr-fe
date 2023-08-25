@@ -68,7 +68,7 @@ const YearList: DropdownDataString[] = [
 ];
 
 const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
-  const userProfileID = context.navigation.location.pathname.split('/')[3];
+  const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {absentsData, refetchData, summary} = useAbsentOverview(userProfileID);
   const tableData = absentsData || [];
   const [firstTableData, setFirstTableData] = useState<UserProfileAbsents[]>([]);

@@ -5,7 +5,6 @@ import {Container} from './styles';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
 import {UserProfileEvaluation} from '../../../types/graphql/userProfileGetEvaluations';
 import {EvaluationModal} from '../../../components/evaluationModal/evaluationModal';
-import {yearsForDropdown} from '../../../utils/constants';
 import useEvaluationOverview from '../../../services/graphql/userProfile/evaluation/useEvaluationOverview';
 import useEvaluationDelete from '../../../services/graphql/userProfile/evaluation/useEvaluationDelete';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
@@ -25,7 +24,7 @@ const tableHeads: TableHead[] = [
 ];
 
 export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
-  const userProfileID = context.navigation.location.pathname.split('/')[3];
+  const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {data: userEvaluationData, refetchData} = useEvaluationOverview(userProfileID);
   const {data: evaluationTypes} = useSettingsDropdownOverview({entity: 'evaluation_types'});
 
