@@ -1,6 +1,7 @@
 import React from 'react';
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {TableHead, Typography} from 'client-library';
+import {parseDate} from '../../../utils/dateUtils';
 
 export const judgeResolutionTableHeads: TableHead[] = [
   {
@@ -43,7 +44,17 @@ export const judgeNormsTableHeads: TableHead[] = [
     type: 'custom',
     renderContents: (item: any) => <Typography variant="bodyMedium" content={item.score} />,
   },
-  {title: 'Datum ocjene', accessor: 'date_of_evaluation_validity'},
+  {
+    title: 'Datum ocjene',
+    accessor: 'date_of_evaluation_validity',
+    type: 'custom',
+    renderContents: (date_of_evaluation_validity: string) => (
+      <Typography
+        variant="bodyMedium"
+        content={date_of_evaluation_validity ? parseDate(date_of_evaluation_validity) : ''}
+      />
+    ),
+  },
   {
     title: 'Upućenje',
     accessor: 'relocation',
@@ -62,17 +73,17 @@ export const judgeTableHeads: TableHead[] = [
     renderContents: (item: DropdownDataNumber) => <Typography content={item.title} />,
   },
   {
-    title: 'Job Position',
+    title: 'Pozicija',
     accessor: 'job_position',
     type: 'custom',
     renderContents: (item: DropdownDataNumber) => <Typography content={item.title} />,
   },
   {
-    title: 'Evaluation Score',
+    title: 'Rezultat procjene',
     accessor: 'evaluation_title',
   },
   {
-    title: 'Relocation',
+    title: 'Relokacija',
     accessor: 'relocation_title',
   },
 ];
