@@ -80,12 +80,15 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
   const onSubmit = async (values: any) => {
     const data = {
       ...values,
+      id: id,
       work_permit_issuer: values.work_permit_issuer.id,
       country_of_origin: values.country_of_origin.id,
       user_profile_id: id,
       work_permit_date_of_start: parseDate(values.work_permit_date_of_start, true),
       work_permit_date_of_end: parseDate(values.work_permit_date_of_end, true),
       residence_permit_date_of_end: parseDate(values.residence_permit_date_of_end, true),
+      residence_permit_file_id: values.residence_permit_file_id || 0,
+      work_permit_file_id: values.work_permit_file_id || 0,
     };
 
     try {

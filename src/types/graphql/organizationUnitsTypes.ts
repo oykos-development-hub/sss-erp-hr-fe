@@ -9,6 +9,7 @@ export interface OrganizationUnit {
   color?: string;
   folder_id?: number;
   icon?: string;
+  children?: any;
 }
 
 export interface OrganizationUnitsResponse {

@@ -14,7 +14,7 @@ const Foreigners: React.FC<ForeignersProps> = ({context}) => {
   const [entryModal, setEntryModal] = useState(false);
   const [editData, setEditData] = useState<ForeignerPermit | null>();
   const [deleteModal, setDeleteModal] = useState(0);
-  const id = Number(context?.navigation.location.pathname.split('/')[3]);
+  const id = Number(context?.navigation.location.pathname.split('/')[4]);
 
   const {data, refetch} = useForeignerPermits(id);
   const {mutate: deleteEntry} = useForeignerPermitDelete();
@@ -61,7 +61,7 @@ const Foreigners: React.FC<ForeignersProps> = ({context}) => {
       </ButtonContainer>
       <Table
         tableHeads={tableHeads}
-        data={data.items}
+        data={data?.items || []}
         tableActions={[
           {
             name: 'edit',

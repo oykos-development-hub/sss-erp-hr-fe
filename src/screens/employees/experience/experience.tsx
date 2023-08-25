@@ -11,7 +11,7 @@ import useExperienceDelete from '../../../services/graphql/userProfile/experienc
 import {tableHeads} from './constants';
 
 export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
-  const userProfileID = context.navigation.location.pathname.split('/')[3];
+  const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {experienceData, refetchData} = useExperience(userProfileID);
   const {organizationUnits} = useOrganizationUnits(context);
 

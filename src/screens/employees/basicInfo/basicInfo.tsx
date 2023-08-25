@@ -98,14 +98,12 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   const departmentOptions = useMemo(() => {
     if (!contract?.organization_unit_id) return [];
 
-    if (contract?.organization_unit_id) {
-      return organizationUnitsList.filter(
-        (organizationUnit: any) => organizationUnit.id === contract.organization_unit_id,
-      );
+    if (contract?.organization_unit_id && organizationUnits && organizationUnits.length) {
+      return organizationUnits.find((orgUnit: any) => orgUnit.id === contract.organization_unit_id?.id)!.children;
     } else {
-      return organizationUnitsList;
+      return organizationUnits;
     }
-  }, [contract?.organization_unit_id, organizationUnitsList]);
+  }, [contract?.organization_unit_id, organizationUnits]);
 
   const onFileUpload = (acceptedFiles: FileList) => {
     console.log('File(s) uploaded:', acceptedFiles);
