@@ -44,7 +44,7 @@ const tableHeads: TableHead[] = [
 
 export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({alert, navigation}) => {
   const {employeeEducationData, refetchData} = useEducationOverview(
-    Number(navigation.location.pathname.split('/')[3]),
+    Number(navigation.location.pathname.split('/')[4]),
     educationTypes.education_language_types,
   );
   const [showModal, setShowModal] = useState(false);

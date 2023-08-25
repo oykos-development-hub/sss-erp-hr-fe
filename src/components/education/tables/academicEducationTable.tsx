@@ -41,7 +41,7 @@ const tableHeads: TableHead[] = [
 
 export const AcademicEducationTable: React.FC<TableProps> = ({alert, navigation}) => {
   const {employeeEducationData, refetchData} = useEducationOverview(
-    Number(navigation.location.pathname.split('/')[3]),
+    Number(navigation.location.pathname.split('/')[4]),
     educationTypes.education_academic_types,
   );
   const [showModal, setShowModal] = useState(false);

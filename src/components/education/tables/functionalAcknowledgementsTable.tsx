@@ -9,6 +9,7 @@ import useEducationDelete from '../../../services/graphql/userProfile/education/
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {UserProfileEducation, UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
 import {educationTypes} from '../modals/constants';
+import {parseDate} from '../../../utils/dateUtils';
 
 const tableHeads: TableHead[] = [
   {
@@ -33,13 +34,15 @@ const tableHeads: TableHead[] = [
     title: 'Početak',
     accessor: 'date_of_start',
     sortable: true,
-    type: 'text',
+    type: 'custom',
+    renderContents: (item: string) => <Typography content={parseDate(item)}></Typography>,
   },
   {
     title: 'Kraj',
     accessor: 'date_of_end',
     sortable: true,
-    type: 'text',
+    type: 'custom',
+    renderContents: (item: string) => <Typography content={parseDate(item)}></Typography>,
   },
   {
     title: 'Ocjena',
@@ -63,7 +66,7 @@ const tableHeads: TableHead[] = [
 
 export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navigation}) => {
   const {employeeEducationData, refetchData} = useEducationOverview(
-    Number(navigation.location.pathname.split('/')[3]),
+    Number(navigation.location.pathname.split('/')[4]),
     educationTypes.education_functional_types,
   );
   const [showModal, setShowModal] = useState(false);

@@ -61,7 +61,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
       file_id: values.file_id,
       academic_title: values.academic_title?.id || '',
       type_id: values.type?.id || 0,
-      user_profile_id: Number(navigation.location.pathname.split('/')[3]),
+      user_profile_id: Number(navigation.location.pathname.split('/')[4]),
     };
 
     try {
