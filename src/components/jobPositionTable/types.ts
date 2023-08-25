@@ -1,4 +1,5 @@
 import {JobPosition, SystematizationJobPositions} from '../../types/graphql/jobPositions';
+import {ActiveEmployees} from '../../types/graphql/systematizationsGetDetailsTypes';
 import {UserProfile} from '../../types/graphql/userProfiles';
 
 export interface JobPositionTableProps {
@@ -9,6 +10,7 @@ export interface JobPositionTableProps {
   alert: any;
   jobPositionData: JobPosition[];
   allEmployees: UserProfile[];
+  activeEmployees: ActiveEmployees[];
   cancel?: () => void;
   isActive: boolean;
 }

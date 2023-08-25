@@ -47,6 +47,15 @@ const systematizationDetails = async (
                     }
                 }
             }
+            active_employees {
+                id
+                full_name
+                job_position{
+                    id
+                    title
+                }
+                sector
+            }
         } 
     } 
 }`;

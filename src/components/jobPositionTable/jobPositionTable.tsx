@@ -28,6 +28,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   alert,
   jobPositionData,
   allEmployees,
+  activeEmployees,
   cancel,
   isActive,
 }) => {
@@ -60,7 +61,15 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
 
   const handleChange = (value: any, name: string) => {
     if (name === 'employees') {
-      setSelectedEmployee(value);
+      const index = activeEmployees.findIndex(item => item.id === value.id);
+      if (index > -1) {
+        alert.error(
+          `Zaposleni ${activeEmployees[index].full_name} već pokriva radno mjesto ${activeEmployees[index]?.job_position?.title} u odjeljenju ${activeEmployees[index]?.sector}!`,
+        );
+        setSelectedEmployee(undefined);
+      } else {
+        setSelectedEmployee(value);
+      }
     } else {
       const updatedTableData = tableDataState.map((item: any) => {
         const jobPosition = jobPositionData?.find((i: any) => i.id === value?.id);
@@ -75,6 +84,8 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
             ...item,
             description: jobPosition?.description,
             requirements: jobPosition?.requirements,
+            is_judge_president: jobPosition?.is_judge_president,
+            available_slots: jobPosition?.is_judge_president ? {value: 1} : item.available_slots,
             job_position: {id: jobPosition?.id, title: jobPosition?.title},
           };
         }
@@ -217,13 +228,13 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
       title: 'Broj izvršilaca',
       accessor: 'available_slots',
       type: 'custom',
-      renderContents: (item: any) => {
+      renderContents: (item: any, row) => {
         return (
           <Input
             value={item.value}
             name="available_slots"
-            style={{width: 40, textAlign: 'center'}}
-            disabled={item?.row_id !== editTableRow || isActive}
+            style={{width: 100}}
+            disabled={item?.row_id !== editTableRow || isActive || row.is_judge_president}
             onChange={ev => handleChange(ev.target.value, 'available_slots')}
           />
         );

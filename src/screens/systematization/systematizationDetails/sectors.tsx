@@ -16,6 +16,7 @@ export const Sectors: React.FC<SectorsProps> = ({
   context,
   jobPositionData,
   allEmployees,
+  activeEmployees,
   isActive,
 }) => {
   const [isOpen, setIsOpen] = useState<number>(0);
@@ -23,12 +24,11 @@ export const Sectors: React.FC<SectorsProps> = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState(0);
   const [selectedItemId, setSelectedItemId] = useState(0);
-
   const [jobPositions, setJobPositions] = useState<SystematizationJobPositions[] | undefined>([]);
 
   const openAccordion = (sectorId: number) => {
     setIsOpen(prevState => (prevState === sectorId ? 0 : sectorId));
-    setSelectedItemId(sectorId);
+    setSelectedItemId(prevState => (prevState === sectorId ? 0 : sectorId));
     setShowMenu(0);
   };
 
@@ -147,6 +147,7 @@ export const Sectors: React.FC<SectorsProps> = ({
                   alert={context?.alert}
                   jobPositionData={jobPositionData}
                   allEmployees={allEmployees}
+                  activeEmployees={activeEmployees}
                   cancel={cancelJobPosition}
                   isActive={isActive}
                 />

@@ -270,6 +270,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
                 context={context}
                 jobPositionData={jobPositionData?.items}
                 allEmployees={allEmployees?.items}
+                activeEmployees={systematizationDetails?.active_employees}
                 isActive={systematizationDetails?.active}
               />
             </div>

@@ -22,6 +22,14 @@ export interface SystematizationDetails {
   created_at: string;
   updated_at: string;
   sectors: SectorType[];
+  active_employees: ActiveEmployees[];
+}
+
+export interface ActiveEmployees {
+  id: number;
+  full_name: string;
+  job_position: DropdownDataNumber;
+  sector: string;
 }
 
 export interface SystematizationsParams {
