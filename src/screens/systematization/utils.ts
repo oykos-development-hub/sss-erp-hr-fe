@@ -15,6 +15,7 @@ export const formatDataSaveSystematization = (data: any) => {
   delete payload.sectors;
   delete payload.created_at;
   delete payload.updated_at;
+  delete payload.active_employees;
 
   return payload;
 };

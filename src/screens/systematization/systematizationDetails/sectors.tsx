@@ -19,15 +19,15 @@ export const Sectors: React.FC<SectorsProps> = ({
   activeEmployees,
   isActive,
 }) => {
-  const [isOpen, setIsOpen] = useState<number>(0);
   const [showMenu, setShowMenu] = useState<number>(0);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState(0);
   const [selectedItemId, setSelectedItemId] = useState(0);
+  const [addJob, setAddJob] = useState(false);
+
   const [jobPositions, setJobPositions] = useState<SystematizationJobPositions[] | undefined>([]);
 
   const openAccordion = (sectorId: number) => {
-    setIsOpen(prevState => (prevState === sectorId ? 0 : sectorId));
     setSelectedItemId(prevState => (prevState === sectorId ? 0 : sectorId));
     setShowMenu(0);
   };
@@ -40,23 +40,9 @@ export const Sectors: React.FC<SectorsProps> = ({
     e.stopPropagation();
 
     if (selectedItemId !== sector.id) {
-      setIsOpen(sector?.id);
+      setSelectedItemId(sector.id);
     }
-    const jobPositions = sectors?.find((item: any) => item?.id === sector?.id)?.job_positions_organization_units || [];
-
-    setShowMenu(0);
-    setJobPositions([
-      {
-        available_slots: 0,
-        description: '',
-        employees: [],
-        id: 0,
-        job_position: {id: 0, title: ''},
-        requirements: '',
-        serial_number: '',
-      },
-      ...jobPositions,
-    ]);
+    setAddJob(true);
   };
   const cancelJobPosition = () => {
     const newArray = jobPositions?.filter(item => item.id !== 0) || [];
@@ -74,9 +60,32 @@ export const Sectors: React.FC<SectorsProps> = ({
       const jobPositions = sectors?.find(
         (sector: any) => sector?.id === selectedItemId,
       )?.job_positions_organization_units;
+
       setJobPositions(jobPositions);
     }
   }, [selectedItemId]);
+
+  useEffect(() => {
+    if (addJob) {
+      const jobPositions =
+        sectors?.find((item: any) => item?.id === selectedItemId)?.job_positions_organization_units || [];
+
+      setShowMenu(0);
+      setJobPositions([
+        {
+          available_slots: 0,
+          description: '',
+          employees: [],
+          id: 0,
+          job_position: {id: 0, title: ''},
+          requirements: '',
+          serial_number: '',
+        },
+        ...jobPositions,
+      ]);
+      setAddJob(false);
+    }
+  }, [addJob]);
 
   return (
     <SectorsWrapper>
@@ -85,7 +94,7 @@ export const Sectors: React.FC<SectorsProps> = ({
           <div key={`sector-${sector?.id}`} style={{position: 'relative'}}>
             <Accordion
               style={{border: 0, padding: 0, marginBottom: 20, display: 'block'}}
-              isOpen={isOpen === sector?.id ? true : false}
+              isOpen={selectedItemId === sector?.id ? true : false}
               customHeader={
                 <AccordionHeader color={sector?.color}>
                   <Typography
@@ -93,7 +102,7 @@ export const Sectors: React.FC<SectorsProps> = ({
                     content={`${sector?.id}. ${sector?.title}`}
                     style={{fontWeight: 600}}
                   />
-                  <AccordionIconsWrapper isOpen={isOpen === sector?.id}>
+                  <AccordionIconsWrapper isOpen={selectedItemId === sector?.id}>
                     <ChevronDownIcon
                       width="15px"
                       height="8px"
