@@ -36,6 +36,8 @@ const InternalRevisionList: React.FC<InternalRevisionListProps> = ({
   const {mutate} = useInternalRevisionDelete();
 
   const handleEdit = (id: number) => {
+    console.log(id);
+
     toggleInternalRevisionModal(id);
   };
 

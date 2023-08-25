@@ -89,8 +89,21 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
   const {data} = useRevisionDetails(id);
   const {mutate} = useRevisionInsert();
   const {organizationUnits} = useOrganizationUnits();
-  const {data: settingsTypes} = useSettingsDropdownOverview('revision_organization_units_types');
+  const {data: settingsTypes} = useSettingsDropdownOverview({entity: 'revision_organization_units_types'});
 
+  const {data: revisionTypes} = useSettingsDropdownOverview({entity: 'revision_types'});
+
+  const revisionList = useMemo(
+    () =>
+      revisionTypes &&
+      revisionTypes?.map(unit => {
+        return {
+          id: unit.id,
+          title: unit.title,
+        };
+      }),
+    [revisionTypes],
+  );
   const externalOrganizationUnitsList = useMemo(() => {
     if (!settingsTypes) {
       return [{id: 0, title: 'Sve organizacione jedinice'}];
@@ -397,22 +410,24 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                 />
               </FormGroup>
               <FormGroup>
-                <Controller
-                  control={control}
-                  name="revision_type"
-                  rules={{required: 'Ovo polje je obavezno'}}
-                  render={({field: {name, value, onChange}}) => (
-                    <Dropdown
-                      name={name}
-                      value={value as any}
-                      onChange={onChange}
-                      options={revisionTypeOptions}
-                      error={errors.revision_type?.message as string}
-                      placeholder="Izaberite vrstu revizije"
-                      label="VRSTA REVIZIJE:"
-                    />
-                  )}
-                />
+                {revisionList && (
+                  <Controller
+                    control={control}
+                    name="revision_type"
+                    rules={{required: 'Ovo polje je obavezno'}}
+                    render={({field: {name, value, onChange}}) => (
+                      <Dropdown
+                        name={name}
+                        value={value as any}
+                        onChange={onChange}
+                        options={revisionList as any}
+                        error={errors.revision_type?.message as string}
+                        placeholder="Izaberite vrstu revizije"
+                        label="VRSTA REVIZIJE:"
+                      />
+                    )}
+                  />
+                )}
               </FormGroup>
             </Row>
             <FileUpload variant={FileUploadVariants.tertiary} onUpload={onUpload} />

@@ -26,3 +26,10 @@ export type SettingsDropdown = {
   title?: string;
   value?: string;
 };
+
+export type SettingsDropdownOverviewParams = {
+  page?: number;
+  entity: string;
+  size?: number;
+  id?: number;
+};

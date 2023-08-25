@@ -17,7 +17,7 @@ const InternalRevision: React.FC<MicroserviceProps> = ({context}) => {
       ...item,
       revisor_user_profile: item.revisor_user_profile?.title,
       revision_organization_unit: item.revision_organization_unit?.title,
-      revision_type: item.revision_type?.title,
+      revision_type: item.revision_type,
     }));
   };
 
@@ -35,7 +35,6 @@ const InternalRevision: React.FC<MicroserviceProps> = ({context}) => {
   const onFilter = (id: number) => {
     setRevisorFilter(id);
   };
-  // console.log(id);
 
   return (
     <ScreenWrapper context={context}>

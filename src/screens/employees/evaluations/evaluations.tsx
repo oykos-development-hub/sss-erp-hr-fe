@@ -27,7 +27,7 @@ const tableHeads: TableHead[] = [
 export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[3];
   const {data: userEvaluationData, refetchData} = useEvaluationOverview(userProfileID);
-  const {data: evaluationTypes} = useSettingsDropdownOverview('evaluation_types');
+  const {data: evaluationTypes} = useSettingsDropdownOverview({entity: 'evaluation_types'});
 
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
