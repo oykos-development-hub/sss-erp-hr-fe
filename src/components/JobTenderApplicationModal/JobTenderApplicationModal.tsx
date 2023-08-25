@@ -307,7 +307,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
             <RowFullWidth>
               <Controller
                 name="nationality"
-                rules={{required: 'Ovo polje je obavezno'}}
+                rules={type?.id !== 'internal' ? {required: 'Ovo polje je obavezno'} : {}}
                 control={control}
                 render={({field: {onChange, name, value}}) => {
                   return (
