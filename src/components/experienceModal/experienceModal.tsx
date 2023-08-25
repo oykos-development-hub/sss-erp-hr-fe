@@ -125,7 +125,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
                   onChange={onChange}
                   label="POČETAK RADNOG ODNOSA:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.date_of_start?.message as string}
                 />
               )}
@@ -167,7 +167,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
                   onChange={onChange}
                   label="KRAJ RADNOG ODNOSA:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.date_of_end?.message as string}
                 />
               )}

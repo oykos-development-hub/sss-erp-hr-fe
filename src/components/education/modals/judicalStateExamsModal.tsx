@@ -124,7 +124,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
                   onChange={onChange}
                   label="DATUM POLAGANJA:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.date_of_certification?.message as string}
                 />
               )}

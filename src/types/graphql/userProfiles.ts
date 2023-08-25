@@ -42,7 +42,7 @@ export interface UserProfileBasicInfoFormValues {
   date_of_birth: string;
   birth_last_name: string;
   country_of_birth: string;
-  city_of_birth: DropdownDataString | null;
+  city_of_birth: string;
   nationality: DropdownDataString | null;
   citizenship: DropdownDataString | null;
   address: string;

@@ -166,11 +166,11 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
         ...profileData,
         nationality: countryOptions.find((opt: DropdownDataString) => opt.id === profileData.nationality),
         citizenship: countryOptions.find((opt: DropdownDataString) => opt.id === profileData.citizenship),
-        date_of_birth: parseDate(profileData?.date_of_birth),
+        date_of_birth: parseDate(profileData?.date_of_birth, true),
         date_of_becoming_judge: parseDate(profileData?.date_of_becoming_judge),
         marital_status: maritalOptions.find(opt => opt.id === profileData?.marital_status),
         country_of_birth: countryOptions.find((opt: DropdownDataString) => opt.id === profileData?.country_of_birth),
-        city_of_birth: countryOptions.find((opt: DropdownDataString) => opt.id === profileData?.city_of_birth),
+        city_of_birth: profileData?.city_of_birth,
         housing_done: booleanToYesOrNo(profileData?.housing_done),
         single_parent: booleanToYesOrNo(profileData?.single_parent),
         gender: genderOptions.find((opt: DropdownDataString) => opt.id === profileData?.gender),
@@ -291,7 +291,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 render={({field: {onChange, name, value}}) => (
                   <Datepicker
                     name={name}
-                    value={value}
+                    selected={value ? new Date(value) : null}
                     onChange={onChange}
                     label="DATUM ROĐENJA:"
                     disabled={isDisabled}
@@ -563,7 +563,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 render={({field: {onChange, name, value}}) => (
                   <Datepicker
                     name={name}
-                    value={value ? parseDate(value) : ''}
+                    selected={value ? new Date(value) : ''}
                     onChange={onChange}
                     label="DATUM IZBORA:"
                     disabled={isDisabled}
@@ -595,7 +595,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                   <Datepicker
                     name={name}
                     label="POČETAK RADNOG ODNOSA:"
-                    value={value ? parseDate(value) : ''}
+                    selected={value ? new Date(value) : ''}
                     onChange={onChange}
                     disabled={isDisabled}
                     error={errors.contract?.date_of_start?.message}
@@ -614,7 +614,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                   <Datepicker
                     name={name}
                     label="KRAJ RADNOG ODNOSA:"
-                    value={value ? parseDate(value) : ''}
+                    selected={value ? new Date(value) : ''}
                     onChange={onChange}
                     disabled={isDisabled}
                     error={errors.contract?.date_of_end?.message}

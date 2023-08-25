@@ -43,7 +43,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
       date_of_certification: '',
       price: Number(values.price),
       date_of_start: parseDate(values?.date_of_start, true) || '',
-      date_of_end: parseDate(values?.date_of_end, true || ''),
+      date_of_end: parseDate(values?.date_of_end, true) || '',
       expertise_level: values?.expertise_level,
       certificate_issuer: values.certificate_issuer,
       description: values.description,
@@ -133,7 +133,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
                   onChange={onChange}
                   label="POČETAK:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.date_of_start?.message as string}
                 />
               )}
@@ -147,7 +147,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
                   onChange={onChange}
                   label="KRAJ:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.date_of_end?.message as string}
                 />
               )}

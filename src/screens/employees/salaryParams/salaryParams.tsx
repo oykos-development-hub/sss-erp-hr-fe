@@ -253,7 +253,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                 render={({field: {name, onChange, value}}) => (
                   <Datepicker
                     name={name}
-                    value={value ? parseDate(value) : ''}
+                    selected={value ? new Date(value) : ''}
                     onChange={onChange}
                     label="DATUM RJEŠENJA:"
                     disabled={isDisabled}

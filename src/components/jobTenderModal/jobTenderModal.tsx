@@ -136,7 +136,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
                   onChange={onChange}
                   label="DATUM OBJAVE:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.date_of_start?.message as string}
                 />
               )}
@@ -151,7 +151,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
                   onChange={onChange}
                   label="DATUM ZAKLJUČENJA:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.date_of_start?.message as string}
                 />
               )}

@@ -189,19 +189,6 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
     return shouldValidate;
   };
 
-  // const shouldValidateThirdSection = () => {
-  //   let shouldValidate = false;
-
-  //   for (const field of thirdFormSectionFields) {
-  //     if (Object.keys(dirtyFields).includes(field)) {
-  //       shouldValidate = true;
-  //       break;
-  //     }
-  //   }
-
-  //   return shouldValidate;
-  // };
-
   const onUpload = () => {
     console.log('upload');
   };
@@ -477,7 +464,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                       onChange={onChange}
                       label="DATUM REVIZIJE:"
                       name={name}
-                      value={value ? parseDate(value) : ''}
+                      selected={value ? new Date(value) : ''}
                       error={errors.date_of_revision?.message as string}
                     />
                   )}
@@ -508,7 +495,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                       onChange={onChange}
                       label="DATUM PRIHVATANJA AKCIONOG PLANA:"
                       name={name}
-                      value={value ? parseDate(value) : ''}
+                      selected={value ? new Date(value) : ''}
                       error={errors.date_of_acceptance?.message as string}
                     />
                   )}
@@ -543,7 +530,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                       onChange={onChange}
                       label="DATUM NEPRIHVATANJA PREPORUKE:"
                       name={name}
-                      value={value ? parseDate(value) : ''}
+                      selected={value ? new Date(value) : ''}
                       error={errors.date_of_rejection?.message as string}
                     />
                   )}
@@ -677,7 +664,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                       onChange={onChange}
                       label="NOVI DATUM SPROVOĐENJA PREPORUKE:"
                       name={name}
-                      value={value ? parseDate(value) : ''}
+                      selected={value ? new Date(value) : ''}
                       error={errors.second_date_of_revision?.message as string}
                       isDisabled={implemented}
                     />

@@ -338,7 +338,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                   onChange={onChange}
                   label="DATUM ROĐENJA:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.date_of_birth?.message as string}
                 />
               )}

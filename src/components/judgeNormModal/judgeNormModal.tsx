@@ -34,14 +34,6 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               : undefined,
           topic: selectedItem.topic ? topicOptions?.find(item => item.title === selectedItem.topic) : undefined,
           area: selectedItem?.area ? topicOptions.find(i => i.title === selectedItem.area) : '',
-          date_of_start:
-            selectedItem?.relocation && selectedItem?.relocation?.date_of_start
-              ? new Date(selectedItem?.relocation?.date_of_start)
-              : '',
-          date_of_end:
-            selectedItem?.relocation && selectedItem?.relocation?.date_of_end
-              ? new Date(selectedItem?.relocation?.date_of_end)
-              : '',
         }
       : initialValues;
   }, [selectedItem]);
@@ -174,7 +166,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
                   onChange={onChange}
                   label="DATUM POČETKA:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.start_date?.message as string}
                 />
               )}
@@ -194,7 +186,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
                   onChange={onChange}
                   label="DATUM KRAJA:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.end_date?.message as string}
                 />
               )}

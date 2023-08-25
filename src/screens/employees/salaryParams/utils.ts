@@ -13,7 +13,6 @@ export const formatData = (data: any) => {
     user_resolution_id: data?.user_resolution_id?.id,
   };
 
-  delete payload.created_at;
   delete payload.updated_at;
 
   return payload;

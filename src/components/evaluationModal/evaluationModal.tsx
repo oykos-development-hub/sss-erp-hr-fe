@@ -71,9 +71,8 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
       is_relevant: data?.is_relevant?.id === 'Da' ? true : false,
       date_of_evaluation: parseDate(data?.date_of_evaluation, true),
       file_id: data?.file_id,
-      // Where does this come from??
       evaluation_type_id: data?.score.id,
-      evaluator: ' ',
+      evaluator: '',
     };
 
     if (item) {
@@ -112,7 +111,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
               render={({field: {onChange, name, value}}) => (
                 <Datepicker
                   onChange={onChange}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   name={name}
                   label="DATUM:"
                   error={errors.date_of_evaluation?.message as string}

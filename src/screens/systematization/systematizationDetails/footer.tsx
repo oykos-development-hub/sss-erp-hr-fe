@@ -28,7 +28,7 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id =
                 onChange={onChange}
                 label="DATUM USVAJANJA SISTEMATIZACIJE:"
                 name={name}
-                value={value ? parseDate(value) : ''}
+                selected={value ? new Date(value) : ''}
                 error={errors.date_of_activation?.message as string}
               />
             )}

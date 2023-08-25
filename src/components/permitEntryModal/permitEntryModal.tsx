@@ -148,7 +148,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                     onChange={onChange}
                     label="VAŽI OD:"
                     name={name}
-                    value={value ? parseDate(value) : ''}
+                    selected={value ? new Date(value) : ''}
                     error={errors.work_permit_date_of_start?.message as string}
                   />
                 )}
@@ -165,7 +165,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                       onChange={onChange}
                       label="VAŽI DO:"
                       name={name}
-                      value={value ? parseDate(value) : ''}
+                      selected={value ? new Date(value) : ''}
                       error={errors.work_permit_date_of_end?.message as string}
                       disabled={indefinite}
                     />
@@ -210,7 +210,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                     onChange={onChange}
                     label="VAŽI DO:"
                     name={name}
-                    value={value ? parseDate(value) : ''}
+                    selected={value ? new Date(value) : ''}
                     error={errors.residence_permit_date_of_end?.message as string}
                   />
                 )}

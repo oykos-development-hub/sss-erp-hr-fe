@@ -7,7 +7,7 @@ export const initialValues: UserProfileBasicInfoFormValues = {
   date_of_birth: '',
   birth_last_name: '',
   country_of_birth: '',
-  city_of_birth: null,
+  city_of_birth: '',
   nationality: null,
   citizenship: null,
   address: '',

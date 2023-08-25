@@ -181,7 +181,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
                   onChange={onChange}
                   label="POČETAK TRAJANJA:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.date_of_start?.message as string}
                 />
               )}
@@ -198,7 +198,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
                   onChange={onChange}
                   label="KRAJ TRAJANJA:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.date_of_end?.message as string}
                 />
               )}

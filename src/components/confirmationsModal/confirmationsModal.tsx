@@ -78,8 +78,8 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     defaultValues: selectedItem
       ? {
           ...selectedItem,
-          date_of_end: new Date(selectedItem?.date_of_end),
-          date_of_start: new Date(selectedItem?.date_of_start),
+          date_of_end: selectedItem?.date_of_end,
+          date_of_start: selectedItem?.date_of_start,
         }
       : initialValues,
   });
@@ -128,7 +128,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
                   onChange={onChange}
                   label="DATUM RJEŠENJA/POTVRDE:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.date_of_start?.message as string}
                 />
               )}
@@ -145,7 +145,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
                   onChange={onChange}
                   label="DATUM ZAVRSETKA RJEŠENJA/POTVRDE:"
                   name={name}
-                  value={value ? parseDate(value) : ''}
+                  selected={value ? new Date(value) : ''}
                   error={errors.date_of_start?.message as string}
                 />
               )}

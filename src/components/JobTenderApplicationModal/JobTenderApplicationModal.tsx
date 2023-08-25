@@ -297,7 +297,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                     onChange={onChange}
                     label="DATUM ROĐENJA:"
                     name={name}
-                    value={value ? parseDate(value) : ''}
+                    selected={value ? new Date(value) : ''}
                     error={errors.date_of_birth?.message as string}
                     disabled={applicationType.id === 'internal'}
                   />
@@ -354,7 +354,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                     onChange={onChange}
                     label="DATUM PRIJAVE:"
                     name={name}
-                    value={value ? parseDate(value) : ''}
+                    selected={value ? new Date(value) : ''}
                     error={errors.date_of_application?.message as string}
                   />
                 )}
