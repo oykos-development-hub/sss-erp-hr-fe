@@ -80,12 +80,18 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
     setSelectedItemId(0);
   };
 
-  const organizationUnitsList = useMemo(() => {
+  const organizationUnitsList: any[] = useMemo(() => {
     return organizationUnits
-      .filter(i => !i.parent_id)
-      .map(unit => {
-        return {id: unit.id, title: unit.title};
-      });
+      ? [
+          {id: 0, title: 'Sve organizacione jedinice'},
+          ,
+          ...organizationUnits
+            .filter(i => !i.parent_id)
+            .map(unit => {
+              return {id: unit.id, title: unit.title};
+            }),
+        ]
+      : [];
   }, [organizationUnits]);
 
   return (
