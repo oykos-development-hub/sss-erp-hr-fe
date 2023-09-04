@@ -21,8 +21,17 @@ export const PrintPage: React.FC<PrintPageProps> = ({sectorDetails}) => {
                 return (
                   <>
                     <JobInfo key={`job-position-${jobPosition?.id}`}>
-                      <Typography variant="bodyMedium" content={jobPosition?.serial_number} style={{fontWeight: 600}} />
-                      <Typography variant="bodyMedium" content={jobPosition?.description} />
+                      <Typography
+                        variant="bodyMedium"
+                        content={jobPosition?.job_positions?.title}
+                        style={{fontWeight: 600, minWidth: 200}}
+                      />
+                      <Typography variant="bodyMedium" content={jobPosition?.description} style={{minWidth: 200}} />
+                      <Typography
+                        variant="bodyMedium"
+                        content={jobPosition?.employees?.map((item: any) => item?.title).join(', ')}
+                        style={{minWidth: 200}}
+                      />
                     </JobInfo>
                   </>
                 );

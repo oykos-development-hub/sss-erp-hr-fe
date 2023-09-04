@@ -64,7 +64,9 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   const jobPositionOptions = useMemo(() => {
     return [
       {id: 0, title: 'Sva radna mjesta'},
-      ...jobPositions?.items?.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title})),
+      ...(jobPositions?.items
+        ? jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title}))
+        : []),
     ];
   }, [jobPositions]);
 

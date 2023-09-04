@@ -91,6 +91,7 @@ export const JobInfo = styled.div`
   gap: 50px;
   border-bottom: 1px solid ${Theme?.palette?.gray100};
   padding-top: 20px;
+  justify-content: space-between;
 `;
 
 export const Menu = styled.div<{open: boolean}>`
