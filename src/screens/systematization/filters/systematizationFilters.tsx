@@ -54,7 +54,7 @@ export const SystematizationFilters: React.FC<SystematizationFiltersProps> = ({s
               onChange={onChange}
               value={value as any}
               name={name}
-              label="ORGANIZACIONA JEDINICA:"
+              label="ORG. JEDINICA:"
               options={organizationUnitsList as any}
               placeholder={value}
             />
