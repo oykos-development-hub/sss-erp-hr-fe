@@ -121,7 +121,10 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
             content="Dodaj zaposlenog"
             variant="secondary"
             style={{width: 170}}
-            onClick={() => navigate('/hr/employees/details/basic-info')}
+            onClick={() => {
+              navigate('/hr/employees/details/basic-info');
+              scrollToTheNextElement(parentRef, overviewRef);
+            }}
           />
         </Controls>
       </Header>
