@@ -5,7 +5,7 @@ import {Button, Pagination, Table, Divider, Theme, SearchIcon} from 'client-libr
 import {UserProfile} from '../../types/graphql/userProfiles';
 import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
 import {EmployeeListFilters} from '../../screens/employees';
-import {yesAndNoOptions} from '../../constants';
+import {statusOptions} from '../../constants';
 import useJobPositions from '../../services/graphql/jobPositions/useJobPositionOverview';
 import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
 
@@ -53,7 +53,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
 
   const list = useMemo(
     () =>
-      data.items.map((item: UserProfile) => ({
+      data?.items?.map((item: UserProfile) => ({
         full_name: `${item.first_name} ${item.last_name}`,
         ...item,
         active: item.active ? 'Aktivan' : 'Neaktivan',
@@ -64,7 +64,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   const jobPositionOptions = useMemo(() => {
     return [
       {id: 0, title: 'Sva radna mjesta'},
-      ...jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title})),
+      ...jobPositions?.items?.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title})),
     ];
   }, [jobPositions]);
 
@@ -95,7 +95,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
 
           <FilterDropdown
             label="STATUS:"
-            options={yesAndNoOptions as any}
+            options={statusOptions as any}
             onChange={value => onFilterChange(value, 'is_active')}
             value={filters.is_active as any}
             name="is_active"
