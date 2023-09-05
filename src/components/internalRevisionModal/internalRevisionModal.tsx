@@ -236,7 +236,6 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
   const implementationMonthSpan = watch('implementation_month_span');
   const secondMonthSpan = watch('second_implementation_month_span');
 
-
   const calculateDateOfImplementation = (revisionDate: string, monthSpan: DropdownDataString | null) => {
     const parsedDateOfRevision = new Date(revisionDate);
     const monthsToAdd = Number(monthSpan?.id);
@@ -253,7 +252,6 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
     return parseDate(parsedDateOfRevision);
   };
 
-
   useEffect(() => {
     if (dateOfRevision && implementationMonthSpan) {
       const formattedDate = calculateDateOfImplementation(dateOfRevision, implementationMonthSpan);
@@ -261,16 +259,14 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
     }
   }, [dateOfRevision, implementationMonthSpan]);
 
-
   useEffect(() => {
     if (dateOfImplementation && secondMonthSpan) {
       const formattedDate = calculateSecondDateOfImplementation(dateOfImplementation, secondMonthSpan);
       setNewDateOfImplementation(formattedDate);
 
-      setValue('second_date_of_revision', formattedDate); 
+      setValue('second_date_of_revision', formattedDate);
     }
-}, [dateOfImplementation, secondMonthSpan, setValue]);
-
+  }, [dateOfImplementation, secondMonthSpan, setValue]);
 
   const yearOptions = useMemo(
     () => yearsForDropdown().map(year => ({id: year.id.toString(), title: year.title.toString()})),
@@ -678,7 +674,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                 />
               </FormGroup>
               <FormGroup>
-               <Input
+                <Input
                   {...register('second_date_of_revision')}
                   label="NOVI DATUM SPROVOĐENJA PREPORUKE:"
                   disabled
