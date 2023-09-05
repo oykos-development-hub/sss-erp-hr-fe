@@ -16,7 +16,7 @@ export interface JobTender {
   description: string;
   serial_number: string;
   date_of_start: string;
-  date_of_end: string;
+  date_of_end: string | null;
   created_at?: string;
   updated_at?: string;
   file_id: number;
@@ -30,7 +30,7 @@ export interface JobTenderParams {
   description: string;
   serial_number: string;
   date_of_start: string;
-  date_of_end: string;
+  date_of_end: string | null;
   created_at?: string;
   updated_at?: string;
   file_id: number;

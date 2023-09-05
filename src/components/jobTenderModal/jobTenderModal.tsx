@@ -10,7 +10,7 @@ const initialValues: JobTenderParams = {
   id: 0,
   organization_unit_id: 0,
   date_of_start: '',
-  date_of_end: '',
+  date_of_end: '' || null,
   serial_number: '',
   type: undefined,
   description: '',
@@ -61,7 +61,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
           description: '',
           serial_number: values.serial_number,
           date_of_start: parseDate(values?.date_of_start, true),
-          date_of_end: parseDate(values?.date_of_end, true),
+          date_of_end: values?.date_of_end ? parseDate(values?.date_of_end, true) : null,
           file_id: values.file_id,
         },
         () => {
@@ -116,7 +116,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
                 <Dropdown
                   label="ORGANIZACIONA JEDINICA:"
                   name={name}
-                  options={organizationUnitsList as any}
+                  options={organizationUnitsList.slice(1) as any}
                   value={value as any}
                   onChange={onChange}
                   error={errors.expertise_level?.message as string}
@@ -143,14 +143,12 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
             <Controller
               name="date_of_end"
               control={control}
-              rules={{required: 'Ovo polje je obavezno'}}
               render={({field: {onChange, name, value}}) => (
                 <Datepicker
                   onChange={onChange}
                   label="DATUM ZAKLJUČENJA:"
                   name={name}
-                  selected={value ? new Date(value) : ''}
-                  error={errors.date_of_start?.message as string}
+                  selected={value ? new Date(value) : null}
                 />
               )}
             />

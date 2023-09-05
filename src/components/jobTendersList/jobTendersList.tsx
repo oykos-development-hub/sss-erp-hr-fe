@@ -8,11 +8,7 @@ import {DropdownDataBoolean} from '../../types/dropdownData';
 import {JobTender, JobTendersResponse} from '../../types/graphql/jobTenders';
 import {MicroserviceProps} from '../../types/micro-service-props';
 import {Controls, FilterDropdown, Filters, Header, MainTitle, OverviewBox} from './styles';
-
-const statusFilter: DropdownDataBoolean[] = [
-  {id: true, title: 'Aktivni'},
-  {id: false, title: 'Neaktivni'},
-];
+import {statusOptions} from '../../constants';
 
 export interface JobTendersListProps {
   navigate: (path: string) => void;
@@ -78,7 +74,7 @@ const JobTendersList: FC<JobTendersListProps> = ({
           />
           <FilterDropdown
             label="STATUS:"
-            options={statusFilter as any}
+            options={statusOptions as any}
             onChange={value => onFilterChange(value, 'active')}
             value={filters.active as any}
             name="active"
