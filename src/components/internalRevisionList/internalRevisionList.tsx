@@ -49,11 +49,11 @@ const InternalRevisionList: React.FC<InternalRevisionListProps> = ({
       () => {
         toggleDeleteModal(0);
         refetchList();
-        alert.success('Uspešno ste obrisali registar preporuka.');
+        alert.success('Uspješno obrisano.');
       },
       () => {
         toggleDeleteModal(0);
-        alert.error('Došlo je do greške prilikom brisanja registra preporuka.');
+        alert.error('Greška. Brisanje nije moguće.');
       },
     );
   };

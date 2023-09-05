@@ -55,11 +55,11 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
         deleteId,
         () => {
           refetch();
-          alert.success('Odluka je uspješno obrisana');
+          alert.success('Uspješno obrisano.');
           setDeleteModal(false);
         },
         () => {
-          alert.error('Došlo je do greške prilikom brisanja odluke');
+          alert.error('Greška. Brisanje nije moguće.');
           setDeleteModal(false);
         },
       );

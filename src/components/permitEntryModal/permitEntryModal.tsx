@@ -94,12 +94,12 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
     try {
       mutate(data, () => {
         refetchList();
-        alert.success('Uspješno ste dodali unos');
+        alert.success('Uspješno sačuvano.');
         onClose();
         reset(initialValues);
       });
     } catch (e) {
-      alert.error('Greška prilikom dodavanja unosa');
+      alert.error('Greška. Promjene nisu sačuvane.');
       console.log(e);
     }
   };

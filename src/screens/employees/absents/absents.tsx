@@ -97,12 +97,12 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
       selectedItem?.absent_type.id || 0,
       () => {
         refetchData();
-        context.alert.success('Uspješno obrisano');
+        context.alert.success('Uspješno obrisano.');
         setShowDeleteModal(false);
         setSelectedItemId(0);
       },
       () => {
-        context.alert.error('Brisanje nije uspješno');
+        context.alert.error('Greška. Brisanje nije moguće.');
       },
     );
   };

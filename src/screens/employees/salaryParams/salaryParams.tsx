@@ -74,10 +74,10 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
         () => {
           refetch();
           setIsDisabled(true);
-          context.alert.success('Dodavanje podataka uspješno');
+          context.alert.success('Uspješno sačuvano.');
         },
         () => {
-          context.alert.error('Greška prilikom čuvanja podataka');
+          context.alert.error('Greška. Promjene nisu sačuvane.');
         },
       );
     }

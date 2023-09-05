@@ -144,10 +144,10 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
         setDeleteItemId(null);
         setTableDataState(tableDataState.filter((item: any) => item.id !== deleteItemId));
 
-        alert.success('Uspješno ste obrisali radno mjesto!');
+        alert.success('Uspješno obrisano.');
       },
       () => {
-        alert.error('Nije uspješno brisanje radnog mjesta!');
+        alert.error('Greška. Brisanje nije moguće.');
       },
     );
   };
@@ -175,7 +175,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
         refetch && refetch(true);
       },
       () => {
-        alert.error('Greška prilikom čuvanja radnog mjesta!');
+        alert.error('Greška. Promjene nisu sačuvane.');
       },
     );
     setEditTableRow(null);

@@ -38,10 +38,10 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({jobTend
       deleteItemID,
       () => {
         refreshData();
-        alert.success('Uspješno obrisano');
+        alert.success('Uspješno obrisano.');
       },
       () => {
-        alert.success('Brisanje nije uspješno');
+        alert.success('Greška. Brisanje nije moguće');
       },
     );
 

@@ -106,12 +106,12 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
     mutate(
       payload,
       () => {
-        alert.success('Uspješno sačuvano');
+        alert.success('Uspješno sačuvano.');
         refetch();
         onClose();
       },
       () => {
-        alert.error('Nije uspješno sačuvano');
+        alert.error('Greška. Promjene nisu sačuvane.');
         onClose();
       },
     );

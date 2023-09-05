@@ -59,11 +59,11 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
       payload,
       () => {
         onClose(true);
-        alert.success('Uspješno sačuvano');
+        alert.success('Uspješno sačuvano.');
       },
       () => {
         onClose(true);
-        alert.error('Nije uspješno sačuvano');
+        alert.error('Greška. Promjene nisu sačuvane.');
       },
     );
   };

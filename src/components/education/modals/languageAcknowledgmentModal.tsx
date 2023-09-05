@@ -70,7 +70,7 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
           onClose();
         },
         () => {
-          alert.error('Nije uspješno sačuvano');
+          alert.error('Greška. Promjene nisu sačuvane.');
           onClose();
         },
       );

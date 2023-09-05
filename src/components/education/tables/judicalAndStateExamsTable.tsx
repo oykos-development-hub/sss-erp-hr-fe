@@ -69,11 +69,11 @@ export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert, navigati
     deleteEducation(
       selectedItemId,
       () => {
-        alert.success('Uspješno obrisano');
+        alert.success('Uspješno obrisano.');
         refetchData();
       },
       () => {
-        alert.error('Brisanje nije uspješno');
+        alert.error('Greška. Brisanje nije moguće.');
       },
     );
     setShowDeleteModal(false);

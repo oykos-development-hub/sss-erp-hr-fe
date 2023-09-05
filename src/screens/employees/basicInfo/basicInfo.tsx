@@ -116,7 +116,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
           formatData(values),
           () => {
             refetch();
-            context.alert.success('Čuvanje podataka uspješno');
+            context.alert.success('Uspješno sačuvano.');
             setIsDisabled(true);
 
             if (close) {
@@ -127,7 +127,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
             context.navigate(`/hr/employees/details/${userId}/basic-info`, {state: {scroll: true}});
           },
           () => {
-            context.alert.error('Greška prilikom čuvanja podataka');
+            context.alert.error('Greška. Promjene nisu sačuvane.');
           },
         );
       } else {
@@ -135,7 +135,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
           formatData(values),
           () => {
             refetch();
-            context.alert.success('Čuvanje podataka uspješno');
+            context.alert.success('Uspješno sačuvano.');
             setIsDisabled(true);
 
             if (close) {
@@ -144,7 +144,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
             }
           },
           () => {
-            context.alert.error('Greška prilikom čuvanja podataka');
+            context.alert.error('Greška. Promjene nisu sačuvane.');
           },
         );
       }

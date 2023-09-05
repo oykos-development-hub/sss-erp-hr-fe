@@ -24,9 +24,9 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
   const {mutate, success, error} = useFamilyDelete(() => {
     if (success) {
       refetchData();
-      context.alert.success('Uspješno obrisan član porodice');
+      context.alert.success('Uspješno obrisano.');
     } else if (error) {
-      context.alert.error('Brisanje člana porodice nije uspješno');
+      context.alert.error('Greška. Brisanje nije moguće.');
     }
   });
 

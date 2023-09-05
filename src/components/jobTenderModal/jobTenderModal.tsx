@@ -66,12 +66,12 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
         },
         () => {
           reset(initialValues);
-          alert.success('Uspješno ste dodali oglas.');
+          alert.success('Uspješno sačuvano.');
           refetch();
           onClose();
         },
         () => {
-          alert.success('Uspješno ste dodali oglas.');
+          alert.success('Uspješno sačuvano.');
         },
       );
     } catch (e) {

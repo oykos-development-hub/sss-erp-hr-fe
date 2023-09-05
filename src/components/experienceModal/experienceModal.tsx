@@ -71,12 +71,12 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
       mutate(
         payload,
         () => {
-          alert.success('Uspješno sačuvano');
+          alert.success('Uspješno sačuvano.');
           refetchList();
           onClose();
         },
         () => {
-          alert.error('Nije uspješno sačuvano');
+          alert.error('Greška. Promjene nisu sačuvane.');
           onClose();
         },
       );

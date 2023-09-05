@@ -51,10 +51,10 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
   const {mutate: deleteJobTenders} = useJobTendersDelete(
     () => {
       refetch();
-      alert.success('Uspješno obrisano');
+      alert.success('Uspješno obrisano.');
     },
     () => {
-      alert.error('Brisanje nije uspješno');
+      alert.error('Greška. Brisanje nije moguće.');
     },
   );
 

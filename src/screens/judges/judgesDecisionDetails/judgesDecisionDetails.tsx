@@ -132,7 +132,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       data,
       id => {
         setIsDisabled(true);
-        context.alert.success('Uspješno ste sačuvali odluku');
+        context.alert.success('Uspješno sačuvano.');
         if (close) {
           context.navigation.navigate('/hr/judges/number-decision');
           context.breadcrumbs.remove();
@@ -142,7 +142,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
         }
       },
       () => {
-        context.alert.error('Došlo je do greške prilikom čuvanja odluke');
+        context.alert.error('Greška. Promjene nisu sačuvane.');
       },
     );
   };

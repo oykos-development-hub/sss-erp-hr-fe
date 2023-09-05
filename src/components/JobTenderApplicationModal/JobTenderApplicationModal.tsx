@@ -175,13 +175,13 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
       mutate(
         data,
         () => {
-          alert.success('Uspješno ste dodali prijavu na tender');
+          alert.success('Uspješno sačuvano.');
           refetchList();
           onClose();
           reset(item);
         },
         () => {
-          alert.error('Greška prilikom dodavanja prijave na tender');
+          alert.error('Greška. Promjene nisu sačuvane.');
           onClose();
           reset(item);
         },

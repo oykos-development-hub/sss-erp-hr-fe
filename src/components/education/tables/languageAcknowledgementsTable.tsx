@@ -72,11 +72,11 @@ export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({alert, naviga
     deleteEducation(
       selectedItemId,
       () => {
-        alert.success('Uspješno obrisano');
+        alert.success('Uspješno obrisano.');
         refetchData();
       },
       () => {
-        alert.error('Brisanje nije uspješno');
+        alert.error('Greška. Brisanje nije moguće.');
       },
     );
     setShowDeleteModal(false);

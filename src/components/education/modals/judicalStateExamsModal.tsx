@@ -68,12 +68,12 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
       mutate(
         data,
         () => {
-          alert.success('Uspješno sačuvano');
+          alert.success('Uspješno sačuvano.');
           refetchList && refetchList();
           onClose();
         },
         () => {
-          alert.error('Nije uspješno sačuvano');
+          alert.error('Greška. Promjene nisu sačuvane.');
           onClose();
         },
       );

@@ -89,12 +89,12 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
       selectedItemId,
       () => {
         fetch();
-        context.alert.success('Uspješno obrisano');
+        context.alert.success('Uspješno obrisano.');
         setShowDeleteModal(false);
         setSelectedItemId(0);
       },
       () => {
-        context.alert.error('Brisanje nije uspješno');
+        context.alert.error('Greška. Brisanje nije moguće.');
       },
     );
     setShowDeleteModal(false);

@@ -73,10 +73,10 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
       payload,
       () => {
         onClose(true);
-        alert.success('Uspješno sačuvano');
+        alert.success('Uspješno sačuvano.');
       },
       () => {
-        alert.error('Nije uspješno sačuvano');
+        alert.error('Greška. Promjene nisu sačuvane.');
       },
     );
   };

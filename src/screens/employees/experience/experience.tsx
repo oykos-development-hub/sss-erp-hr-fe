@@ -56,10 +56,10 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
   const {mutate} = useExperienceDelete(
     () => {
       refetchData();
-      context.alert.success('Podaci su uspješno obrisani');
+      context.alert.success('Uspješno obrisano.');
     },
     () => {
-      context.alert.error('Greška prilikom brisanja');
+      context.alert.error('Greška. Brisanje nije moguće.');
     },
   );
 

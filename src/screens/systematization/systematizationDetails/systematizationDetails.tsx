@@ -89,7 +89,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
 
       setIsBlocking(false);
     } else if (error) {
-      context.alert.error('Čuvanje nije uspješno');
+      context.alert.error('Greška. Promjene nisu sačuvane.');
     }
   });
 
@@ -100,7 +100,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
   } = useDeleteOrganisationUnit(() => {
     if (deleteSuccess) {
       refreshData();
-      context.alert.success('Brisanje uspješno');
+      context.alert.success('Uspješno obrisano.');
     } else if (deleteError) {
       context.alert.error('Dodavanje nije uspješno');
     }

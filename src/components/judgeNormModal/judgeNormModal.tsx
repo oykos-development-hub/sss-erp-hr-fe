@@ -74,11 +74,11 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
         () => {
           refetchList && refetchList();
           reset();
-          alert.success('Uspješno sačuvano');
+          alert.success('Uspješno sačuvano.');
           onClose();
         },
         () => {
-          alert.error('Greška pri čuvanju podataka');
+          alert.error('Greška. Promjene nisu sačuvane.');
         },
       );
     } catch (e) {

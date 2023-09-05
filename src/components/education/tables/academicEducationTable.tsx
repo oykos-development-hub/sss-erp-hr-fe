@@ -74,11 +74,11 @@ export const AcademicEducationTable: React.FC<TableProps> = ({alert, navigation}
     deleteEducation(
       selectedItemId,
       () => {
-        alert.success('Uspješno obrisano');
+        alert.success('Uspješno obrisano.');
         refetchData();
       },
       () => {
-        alert.error('Brisanje nije uspješno');
+        alert.error('Greška. Brisanje nije moguće.');
       },
     );
     setShowDeleteModal(false);

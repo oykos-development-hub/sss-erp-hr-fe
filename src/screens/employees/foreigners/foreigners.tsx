@@ -35,11 +35,11 @@ const Foreigners: React.FC<ForeignersProps> = ({context}) => {
         () => {
           setDeleteModal(0);
           refetch();
-          context.alert.success('Dozvola uspješno obrisana');
+          context.alert.success('Uspješno obrisano.');
         },
         () => {
           setDeleteModal(0);
-          context.alert.error('Došlo je do greške pri brisanju dozvole');
+          context.alert.error('Greška. Brisanje nije moguće.');
         },
       );
     }

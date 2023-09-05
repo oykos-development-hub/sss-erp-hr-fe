@@ -48,9 +48,9 @@ export const SystematizationScreen: React.FC<ScreenProps> = ({context}) => {
   const {mutate, success, error} = useSystematizationsDelete(() => {
     if (success) {
       refetch();
-      context.alert.success('Uspješno obrisano');
+      context.alert.success('Uspješno obrisano.');
     } else if (error) {
-      context.alert.error('Brisanje nije uspješno');
+      context.alert.error('Greška. Brisanje nije moguće.');
     }
   });
 
