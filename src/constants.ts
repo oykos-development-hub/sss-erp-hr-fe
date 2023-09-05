@@ -134,8 +134,7 @@ export const revisionDeadlineOptions: DropdownDataNumber[] = [
 
 export const revisionStatusOptions: DropdownDataString[] = [
   {id: 'Sprovedena', title: 'Sprovedena'},
-  {id: 'Neuspješna', title: 'Neuspješna'},
-  {id: 'Na čekanju', title: 'Na čekanju'},
+  {id: 'Nesprovedena', title: 'Nesprovedena'},
 ];
 
 export const revisionTypeOptions: DropdownDataNumber[] = [

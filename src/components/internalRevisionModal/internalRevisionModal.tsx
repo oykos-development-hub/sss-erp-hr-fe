@@ -5,7 +5,7 @@ import {InternalRevisionFormValues, InternalRevisionInsertParams} from '../../sc
 import {Controller, useForm} from 'react-hook-form';
 import {yearsForDropdown} from '../../utils/constants';
 import {FileUploadVariants} from '@oykos-development/devkit-react-ts-styled-components';
-import {parseDate} from '../../utils/dateUtils';
+import {parseBackToDate, parseDate} from '../../utils/dateUtils';
 import {
   quarterOptions,
   revisionDeadlineOptions,
@@ -230,9 +230,12 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
   }, [data]);
 
   const [dateOfImplementation, setDateOfImplementation] = useState<string | undefined>(undefined);
+  const [newDateOfImplementation, setNewDateOfImplementation] = useState<string>('');
 
   const dateOfRevision = watch('date_of_revision');
   const implementationMonthSpan = watch('implementation_month_span');
+  const secondMonthSpan = watch('second_implementation_month_span');
+
 
   const calculateDateOfImplementation = (revisionDate: string, monthSpan: DropdownDataString | null) => {
     const parsedDateOfRevision = new Date(revisionDate);
@@ -242,6 +245,15 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
     return parseDate(parsedDateOfRevision);
   };
 
+  const calculateSecondDateOfImplementation = (revisionDate: string, monthSpan: DropdownDataString | null) => {
+    const parsedDateOfRevision = parseBackToDate(revisionDate);
+    const monthsToAdd = Number(monthSpan?.id);
+    parsedDateOfRevision.setMonth(parsedDateOfRevision.getMonth() + monthsToAdd);
+
+    return parseDate(parsedDateOfRevision);
+  };
+
+
   useEffect(() => {
     if (dateOfRevision && implementationMonthSpan) {
       const formattedDate = calculateDateOfImplementation(dateOfRevision, implementationMonthSpan);
@@ -249,12 +261,23 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
     }
   }, [dateOfRevision, implementationMonthSpan]);
 
+
+  useEffect(() => {
+    if (dateOfImplementation && secondMonthSpan) {
+      const formattedDate = calculateSecondDateOfImplementation(dateOfImplementation, secondMonthSpan);
+      setNewDateOfImplementation(formattedDate);
+
+      setValue('second_date_of_revision', formattedDate); 
+    }
+}, [dateOfImplementation, secondMonthSpan, setValue]);
+
+
   const yearOptions = useMemo(
     () => yearsForDropdown().map(year => ({id: year.id.toString(), title: year.title.toString()})),
     [],
   );
 
-  const implemented = watch('state_of_implementation')?.id === 'implemented';
+  const implemented = watch('state_of_implementation')?.id === 'Sprovedena';
   const internalSubject = watch('internal_organization_unit_id');
   const externalSubject = watch('external_organization_unit_id');
 
@@ -655,20 +678,11 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                 />
               </FormGroup>
               <FormGroup>
-                <Controller
-                  control={control}
-                  name="second_date_of_revision"
-                  // rules={{required: 'Ovo polje je obavezno'}}
-                  render={({field: {name, value, onChange}}) => (
-                    <Datepicker
-                      onChange={onChange}
-                      label="NOVI DATUM SPROVOĐENJA PREPORUKE:"
-                      name={name}
-                      selected={value ? new Date(value) : ''}
-                      error={errors.second_date_of_revision?.message as string}
-                      isDisabled={implemented}
-                    />
-                  )}
+               <Input
+                  {...register('second_date_of_revision')}
+                  label="NOVI DATUM SPROVOĐENJA PREPORUKE:"
+                  disabled
+                  value={newDateOfImplementation}
                 />
               </FormGroup>
             </Row>

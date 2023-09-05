@@ -7,6 +7,13 @@ export const parseDate = (date: Date | string, parseForBFF?: boolean) => {
   return parseForBFF ? `${godina}-${mjesec}-${dan}` : `${dan}/${mjesec}/${godina}`;
 };
 
+// parses parseDate result back to Date object, e.g. 10/1/2022 to Date object
+export const parseBackToDate = (dateString: string): Date => {
+  const [dan, mjesec, godina] = dateString.split('/').map(Number);
+
+  return new Date(godina, mjesec - 1, dan);
+};
+
 export const calculateExperience = (startDate: Date | string, endDate: Date | string) => {
   const start = new Date(startDate);
   const end = new Date(endDate);
