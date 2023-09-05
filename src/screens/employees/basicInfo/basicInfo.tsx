@@ -313,7 +313,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     value={value as any}
                     isDisabled={isDisabled}
                     options={countryOptions}
-                    error={errors.date_of_birth?.message}
+                    error={errors.country_of_birth?.message}
                     isSearchable
                   />
                 )}
@@ -654,7 +654,12 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
           <FormRow style={{padding: 0}}>
             <FormColumn>
               <FormItem>
-                <Input {...register('email')} label="E-MAIL:" disabled={isDisabled} />
+                <Input
+                  {...register('email', {required: 'Ovo polje je obavezno'})}
+                  label="E-MAIL:"
+                  disabled={isDisabled}
+                  error={errors.email?.message}
+                />
               </FormItem>
               <FormItem>
                 <Input
@@ -691,7 +696,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                         }
                       }}
                       value={value}
-                      name="name"
+                      name={name}
                       maxLength={4}
                       label="PIN:"
                       disabled={isDisabled}
