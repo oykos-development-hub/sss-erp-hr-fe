@@ -78,6 +78,7 @@ export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
   return (
     <ScreenWrapper context={context} ref={screenWrapperRef}>
       <EmployeesList
+        navigation={context.navigation}
         onPageChange={onPageChange}
         toggleEmployeeImportModal={toggleEmployeeImportModal}
         navigate={navigate}

@@ -201,7 +201,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   };
 
   const navigateToUserCreation = () => {
-    props.context.navigation.navigate('/hr/employees/new-employee/basic-info', {
+    props.context.navigation.navigate('/hr/employees/add-new', {
       state: {user: {first_name, last_name, date_of_birth, evaluation, nationality, official_personal_id}},
     });
   };

@@ -40,7 +40,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   const {data: jobPositions} = useJobPositions('');
   const {organizationUnits} = useOrganizationUnits();
   const {options: contractTypes} = useSettingsDropdownOverview({entity: 'contract_types'});
-  const {mutate: createBasicInfo} = useBasicInfoInsert();
+  const {mutate: createBasicInfo, userId} = useBasicInfoInsert();
   const {mutate: updateBasicInfo} = useBasicInfoUpdate();
 
   const {
@@ -123,6 +123,8 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
               const overviewPathname = context.navigation.location.pathname.split('/').slice(0, 3).join('/');
               context.navigation.navigate(overviewPathname);
             }
+
+            context.navigate(`/hr/employees/details/${userId}/basic-info`, {state: {scroll: true}});
           },
           () => {
             context.alert.error('Greška prilikom čuvanja podataka');
@@ -712,7 +714,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
         <Controls>
           {isDisabled ? (
             <Button content="Uredi" variant="secondary" onClick={() => setIsDisabled(false)} />
-          ) : (
+          ) : !isNew ? (
             <>
               <Button
                 content="Sačuvaj i zatvori"
@@ -725,6 +727,15 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 onClick={() => handleSubmit((data: UserProfileBasicInfoFormValues) => handleSave(data, false))()}
               />
             </>
+          ) : (
+            <Button
+              content="Sačuvaj"
+              variant="primary"
+              onClick={() => {
+                console.log('clicked');
+                handleSubmit((data: UserProfileBasicInfoFormValues) => handleSave(data, false))();
+              }}
+            />
           )}
         </Controls>
       </FormFooter>

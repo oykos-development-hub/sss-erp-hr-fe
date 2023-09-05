@@ -1,4 +1,4 @@
-import React, {ChangeEvent, RefObject, useMemo, useRef} from 'react';
+import React, {ChangeEvent, RefObject, useEffect, useMemo, useRef} from 'react';
 import {Controls, FilterDropdown, FilterInput, Filters, Header, MainTitle, OverviewBox} from './styles';
 import {tableHeads} from '../../screens/employees/constants';
 import {Button, Pagination, Table, Divider, Theme, SearchIcon} from 'client-library';
@@ -10,6 +10,7 @@ import useJobPositions from '../../services/graphql/jobPositions/useJobPositionO
 import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
 
 export interface EmployeesListProps {
+  navigation?: any;
   navigate: (path: string) => void;
   toggleEmployeeImportModal: () => void;
   onPageChange: (page: number) => void;
@@ -22,6 +23,7 @@ export interface EmployeesListProps {
 }
 
 const EmployeesList: React.FC<EmployeesListProps> = ({
+  navigation,
   navigate,
   toggleEmployeeImportModal,
   onPageChange,
@@ -33,6 +35,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   parentRef,
 }) => {
   const overviewRef = useRef<HTMLDivElement>(null);
+  const state = navigation.location.state;
 
   const {organizationUnits} = useOrganizationUnits();
 
@@ -69,6 +72,10 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
         : []),
     ];
   }, [jobPositions]);
+
+  useEffect(() => {
+    state?.scroll && scrollToTheNextElement(parentRef, overviewRef);
+  }, []);
 
   return (
     <OverviewBox ref={overviewRef}>
@@ -124,8 +131,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
             variant="secondary"
             style={{width: 170}}
             onClick={() => {
-              navigate('/hr/employees/details/basic-info');
-              scrollToTheNextElement(parentRef, overviewRef);
+              navigate('/hr/employees/add-new');
             }}
           />
         </Controls>

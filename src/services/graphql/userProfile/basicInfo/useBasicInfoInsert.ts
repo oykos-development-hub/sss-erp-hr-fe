@@ -4,6 +4,7 @@ import {UserProfileBasicInfo, UserProfileBasicInfoFormValues} from '../../../../
 
 const useBasicInfoInsert = () => {
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState(0);
 
   const insertBasicInfo = async (
     data: UserProfileBasicInfoFormValues,
@@ -13,6 +14,7 @@ const useBasicInfoInsert = () => {
     setLoading(true);
     const response = await GraphQL.basicInfoInsert(data);
     if (response.status === 'success') {
+      setUserId(response?.item?.id || 0);
       onSuccess && onSuccess();
     } else {
       onError && onError();
@@ -20,7 +22,7 @@ const useBasicInfoInsert = () => {
     setLoading(false);
   };
 
-  return {loading, mutate: insertBasicInfo};
+  return {loading, mutate: insertBasicInfo, userId};
 };
 
 export default useBasicInfoInsert;

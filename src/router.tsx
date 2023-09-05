@@ -14,8 +14,9 @@ import ApplicationDetailsScreen from './screens/jobTenders/applicationDetails/ap
 import ApplicationsScreen from './screens/jobTenders/applications/applications';
 import {JobTenderDetailsScreen} from './screens/jobTenders/jobTenderDetails/jobTenderDetails';
 import {JudgesNumbersDetails} from './screens/judges/judgesDecisionDetails/judgesDecisionDetails';
+import {AddNewEmployee} from './screens/employees/addNew/addNew';
 
-const employeesRegex = /^\/hr\/employees/;
+const employeesRegex = /\/hr\/employees(?!\/add-new)(\/.)?/;
 const systematizationDetailsRegex = /^\/hr\/systematization\/systematization-details(?:\/(\d+))?$/;
 const JobTendersRegex = /^\/hr\/job-tenders\/job-tenders-list$/;
 const JobTendersDetailsRegex = /^\/hr\/job-tenders\/job-tenders-list\/\d+/;
@@ -48,6 +49,7 @@ export const Router: React.FC<MicroserviceProps> = props => {
     if (judgesNumberDetailsRegex.test(pathname)) return <JudgesNumbersDetails context={context} />;
     if (pathname === '/hr/judges/overview-judges-presidents') return <JudgeNorms context={context} />;
     if (pathname === '/hr/job-tenders') return context.navigation.navigate('job-tenders/job-tenders-list');
+    if (pathname === '/hr/employees/add-new') return <AddNewEmployee context={context} />;
 
     return <NotFound404 context={context} />;
   };
