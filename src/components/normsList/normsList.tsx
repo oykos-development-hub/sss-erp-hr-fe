@@ -23,7 +23,14 @@ const NormsList: React.FC<NormsListProps> = ({data, toggleNormsModal, handleDele
     setTopic(value);
   };
 
-  const list = useMemo(() => (topic ? data?.filter(norm => norm.topic === topic?.id) : data), [data, topic]);
+
+  const list = useMemo(() => {
+    const filteredData = topic ? data?.filter(norm => norm.topic === topic?.id) : data;
+    return filteredData?.map(item => ({
+      ...item,
+      number_of_items: Number(item.title) - (Number(item.title) * (Number(item.number_of_norm_decrease) / 100)),
+    }));
+  }, [data, topic])
 
   return (
     <OverviewBox>

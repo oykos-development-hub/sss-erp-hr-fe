@@ -115,9 +115,14 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               )}
             />
             <Input
-              {...register('number_of_norm_decrease', {required: 'Ovo polje je obavezno'})}
-              label="UMANJEJE NORME:"
+              {...register('number_of_norm_decrease', {
+                required: 'Ovo polje je obavezno',
+                min: { value: 0, message: 'Najmanji broj je 0' },
+                max: { value: 100, message: 'Najveći broj je 100' },
+              })}
+              label="UMANJENJE NORME:"
               error={errors.number_of_norm_decrease?.message as string}
+              type='number'
             />
           </Row>
           <Row>
@@ -152,42 +157,6 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               {...register('number_of_items_solved', {required: 'Ovo polje je obavezno'})}
               label="RIJEŠENO PREDMETA:"
               error={errors.number_of_items_solved?.message as string}
-            />
-          </Row>
-          <Row>
-            <Controller
-              name="date_of_start"
-              control={control}
-              rules={{required: 'Ovo polje je obavezno'}}
-              render={({field: {onChange, name, value}}) => (
-                <Datepicker
-                  onChange={onChange}
-                  label="DATUM POČETKA:"
-                  name={name}
-                  selected={value ? new Date(value) : ''}
-                  error={errors.start_date?.message as string}
-                />
-              )}
-            />
-            <Controller
-              name="date_of_end"
-              control={control}
-              rules={{
-                required: 'Ovo polje je obavezno',
-                validate: value =>
-                  !value || !watch('date_of_start') || new Date(value) >= new Date(watch('date_of_start'))
-                    ? true
-                    : 'Datum kraja ne može biti prije datuma početka.',
-              }}
-              render={({field: {onChange, name, value}}) => (
-                <Datepicker
-                  onChange={onChange}
-                  label="DATUM KRAJA:"
-                  name={name}
-                  selected={value ? new Date(value) : ''}
-                  error={errors.end_date?.message as string}
-                />
-              )}
             />
           </Row>
         </ModalContentWrapper>

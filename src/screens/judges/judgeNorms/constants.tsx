@@ -35,32 +35,10 @@ export const judgeNormsTableHeads: TableHead[] = [
   },
   {title: 'Materija', accessor: 'topic'},
   {title: 'Norma', accessor: 'title'},
-  {title: 'Umanjenje norme', accessor: 'number_of_norm_decrease'},
+  {title: 'Umanjenje norme %', accessor: 'number_of_norm_decrease'},
   {title: 'Umanjena norma', accessor: 'number_of_items'},
   {title: 'Riješeno predmeta', accessor: 'number_of_items_solved'},
-  {
-    title: 'Ocjena',
-    accessor: 'evaluation',
-    type: 'custom',
-    renderContents: (item: any) => <Typography variant="bodyMedium" content={item.score} />,
-  },
-  {
-    title: 'Datum ocjene',
-    accessor: 'date_of_evaluation_validity',
-    type: 'custom',
-    renderContents: (date_of_evaluation_validity: string) => (
-      <Typography
-        variant="bodyMedium"
-        content={date_of_evaluation_validity ? parseDate(date_of_evaluation_validity) : ''}
-      />
-    ),
-  },
-  {
-    title: 'Upućenje',
-    accessor: 'relocation',
-    type: 'custom',
-    renderContents: (item: any) => <Typography variant="bodyMedium" content={item.location} />,
-  },
+  {title: 'Broj predmeta', accessor: 'number_of_items'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];
 
