@@ -117,12 +117,12 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
             <Input
               {...register('number_of_norm_decrease', {
                 required: 'Ovo polje je obavezno',
-                min: { value: 0, message: 'Najmanji broj je 0' },
-                max: { value: 100, message: 'Najveći broj je 100' },
+                min: {value: 0, message: 'Najmanji broj je 0'},
+                max: {value: 100, message: 'Najveći broj je 100'},
               })}
               label="UMANJENJE NORME:"
               error={errors.number_of_norm_decrease?.message as string}
-              type='number'
+              type="number"
             />
           </Row>
           <Row>
