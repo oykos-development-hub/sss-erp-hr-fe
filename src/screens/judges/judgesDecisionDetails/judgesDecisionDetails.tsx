@@ -1,7 +1,7 @@
 import {Button, Divider, Table, Input, TableHead} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {Controls, Filters, FormFooter} from './styles';
+import {Controls, CustomDropdown, CustomTable, Filters, FormFooter} from './styles';
 import {OverviewBox} from '../../../components/employeesList/styles';
 import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
 import {MainTitle} from '../../../shared/mainTitle';
@@ -164,44 +164,43 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
         <MainTitle variant="bodyMedium" content="DETALJI ODLUKE" />
         {/*TODO: theme color */}
         <Divider color="#615959" height="1px" />
-        <div>
-          <Filters>
-            <Input
-              {...register('serial_number', {required: 'Redni broj je obavezan'})}
-              label="REDNI BROJ:"
-              style={{width: 300}}
-              error={errors.serial_number?.message}
-              placeholder="Unesite redni broj"
-              disabled={isDisabled}
-            />
-            <Controller
-              control={control}
-              rules={{required: 'Godina je obavezna'}}
-              name="year"
-              render={({field: {onChange, name, value}}) => (
-                <FilterDropdown
-                  label="GODINA:"
-                  name={name}
-                  options={availableYears as any}
-                  value={value as any}
-                  onChange={onChange}
-                  placeholder="Odaberite godinu"
-                  error={errors.year?.message}
-                  isDisabled={isDisabled}
-                />
-              )}
-            />
-          </Filters>
-        </div>
 
-        <Table
+        <CustomTable
+          titleElement={
+            <Filters>
+              <Input
+                {...register('serial_number', {required: 'Redni broj je obavezan'})}
+                label="REDNI BROJ:"
+                style={{width: 300}}
+                error={errors.serial_number?.message}
+                placeholder="Unesite redni broj"
+                disabled={isDisabled}
+              />
+              <Controller
+                control={control}
+                rules={{required: 'Godina je obavezna'}}
+                name="year"
+                render={({field: {onChange, name, value}}) => (
+                  <CustomDropdown
+                    label="GODINA:"
+                    name={name}
+                    options={availableYears as any}
+                    value={value as any}
+                    onChange={onChange}
+                    placeholder="Odaberite godinu"
+                    error={errors.year?.message}
+                    isDisabled={isDisabled}
+                  />
+                )}
+              />
+            </Filters>
+          }
           tableHeads={[
             ...judgeResolutionTableHeads.slice(0, 2),
             judgeNumberTableHead,
             ...judgeResolutionTableHeads.slice(3),
           ]}
           data={(list as any) || []}
-          style={{marginBottom: 22}}
         />
         <FormFooter>
           <Controls>
