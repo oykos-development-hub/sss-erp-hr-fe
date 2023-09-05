@@ -100,7 +100,6 @@ export const OrganisationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
                   name={name}
                   label="PARENT:"
                   options={dropdownData || []}
-                  rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
                   error={errors.parent_id?.message as string}
                   isDisabled
                 />

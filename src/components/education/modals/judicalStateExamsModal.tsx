@@ -108,7 +108,6 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
                   name={name}
                   label="VRSTA ISPITA"
                   options={typesOptions}
-                  rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
                   error={errors.type?.message as string}
                 />
               )}

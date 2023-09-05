@@ -249,7 +249,6 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                 options={applicationTypeOptions as any}
                 value={applicationType as any}
                 onChange={onChangeType}
-                rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
                 error={errors.type?.message as string}
               />
 
@@ -260,7 +259,6 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                 isSearchable={true}
                 value={selectedUser as any}
                 onChange={value => onChangeSearchable(value)}
-                rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
                 isDisabled={applicationType.id === 'external'}
                 placeholder="Unesite ime"
               />

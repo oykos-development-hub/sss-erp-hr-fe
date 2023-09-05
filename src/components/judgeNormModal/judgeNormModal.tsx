@@ -110,7 +110,6 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
                   options={dropdownData as any}
                   value={value as any}
                   onChange={onChange}
-                  rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
                   error={errors.user_profile_id?.message as string}
                 />
               )}
@@ -133,7 +132,6 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
                   options={topicOptions as any}
                   value={value as any}
                   onChange={onChange}
-                  rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
                   error={errors.topic?.message as string}
                 />
               )}

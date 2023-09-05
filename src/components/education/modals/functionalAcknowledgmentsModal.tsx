@@ -109,7 +109,6 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
                   name={name}
                   label="OCJENA:"
                   options={typesOptions}
-                  rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
                   error={errors.type?.message as string}
                 />
               )}

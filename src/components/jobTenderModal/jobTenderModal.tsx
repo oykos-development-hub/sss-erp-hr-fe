@@ -103,7 +103,6 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
                   options={dropdownJobTenderType as any}
                   value={value as any}
                   onChange={onChange}
-                  rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
                   error={errors.expertise_level?.message as string}
                 />
               )}
@@ -120,7 +119,6 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
                   options={organizationUnitsList as any}
                   value={value as any}
                   onChange={onChange}
-                  rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
                   error={errors.expertise_level?.message as string}
                 />
               )}

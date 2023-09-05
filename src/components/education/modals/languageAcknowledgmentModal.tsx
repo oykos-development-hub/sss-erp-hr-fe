@@ -106,7 +106,6 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
                   label="ZNANJE STRANOG JEZIKA:"
                   isSearchable
                   options={languagesOptions}
-                  rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
                   error={errors.type?.message as string}
                 />
               )}
@@ -122,7 +121,6 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
                   name={name}
                   label="STEPEN:"
                   options={languageAcknowledgmentLevels}
-                  rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
                   error={errors.expertise_level?.message as string}
                 />
               )}

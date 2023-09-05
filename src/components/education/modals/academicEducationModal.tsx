@@ -108,7 +108,6 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
                     name={name}
                     label="STEPEN ŠKOLSKOG OBRAZOVANJA:"
                     options={typesOptions}
-                    rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
                     error={errors.type?.message as string}
                   />
                 );
@@ -128,7 +127,6 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
                   name={name}
                   label="STEPEN STRUČNE OSPOSOBLJENOSTI:"
                   options={academicTitles}
-                  rightOptionIcon={<CheckIcon stroke={Theme.palette.primary500} />}
                   error={errors.academic_title?.message as string}
                 />
               )}
