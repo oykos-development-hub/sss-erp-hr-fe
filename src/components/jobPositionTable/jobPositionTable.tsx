@@ -168,33 +168,11 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
       available_slots: Number(selectedItem?.available_slots.value),
       employees: selectedItem?.employees?.map((item: any) => item.id),
     };
+
     insertJobPosition(
       payload,
       jobPositionResponse => {
-        let newItem = tableDataState.find(item => item.id === 0);
-
-        if (newItem) {
-          const newTableData = tableDataState.filter(item => item.id !== 0);
-
-          const jobPosition = jobPositionData?.find((jobPosition: any) => jobPosition.id === newItem.job_position.id);
-          newItem = {
-            ...newItem,
-            id: jobPositionResponse?.id,
-            serial_number: jobPosition?.serial_number || 0,
-            description: jobPosition?.description,
-            requirements: jobPosition?.requirements,
-            job_position: {id: jobPosition?.id, title: jobPosition?.title},
-            employees: selectedItem?.employees.map((item: any) => ({
-              id: item?.id,
-              title: item?.title,
-              row_id: jobPositionResponse?.id,
-            })),
-            available_slots: {value: jobPositionResponse?.available_slots, row_id: jobPositionResponse?.id},
-          };
-          newTableData.push(newItem);
-          setTableDataState([...newTableData]);
-          refetch && refetch(true);
-        }
+        refetch && refetch(true);
       },
       () => {
         alert.error('Greška prilikom čuvanja radnog mjesta!');
