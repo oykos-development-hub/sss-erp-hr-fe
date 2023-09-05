@@ -74,8 +74,8 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
           onClose();
         },
       );
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      console.log(err);
     }
   };
 
