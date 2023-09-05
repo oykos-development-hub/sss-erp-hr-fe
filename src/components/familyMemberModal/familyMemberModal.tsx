@@ -224,13 +224,13 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     label="DRŽAVLJANSTVO:"
                     options={citizenshipArray || []}
                     error={errors.citizenship?.message as string}
+                    isSearchable
                   />
                 );
               }}
             />
             <Controller
               name="nationality"
-              rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => {
                 return (
@@ -240,14 +240,12 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     name={name}
                     label="NACIONALNOST:"
                     options={citizenshipArray || []}
-                    error={errors.nationality?.message as string}
                   />
                 );
               }}
             />
             <Controller
               name="national_minority"
-              rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => {
                 return (
@@ -257,7 +255,6 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     name={name}
                     label="NACIONALNA MANJINJA:"
                     options={nationalMinorities || []}
-                    error={errors.national_minority?.message as string}
                   />
                 );
               }}
@@ -295,11 +292,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                 error={errors.city_of_birth?.message as string}
               />
             )}
-            <Input
-              {...register('address', {required: 'Ovo polje je obavezno'})}
-              label="ADRESA:"
-              error={errors.address?.message as string}
-            />
+            <Input {...register('address')} label="ADRESA:" />
           </Row>
           <Row>
             <Controller
@@ -355,11 +348,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
               label="JMBG:"
               error={errors.official_personal_id?.message as string}
             />
-            <Input
-              {...register('mother_birth_last_name', {required: 'Ovo polje je obavezno'})}
-              label="PREZIME PO ROĐENJU:"
-              error={errors.mother_birth_last_name?.message as string}
-            />
+            <Input {...register('mother_birth_last_name')} label="PREZIME PO ROĐENJU:" />
           </Row>
         </FormWrapper>
       }
