@@ -9,6 +9,7 @@ const basicInfoInsert = async (
     userProfile_Basic_Insert(data: $data) {
         message
         status
+        data
         item {
             id
             first_name

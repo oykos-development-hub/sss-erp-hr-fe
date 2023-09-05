@@ -165,7 +165,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
         nationality: countryOptions.find((opt: DropdownDataString) => opt.id === profileData.nationality),
         citizenship: countryOptions.find((opt: DropdownDataString) => opt.id === profileData.citizenship),
         date_of_birth: parseDate(profileData?.date_of_birth, true),
-        date_of_becoming_judge: parseDate(profileData?.date_of_becoming_judge),
+        date_of_becoming_judge: parseDate(profileData?.date_of_becoming_judge) || '',
         marital_status: maritalOptions.find(opt => opt.id === profileData?.marital_status),
         country_of_birth: countryOptions.find((opt: DropdownDataString) => opt.id === profileData?.country_of_birth),
         city_of_birth: profileData?.city_of_birth,
@@ -232,6 +232,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
               <Controller
                 name="gender"
                 control={control}
+                rules={{required: 'Ovo polje je obavezno'}}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
                     name={name}
@@ -275,6 +276,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     isDisabled={isDisabled}
                     onChange={onChange}
                     error={errors.official_personal_document_issuer?.message}
+                    isSearchable
                   />
                 )}
               />
@@ -312,6 +314,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     isDisabled={isDisabled}
                     options={countryOptions}
                     error={errors.date_of_birth?.message}
+                    isSearchable
                   />
                 )}
               />
@@ -330,6 +333,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     options={citizenshipOptions}
                     isDisabled={isDisabled}
                     error={errors.nationality?.message}
+                    isSearchable
                   />
                 )}
               />
@@ -367,7 +371,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
           <FormColumn>
             <FormItem>
               <Input
-                {...register('father_name')}
+                {...register('father_name', {required: 'Ovo polje je obavezno'})}
                 label="IME OCA:"
                 disabled={isDisabled}
                 error={errors.father_name?.message}
@@ -375,7 +379,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
             </FormItem>
             <FormItem>
               <Input
-                {...register('mother_name')}
+                {...register('mother_name', {required: 'Ovo polje je obavezno'})}
                 label="IME MAJKE:"
                 disabled={isDisabled}
                 error={errors.mother_name?.message}
@@ -403,6 +407,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     options={countryOptions}
                     isDisabled={isDisabled}
                     error={errors.nationality?.message}
+                    isSearchable
                   />
                 )}
               />
@@ -429,6 +434,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
             <FormItem>
               <Controller
                 name="single_parent"
+                rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -447,6 +453,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
               <Controller
                 name="housing_done"
                 control={control}
+                rules={{required: 'Ovo polje je obavezno'}}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
                     name={name}
@@ -656,6 +663,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                   type="password"
                   placeholder="******"
                   disabled={isDisabled}
+                  error={errors?.password?.message}
                 />
               </FormItem>
               <FormItem>
@@ -663,6 +671,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                   {...register('phone', {required: 'Ovo polje je obavezno'})}
                   label="BROJ TELEFONA:"
                   disabled={isDisabled}
+                  error={errors?.phone?.message}
                 />
               </FormItem>
             </FormColumn>

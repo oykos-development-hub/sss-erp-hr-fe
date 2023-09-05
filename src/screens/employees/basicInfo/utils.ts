@@ -5,7 +5,6 @@ export const formatData = (data: any) => {
   const isNew = !!data?.id;
 
   const payload: any = {
-    id: data?.id,
     first_name: data?.first_name,
     last_name: data?.last_name,
     birth_last_name: data?.birth_last_name,
@@ -28,14 +27,15 @@ export const formatData = (data: any) => {
     revisor_role: data?.revisor_role === 'Da' ? true : false,
     marital_status: data?.marital_status?.id,
     date_of_taking_oath: parseDate(new Date(), true),
-    date_of_becoming_judge: parseDate(data?.date_of_becoming_judge, true),
+    // date_of_becoming_judge: parseDate(data?.date_of_becoming_judge, true) || '',
     national_minority: data?.national_minority?.id,
     official_personal_document_issuer: data?.official_personal_document_issuer?.id,
+    role_id: 2,
     // user_account_id: 1,
     contract: {
       organization_unit_id: data?.contract?.organization_unit_id?.id || null,
-      department_id: data?.contract.department_id?.id || null,
-      job_position_in_organization_unit_id: data?.contract?.job_position_in_organization_unit_id?.id || null,
+      organization_unit_department_id: data?.contract.department_id?.id || null,
+      job_position_in_organization_unit: data?.contract?.job_position_in_organization_unit_id?.id || null,
       contract_type_id: data?.contract?.contract_type_id?.id || null,
       date_of_end: parseDate(data?.contract?.date_of_end, true),
       date_of_start: parseDate(data?.contract?.date_of_start, true),

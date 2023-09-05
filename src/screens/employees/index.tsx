@@ -40,7 +40,6 @@ export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
   const debouncedSearch = useDebounce(search, 500);
 
   const onFilterChange = (value: any, name: string) => {
-    console.log(value);
     setFilters({...filters, [name]: value});
   };
 
