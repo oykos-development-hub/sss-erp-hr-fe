@@ -18,6 +18,7 @@ import useOrganizationUnits from '../../services/graphql/organizationUnits/useOr
 import useRevisionDetails from '../../services/graphql/internalRevision/useRevision';
 import useRevisionInsert from '../../services/graphql/internalRevision/useRevisionInsert';
 import useSettingsDropdownOverview from '../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import useSuppliersOverview from '../../services/graphql/suppliers/useGetSuppliersOverview';
 
 interface InternalRevisionModalProps {
   open: boolean;
@@ -89,7 +90,8 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
   const {data} = useRevisionDetails(id);
   const {mutate} = useRevisionInsert();
   const {organizationUnits} = useOrganizationUnits();
-  const {data: settingsTypes} = useSettingsDropdownOverview({entity: 'revision_organization_units_types'});
+  const {suppliers} = useSuppliersOverview();
+  const {data: settingsTypes} = useSettingsDropdownOverview({entity: 'supplier_types'});
 
   const {data: revisionTypes} = useSettingsDropdownOverview({entity: 'revision_types'});
 
@@ -387,7 +389,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
                       name={name}
                       value={value as any}
                       onChange={onChange}
-                      options={externalOrganizationUnitsList as any}
+                      options={suppliers as any}
                       error={errors.external_organization_unit_id?.message as string}
                       placeholder="Izaberite subjekt"
                       label="SUBJEKT REVIZIJE (eksterna):"
