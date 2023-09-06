@@ -690,6 +690,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 <Controller
                   name="pin"
                   control={control}
+                  rules={{required: 'Ovo polje je obavezno'}}
                   render={({field: {onChange, value, name}}) => (
                     <Input
                       onChange={e => {
@@ -702,6 +703,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                       maxLength={4}
                       label="PIN:"
                       disabled={isDisabled}
+                      error={errors?.pin?.message}
                     />
                   )}></Controller>
               </FormItem>
