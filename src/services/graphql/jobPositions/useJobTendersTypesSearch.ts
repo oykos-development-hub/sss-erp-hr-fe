@@ -9,7 +9,7 @@ const useJobTendersTypesSearch = (search: string) => {
   const [loading, setLoading] = useState(true);
   const typesUnitsList = useMemo(() => {
     return [
-      {id: 0, title: 'Sve tpovi oglasa'},
+      {id: 0, title: 'Svi tipovi oglasa'},
       ...types.items.map(unit => {
         return {id: unit.id, title: unit.title};
       }),

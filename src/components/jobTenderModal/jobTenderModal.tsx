@@ -119,7 +119,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
                   options={organizationUnitsList.slice(1) as any}
                   value={value as any}
                   onChange={onChange}
-                  error={errors.expertise_level?.message as string}
+                  error={errors.organization_unit?.message as string}
                 />
               )}
             />

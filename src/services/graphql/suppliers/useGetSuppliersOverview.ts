@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
-import { GraphQL } from '..';
-import { Supplier } from '../../../types/graphql/suppliersOverviewTypes';
+import {GraphQL} from '..';
+import {Supplier} from '../../../types/graphql/suppliersOverviewTypes';
 
 const useSuppliersOverview = (id?: number, search?: string) => {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
