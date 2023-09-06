@@ -7,7 +7,7 @@ const useForeignerPermitDelete = () => {
   const deleteForeignerPermit = async (id: number, onSuccess?: () => void, onError?: () => void) => {
     setLoading(true);
     const response = await GraphQL.foreignerPermitDelete(id);
-    console.log(response);
+
     if (response.status === 'success') {
       onSuccess && onSuccess();
     } else {
