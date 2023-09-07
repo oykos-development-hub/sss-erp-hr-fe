@@ -3,8 +3,6 @@ import {calculateExperience, parseDate} from '../../../utils/dateUtils';
 export const formatData = (data: any, newExperience?: boolean) => {
   const calculatedExperience = calculateExperience(data?.date_of_start, data?.date_of_end);
 
-  console.log(data);
-
   const payload = {
     ...data,
     relevant: data?.relevant?.id === 'Da' ? true : false,
