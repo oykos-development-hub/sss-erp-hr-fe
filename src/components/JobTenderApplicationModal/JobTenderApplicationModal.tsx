@@ -192,7 +192,10 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   };
 
   const userOptions = useMemo(
-    () => [...userListData.items.map(item => ({...item, title: `${item.first_name} ${item.last_name}`}))],
+    () =>
+      userListData
+        ? [...userListData.items.map(item => ({...item, title: `${item.first_name} ${item.last_name}`}))]
+        : [],
     [userListData],
   );
 
@@ -318,6 +321,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                       options={citizenshipArray || []}
                       error={errors.nationality?.message as string}
                       isDisabled={applicationType.id === 'internal'}
+                      isSearchable
                     />
                   );
                 }}
@@ -336,7 +340,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                       style={{width: '100%'}}
                       label="OCJENA:"
                       options={evaluationTypeOptions || []}
-                      isDisabled={applicationType.id === 'internal'}
+                      isDisabled
                     />
                   );
                 }}
