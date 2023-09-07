@@ -1,17 +1,6 @@
+import {Button, Datepicker, Dropdown, Input, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
-import {
-  FormContainer,
-  FormColumn,
-  FormFooter,
-  FormWrapper,
-  FormRow,
-  FormItem,
-  FormFileUpload,
-  Controls,
-  TextWrapper,
-} from './styles';
-import {Typography, Input, Button, Dropdown, Datepicker} from 'client-library';
-import {BasicInfoPageProps} from './types';
+import {Controller, useForm} from 'react-hook-form';
 import {
   cityData,
   femaleMaritalStatusOptions,
@@ -20,24 +9,37 @@ import {
   nationalMinorities,
   yesOrNoOptionsString,
 } from '../../../constants';
-import {Controller, useForm} from 'react-hook-form';
-import {UserProfileBasicInfoFormValues} from '../../../types/graphql/userProfiles';
-import {parseDate} from '../../../utils/dateUtils';
+import useJobPositionsAvailableOrganizationUnit from '../../../services/graphql/jobPositions/useJobPositionsAvailableOrganizationUnit';
 import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
-import {initialValues} from './constants';
-import useJobPositions from '../../../services/graphql/jobPositions/useJobPositionOverview';
-import {booleanToYesOrNo, formatData} from './utils';
+import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 import useBasicInfoGet from '../../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
 import useBasicInfoInsert from '../../../services/graphql/userProfile/basicInfo/useBasicInfoInsert';
-import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 import useBasicInfoUpdate from '../../../services/graphql/userProfile/basicInfo/useBasicInfoUpdate';
 import {DropdownDataString} from '../../../types/dropdownData';
+import {UserProfileBasicInfoFormValues} from '../../../types/graphql/userProfiles';
+import {parseDate} from '../../../utils/dateUtils';
+import {initialValues} from './constants';
+import {
+  Controls,
+  FormColumn,
+  FormContainer,
+  FormFileUpload,
+  FormFooter,
+  FormItem,
+  FormRow,
+  FormWrapper,
+  TextWrapper,
+} from './styles';
+import {BasicInfoPageProps} from './types';
+import {booleanToYesOrNo, formatData} from './utils';
+
+const contractPositions = ['Ugovor na neodređeno vrijeme', 'Ugovor na određeno vrijeme'];
 
 export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   const {data: profileData, refetch} = useBasicInfoGet(Number(context.navigation.location.pathname.split('/')[4]));
   const isNew = !profileData?.id;
   const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
-  const {data: jobPositions} = useJobPositions('');
+
   const {organizationUnits} = useOrganizationUnits();
   const {options: contractTypes} = useSettingsDropdownOverview({entity: 'contract_types'});
   const {mutate: createBasicInfo, userId} = useBasicInfoInsert();
@@ -62,10 +64,6 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
         return {id: unit.id, title: unit.title};
       });
   }, [organizationUnits]);
-
-  const jobPositionOptions = useMemo(() => {
-    return jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title}));
-  }, [jobPositions]);
 
   const countryOptions = useMemo(() => {
     return context.countries?.map((country: any) => {
@@ -94,6 +92,11 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   const contract = watch('contract');
 
   const maritalOptions = gender === 'M' ? maleMaritalStatusOptions : femaleMaritalStatusOptions;
+
+  const {positions} = useJobPositionsAvailableOrganizationUnit(
+    contract.organization_unit_id?.id,
+    contract.department_id?.id,
+  );
 
   const departmentOptions = useMemo(() => {
     if (!contract?.organization_unit_id) return [];
@@ -184,7 +187,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
         contract: {
           organization_unit_id: profileData?.organization_unit,
           department_id: profileData?.contract?.department,
-          job_position_in_organization_unit_id: profileData?.contract?.job_position_in_organization_unit,
+          job_position_in_organization_unit_id: profileData?.contract?.job_position_in_organization_unit?.id,
           contract_type_id: profileData?.contract?.contract_type,
           date_of_end: profileData?.contract?.date_of_end,
           date_of_start: profileData?.contract?.date_of_start,
@@ -525,7 +528,6 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
             <FormItem>
               <Controller
                 name="contract.job_position_in_organization_unit_id"
-                rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -534,8 +536,17 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     label="RADNO MJESTO:"
                     value={value as any}
                     noOptionsText="Prazno"
-                    options={jobPositionOptions}
-                    isDisabled={isDisabled}
+                    options={positions as any}
+                    isDisabled={
+                      isDisabled ||
+                      !contract?.organization_unit_id ||
+                      !contract?.department_id ||
+                      positions.length === 0 ||
+                      !(
+                        contract?.contract_type_id?.title &&
+                        contractPositions.indexOf(contract?.contract_type_id?.title) > -1
+                      )
+                    }
                     error={errors.contract?.job_position_in_organization_unit_id?.message}
                   />
                 )}
@@ -690,8 +701,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 <Controller
                   name="pin"
                   control={control}
-                  rules={{required: 'Ovo polje je obavezno'}}
-                  render={({field: {onChange, value, name}}) => (
+                  render={({field: {value, name}}) => (
                     <Input
                       onChange={e => {
                         if (e.target.value.match(/^(0|[1-9]\d*)(\.\d+)?$/)) {

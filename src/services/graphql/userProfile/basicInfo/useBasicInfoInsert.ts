@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {GraphQL} from '../..';
-import {UserProfileBasicInfo, UserProfileBasicInfoFormValues} from '../../../../types/graphql/userProfiles';
+import {UserProfileBasicInfoFormValues} from '../../../../types/graphql/userProfiles';
 
 const useBasicInfoInsert = () => {
   const [loading, setLoading] = useState(false);

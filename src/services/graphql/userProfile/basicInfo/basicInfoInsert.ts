@@ -1,6 +1,6 @@
 import {GraphQL} from '../..';
 import {UserProfileInsertBasicInfoResponse} from '../../../../types/graphql/userProfileInsertBasicInfo';
-import {UserProfileBasicInfo, UserProfileBasicInfoFormValues} from '../../../../types/graphql/userProfiles';
+import {UserProfileBasicInfoFormValues} from '../../../../types/graphql/userProfiles';
 
 const basicInfoInsert = async (
   data: UserProfileBasicInfoFormValues,

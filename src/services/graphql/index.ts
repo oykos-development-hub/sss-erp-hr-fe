@@ -60,6 +60,7 @@ import jobPositionsOrganizationUnit from './jobPositions/jobPositionsOrganizatio
 import absentTypesOverview from './userProfile/absents/absentsType';
 import settingsDropdownOverview from './settingsDropdown/settingsDropdownOverview';
 import basicInfoUpdate from './userProfile/basicInfo/basicInfoUpdate';
+import jobPositionsAvailableOrganizationUnit from './jobPositions/jobPositionsAvailableOrganizationUnit';
 import getSuppliersOverview from './suppliers/getSuppliers';
 
 export const BFF_URL = {
@@ -126,6 +127,7 @@ export const GraphQL = {
   organizationUnitDelete: organizationUnitDelete,
   jobPositionInOrganizationUnitInsert: jobPositionInOrganizationUnitInsert,
   jobPositionInOrganizationUnitDelete: jobPositionInOrganizationUnitDelete,
+  jobPositionsAvailableOrganizationUnit: jobPositionsAvailableOrganizationUnit,
   employeeInOrganizationUnitInsert: employeeInOrganizationUnitInsert,
   employeeInOrganizationUnitDelete: employeeInOrganizationUnitDelete,
   absentOverview: absentOverview,

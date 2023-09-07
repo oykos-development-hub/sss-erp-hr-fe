@@ -35,7 +35,7 @@ export const formatData = (data: any) => {
     contract: {
       organization_unit_id: data?.contract?.organization_unit_id?.id || null,
       organization_unit_department_id: data?.contract.department_id?.id || null,
-      job_position_in_organization_unit: data?.contract?.job_position_in_organization_unit_id?.id || null,
+      job_position_in_organization_unit_id: data?.contract?.job_position_in_organization_unit_id?.id || null,
       contract_type_id: data?.contract?.contract_type_id?.id || null,
       date_of_end: data?.contract?.date_of_end ? parseDate(data?.contract?.date_of_end, true) : null,
       date_of_start: parseDate(data?.contract?.date_of_start, true),
