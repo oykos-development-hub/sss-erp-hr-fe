@@ -20,6 +20,7 @@ export interface EmployeesListProps {
   onFilterChange: (value: any, name: string) => void;
   onSearch: (e: ChangeEvent<HTMLInputElement>) => void;
   parentRef: RefObject<HTMLDivElement>;
+  loading: boolean;
 }
 
 const EmployeesList: React.FC<EmployeesListProps> = ({
@@ -33,6 +34,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   onFilterChange,
   onSearch,
   parentRef,
+  loading,
 }) => {
   const overviewRef = useRef<HTMLDivElement>(null);
   const state = navigation.location.state;
@@ -140,6 +142,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
         tableHeads={tableHeads}
         data={list}
         style={{marginBottom: 22}}
+        isLoading={loading}
         onRowClick={row => {
           navigate(`/hr/employees/details/${row.id}/basic-info`);
           scrollToTheNextElement(parentRef, overviewRef);

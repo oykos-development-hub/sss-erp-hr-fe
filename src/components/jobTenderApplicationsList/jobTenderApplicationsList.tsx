@@ -20,7 +20,11 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({jobTend
   const [page, setPage] = useState(1);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteItemID, setDeleteItemID] = useState(0);
-  const {data: applications, refreshData} = useJobTenderApplications({page, size: 10, job_tender_id: jobTenderId});
+  const {
+    data: applications,
+    refreshData,
+    loading,
+  } = useJobTenderApplications({page, size: 10, job_tender_id: jobTenderId});
 
   const {mutate: deleteJobTenderApplication} = useJobTendersDeleteApplication();
 
@@ -77,6 +81,7 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({jobTend
         tableHeads={applicationsTableHeads}
         data={applications.items}
         style={{marginBottom: 22}}
+        isLoading={loading}
         onRowClick={item => toggleApplicationModal(item.id)}
         tableActions={[
           {

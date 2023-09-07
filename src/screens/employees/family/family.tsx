@@ -11,7 +11,7 @@ import useFamilyDelete from '../../../services/graphql/userProfile/family/useFam
 
 export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[4];
-  const {familyData, refetchData} = useFamilyOverview(userProfileID);
+  const {familyData, refetchData, loading} = useFamilyOverview(userProfileID);
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
 
@@ -68,6 +68,7 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
         <Table
           tableHeads={tableHeads}
           data={familyData || []}
+          isLoading={loading}
           tableActions={[
             {
               name: 'edit',

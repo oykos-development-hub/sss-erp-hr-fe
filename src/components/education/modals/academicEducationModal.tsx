@@ -90,7 +90,7 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
           <FormGroup>
             <Input
               {...register('certificate_issuer', {required: 'Ovo polje je obavezno'})}
-              label="IZDAVAČ SERTIFIKATA:"
+              label="INSTITUCIJA:"
               error={errors.certificate_issuer?.message as string}
             />
           </FormGroup>
@@ -139,7 +139,7 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
                 icon={<></>}
                 style={{width: '100%'}}
                 variant="secondary"
-                onUpload={item => console.log(item)}
+                onUpload={(item: any) => console.log(item)}
                 note={<Typography variant="bodySmall" content="Obrazovni sertifikat" />}
                 buttonText="Učitaj"
               />

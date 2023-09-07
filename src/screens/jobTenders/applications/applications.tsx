@@ -11,7 +11,7 @@ import {applicationsTableHeads} from '../constants';
 
 const ApplicationsScreen = (props: ScreenProps) => {
   const [page, setPage] = useState(1);
-  const {data: applications} = useJobTenderApplications({page, size: 10, job_tender_id: 0});
+  const {data: applications, loading} = useJobTenderApplications({page, size: 10, job_tender_id: 0});
 
   const onPageChange = (page: number) => {
     setPage(page + 1);
@@ -36,6 +36,7 @@ const ApplicationsScreen = (props: ScreenProps) => {
           data={applications.items || []}
           style={{marginBottom: 22}}
           onRowClick={navigateToDetails}
+          isLoading={loading}
         />
         <Pagination
           pageCount={applications.total / 10}

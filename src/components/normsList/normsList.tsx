@@ -10,9 +10,10 @@ interface NormsListProps {
   data: Norms[];
   toggleNormsModal: (item: Norms) => void;
   handleDeleteIconClick: (id: number) => void;
+  loading: boolean;
 }
 
-const NormsList: React.FC<NormsListProps> = ({data, toggleNormsModal, handleDeleteIconClick}) => {
+const NormsList: React.FC<NormsListProps> = ({data, toggleNormsModal, handleDeleteIconClick, loading}) => {
   const [topic, setTopic] = useState<DropdownDataString | null>(null);
 
   const onTopicChange = (value: any) => {
@@ -49,6 +50,7 @@ const NormsList: React.FC<NormsListProps> = ({data, toggleNormsModal, handleDele
         tableHeads={judgeNormsTableHeads}
         data={list}
         style={{marginBottom: 22}}
+        isLoading={loading}
         tableActions={[
           {
             name: 'edit',

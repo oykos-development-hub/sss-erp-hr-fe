@@ -12,7 +12,7 @@ import {tableHeads} from './constants';
 
 export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[4];
-  const {experienceData, refetchData} = useExperience(userProfileID);
+  const {experienceData, refetchData, loading} = useExperience(userProfileID);
   const {organizationUnits} = useOrganizationUnits(context);
 
   const tableData = useMemo(() => {
@@ -107,6 +107,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
         <Table
           tableHeads={tableHeads}
           data={tableData || []}
+          isLoading={loading}
           tableActions={[
             {
               name: 'edit',

@@ -52,7 +52,7 @@ export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
     },
   } = context;
 
-  const {data} = useUserProfiles({page, size: 10, ...filters, name: debouncedSearch});
+  const {data, loading} = useUserProfiles({page, size: 10, ...filters, name: debouncedSearch});
 
   const isNewEmployeeRoute = useMemo(() => {
     const paths = pathname.split('/');
@@ -88,6 +88,7 @@ export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
         onFilterChange={onFilterChange}
         onSearch={e => setSearch(e.target.value)}
         parentRef={screenWrapperRef}
+        loading={loading}
       />
       {isNewEmployeeRoute && <NewEmployeeSearch onSearch={onSearch} />}
       {isDetails && <EmployeeDetails context={context} setAlert={(alert: any) => setAlert(alert)} />}

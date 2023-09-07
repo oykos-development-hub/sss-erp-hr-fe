@@ -16,7 +16,7 @@ const Foreigners: React.FC<ForeignersProps> = ({context}) => {
   const [deleteModal, setDeleteModal] = useState(0);
   const id = Number(context?.navigation.location.pathname.split('/')[4]);
 
-  const {data, refetch} = useForeignerPermits(id);
+  const {data, refetch, loading} = useForeignerPermits(id);
   const {mutate: deleteEntry} = useForeignerPermitDelete();
 
   const openModal = () => {
@@ -62,6 +62,7 @@ const Foreigners: React.FC<ForeignersProps> = ({context}) => {
       <Table
         tableHeads={tableHeads}
         data={data?.items || []}
+        isLoading={loading}
         tableActions={[
           {
             name: 'edit',

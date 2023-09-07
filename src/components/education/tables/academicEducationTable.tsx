@@ -23,7 +23,7 @@ const tableHeads: TableHead[] = [
     renderContents: (item: DropdownDataNumber) => <Typography variant="bodyMedium" content={item.title} />,
   },
   {
-    title: 'Izdavač sertifikata',
+    title: 'Institucija',
     accessor: 'certificate_issuer',
     type: 'text',
   },
@@ -40,7 +40,7 @@ const tableHeads: TableHead[] = [
 ];
 
 export const AcademicEducationTable: React.FC<TableProps> = ({alert, navigation}) => {
-  const {employeeEducationData, refetchData} = useEducationOverview(
+  const {employeeEducationData, refetchData, loading} = useEducationOverview(
     Number(navigation.location.pathname.split('/')[4]),
     educationTypes.education_academic_types,
   );
@@ -108,6 +108,7 @@ export const AcademicEducationTable: React.FC<TableProps> = ({alert, navigation}
       <TableContainer
         tableHeads={tableHeads}
         data={employeeEducationData || []}
+        isLoading={loading}
         tableActions={[
           {name: 'edit', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
           {

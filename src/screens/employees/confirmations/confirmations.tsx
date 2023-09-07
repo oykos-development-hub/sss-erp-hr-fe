@@ -43,7 +43,7 @@ const YearList: ValueType[] = Array.from({length: 10}, (_, index) => {
 
 export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[4];
-  const {data, fetch} = useResolutionOverview(userProfileID);
+  const {data, fetch, loading} = useResolutionOverview(userProfileID);
   const tableData = data;
 
   const [showModal, setShowModal] = useState(false);
@@ -140,6 +140,7 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
         <Table
           tableHeads={tableHeads}
           data={filteredTableData || []}
+          isLoading={loading}
           tableActions={[
             {
               name: 'edit',

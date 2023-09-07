@@ -21,6 +21,7 @@ const JudgesNumberDecisions: React.FC<ScreenProps> = ({context}) => {
     data: judgesResolutions,
     total,
     refetch,
+    loading,
   } = useJudgesResolutionsOverview({page, size: 10, year: filters?.year?.id || ''});
 
   const onPageChange = (page: number) => {
@@ -48,6 +49,7 @@ const JudgesNumberDecisions: React.FC<ScreenProps> = ({context}) => {
         navigate={context.navigation.navigate}
         alert={context.alert}
         refetch={refetch}
+        loading={loading}
       />
     </ScreenWrapper>
   );

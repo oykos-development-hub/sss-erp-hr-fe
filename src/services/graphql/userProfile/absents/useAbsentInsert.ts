@@ -7,15 +7,17 @@ const useAbsentInsert = () => {
   const [loading, setLoading] = useState(false);
 
   const insertProfileAbsents = async (data: UserProfileAbsentsParams, onSuccess?: () => void, onError?: () => void) => {
-    setLoading(true);
-    const response = await GraphQL.absentInsert(data);
+    if (!loading) {
+      setLoading(true);
+      const response = await GraphQL.absentInsert(data);
 
-    if (response.status === REQUEST_STATUSES.success) {
-      onSuccess && onSuccess();
-    } else if (response.status === REQUEST_STATUSES.error) {
-      onError && onError();
+      if (response.status === REQUEST_STATUSES.success) {
+        onSuccess && onSuccess();
+      } else if (response.status === REQUEST_STATUSES.error) {
+        onError && onError();
+      }
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return {loading, mutate: insertProfileAbsents};

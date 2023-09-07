@@ -21,6 +21,7 @@ export interface JobTendersListProps {
   filters: JobTendersListFilters;
   deleteJobTender: (id: number) => void;
   context: MicroserviceProps;
+  loading: boolean;
 }
 
 const JobTendersList: FC<JobTendersListProps> = ({
@@ -34,6 +35,7 @@ const JobTendersList: FC<JobTendersListProps> = ({
   filters,
   deleteJobTender,
   context,
+  loading,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteItemID, setDeleteItemID] = useState(0);
@@ -94,6 +96,7 @@ const JobTendersList: FC<JobTendersListProps> = ({
         tableHeads={tableHeads}
         data={data.items || []}
         style={{marginBottom: 22}}
+        isLoading={loading}
         onRowClick={item => {
           navigate(`/hr/job-tenders/job-tenders-list/${item.id}`);
           context.breadcrumbs.add({

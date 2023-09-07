@@ -40,7 +40,7 @@ const tableHeads: TableHead[] = [
 ];
 
 export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert, navigation}) => {
-  const {employeeEducationData, refetchData} = useEducationOverview(
+  const {employeeEducationData, refetchData, loading} = useEducationOverview(
     Number(navigation.location.pathname.split('/')[4]),
     educationTypes.education_exam_types,
   );
@@ -108,6 +108,7 @@ export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert, navigati
       <TableContainer
         tableHeads={tableHeads}
         data={employeeEducationData || []}
+        isLoading={loading}
         tableActions={[
           {name: 'edit', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
           {

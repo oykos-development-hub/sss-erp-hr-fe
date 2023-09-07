@@ -56,7 +56,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
       });
   }, [organizationUnits]);
 
-  const {mutate} = useAbsentInsert();
+  const {mutate, loading} = useAbsentInsert();
 
   const handleSave = (values: any) => {
     const payload = {
@@ -74,6 +74,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
       () => {
         onClose(true);
         alert.success('Uspješno sačuvano.');
+        reset(initialValues);
       },
       () => {
         alert.error('Greška. Promjene nisu sačuvane.');
@@ -87,13 +88,11 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
     control,
     formState: {errors},
     reset,
-    watch,
   } = useForm<UserProfileAbsentsParams>({defaultValues: selectedItem || initialValues});
-
-  const absentType = watch('absent_type_id');
 
   useEffect(() => {
     if (selectedItem) {
+      console.log(selectedItem);
       reset({
         ...selectedItem,
         date_of_end: new Date(selectedItem.date_of_end),
@@ -121,6 +120,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(handleSave)}
+      buttonLoading={loading}
       content={
         <ModalContentWrapper>
           <FormGroup>
@@ -237,7 +237,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
           )}
         </ModalContentWrapper>
       }
-      title={'DODAJTE DOPUST'}
+      title={'ZAHTJEVI'}
     />
   );
 };

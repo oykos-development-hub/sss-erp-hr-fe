@@ -18,6 +18,7 @@ interface InternalRevisionListProps {
   onFilter: (revisor: number) => void;
   refetchList: () => void;
   alert: any;
+  loading: boolean;
 }
 
 const InternalRevisionList: React.FC<InternalRevisionListProps> = ({
@@ -30,6 +31,7 @@ const InternalRevisionList: React.FC<InternalRevisionListProps> = ({
   onFilter,
   refetchList,
   alert,
+  loading,
 }) => {
   const [deleteModal, setDeleteModal] = useState(0);
 
@@ -80,6 +82,7 @@ const InternalRevisionList: React.FC<InternalRevisionListProps> = ({
         data={data}
         style={{marginBottom: 22}}
         onRowClick={item => handleEdit(item.id)}
+        isLoading={loading}
         tableActions={[
           {name: 'edit', onClick: item => handleEdit(item.id), icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
           {

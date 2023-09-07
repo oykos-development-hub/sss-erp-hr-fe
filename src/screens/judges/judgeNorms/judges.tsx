@@ -31,7 +31,7 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
 
   const [filters, setFilters] = useState<JudgesListFilters>(initialValues);
 
-  const {data, total, refetch} = useJudgesOverview({page, size: 10, ...filters});
+  const {data, total, refetch, loading} = useJudgesOverview({page, size: 10, ...filters});
   const {judgesUnitsList} = useJudgesOverview({page, size: 1000, ...initialValues});
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -122,12 +122,14 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
         onFilterChange={onFilterChange}
         total={total}
         addNorm={() => openNormModal()}
+        loading={loading}
       />
       {normsList.length > 0 && (
         <NormsList
           data={normsList}
           toggleNormsModal={item => openNormModal(item)}
           handleDeleteIconClick={handleDeleteIconClick}
+          loading={loading}
         />
       )}
 

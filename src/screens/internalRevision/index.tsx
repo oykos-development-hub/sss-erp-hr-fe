@@ -21,7 +21,7 @@ const InternalRevision: React.FC<MicroserviceProps> = ({context}) => {
     }));
   };
 
-  const {data, refetch} = useInternalRevisions({page, size: 10, revisor_user_profile_id: revisorFilter});
+  const {data, refetch, loading} = useInternalRevisions({page, size: 10, revisor_user_profile_id: revisorFilter});
 
   const onPageChange = (page: number) => {
     setPage(page + 1);
@@ -49,6 +49,7 @@ const InternalRevision: React.FC<MicroserviceProps> = ({context}) => {
         onFilter={onFilter}
         alert={context.alert}
         refetchList={refetch}
+        loading={loading}
       />
 
       {internalRevisionModal && (

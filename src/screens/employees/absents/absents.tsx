@@ -77,7 +77,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const [selectedItemId, setSelectedItemId] = useState(0);
   const [form, setForm] = useState<any>();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const {absentsTypeData} = useAbsentTypesOverview();
+  const {absentsTypeData, loading} = useAbsentTypesOverview();
   const {mutate} = useAbsentDelete();
 
   const selectedItem = useMemo(() => {
@@ -257,6 +257,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
         <Table
           tableHeads={tableHeads}
           data={filteredFirstTableData || []}
+          isLoading={loading}
           tableActions={[
             {
               name: 'edit',
@@ -280,6 +281,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
         <Table
           tableHeads={tableHeads}
           data={filteredSecondTableData || []}
+          isLoading={loading}
           tableActions={[
             {
               name: 'edit',

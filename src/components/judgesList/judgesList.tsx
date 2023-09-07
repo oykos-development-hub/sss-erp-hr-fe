@@ -15,6 +15,7 @@ export interface JudgesListProps {
   onFilterChange: (value: any, name: string) => void;
   filters: JudgesListFilters;
   addNorm: () => void;
+  loading: boolean;
 }
 
 const JudgesList: React.FC<JudgesListProps> = ({
@@ -27,6 +28,7 @@ const JudgesList: React.FC<JudgesListProps> = ({
   onFilterChange,
   filters,
   addNorm,
+  loading,
 }) => {
   const list: JudgeOverview[] = useMemo(
     () =>
@@ -71,6 +73,7 @@ const JudgesList: React.FC<JudgesListProps> = ({
         tableHeads={judgeTableHeads}
         data={list}
         style={{marginBottom: 22}}
+        isLoading={loading}
         onRowClick={item => toggleJudgesNorms(item)}
       />
       <Pagination

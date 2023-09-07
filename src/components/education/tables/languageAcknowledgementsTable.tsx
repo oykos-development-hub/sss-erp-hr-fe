@@ -43,7 +43,7 @@ const tableHeads: TableHead[] = [
 ];
 
 export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({alert, navigation}) => {
-  const {employeeEducationData, refetchData} = useEducationOverview(
+  const {employeeEducationData, refetchData, loading} = useEducationOverview(
     Number(navigation.location.pathname.split('/')[4]),
     educationTypes.education_language_types,
   );
@@ -110,6 +110,7 @@ export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({alert, naviga
       <TableContainer
         tableHeads={tableHeads}
         data={employeeEducationData || []}
+        isLoading={loading}
         tableActions={[
           {name: 'edit', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
           {

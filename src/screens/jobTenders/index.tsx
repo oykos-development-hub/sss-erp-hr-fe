@@ -35,7 +35,7 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
 
   const [filters, setFilters] = useState<any>(initialValues);
 
-  const {data, refetch} = useJobTendersOverview({page, size: 10, ...filters});
+  const {data, refetch, loading} = useJobTendersOverview({page, size: 10, ...filters});
 
   const selectedItem = useMemo(() => {
     return data?.items?.find((item: JobTender) => item.id === selectedItemId);
@@ -106,6 +106,7 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
         onFilterChange={onFilterChange}
         deleteJobTender={deleteJobTenders}
         context={context}
+        loading={loading}
       />
       <JobTenderModal
         open={showModal}

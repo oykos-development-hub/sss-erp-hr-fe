@@ -18,6 +18,7 @@ export interface JudgesNumbersListProps {
   navigate: (path: string) => void;
   alert: any;
   refetch: () => void;
+  loading: boolean;
 }
 
 const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
@@ -30,6 +31,7 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
   navigate,
   alert,
   refetch,
+  loading,
 }) => {
   const [deleteId, setDeleteId] = useState(0);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -94,6 +96,7 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
         tableHeads={judgesNumberResolutionTableHeads}
         data={list}
         style={{marginBottom: 22}}
+        isLoading={loading}
         tableActions={[
           {
             name: 'edit',
