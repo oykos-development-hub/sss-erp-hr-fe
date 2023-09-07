@@ -38,21 +38,21 @@ export const Router: React.FC<MicroserviceProps> = props => {
     if (employeesRegex.test(pathname)) return <EmployeesScreen context={context} />;
     if (pathname === '/hr/systematization') return <SystematizationScreen context={context} />;
     if (pathname === '/hr/revision-recommendations') return <InternalRevision context={context} />;
-   // if (pathname === '/hr/job-positions') return <LandingScreen context={context} />;
+    // if (pathname === '/hr/job-positions') return <LandingScreen context={context} />;
     if (JobTendersRegex.test(pathname)) return <JobTendersScreen context={context} />;
     if (JobTendersDetailsRegex.test(pathname)) return <JobTenderDetailsScreen context={context} />;
     if (ApplicationsRegex.test(pathname)) return <ApplicationsScreen context={context} />;
     if (ApplicationsDetailsRegex.test(pathname)) return <ApplicationDetailsScreen context={context} />;
     if (systematizationDetailsRegex.test(pathname)) return <SystematizationDetails context={context} />;
     if (pathname === '/hr/judges') return <Judges />;
-   // if (pathname === '/hr/judges') return context.navigation.navigate('judges/number-decision');
+    // if (pathname === '/hr/judges') return context.navigation.navigate('judges/number-decision');
     if (pathname === '/hr/judges/number-decision') return <JudgesNumberDecisions context={context} />;
     if (pathname === '/hr/judges/number-decision/new-decision')
       return <JudgesNumbersDetails context={context} isNew={true} />;
     if (judgesNumberDetailsRegex.test(pathname)) return <JudgesNumbersDetails context={context} />;
     if (pathname === '/hr/judges/overview-judges-presidents') return <JudgeNorms context={context} />;
     if (pathname === '/hr/job-tenders') return <JobTenders />;
-   // if (pathname === '/hr/job-tenders') return context.navigation.navigate('job-tenders/job-tenders-list');
+    // if (pathname === '/hr/job-tenders') return context.navigation.navigate('job-tenders/job-tenders-list');
     if (pathname === '/hr/employees/add-new') return <AddNewEmployee context={context} />;
 
     return <NotFound404 context={context} />;

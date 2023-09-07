@@ -1,6 +1,6 @@
 import React from 'react';
 import Lottie from 'lottie-react';
-import Construction from './Construction.json' ;
+import Construction from './Construction.json';
 
 const Animation = () => {
   return (

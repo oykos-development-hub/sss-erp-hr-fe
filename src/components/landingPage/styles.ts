@@ -5,7 +5,7 @@ export const ParentContainer = styled.div`
   position: absolute;
   top: 0;
   right: 0;
-  width: 78%;
+  width: calc(100vw - 350px);
   height: 100%;
 `;
 
