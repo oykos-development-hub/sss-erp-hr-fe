@@ -1,6 +1,6 @@
 import React from 'react';
-import {AnimationWrapper, ParentContainer, RedDiv, Title} from '../../components/underConstruction/styles';
-import Animation from '../../components/underConstruction/animation';
+import {AnimationWrapper, ParentContainer, RedDiv, Title} from '../../components/landingPage/styles';
+import Animation from '../../components/landingPage/animation';
 
 const JobTenders: React.FC = () => {
   return (
@@ -8,7 +8,6 @@ const JobTenders: React.FC = () => {
       <RedDiv>
         <Title>
           <h1>OGLASI</h1>
-          <h6>STRANICA JE U FAZI IZRADE</h6>
         </Title>
       </RedDiv>
       <AnimationWrapper>
