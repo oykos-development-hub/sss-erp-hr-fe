@@ -91,7 +91,7 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
   const {mutate} = useRevisionInsert();
   const {organizationUnits} = useOrganizationUnits();
   const {suppliers} = useSuppliersOverview();
-  const {data: settingsTypes} = useSettingsDropdownOverview({entity: 'supplier_types'});
+  const {data: settingsTypes} = useSettingsDropdownOverview({entity: 'revision_organization_units_types'});
 
   const {data: revisionTypes} = useSettingsDropdownOverview({entity: 'revision_types'});
 
