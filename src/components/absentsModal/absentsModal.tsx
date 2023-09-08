@@ -166,6 +166,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
                   onChange={onChange}
                   error={errors.target_organization_unit_id?.message}
                   placeholder="Birajte državni organ"
+                  isDisabled={isVacation}
                 />
               )}
             />
