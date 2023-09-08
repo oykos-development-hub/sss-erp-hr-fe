@@ -109,10 +109,10 @@ export const applicationStatusOptions: DropdownDataString[] = [
   },
   {
     id: 'rejected',
-    title: 'Odbijen',
+    title: 'Nije izabran',
   },
   {
     id: 'accepted',
-    title: 'Prihvaćen',
+    title: 'Izabran',
   },
 ];

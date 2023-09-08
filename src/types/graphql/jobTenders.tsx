@@ -54,7 +54,7 @@ export interface JobTenderApplication {
   last_name?: string;
   official_personal_id?: string;
   date_of_birth?: string;
-  nationality?: string;
+  citizenship?: string;
   evaluation?: string;
   date_of_application: string;
   created_at?: string;

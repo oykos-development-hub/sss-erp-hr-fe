@@ -28,7 +28,7 @@ const jobTenderApplicationOverview = async ({
             last_name
             official_personal_id
             date_of_birth
-            nationality
+            citizenship
             status
             evaluation
             date_of_application

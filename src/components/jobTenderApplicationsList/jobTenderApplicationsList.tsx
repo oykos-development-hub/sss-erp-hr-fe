@@ -8,13 +8,15 @@ import useJobTenderApplications from '../../services/graphql/jobTenders/useJobTe
 import useJobTendersDeleteApplication from '../../services/graphql/jobTenders/useJobTenderApplicationDelete';
 import {ScreenProps} from '../../types/screen-props';
 import {JobTenderApplicationModal} from '../JobTenderApplicationModal/JobTenderApplicationModal';
+import {MicroserviceProps} from '../../types/micro-service-props';
 
 export interface JobTenderDetailsListProps extends ScreenProps {
   jobTenderId: number;
   alert: any;
+  context: MicroserviceProps;
 }
 
-const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({jobTenderId, alert, ...props}) => {
+const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({jobTenderId, alert, context, ...props}) => {
   const [showModal, setShowModal] = useState(false);
   const [editItemId, setEditItemId] = useState(0);
   const [page, setPage] = useState(1);
@@ -42,10 +44,10 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({jobTend
       deleteItemID,
       () => {
         refreshData();
-        alert.success('Uspješno obrisano.');
+        context.alert.success('Uspješno obrisano.');
       },
       () => {
-        alert.success('Greška. Brisanje nije moguće');
+        context.alert.error('Greška. Brisanje nije moguće');
       },
     );
 
@@ -117,7 +119,8 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({jobTend
       />
       {showModal && (
         <JobTenderApplicationModal
-          countries={props?.context?.countries || []}
+          context={context}
+          countries={context?.countries || []}
           selectedItem={editItem}
           open={showModal}
           onClose={() => setShowModal(false)}

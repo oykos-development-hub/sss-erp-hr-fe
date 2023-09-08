@@ -25,7 +25,7 @@ const jobTenderApplicationInsert = async (
             status
             first_name
             last_name
-            nationality
+            citizenship
             date_of_birth
             date_of_application
             official_personal_id

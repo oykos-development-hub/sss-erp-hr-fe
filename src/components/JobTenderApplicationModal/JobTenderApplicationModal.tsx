@@ -21,6 +21,7 @@ import {
 import useJobTenderApplicationsInsert from '../../services/graphql/jobTenders/useJobTenderApplicationInsert';
 import {ScreenProps} from '../../types/screen-props';
 import useBasicInfoGet from '../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
+import {MicroserviceProps} from '../../types/micro-service-props';
 
 interface JobTenderApplicationForm {
   id: number;
@@ -33,7 +34,7 @@ interface JobTenderApplicationForm {
   last_name: string;
   official_personal_id: string;
   date_of_birth: string;
-  nationality: DropdownDataString | null;
+  citizenship: DropdownDataString | null;
   evaluation: DropdownDataString | null;
   date_of_application: string;
 }
@@ -49,7 +50,7 @@ const initialValues: JobTenderApplicationForm = {
   last_name: '',
   official_personal_id: '',
   date_of_birth: '',
-  nationality: null,
+  citizenship: null,
   evaluation: null,
   date_of_application: '',
 };
@@ -62,6 +63,7 @@ export interface JobTenderApplicationModalModalProps extends ScreenProps {
   countries?: any[];
   jobTenderId: number;
   alert: any;
+  context: MicroserviceProps;
 }
 
 export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalProps> = ({
@@ -72,6 +74,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   countries,
   jobTenderId,
   alert,
+  context,
   ...props
 }) => {
   const [selectedUserId, setSelectedIdUser] = useState<number>(0);
@@ -104,8 +107,8 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
           evaluation: selectedItem?.evaluation
             ? evaluationTypeOptions.find(st => st.id === selectedItem?.evaluation)
             : null,
-          nationality: selectedItem?.nationality
-            ? citizenshipArray?.find(st => st.title === selectedItem.nationality)
+          citizenship: selectedItem?.citizenship
+            ? citizenshipArray?.find(st => st.title === selectedItem.citizenship)
             : null,
         }
       : initialValues;
@@ -125,7 +128,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   const first_name = watch('first_name');
   const last_name = watch('last_name');
   const date_of_birth = watch('date_of_birth');
-  const nationality = watch('nationality');
+  const citizenship = watch('citizenship');
   const official_personal_id = watch('official_personal_id');
   const evaluation = watch('evaluation');
 
@@ -153,7 +156,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   const onSubmit = (values: any) => {
     const data: JobTenderApplicationInsertParams = {
       type: applicationType.id,
-      date_of_application: parseDate(values?.date_of_application, true),
+      date_of_application: values?.date_of_application,
       status: values?.status?.title,
       job_tender_id: jobTenderId,
       active: true,
@@ -164,8 +167,8 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
       data.evaluation = values?.evaluation?.id;
       data.first_name = first_name;
       data.last_name = last_name;
-      data.nationality = values?.nationality?.title;
-      data.date_of_birth = parseDate(values?.date_of_birth, true);
+      data.citizenship = values?.citizenship?.title;
+      data.date_of_birth = values?.date_of_birth;
       data.official_personal_id = values?.official_personal_id;
     } else {
       data.user_profile_id = values?.user_profile?.id;
@@ -175,13 +178,16 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
       mutate(
         data,
         () => {
-          alert.success('Uspješno sačuvano.');
+          context.alert.success('Uspješno sačuvano.');
           refetchList();
           onClose();
           reset(item);
+          if (data.status === 'Izabran') {
+            navigateToUserCreation();
+          }
         },
         () => {
-          alert.error('Greška. Promjene nisu sačuvane.');
+          context.alert.error('Greška. Promjene nisu sačuvane.');
           onClose();
           reset(item);
         },
@@ -204,8 +210,8 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   };
 
   const navigateToUserCreation = () => {
-    props.context.navigation.navigate('/hr/employees/add-new', {
-      state: {user: {first_name, last_name, date_of_birth, evaluation, nationality, official_personal_id}},
+    context.navigation.navigate('/hr/employees/add-new', {
+      state: {user: {first_name, last_name, date_of_birth, evaluation, citizenship, official_personal_id}},
     });
   };
 
@@ -222,8 +228,8 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
         first_name: userData.first_name,
         last_name: userData.last_name,
         official_personal_id: userData.official_personal_id,
-        date_of_birth: userData.date_of_birth,
-        nationality: citizenshipArray?.find(c => (c.id = userData.nationality)) || null,
+        date_of_birth: parseDate(userData.date_of_birth, true),
+        citizenship: citizenshipArray?.find(c => (c.id = userData.citizenship)) || null,
         user_profile: {id: userData.id, title: `${userData.first_name} ${userData.last_name}`},
       });
     }
@@ -307,7 +313,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
             </Row>
             <RowFullWidth>
               <Controller
-                name="nationality"
+                name="citizenship"
                 rules={type?.id !== 'internal' ? {required: 'Ovo polje je obavezno'} : {}}
                 control={control}
                 render={({field: {onChange, name, value}}) => {
@@ -319,7 +325,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                       style={{width: '100%'}}
                       label="DRŽAVLJANSTVO:"
                       options={citizenshipArray || []}
-                      error={errors.nationality?.message as string}
+                      error={errors.citizenship?.message as string}
                       isDisabled={applicationType.id === 'internal'}
                       isSearchable
                     />
@@ -391,7 +397,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
         leftButtonText="Otkaži"
         rightButtonText="Nastavi"
         leftButtonOnClick={toggleConfirmModal}
-        rightButtonOnClick={navigateToUserCreation}
+        rightButtonOnClick={handleSubmit(onSubmit)}
         content={
           <ConfirmModalContent>
             <TriangleIcon />
