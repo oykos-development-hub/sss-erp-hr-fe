@@ -51,7 +51,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
         ...item,
         date_of_end: parseToDate(item.date_of_end),
         date_of_start: parseToDate(item.date_of_start),
-        organization_unit_id: organizationUnitsList.find(org => org.id === item.organization_unit.id),
+        organization_unit_id: organizationUnitsList.find(org => org.id === item.organization_unit?.id),
       });
     }
   }, [item]);
