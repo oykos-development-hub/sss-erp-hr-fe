@@ -16,7 +16,6 @@ import {DropdownDataString} from '../../../types/dropdownData';
 import useJudgeResolutionsInsert from '../../../services/graphql/judges/useJudgeResolutionInsert';
 import {ScreenWrapper} from '../../../shared/screenWrapper';
 
-
 export interface JudgesNumbersDetailsListProps extends ScreenProps {
   isNew?: boolean;
 }
@@ -66,7 +65,6 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
           : '';
       });
 
-
     return {
       id: item?.id ?? 0,
       user_profile_id: 1,
@@ -100,7 +98,6 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
     reset,
   } = useForm<DecisionForm>({defaultValues: getInitialValues});
 
-
   const judgeNumberTableHead: TableHead = {
     title: 'Odluka o broju sudija',
     accessor: 'available_slots_judges',
@@ -109,13 +106,11 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       <Input
         {...register(`items.${item.organization_unit.id}`, {required: 'Ovo polje je obavezno'})}
         disabled={isDisabled}
-        onChange={(e) => handleInputChange(e, item.organization_unit.id)}
-        //@ts-ignore
-        value={judgeInputs[item.organization_unit.id] || ''}
+        onChange={e => handleInputChange(e, item.organization_unit.id)}
+        value={judgeInputs[item.organization_unit.id].toString() || ''}
       />
     ),
   };
-  
 
   const handleSave = (values: DecisionForm, close: boolean) => {
     setIsDisabled(true);
@@ -213,7 +208,6 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
             judgeNumberTableHead,
             ...judgeResolutionTableHeads(judgeInputs).slice(3),
           ]}
-
           data={(list as any) || []}
         />
         <FormFooter>
