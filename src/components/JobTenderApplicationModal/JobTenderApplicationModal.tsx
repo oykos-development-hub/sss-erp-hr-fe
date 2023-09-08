@@ -390,7 +390,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
             </Row>
           </ModalContentWrapper>
         }
-        title={'DODAJTE NOVI OGLAS'}
+        title={'DODAJTE NOVOG KANDIDATA'}
       />
       <Modal
         open={confirmationModal}
