@@ -4,10 +4,10 @@ export type UserProfileEducationItem = {
   id: number;
   user_profile_id: number;
   type_id: number;
-  date_of_certification: string;
+  date_of_certification: string | null;
   price: number;
-  date_of_start: string;
-  date_of_end: string;
+  date_of_start: string | null;
+  date_of_end: string | null;
   academic_title: string;
   expertise_level: string;
   certificate_issuer: string;

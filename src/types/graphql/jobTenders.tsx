@@ -16,7 +16,7 @@ export interface JobTender {
   type?: DropdownItemType;
   description: string;
   serial_number: string;
-  date_of_start: string;
+  date_of_start: string | null;
   date_of_end: string | null;
   created_at?: string;
   updated_at?: string;
@@ -65,11 +65,11 @@ export interface JobTenderApplication {
   first_name?: string;
   last_name?: string;
   official_personal_id?: string;
-  date_of_birth: string;
+  date_of_birth: string | null;
   citizenship?: string;
   nationality?: string;
   evaluation?: string;
-  date_of_application: string;
+  date_of_application: string | null;
   created_at?: string;
   updated_at?: string;
   file_id?: number;
@@ -80,7 +80,7 @@ export interface JobTenderApplicationInsertParams
   job_tender_id?: number;
   user_profile_id?: number;
   active?: boolean;
-  date_of_birth?: string;
+  date_of_birth?: string | null;
 }
 
 export interface JobTenderApplicationsParams {

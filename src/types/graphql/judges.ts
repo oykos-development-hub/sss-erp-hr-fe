@@ -23,8 +23,8 @@ export interface JudgeNormInsertParams {
   number_of_norm_decrease: number;
   number_of_items: number;
   number_of_items_solved: number;
-  date_of_evaluation?: string;
-  date_of_evaluation_validity?: string;
+  date_of_evaluation?: string | null;
+  date_of_evaluation_validity?: string | null;
   relocation_id: number;
   file_id?: number;
   evaluation_id?: number;

@@ -1,4 +1,5 @@
-export const parseDate = (date: Date | string, parseForBFF?: boolean) => {
+export const parseDate = (date: Date | string | null, parseForBFF?: boolean) => {
+  if (!date) return '';
   const dateObj = new Date(date);
   const day = dateObj.toLocaleDateString('sr-latn-SR', {day: '2-digit'});
   const month = dateObj.toLocaleDateString('sr-latn-SR', {month: '2-digit'});
@@ -23,7 +24,7 @@ export const calculateExperience = (startDate: Date | string, endDate: Date | st
 };
 
 export const parseDateForBackend = (date: Date | null) => {
-  if (!date) return '';
+  if (!date) return null;
 
   const pickedDate = new Date(date);
   pickedDate.setMinutes(pickedDate.getMinutes() - pickedDate.getTimezoneOffset());
@@ -31,7 +32,7 @@ export const parseDateForBackend = (date: Date | null) => {
   return pickedDate.toISOString();
 };
 
-export const parseToDate = (dateString: string) => {
+export const parseToDate = (dateString: string | null) => {
   if (!dateString) return null;
 
   return new Date(dateString);
