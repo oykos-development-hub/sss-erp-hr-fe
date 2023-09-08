@@ -40,7 +40,7 @@ const initialValues = {
 
 export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({context, isNew}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(isNew ? false : true);
-  const [judgeInputs, setJudgeInputs] = useState<{[key: string]: number}>({});
+  const [judgeInputs, setJudgeInputs] = useState<{[key: string]: string}>({});
   const {organizationUnits} = useOrganizationUnits();
 
   const id = context.navigation.location.pathname.split('/')[4];
@@ -107,7 +107,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
         {...register(`items.${item.organization_unit.id}`, {required: 'Ovo polje je obavezno'})}
         disabled={isDisabled}
         onChange={e => handleInputChange(e, item.organization_unit.id)}
-        value={judgeInputs[item.organization_unit.id].toString() || ''}
+        value={judgeInputs[item.organization_unit.id]}
       />
     ),
   };

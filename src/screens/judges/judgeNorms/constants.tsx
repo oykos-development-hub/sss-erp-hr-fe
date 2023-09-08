@@ -2,7 +2,7 @@ import React from 'react';
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {TableHead, Typography} from 'client-library';
 
-export const judgeResolutionTableHeads = (judgeInputs: {[key: string]: number}): TableHead[] => [
+export const judgeResolutionTableHeads = (judgeInputs: {[key: string]: string}): TableHead[] => [
   {
     title: 'Sudska jedinica',
     accessor: 'organization_unit',

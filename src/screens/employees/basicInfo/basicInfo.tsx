@@ -185,9 +185,9 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
           (opt: DropdownDataString) => opt.id === profileData?.official_personal_document_issuer,
         ),
         contract: {
-          organization_unit_id: profileData?.organization_unit,
+          organization_unit_id: profileData?.contract?.organization_unit,
           department_id: profileData?.contract?.department,
-          job_position_in_organization_unit_id: profileData?.contract?.job_position_in_organization_unit?.id,
+          job_position_in_organization_unit_id: profileData?.contract?.job_position_in_organization_unit,
           contract_type_id: profileData?.contract?.contract_type,
           date_of_end: profileData?.contract?.date_of_end,
           date_of_start: profileData?.contract?.date_of_start,

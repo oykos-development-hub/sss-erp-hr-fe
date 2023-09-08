@@ -100,7 +100,7 @@ export interface BasicInfoUserContractValues {
   date_of_end: string;
   date_of_eligibility: string;
   file_id: number | null;
-  job_position_in_organization_unit_id: number | null;
+  job_position_in_organization_unit_id: DropdownDataNumber | null;
   user_profile_id: DropdownDataNumber | null;
   active: boolean;
 }
