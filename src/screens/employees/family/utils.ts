@@ -12,7 +12,7 @@ export const formatData = (data: any) => {
     city_of_birth: typeof data?.city_of_birth === 'string' ? data?.city_of_birth : data?.city_of_birth?.title || '',
     employee_relationship: data?.employee_relationship?.title,
     gender: data?.gender?.title,
-    nationality: data?.nationality.title || '',
+    nationality: data?.nationality?.title || '',
     national_minority: data?.national_minority?.id,
   };
 

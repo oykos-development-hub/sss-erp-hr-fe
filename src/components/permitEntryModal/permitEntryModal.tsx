@@ -18,7 +18,6 @@ interface PermitEntryModalProps {
 }
 
 const initialValues: ForeignerPermitFormValues = {
-  id: null,
   user_profile_id: null,
   work_permit_number: '',
   work_permit_issuer: '',
@@ -83,7 +82,6 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
   const onSubmit = async (values: any) => {
     const data = {
       ...values,
-      id: id,
       work_permit_issuer: values.work_permit_issuer.id,
       country_of_origin: values.country_of_origin.id,
       user_profile_id: id,
@@ -239,6 +237,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                     options={countryOptions}
                     error={errors.residence_permit_date_of_end?.message as string}
                     placeholder="Izaberite državu"
+                    isSearchable
                   />
                 )}
               />

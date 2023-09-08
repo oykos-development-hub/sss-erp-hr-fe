@@ -26,8 +26,6 @@ const foreignerPermitInsert = async (
             updated_at
             work_permit_file_id
             residence_permit_file_id
-            created_at
-            updated_at
         }
     }
 }`;

@@ -17,7 +17,6 @@ export interface ForeignerPermit {
 }
 
 export interface ForeignerPermitFormValues {
-  id: number | null;
   user_profile_id: number | null;
   work_permit_number: string;
   work_permit_issuer: DropdownDataString | string;

@@ -63,7 +63,10 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
             title: selectedItem?.insurance_coverage === 'Ne' ? 'Ne' : 'Da',
           },
           employee_relationship: {id: selectedItem?.employee_relationship, title: selectedItem?.employee_relationship},
-          country_of_birth: {id: selectedItem?.country_of_birth, title: selectedItem?.country_of_birth},
+          country_of_birth: {id: selectedItem?.country_of_birth, title: selectedItem?.country_of_birth} || {
+            id: selectedItem?.city_of_birth_montenegro,
+            title: selectedItem?.city_of_birth_montenegro,
+          },
           citizenship: {id: selectedItem?.citizenship, title: selectedItem?.citizenship},
           gender: {id: selectedItem?.gender, title: selectedItem?.gender},
           user_profile_id: selectedItem?.user_profile_id,
@@ -81,7 +84,8 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
     watch,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: initialValues});
+    setValue,
+  } = useForm({defaultValues: item || initialValues});
 
   const {mutate} = useFamilyInsert();
 
@@ -117,6 +121,12 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
       },
     );
   };
+
+  useEffect(() => {
+    if (country_of_birth) {
+      setValue('city_of_birth', null, {shouldValidate: true});
+    }
+  }, [country_of_birth]);
 
   return (
     <Modal
@@ -241,6 +251,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     name={name}
                     label="NACIONALNOST:"
                     options={citizenshipArray || []}
+                    isSearchable
                   />
                 );
               }}
@@ -276,8 +287,10 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                   const valueToUse = typeof value === 'string' ? {id: value, title: value} : null;
                   return (
                     <Dropdown
-                      onChange={onChange}
-                      value={valueToUse}
+                      onChange={selectedValue => {
+                        setValue('city_of_birth', selectedValue, {shouldValidate: true}); // Manually set the value and trigger validation
+                      }}
+                      value={valueToUse || value}
                       name={name}
                       label="OPŠTINA:"
                       options={cityData}
