@@ -1,9 +1,7 @@
-import React from 'react';
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {TableHead, Typography} from 'client-library';
-import {parseDate} from '../../../utils/dateUtils';
 
-export const judgeResolutionTableHeads: TableHead[] = [
+export const judgeResolutionTableHeads = (judgeInputs: {[key: string]: number}): TableHead[] => [
   {
     title: 'Sudska jedinica',
     accessor: 'organization_unit',
@@ -11,13 +9,16 @@ export const judgeResolutionTableHeads: TableHead[] = [
     renderContents: org => <Typography content={org.title} />,
   },
   {title: 'Odluka o broju predsjednika', accessor: 'available_slots_presidents'},
-  {title: 'Ukupno po odluci', accessor: 'available_slots_judges'},
-  {
-    title: 'Ukupno po odluci',
-    accessor: '',
-    type: 'custom',
-    renderContents: (_, row) => <Typography content={row.available_slots_judges + row.available_slots_presidents} />,
+  {title: 'Odluka o broju sudija', accessor: 'available_slots_judges'},
+{
+  title: 'Ukupno po odluci',
+  accessor: '',
+  type: 'custom',
+  renderContents: (_, row) => {
+    const judges = Number(judgeInputs[row.organization_unit.id]) || Number(row.available_slots_judges);
+    return <Typography content={judges + Number(row.available_slots_presidents)} />;
   },
+},
   {title: 'Broj popunjenih mjesta predsjednika', accessor: 'number_of_presidents'},
   {title: 'Broj popunjenih mjesta sudija', accessor: 'number_of_judges'},
   {

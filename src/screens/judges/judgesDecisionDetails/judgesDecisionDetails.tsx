@@ -9,7 +9,6 @@ import {JudgeResolutionOverview, JudgeResolutionItem} from '../../../types/graph
 import {yearsForDropdown} from '../../../utils/constants';
 import {judgeResolutionTableHeads} from '../judgeNorms/constants';
 import {ScreenProps} from '../../../types/screen-props';
-import {FilterDropdown} from '../../../components/judgesList/styles';
 import useJudgeResolutionsOverview from '../../../services/graphql/judges/useJudgeResolutionOverview';
 import {OrganizationUnit} from '../../../types/graphql/organizationUnitsTypes';
 import {nanoid} from 'nanoid';
@@ -17,7 +16,6 @@ import {DropdownDataString} from '../../../types/dropdownData';
 import useJudgeResolutionsInsert from '../../../services/graphql/judges/useJudgeResolutionInsert';
 import {ScreenWrapper} from '../../../shared/screenWrapper';
 
-// If you start experiencing pain in your brain while looking at this code, talk to Petar.
 
 export interface JudgesNumbersDetailsListProps extends ScreenProps {
   isNew?: boolean;
@@ -32,7 +30,7 @@ interface DecisionForm {
 }
 
 const initialValues = {
-  available_slots_presidents: 0,
+  available_slots_presidents: 1,
   available_slots_judges: 0,
   number_of_judges: 0,
   number_of_presidents: 0,
@@ -43,6 +41,7 @@ const initialValues = {
 
 export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({context, isNew}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(isNew ? false : true);
+  const [judgeInputs, setJudgeInputs] = useState<{[key: string]: number}>({});
   const {organizationUnits} = useOrganizationUnits();
 
   const id = context.navigation.location.pathname.split('/')[4];
@@ -66,6 +65,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
             })?.available_slots_judges
           : '';
       });
+
 
     return {
       id: item?.id ?? 0,
@@ -100,6 +100,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
     reset,
   } = useForm<DecisionForm>({defaultValues: getInitialValues});
 
+
   const judgeNumberTableHead: TableHead = {
     title: 'Odluka o broju sudija',
     accessor: 'available_slots_judges',
@@ -108,9 +109,13 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       <Input
         {...register(`items.${item.organization_unit.id}`, {required: 'Ovo polje je obavezno'})}
         disabled={isDisabled}
+        onChange={(e) => handleInputChange(e, item.organization_unit.id)}
+        //@ts-ignore
+        value={judgeInputs[item.organization_unit.id] || ''}
       />
     ),
   };
+  
 
   const handleSave = (values: DecisionForm, close: boolean) => {
     setIsDisabled(true);
@@ -158,6 +163,14 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
     }
   }, [getInitialValues]);
 
+  const handleInputChange = (event: any, id: any) => {
+    const value = event.target.value;
+    setJudgeInputs(prevState => ({
+      ...prevState,
+      [id]: value,
+    }));
+  };
+
   return (
     <ScreenWrapper context={context}>
       <OverviewBox>
@@ -196,10 +209,11 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
             </Filters>
           }
           tableHeads={[
-            ...judgeResolutionTableHeads.slice(0, 2),
+            ...judgeResolutionTableHeads(judgeInputs).slice(0, 2),
             judgeNumberTableHead,
-            ...judgeResolutionTableHeads.slice(3),
+            ...judgeResolutionTableHeads(judgeInputs).slice(3),
           ]}
+
           data={(list as any) || []}
         />
         <FormFooter>
