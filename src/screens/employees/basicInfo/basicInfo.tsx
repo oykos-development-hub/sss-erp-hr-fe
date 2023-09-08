@@ -129,7 +129,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
               context.navigation.navigate(overviewPathname);
             }
 
-            context.navigate(`/hr/employees/details/${userId}/basic-info`, {state: {scroll: true}});
+            context.navigation.navigate(`/hr/employees/details/${userId}/basic-info`, {state: {scroll: true}});
           },
           () => {
             context.alert.error('Greška. Promjene nisu sačuvane.');
