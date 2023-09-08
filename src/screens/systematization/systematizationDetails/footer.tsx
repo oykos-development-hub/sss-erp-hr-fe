@@ -1,7 +1,6 @@
 import {Button, Switch, Typography} from 'client-library';
 import React from 'react';
 import {Controller, useFormContext} from 'react-hook-form';
-import {parseDate} from '../../../utils/dateUtils';
 import {FooterProps} from '../types';
 import {Activation, DatepickerElement, FooterWrapper} from './styles';
 
@@ -28,7 +27,7 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id =
                 onChange={onChange}
                 label="DATUM USVAJANJA SISTEMATIZACIJE:"
                 name={name}
-                selected={value ? new Date(value) : ''}
+                selected={value}
                 error={errors.date_of_activation?.message as string}
               />
             )}

@@ -1,5 +1,4 @@
 import {yesOrNoOptionsString} from '../../../constants';
-import {parseDate} from '../../../utils/dateUtils';
 
 export const formatData = (data: any) => {
   const isNew = !!data?.id;
@@ -16,7 +15,7 @@ export const formatData = (data: any) => {
     official_personal_document_number: data?.official_personal_document_number,
     housing_description: data?.housing_description,
     middle_name: data?.middle_name,
-    date_of_birth: parseDate(data?.date_of_birth, true),
+    date_of_birth: data?.date_of_birth,
     country_of_birth: data?.country_of_birth?.id,
     city_of_birth: data?.city_of_birth,
     nationality: data?.nationality?.id,
@@ -26,8 +25,8 @@ export const formatData = (data: any) => {
     housing_done: data?.housing_done.id === 'Da' ? true : false,
     revisor_role: data?.revisor_role === 'Da' ? true : false,
     marital_status: data?.marital_status?.id,
-    date_of_taking_oath: parseDate(new Date(), true),
-    // date_of_becoming_judge: parseDate(data?.date_of_becoming_judge, true) || '',
+    date_of_taking_oath: new Date(),
+    // date_of_becoming_judge: data?.date_of_becoming_judge, true) || '',
     national_minority: data?.national_minority?.id,
     official_personal_document_issuer: data?.official_personal_document_issuer?.id,
     role_id: 2,
@@ -37,11 +36,11 @@ export const formatData = (data: any) => {
       organization_unit_department_id: data?.contract.department_id?.id || null,
       job_position_in_organization_unit_id: data?.contract?.job_position_in_organization_unit_id?.id || null,
       contract_type_id: data?.contract?.contract_type_id?.id || null,
-      date_of_end: data?.contract?.date_of_end ? parseDate(data?.contract?.date_of_end, true) : null,
-      date_of_start: parseDate(data?.contract?.date_of_start, true),
+      date_of_end: data?.contract?.date_of_end ? data?.contract?.date_of_end : null,
+      date_of_start: data?.contract?.date_of_start,
       user_profile_id: data?.id,
       active: data?.contract?.active === false ? false : true,
-      date_of_eligibility: parseDate(data?.contract.date_of_eligibility, true),
+      date_of_eligibility: data?.contract.date_of_eligibility,
     },
   };
 

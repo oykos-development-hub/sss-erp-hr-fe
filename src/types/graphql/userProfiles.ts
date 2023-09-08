@@ -39,7 +39,7 @@ export interface UserProfileBasicInfoFormValues {
   id: number;
   first_name: string;
   last_name: string;
-  date_of_birth: string;
+  date_of_birth: Date | null;
   birth_last_name: string;
   country_of_birth: string;
   city_of_birth: string;
@@ -58,7 +58,7 @@ export interface UserProfileBasicInfoFormValues {
   revisor_role: DropdownDataString | null;
   housing_description: string;
   marital_status: DropdownDataString | null;
-  date_of_becoming_judge: string;
+  date_of_becoming_judge: Date | null;
   email: string;
   phone: string;
   national_minority: DropdownDataString | null;
@@ -96,9 +96,9 @@ export interface BasicInfoUserContractValues {
   contract_type_id: DropdownDataNumber | null;
   organization_unit_id: DropdownDataNumber | null;
   department_id: DropdownDataNumber | null;
-  date_of_start: string;
-  date_of_end: string;
-  date_of_eligibility: string;
+  date_of_start: Date | null;
+  date_of_end: Date | null;
+  date_of_eligibility: Date | null;
   file_id: number | null;
   job_position_in_organization_unit_id: DropdownDataNumber | null;
   user_profile_id: DropdownDataNumber | null;

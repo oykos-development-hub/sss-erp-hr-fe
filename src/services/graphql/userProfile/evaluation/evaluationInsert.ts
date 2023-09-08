@@ -1,8 +1,5 @@
 import {GraphQL} from '../..';
-import {
-  UserProfileEvaluation,
-  UserProfileEvaluationFormValues,
-} from '../../../../types/graphql/userProfileGetEvaluations';
+import {UserProfileEvaluationFormValues} from '../../../../types/graphql/userProfileGetEvaluations';
 import {UserProfileInsertEvaluationResponse} from '../../../../types/graphql/userProfileInsertEvaluation';
 
 const evaluationInsert = async (

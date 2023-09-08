@@ -38,8 +38,8 @@ export type UserProfileAbsentsParams = {
   absent_type_id: DropdownDataNumber | null;
   location: string;
   target_organization_unit_id: DropdownDataNumber | null;
-  date_of_start: string;
-  date_of_end: string;
+  date_of_start: Date | null;
+  date_of_end: Date | null;
   description: string;
   file_id: number | null;
 };

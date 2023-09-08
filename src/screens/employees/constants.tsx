@@ -1,4 +1,4 @@
-import {TableHead, Typography} from 'client-library';
+import {TableHead} from 'client-library';
 import {parseDate} from '../../utils/dateUtils';
 
 export const tableHeads: TableHead[] = [

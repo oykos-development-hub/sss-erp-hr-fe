@@ -1,27 +1,27 @@
+import {Divider, ValueType} from '@oykos-development/devkit-react-ts-styled-components';
+import {Button, Dropdown, EditIconTwo, Table, TableHead, Theme, TrashIcon, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
-import {TableHead, Dropdown, Typography, Table, EditIconTwo, TrashIcon, Theme, Button} from 'client-library';
+import {AbsentModal} from '../../../components/absentsModal/absentsModal';
+import useAbsentDelete from '../../../services/graphql/userProfile/absents/useAbsentDelete';
+import useAbsentOverview from '../../../services/graphql/userProfile/absents/useAbsentOverview';
+import useAbsentTypesOverview from '../../../services/graphql/userProfile/absents/useAbsentsType';
+import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {DropdownDataString} from '../../../types/dropdownData';
+import {UserProfileAbsents, UserProfileAbsentsParams} from '../../../types/graphql/profileAbsentsTypes';
+import {MicroserviceProps} from '../../../types/micro-service-props';
+import {parseDate} from '../../../utils/dateUtils';
 import {
   Container,
   Subtitle,
   SuperTitle,
-  Title,
   TableHeader,
+  TableTitle,
+  Title,
   VacationContainer,
   VacationWrapper,
   YearContainer,
   YearWrapper,
-  TableTitle,
 } from './styles';
-import {UserProfileAbsents, UserProfileAbsentsParams} from '../../../types/graphql/profileAbsentsTypes';
-import {Divider, ValueType} from '@oykos-development/devkit-react-ts-styled-components';
-import {AbsentModal} from '../../../components/absentsModal/absentsModal';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
-import {MicroserviceProps} from '../../../types/micro-service-props';
-import {parseDate} from '../../../utils/dateUtils';
-import {DropdownDataString} from '../../../types/dropdownData';
-import useAbsentOverview from '../../../services/graphql/userProfile/absents/useAbsentOverview';
-import useAbsentDelete from '../../../services/graphql/userProfile/absents/useAbsentDelete';
-import useAbsentTypesOverview from '../../../services/graphql/userProfile/absents/useAbsentsType';
 
 const tableHeads: TableHead[] = [
   {

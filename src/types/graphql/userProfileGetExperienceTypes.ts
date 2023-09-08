@@ -1,3 +1,5 @@
+import {DropdownDataString} from '../dropdownData';
+
 export type UserProfileExperience = {
   amount_of_experience: number;
   amount_of_insured_experience: number;
@@ -14,10 +16,19 @@ export type UserProfileExperience = {
   user_profile_id: number;
 };
 
-export interface UserProfileExperienceFormValues
-  extends Omit<UserProfileExperience, 'created_at' | 'updated_at' | 'id'> {
-  id?: number | null;
-}
+export type UserProfileExperienceFormValues = {
+  amount_of_experience: number;
+  amount_of_insured_experience: number;
+  date_of_end: Date | null;
+  date_of_signature: Date | null;
+  date_of_start: Date | null;
+  id: number | null;
+  organization_unit: string;
+  organization_unit_id: number;
+  reference_file_id: number;
+  relevant: DropdownDataString | null;
+  user_profile_id: number;
+};
 
 export interface UserProfileGetExperienceResponse {
   data: {

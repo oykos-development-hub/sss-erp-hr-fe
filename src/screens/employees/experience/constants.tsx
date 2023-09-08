@@ -1,5 +1,5 @@
 import React from 'react';
-import {Typography, TableHead} from 'client-library';
+import {TableHead, Typography} from 'client-library';
 import {parseDate} from '../../../utils/dateUtils';
 
 export const tableHeads: TableHead[] = [

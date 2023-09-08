@@ -21,6 +21,7 @@ import {ScreenWrapper} from '../../../shared/screenWrapper';
 import {usePrompt} from '../../../shared/usePrompt';
 import useJobPositions from '../../../services/graphql/jobPositions/useJobPositionOverview';
 import useUserProfiles from '../../../services/graphql/userProfile/useUserProfiles';
+import {parseToDate} from '../../../utils/dateUtils';
 
 const initialValues = {
   organization_unit: {id: 0, value: ''},
@@ -28,7 +29,7 @@ const initialValues = {
   serial_number: '',
   description: '',
   active: false,
-  date_of_activation: '',
+  date_of_activation: null,
   sectors: [],
   file_id: 0,
 };
@@ -187,7 +188,10 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
 
   useEffect(() => {
     if (systematizationDetails) {
-      methods.reset(systematizationDetails);
+      methods.reset({
+        ...systematizationDetails,
+        date_of_activation: parseToDate(systematizationDetails.date_of_activation),
+      });
       refetchEmployees();
     }
   }, [systematizationDetails]);

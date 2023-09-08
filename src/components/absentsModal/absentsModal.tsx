@@ -1,13 +1,13 @@
-import {Typography, Modal, FileUpload, Dropdown, Datepicker, Input} from 'client-library';
+import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
-import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
-import {parseDate} from '../../utils/dateUtils';
 import {Controller, useForm} from 'react-hook-form';
-import {AbsentType, UserProfileAbsentsParams} from '../../types/graphql/profileAbsentsTypes';
 import {AbsentsModalProps} from '../../screens/employees/absents/types';
 import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
-import {dropdownAbsentsOptions, dropdownOptions, dropdownVacationOptions} from './constants';
 import useAbsentInsert from '../../services/graphql/userProfile/absents/useAbsentInsert';
+import {AbsentType, UserProfileAbsentsParams} from '../../types/graphql/profileAbsentsTypes';
+import {dropdownOptions, dropdownVacationOptions} from './constants';
+import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
+import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 
 const initialValues: UserProfileAbsentsParams = {
   id: null,
@@ -15,8 +15,8 @@ const initialValues: UserProfileAbsentsParams = {
   absent_type_id: null,
   location: '',
   target_organization_unit_id: null,
-  date_of_start: '',
-  date_of_end: '',
+  date_of_start: null,
+  date_of_end: null,
   description: '',
   file_id: null,
 };
@@ -63,8 +63,8 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
       ...values,
       id: values?.id || 0,
       user_profile_id: userProfileId,
-      date_of_start: parseDate(values?.date_of_start, true),
-      date_of_end: parseDate(values?.date_of_end, true),
+      date_of_start: parseDateForBackend(values?.date_of_start),
+      date_of_end: parseDateForBackend(values?.date_of_end),
       absent_type_id: values?.absent_type_id?.id || 0,
       target_organization_unit_id: values?.target_organization_unit_id?.id || 1,
     };
@@ -95,8 +95,8 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
       console.log(selectedItem);
       reset({
         ...selectedItem,
-        date_of_end: new Date(selectedItem.date_of_end),
-        date_of_start: new Date(selectedItem.date_of_start),
+        date_of_end: parseToDate(selectedItem.date_of_end),
+        date_of_start: parseToDate(selectedItem.date_of_start),
       });
       if (selectedItem.id !== 0) {
         if (dropdownVacationOptions.find(option => option.id === selectedItem.absent_type_id.id)) {
@@ -182,7 +182,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
                   onChange={onChange}
                   label="POČETAK TRAJANJA:"
                   name={name}
-                  selected={value ? new Date(value) : ''}
+                  selected={value}
                   error={errors.date_of_start?.message as string}
                 />
               )}
@@ -199,7 +199,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
                   onChange={onChange}
                   label="KRAJ TRAJANJA:"
                   name={name}
-                  selected={value ? new Date(value) : ''}
+                  selected={value}
                   error={errors.date_of_end?.message as string}
                 />
               )}

@@ -1,17 +1,17 @@
+import {Button, Datepicker, Dropdown, Input} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
-import {FormContainer, FormColumn, FormFooter, FormWrapper, FormRow, FormItem, Controls} from './styles';
-import {Input, Dropdown, Button, Datepicker} from 'client-library';
-import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
-import {SalaryParamsPageProps} from './types';
 import {Controller, useForm} from 'react-hook-form';
-import {insuranceBasis, salaryRanks} from './constants';
-import {parseDate} from '../../../utils/dateUtils';
-import useJobPositions from '../../../services/graphql/jobPositions/useJobPositionOverview';
 import {contractTypes, yesOrNoOptionsBoolean, yesOrNoOptionsString} from '../../../constants';
-import {UserProfileGetSalaryParams} from '../../../types/graphql/userProfileGetSalaryParams';
-import {formatData, initialValues} from './utils';
+import useJobPositions from '../../../services/graphql/jobPositions/useJobPositionOverview';
+import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
 import useSalaryParamsOverview from '../../../services/graphql/userProfile/salaryParams/useSalaryParamsOverview';
 import useSalaryParamsInsert from '../../../services/graphql/userProfile/salaryParams/useSalaryParamsinsert';
+import {UserProfileGetSalaryParams} from '../../../types/graphql/userProfileGetSalaryParams';
+import {insuranceBasis, salaryRanks} from './constants';
+import {Controls, FormColumn, FormContainer, FormFooter, FormItem, FormRow, FormWrapper} from './styles';
+import {SalaryParamsPageProps} from './types';
+import {formatData, initialValues} from './utils';
+import {parseToDate} from '../../../utils/dateUtils';
 
 export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -28,6 +28,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
         daily_work_hours: {id: data[0].daily_work_hours, title: data[0].daily_work_hours},
         weekly_work_hours: {id: data[0].weekly_work_hours, title: data[0].weekly_work_hours},
         salary_rank: {id: data[0].salary_rank, title: data[0].salary_rank},
+        created_at: parseToDate(data[0].created_at),
         user_resolution_id: data[0].user_resolution_id ?? {
           id: data[0].user_resolution_id,
           title: data[0].user_resolution_id,
@@ -253,7 +254,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                 render={({field: {name, onChange, value}}) => (
                   <Datepicker
                     name={name}
-                    selected={value ? new Date(value) : ''}
+                    selected={value}
                     onChange={onChange}
                     label="DATUM RJEŠENJA:"
                     disabled={isDisabled}

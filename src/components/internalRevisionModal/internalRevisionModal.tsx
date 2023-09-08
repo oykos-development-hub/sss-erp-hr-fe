@@ -1,24 +1,18 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {FormGroup, ModalForm, ModalSection, ModalSectionTitle, RevisionModal, Row} from './styles';
-import {Dropdown, Input, FileUpload, Datepicker} from 'client-library';
-import {InternalRevisionFormValues, InternalRevisionInsertParams} from '../../screens/internalRevision/types';
-import {Controller, useForm} from 'react-hook-form';
-import {yearsForDropdown} from '../../utils/constants';
 import {FileUploadVariants} from '@oykos-development/devkit-react-ts-styled-components';
-import {parseBackToDate, parseDate} from '../../utils/dateUtils';
-import {
-  quarterOptions,
-  revisionDeadlineOptions,
-  revisionPriorityOptions,
-  revisionStatusOptions,
-  revisionTypeOptions,
-} from '../../constants';
-import {DropdownDataNumber, DropdownDataString} from '../../types/dropdownData';
-import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
+import {Datepicker, Dropdown, FileUpload, Input} from 'client-library';
+import React, {useEffect, useMemo, useState} from 'react';
+import {Controller, useForm} from 'react-hook-form';
+import {quarterOptions, revisionDeadlineOptions, revisionPriorityOptions, revisionStatusOptions} from '../../constants';
+import {InternalRevisionFormValues, InternalRevisionInsertParams} from '../../screens/internalRevision/types';
 import useRevisionDetails from '../../services/graphql/internalRevision/useRevision';
 import useRevisionInsert from '../../services/graphql/internalRevision/useRevisionInsert';
+import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
 import useSettingsDropdownOverview from '../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 import useSuppliersOverview from '../../services/graphql/suppliers/useGetSuppliersOverview';
+import {DropdownDataNumber, DropdownDataString} from '../../types/dropdownData';
+import {yearsForDropdown} from '../../utils/constants';
+import {parseBackToDate, parseDate} from '../../utils/dateUtils';
+import {FormGroup, ModalForm, ModalSection, ModalSectionTitle, RevisionModal, Row} from './styles';
 
 interface InternalRevisionModalProps {
   open: boolean;
@@ -143,16 +137,12 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
       planned_quarter: values.planned_quarter?.id || '',
       state_of_implementation: values.state_of_implementation?.id || '',
       priority: values?.priority?.id,
-      date_of_revision: values?.date_of_revision ? parseDate(values?.date_of_revision, true) : undefined,
-      date_of_acceptance: values?.date_of_acceptance ? parseDate(values?.date_of_acceptance, true) : undefined,
-      date_of_rejection: values?.date_of_rejection ? parseDate(values?.date_of_rejection, true) : undefined,
-      date_of_implementation: values?.date_of_implementation
-        ? parseDate(values?.date_of_implementation, true)
-        : undefined,
+      date_of_revision: values?.date_of_revision ? values?.date_of_revision : undefined,
+      date_of_acceptance: values?.date_of_acceptance ? values?.date_of_acceptance : undefined,
+      date_of_rejection: values?.date_of_rejection ? values?.date_of_rejection : undefined,
+      date_of_implementation: values?.date_of_implementation ? values?.date_of_implementation : undefined,
       implementation_month_span: values?.implementation_month_span?.id || '',
-      second_date_of_revision: values?.second_date_of_revision
-        ? parseDate(values?.second_date_of_revision, true)
-        : undefined,
+      second_date_of_revision: values?.second_date_of_revision ? values?.second_date_of_revision : undefined,
       second_implementation_month_span: values?.second_implementation_month_span?.id || '',
       id: id,
       title: values?.title,

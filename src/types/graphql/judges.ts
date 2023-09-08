@@ -30,6 +30,21 @@ export interface JudgeNormInsertParams {
   evaluation_id?: number;
 }
 
+export type JudgeNormForm = {
+  id: number | null;
+  title: string;
+  user_profile_id: DropdownDataNumber | null;
+  topic: DropdownDataString | null;
+  number_of_norm_decrease: number;
+  number_of_items: number;
+  number_of_items_solved: number;
+  date_of_evaluation: Date | null;
+  date_of_evaluation_validity: Date | null;
+  relocation_id: number;
+  file_id?: number;
+  evaluation_id?: number;
+};
+
 export interface Norms {
   id: number;
   title: string;

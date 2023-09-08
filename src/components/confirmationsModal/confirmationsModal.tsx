@@ -1,19 +1,19 @@
-import {Typography, Modal, FileUpload, Dropdown, Input, Datepicker} from 'client-library';
+import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useState} from 'react';
-import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
-import {ConfirmationsModalProps} from '../../screens/employees/confirmations/types';
-import {parseDate} from '../../utils/dateUtils';
-import {UserProfileResolutionItem} from '../../types/graphql/userProfileGetResolution';
 import {Controller, useForm} from 'react-hook-form';
-import {DropdownDataNumber} from '../../types/dropdownData';
+import {ConfirmationsModalProps} from '../../screens/employees/confirmations/types';
 import useResolutionInsert from '../../services/graphql/userProfile/resolution/useResolutionInsert';
+import {DropdownDataNumber} from '../../types/dropdownData';
+import {UserProfileResolutionForm, UserProfileResolutionItem} from '../../types/graphql/userProfileGetResolution';
+import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
+import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 
-const initialValues: UserProfileResolutionItem = {
+const initialValues: UserProfileResolutionForm = {
   id: 0,
   user_profile_id: 0,
   resolution_purpose: '',
-  date_of_start: '',
-  date_of_end: '',
+  date_of_start: null,
+  date_of_end: null,
   file_id: 0,
   resolution_type: null,
 };
@@ -44,8 +44,8 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
       ...value,
       id: value?.id || 0,
       user_profile_id: Number(userProfileId),
-      date_of_start: parseDate(value?.date_of_start, true) || '',
-      date_of_end: parseDate(value?.date_of_end, true) || '',
+      date_of_start: parseDateForBackend(value?.date_of_start),
+      date_of_end: parseDateForBackend(value?.date_of_end),
       file_id: value?.file_id || 0,
       resolution_purpose: value?.resolution_purpose || '',
       resolution_type_id: value?.resolution_type.id || null,
@@ -55,6 +55,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     delete payload.updated_at;
     delete payload.resolution_type;
     delete payload.user_profile;
+
     saveUserProfileResolution(
       payload,
       () => {
@@ -74,19 +75,17 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     control,
     formState: {errors},
     reset,
-  } = useForm<UserProfileResolutionItem>({
-    defaultValues: selectedItem
-      ? {
-          ...selectedItem,
-          date_of_end: selectedItem?.date_of_end,
-          date_of_start: selectedItem?.date_of_start,
-        }
-      : initialValues,
+  } = useForm<UserProfileResolutionForm>({
+    defaultValues: initialValues,
   });
 
   useEffect(() => {
     if (selectedItem) {
-      reset(selectedItem);
+      reset({
+        ...selectedItem,
+        date_of_end: parseToDate(selectedItem?.date_of_end),
+        date_of_start: parseToDate(selectedItem?.date_of_start),
+      });
     }
   }, [selectedItem]);
 
@@ -128,7 +127,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
                   onChange={onChange}
                   label="DATUM RJEŠENJA/POTVRDE:"
                   name={name}
-                  selected={value ? new Date(value) : ''}
+                  selected={value}
                   error={errors.date_of_start?.message as string}
                 />
               )}
@@ -145,7 +144,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
                   onChange={onChange}
                   label="DATUM ZAVRSETKA RJEŠENJA/POTVRDE:"
                   name={name}
-                  selected={value ? new Date(value) : ''}
+                  selected={value}
                   error={errors.date_of_start?.message as string}
                 />
               )}

@@ -1,13 +1,13 @@
-import {CheckIcon, Datepicker, Dropdown, FileUpload, Input, Modal, Theme, Typography} from 'client-library';
+import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
+import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
 import {UserProfileEducationFormValues} from '../../../types/graphql/userProfileGetEducation';
-import {parseDate} from '../../../utils/dateUtils';
 import {educationTypes, initialValues} from './constants';
 import {FileUploadWrapper, ModalContentWrapper, Row} from './styles';
-import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
-import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import {parseDateForBackend, parseToDate} from '../../../utils/dateUtils';
 
 export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
   selectedItem,
@@ -33,7 +33,8 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
   const {mutate} = useEducationInsert();
 
   useEffect(() => {
-    item && reset(item);
+    item &&
+      reset({...item, date_of_start: parseToDate(item.date_of_start), date_of_end: parseToDate(item.date_of_end)});
   }, [item]);
 
   const onSubmit = async (values: UserProfileEducationFormValues) => {
@@ -42,8 +43,8 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
       title: values.title,
       date_of_certification: '',
       price: Number(values.price),
-      date_of_start: parseDate(values?.date_of_start, true) || '',
-      date_of_end: parseDate(values?.date_of_end, true) || '',
+      date_of_start: parseDateForBackend(values?.date_of_start),
+      date_of_end: parseDateForBackend(values?.date_of_end),
       expertise_level: values?.expertise_level,
       certificate_issuer: values.certificate_issuer,
       description: values.description,
@@ -132,7 +133,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
                   onChange={onChange}
                   label="POČETAK:"
                   name={name}
-                  selected={value ? new Date(value) : ''}
+                  selected={value}
                   error={errors.date_of_start?.message as string}
                 />
               )}
@@ -146,7 +147,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
                   onChange={onChange}
                   label="KRAJ:"
                   name={name}
-                  selected={value ? new Date(value) : ''}
+                  selected={value}
                   error={errors.date_of_end?.message as string}
                 />
               )}

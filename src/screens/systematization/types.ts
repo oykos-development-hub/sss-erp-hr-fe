@@ -1,6 +1,6 @@
 import {ActiveEmployees, SectorType} from '../../types/graphql/systematizationsGetDetailsTypes';
 import {MicroserviceProps} from '../../types/micro-service-props';
-import {JobPosition, SystematizationJobPositions} from '../../types/graphql/jobPositions';
+import {JobPosition} from '../../types/graphql/jobPositions';
 import {UserProfile} from '../../types/graphql/userProfiles';
 
 export interface SystematizationDetailsPageProps {

@@ -108,15 +108,17 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
         context={context}
         loading={loading}
       />
-      <JobTenderModal
-        open={showModal}
-        onClose={handleCloseModal}
-        selectedItem={selectedItem}
-        dropdownJobTenderType={types?.items || []}
-        organizationUnitsList={organizationUnitsList || []}
-        refetch={refetch}
-        alert={alert}
-      />
+      {showModal && (
+        <JobTenderModal
+          open={showModal}
+          onClose={handleCloseModal}
+          selectedItem={selectedItem}
+          dropdownJobTenderType={types?.items || []}
+          organizationUnitsList={organizationUnitsList || []}
+          refetch={refetch}
+          alert={alert}
+        />
+      )}
     </ScreenWrapper>
   );
 };

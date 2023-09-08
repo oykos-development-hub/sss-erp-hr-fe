@@ -1,11 +1,11 @@
+import {Checkbox, Datepicker, Dropdown, Input} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
-import {Input, Dropdown, Datepicker, Checkbox} from 'client-library';
-import {CheckboxContainer, CheckboxLabel, ColumnTitle, Form, FormColumn, FormGroup, PermitModal} from './styles';
-import {ForeignerPermitFormValues, ForeignerPermit} from '../../types/graphql/foreignerPermits';
-import {cityData} from '../../constants';
 import {Controller, useForm} from 'react-hook-form';
-import {parseDate} from '../../utils/dateUtils';
+import {cityData} from '../../constants';
 import useForeignerPermitInsert from '../../services/graphql/foreignerPermits/useForeignerPermitInsert';
+import {ForeignerPermit, ForeignerPermitFormValues} from '../../types/graphql/foreignerPermits';
+import {CheckboxContainer, CheckboxLabel, ColumnTitle, Form, FormColumn, FormGroup, PermitModal} from './styles';
+import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 
 interface PermitEntryModalProps {
   open: boolean;
@@ -22,10 +22,10 @@ const initialValues: ForeignerPermitFormValues = {
   user_profile_id: null,
   work_permit_number: '',
   work_permit_issuer: '',
-  work_permit_date_of_start: '',
-  work_permit_date_of_end: '',
+  work_permit_date_of_start: null,
+  work_permit_date_of_end: null,
   work_permit_indefinite_length: false,
-  residence_permit_date_of_end: '',
+  residence_permit_date_of_end: null,
   residence_permit_indefinite_length: false,
   residence_permit_number: '',
   country_of_origin: '',
@@ -71,6 +71,9 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
         ...permitData,
         country_of_origin: countryOptions.find((country: any) => country.id === permitData.country_of_origin),
         work_permit_issuer: cityData.find((city: any) => city.id === permitData.work_permit_issuer),
+        work_permit_date_of_start: parseToDate(permitData.work_permit_date_of_start),
+        work_permit_date_of_end: parseToDate(permitData.work_permit_date_of_end),
+        residence_permit_date_of_end: parseToDate(permitData.residence_permit_date_of_end),
       };
 
       reset(editData);
@@ -84,9 +87,9 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
       work_permit_issuer: values.work_permit_issuer.id,
       country_of_origin: values.country_of_origin.id,
       user_profile_id: id,
-      work_permit_date_of_start: parseDate(values.work_permit_date_of_start, true),
-      work_permit_date_of_end: parseDate(values.work_permit_date_of_end, true),
-      residence_permit_date_of_end: parseDate(values.residence_permit_date_of_end, true),
+      work_permit_date_of_start: parseDateForBackend(values.work_permit_date_of_start),
+      work_permit_date_of_end: parseDateForBackend(values.work_permit_date_of_end),
+      residence_permit_date_of_end: parseDateForBackend(values.residence_permit_date_of_end),
       residence_permit_file_id: values.residence_permit_file_id || 0,
       work_permit_file_id: values.work_permit_file_id || 0,
     };
@@ -151,7 +154,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                     onChange={onChange}
                     label="VAŽI OD:"
                     name={name}
-                    selected={value ? new Date(value) : ''}
+                    selected={value}
                     error={errors.work_permit_date_of_start?.message as string}
                   />
                 )}
@@ -168,7 +171,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                       onChange={onChange}
                       label="VAŽI DO:"
                       name={name}
-                      selected={value ? new Date(value) : ''}
+                      selected={value}
                       error={errors.work_permit_date_of_end?.message as string}
                       disabled={indefinite}
                     />
@@ -213,7 +216,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                     onChange={onChange}
                     label="VAŽI DO:"
                     name={name}
-                    selected={value ? new Date(value) : ''}
+                    selected={value}
                     error={errors.residence_permit_date_of_end?.message as string}
                   />
                 )}

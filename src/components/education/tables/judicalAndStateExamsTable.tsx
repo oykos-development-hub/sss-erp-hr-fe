@@ -1,15 +1,15 @@
 import {EditIconTwo, PlusIcon, TableHead, Theme, TrashIconTwo, Typography} from 'client-library';
 import React, {useMemo, useState} from 'react';
+import {TableProps} from '../../../screens/employees/education/types';
+import useEducationDelete from '../../../services/graphql/userProfile/education/useEducationDelete';
+import useEducationOverview from '../../../services/graphql/userProfile/education/useEducationOverview';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {DropdownDataNumber} from '../../../types/dropdownData';
 import {UserProfileEducation, UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
+import {parseDate} from '../../../utils/dateUtils';
+import {educationTypes} from '../modals/constants';
 import {JudicalAndStateExamsModal} from '../modals/judicalStateExamsModal';
 import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './styles';
-import {TableProps} from '../../../screens/employees/education/types';
-import useEducationOverview from '../../../services/graphql/userProfile/education/useEducationOverview';
-import useEducationDelete from '../../../services/graphql/userProfile/education/useEducationDelete';
-import {DropdownDataNumber} from '../../../types/dropdownData';
-import {educationTypes} from '../modals/constants';
-import {parseDate} from '../../../utils/dateUtils';
 
 const tableHeads: TableHead[] = [
   {
@@ -17,14 +17,14 @@ const tableHeads: TableHead[] = [
     accessor: 'type',
     sortable: true,
     type: 'custom',
-    renderContents: (item: DropdownDataNumber) => <Typography variant="bodyMedium" content={item.title} />,
+    renderContents: (value: DropdownDataNumber) => <Typography variant="bodyMedium" content={value.title} />,
   },
   {
     title: 'Datum polaganja',
     accessor: 'date_of_certification',
     sortable: true,
     type: 'custom',
-    renderContents: (item: string) => <Typography content={parseDate(item)}></Typography>,
+    renderContents: (value: string) => <Typography content={parseDate(value)}></Typography>,
   },
   {
     title: 'Datoteka',

@@ -6,9 +6,9 @@ import useSystematizationsDelete from '../../services/graphql/systematization/us
 import {DeleteModal} from '../../shared/deleteModal/deleteModal';
 import {ScreenWrapper} from '../../shared/screenWrapper';
 import {ScreenProps} from '../../types/screen-props';
+import {parseDate} from '../../utils/dateUtils';
 import {SystematizationFilters} from './filters/systematizationFilters';
 import {Header} from './styles';
-import {parseDate} from '../../utils/dateUtils';
 
 const tableHeads: TableHead[] = [
   {title: 'Broj sistematizacije', accessor: 'serial_number', type: 'text'},
@@ -39,13 +39,11 @@ const tableHeads: TableHead[] = [
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];
 
-
 export const SystematizationScreen: React.FC<ScreenProps> = ({context}) => {
   const [params, setParams] = useState({page: 1, size: 10, organization_unit_id: 0, active: '', year: '', search: ''});
   const {data, refetch, loading} = useSystematizationOverview(params);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
-  
 
   const {mutate, success, error} = useSystematizationsDelete(() => {
     if (success) {
@@ -120,7 +118,7 @@ export const SystematizationScreen: React.FC<ScreenProps> = ({context}) => {
               name: 'delete',
               onClick: item => handleDeleteIconClick(item.id),
               icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-              shouldRender: (row) => !row.active ? true : false,
+              shouldRender: row => (!row.active ? true : false),
             },
           ]}
         />

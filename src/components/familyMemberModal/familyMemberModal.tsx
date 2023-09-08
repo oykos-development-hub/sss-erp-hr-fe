@@ -1,26 +1,25 @@
-import {Modal, Dropdown, Input, Datepicker} from 'client-library';
-import {FormWrapper, Row} from './styles';
+import {Datepicker, Dropdown, Input, Modal} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
-import {FamilyMemberModalProps} from '../../screens/employees/family/types';
-import {cityData, employeeRelationshipDropdownData} from '../../utils/constants';
-import {formatData} from '../../screens/employees/family/utils';
-import {parseDate} from '../../utils/dateUtils';
 import {Controller, useForm} from 'react-hook-form';
-import {UserProfileFamilyParams} from '../../types/graphql/userProfileGetFamilyTypes';
-import useFamilyInsert from '../../services/graphql/userProfile/family/useFamilyInsert';
 import {nationalMinorities} from '../../constants';
+import {FamilyMemberModalProps} from '../../screens/employees/family/types';
+import {formatData} from '../../screens/employees/family/utils';
+import useFamilyInsert from '../../services/graphql/userProfile/family/useFamilyInsert';
+import {UserProfileFamilyParams} from '../../types/graphql/userProfileGetFamilyTypes';
+import {cityData, employeeRelationshipDropdownData} from '../../utils/constants';
+import {FormWrapper, Row} from './styles';
+import {parseToDate} from '../../utils/dateUtils';
 
 const initialValues: UserProfileFamilyParams = {
   id: 0,
   user_profile_id: 0,
   first_name: '',
   last_name: '',
-  birth_last_name: '',
-  date_of_birth: '',
-  country_of_birth: '',
+  date_of_birth: null,
+  country_of_birth: null,
   city_of_birth: '',
-  nationality: '',
-  citizenship: '',
+  nationality: null,
+  citizenship: null,
   address: '',
   father_name: '',
   mother_name: '',
@@ -42,6 +41,15 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
   alert,
   refetch,
 }) => {
+  const citizenshipArray = useMemo(() => {
+    return countries?.map(country => {
+      return {
+        id: country.alpha_3_code,
+        title: country.nationality,
+      };
+    });
+  }, [countries]);
+
   const item = useMemo(() => {
     return selectedItem
       ? {
@@ -58,8 +66,10 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
           country_of_birth: {id: selectedItem?.country_of_birth, title: selectedItem?.country_of_birth},
           citizenship: {id: selectedItem?.citizenship, title: selectedItem?.citizenship},
           gender: {id: selectedItem?.gender, title: selectedItem?.gender},
-          //To-do Get user_profile_id from props when employee is selected
           user_profile_id: selectedItem?.user_profile_id,
+          date_of_birth: parseToDate(selectedItem?.date_of_birth),
+          national_minority: nationalMinorities?.find(nm => nm.id === selectedItem.national_minority),
+          nationality: citizenshipArray?.find(c => c.title === selectedItem.nationality),
         }
       : {...initialValues, user_profile_id: Number(userProfileId)};
   }, [selectedItem]);
@@ -71,7 +81,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
     watch,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: item || initialValues});
+  } = useForm({defaultValues: initialValues});
 
   const {mutate} = useFamilyInsert();
 
@@ -82,15 +92,6 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
       return {
         id: country.alpha_3_code,
         title: country.en_short_name,
-      };
-    });
-  }, [countries]);
-
-  const citizenshipArray = useMemo(() => {
-    return countries?.map(country => {
-      return {
-        id: country.alpha_3_code,
-        title: country.nationality,
       };
     });
   }, [countries]);
@@ -253,7 +254,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     onChange={onChange}
                     value={value as any}
                     name={name}
-                    label="NACIONALNA MANJINJA:"
+                    label="NACIONALNA MANJINA:"
                     options={nationalMinorities || []}
                   />
                 );
@@ -276,7 +277,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                   return (
                     <Dropdown
                       onChange={onChange}
-                      value={valueToUse || value}
+                      value={valueToUse}
                       name={name}
                       label="OPŠTINA:"
                       options={cityData}

@@ -1,10 +1,18 @@
-import {CheckIcon, Datepicker, Dropdown, Input, Modal, Theme, Typography} from 'client-library';
+import {Datepicker, Dropdown, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import {
+  applicationStatusOptions,
+  applicationTypeOptions,
+  evaluationTypeOptions,
+} from '../../screens/jobTenders/constants';
+import useJobTenderApplicationsInsert from '../../services/graphql/jobTenders/useJobTenderApplicationInsert';
+import useBasicInfoGet from '../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
 import useUserProfiles from '../../services/graphql/userProfile/useUserProfiles';
 import {DropdownDataNumber, DropdownDataString} from '../../types/dropdownData';
+import {JobTenderApplication, JobTenderApplicationInsertParams} from '../../types/graphql/jobTenders';
 import {UserProfile} from '../../types/graphql/userProfiles';
-import {parseDate} from '../../utils/dateUtils';
+import {ScreenProps} from '../../types/screen-props';
 import {
   ConfirmModalContent,
   ModalContentWrapper,
@@ -12,15 +20,7 @@ import {
   RowFullWidth,
   TriangleIcon,
 } from '../JobTenderApplicationModal/styles';
-import {JobTenderApplication, JobTenderApplicationInsertParams} from '../../types/graphql/jobTenders';
-import {
-  applicationStatusOptions,
-  applicationTypeOptions,
-  evaluationTypeOptions,
-} from '../../screens/jobTenders/constants';
-import useJobTenderApplicationsInsert from '../../services/graphql/jobTenders/useJobTenderApplicationInsert';
-import {ScreenProps} from '../../types/screen-props';
-import useBasicInfoGet from '../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
+import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {MicroserviceProps} from '../../types/micro-service-props';
 
 interface JobTenderApplicationForm {
@@ -33,10 +33,10 @@ interface JobTenderApplicationForm {
   first_name: string;
   last_name: string;
   official_personal_id: string;
-  date_of_birth: string;
+  date_of_birth: Date | null;
   citizenship: DropdownDataString | null;
   evaluation: DropdownDataString | null;
-  date_of_application: string;
+  date_of_application: Date | null;
 }
 
 const initialValues: JobTenderApplicationForm = {
@@ -49,10 +49,10 @@ const initialValues: JobTenderApplicationForm = {
   first_name: '',
   last_name: '',
   official_personal_id: '',
-  date_of_birth: '',
+  date_of_birth: null,
   citizenship: null,
   evaluation: null,
-  date_of_application: '',
+  date_of_application: null,
 };
 
 export interface JobTenderApplicationModalModalProps extends ScreenProps {
@@ -102,6 +102,8 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
     return selectedItem
       ? {
           ...selectedItem,
+          date_of_application: parseToDate(selectedItem?.date_of_application),
+          date_of_birth: parseToDate(selectedItem?.date_of_birth),
           status: selectedItem?.status ? applicationStatusOptions.find(st => st.title === selectedItem?.status) : null,
           type: selectedItem?.type ? applicationTypeOptions.find(st => st.id === selectedItem?.type) : null,
           evaluation: selectedItem?.evaluation
@@ -156,7 +158,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   const onSubmit = (values: any) => {
     const data: JobTenderApplicationInsertParams = {
       type: applicationType.id,
-      date_of_application: values?.date_of_application,
+      date_of_application: parseDateForBackend(values?.date_of_application),
       status: values?.status?.title,
       job_tender_id: jobTenderId,
       active: true,
@@ -168,7 +170,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
       data.first_name = first_name;
       data.last_name = last_name;
       data.citizenship = values?.citizenship?.title;
-      data.date_of_birth = values?.date_of_birth;
+      data.date_of_birth = parseDateForBackend(values?.date_of_birth);
       data.official_personal_id = values?.official_personal_id;
     } else {
       data.user_profile_id = values?.user_profile?.id;
@@ -228,7 +230,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
         first_name: userData.first_name,
         last_name: userData.last_name,
         official_personal_id: userData.official_personal_id,
-        date_of_birth: parseDate(userData.date_of_birth, true),
+        date_of_birth: parseToDate(userData.date_of_birth),
         citizenship: citizenshipArray?.find(c => (c.id = userData.citizenship)) || null,
         user_profile: {id: userData.id, title: `${userData.first_name} ${userData.last_name}`},
       });
@@ -304,7 +306,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                     onChange={onChange}
                     label="DATUM ROĐENJA:"
                     name={name}
-                    selected={value ? new Date(value) : ''}
+                    selected={value}
                     error={errors.date_of_birth?.message as string}
                     disabled={applicationType.id === 'internal'}
                   />
@@ -362,7 +364,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                     onChange={onChange}
                     label="DATUM PRIJAVE:"
                     name={name}
-                    selected={value ? new Date(value) : ''}
+                    selected={value}
                     error={errors.date_of_application?.message as string}
                   />
                 )}

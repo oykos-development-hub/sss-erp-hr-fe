@@ -1,18 +1,18 @@
+import {Datepicker, Dropdown, FileUpload, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
-import {Typography, Modal, FileUpload, Dropdown, Datepicker} from 'client-library';
-import {FileUploadWrapper, FormWrapper, Row} from './styles';
 import {Controller, useForm} from 'react-hook-form';
-import {EvaluationModalProps} from '../../screens/employees/evaluations/types';
 import {yesOrNoOptionsString} from '../../constants';
+import {EvaluationModalProps} from '../../screens/employees/evaluations/types';
 import useEvaluationInsert from '../../services/graphql/userProfile/evaluation/useEvaluationInsert';
-import {UserProfileEvaluationFormValues} from '../../types/graphql/userProfileGetEvaluations';
-import {parseDate} from '../../utils/dateUtils';
 import {DropdownDataNumber} from '../../types/dropdownData';
+import {UserProfileEvaluation, UserProfileEvaluationFormValues} from '../../types/graphql/userProfileGetEvaluations';
+import {FileUploadWrapper, FormWrapper, Row} from './styles';
+import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 
 const initialValues: UserProfileEvaluationFormValues = {
   id: 0,
   user_profile_id: 0,
-  date_of_evaluation: '',
+  date_of_evaluation: null,
   score: '',
   evaluator: '',
   is_relevant: false,
@@ -30,12 +30,13 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
   evaluationTypes,
 }) => {
   const [evaluationTypesOption, setEvaluationTypesOption] = useState<DropdownDataNumber[]>([]);
+
   const item = useMemo(() => {
     return selectedItem
       ? {
           ...selectedItem,
           is_relevant: {id: selectedItem?.is_relevant ? 'Da' : 'Ne', title: selectedItem?.is_relevant ? 'Da' : 'Ne'},
-          date_of_evaluation: new Date(selectedItem?.date_of_evaluation),
+          date_of_evaluation: parseToDate(selectedItem?.date_of_evaluation),
           score: {id: selectedItem?.evaluation_type.id, title: selectedItem?.evaluation_type.title},
           user_profile_id: Number(userProfileId),
         }
@@ -65,11 +66,11 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
   const {mutate} = useEvaluationInsert();
 
   const onSubmit = async (data: any) => {
-    const payload: UserProfileEvaluationFormValues = {
+    const payload: any = {
       user_profile_id: data?.user_profile_id,
       score: data?.score.title,
       is_relevant: data?.is_relevant?.id === 'Da' ? true : false,
-      date_of_evaluation: parseDate(data?.date_of_evaluation, true),
+      date_of_evaluation: parseDateForBackend(data?.date_of_evaluation),
       file_id: data?.file_id,
       evaluation_type_id: data?.score.id,
       evaluator: '',

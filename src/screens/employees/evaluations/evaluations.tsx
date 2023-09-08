@@ -8,10 +8,16 @@ import {EvaluationModal} from '../../../components/evaluationModal/evaluationMod
 import useEvaluationOverview from '../../../services/graphql/userProfile/evaluation/useEvaluationOverview';
 import useEvaluationDelete from '../../../services/graphql/userProfile/evaluation/useEvaluationDelete';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import {parseDate} from '../../../utils/dateUtils';
 
 const tableHeads: TableHead[] = [
   {title: 'Br.', accessor: 'id', type: 'text'},
-  {title: 'Godina', accessor: 'date_of_evaluation', type: 'text'},
+  {
+    title: 'Godina',
+    accessor: 'date_of_evaluation',
+    type: 'custom',
+    renderContents: (date: any) => <Typography variant="bodyMedium" content={parseDate(date)} />,
+  },
   {title: 'Ocjena', accessor: 'score', type: 'text'},
   {
     title: 'Pravosnažnost',

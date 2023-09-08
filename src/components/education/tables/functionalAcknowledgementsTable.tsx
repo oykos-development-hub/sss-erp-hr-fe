@@ -1,15 +1,15 @@
 import {EditIconTwo, PlusIcon, TableHead, Theme, TrashIconTwo, Typography} from 'client-library';
 import React, {useMemo, useState} from 'react';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
-import {FunctionalAcknowledgmentModal} from '../modals/functionalAcknowledgmentsModal';
-import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './styles';
 import {TableProps} from '../../../screens/employees/education/types';
-import useEducationOverview from '../../../services/graphql/userProfile/education/useEducationOverview';
 import useEducationDelete from '../../../services/graphql/userProfile/education/useEducationDelete';
+import useEducationOverview from '../../../services/graphql/userProfile/education/useEducationOverview';
+import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {UserProfileEducation, UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
-import {educationTypes} from '../modals/constants';
 import {parseDate} from '../../../utils/dateUtils';
+import {educationTypes} from '../modals/constants';
+import {FunctionalAcknowledgmentModal} from '../modals/functionalAcknowledgmentsModal';
+import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './styles';
 
 const tableHeads: TableHead[] = [
   {

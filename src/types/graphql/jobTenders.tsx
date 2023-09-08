@@ -1,4 +1,5 @@
 import {ModalProps} from '../../screens/employees/education/types';
+import {DropdownDataNumber} from '../dropdownData';
 import {OrganizationUnit} from './organizationUnitsTypes';
 
 import {JobTenderType} from './useJobTendersTypes';
@@ -36,6 +37,17 @@ export interface JobTenderParams {
   file_id: number;
 }
 
+export type JobTenderForm = {
+  id: number | null;
+  organization_unit_id: DropdownDataNumber | null;
+  type?: any;
+  description: string;
+  serial_number: string;
+  date_of_start: Date | null;
+  date_of_end: Date | null;
+  file_id: number;
+};
+
 export interface JobTendersModal extends ModalProps {
   dropdownJobTenderType: JobTenderType[];
   organizationUnitsList: OrganizationUnit[];
@@ -53,8 +65,9 @@ export interface JobTenderApplication {
   first_name?: string;
   last_name?: string;
   official_personal_id?: string;
-  date_of_birth?: string;
+  date_of_birth: string;
   citizenship?: string;
+  nationality?: string;
   evaluation?: string;
   date_of_application: string;
   created_at?: string;
@@ -63,10 +76,11 @@ export interface JobTenderApplication {
 }
 
 export interface JobTenderApplicationInsertParams
-  extends Omit<JobTenderApplication, 'job_tender' | 'user_profile' | 'create_at' | 'updated_at'> {
+  extends Omit<JobTenderApplication, 'job_tender' | 'user_profile' | 'create_at' | 'updated_at' | 'date_of_birth'> {
   job_tender_id?: number;
   user_profile_id?: number;
   active?: boolean;
+  date_of_birth?: string;
 }
 
 export interface JobTenderApplicationsParams {

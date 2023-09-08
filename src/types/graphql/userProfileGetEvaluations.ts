@@ -12,8 +12,6 @@ export type UserProfileEvaluation = {
   score: string;
   evaluator: string;
   is_relevant: boolean;
-  created_at: string;
-  updated_at: string;
   file_id: number;
 };
 
@@ -21,7 +19,7 @@ export interface UserProfileEvaluationFormValues {
   id?: number | null;
   user_profile_id: number;
   evaluation_type_id: number;
-  date_of_evaluation: string;
+  date_of_evaluation: Date | null;
   score: string;
   evaluator?: string;
   is_relevant: boolean;

@@ -1,13 +1,13 @@
-import {CheckIcon, Datepicker, Dropdown, FileUpload, Modal, Theme, Typography} from 'client-library';
+import {Datepicker, Dropdown, FileUpload, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
-import {parseDate} from '../../../utils/dateUtils';
+import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
+import {UserProfileEducationFormValues} from '../../../types/graphql/userProfileGetEducation';
 import {educationTypes, initialValues} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
-import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
-import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
-import {UserProfileEducationFormValues} from '../../../types/graphql/userProfileGetEducation';
+import {parseDateForBackend, parseToDate} from '../../../utils/dateUtils';
 
 export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   selectedItem,
@@ -39,19 +39,19 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
     control,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: item});
+  } = useForm({defaultValues: initialValues});
 
   const {mutate} = useEducationInsert();
 
   useEffect(() => {
-    item && reset(item);
+    item && reset({...item, date_of_certification: parseToDate(item.date_of_certification)});
   }, [item]);
 
   const onSubmit = async (values: UserProfileEducationFormValues) => {
     const data = {
       id: values.id,
       title: values.title,
-      date_of_certification: parseDate(values.date_of_certification, true) || '',
+      date_of_certification: parseDateForBackend(values.date_of_certification),
       price: values.price,
       date_of_start: '',
       date_of_end: '',
@@ -123,7 +123,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
                   onChange={onChange}
                   label="DATUM POLAGANJA:"
                   name={name}
-                  selected={value ? new Date(value) : ''}
+                  selected={value}
                   error={errors.date_of_certification?.message as string}
                 />
               )}

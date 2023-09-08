@@ -10,6 +10,18 @@ export type UserProfileResolutionItem = {
   resolution_type: ResolutionType | null;
 };
 
+export type UserProfileResolutionForm = {
+  id: number;
+  user_profile_id?: number;
+  resolution_purpose: string;
+  date_of_start: Date | null;
+  date_of_end?: Date | null;
+  created_at?: string;
+  updated_at?: string;
+  file_id: number;
+  resolution_type: ResolutionType | null;
+};
+
 export type UserProfileResolutionParams = {
   id: number;
   user_profile_id?: number;

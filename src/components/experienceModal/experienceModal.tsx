@@ -1,23 +1,23 @@
-import {Typography, Modal, Input, Datepicker, FileUpload, Dropdown} from 'client-library';
-import {FileUploadWrapper, FormWrapper, Row} from './styles';
-import {ExperienceModalProps} from '../../screens/employees/experience/types';
+import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
-import {parseDate} from '../../utils/dateUtils';
-import {formatData} from '../../screens/employees/experience/utils';
-import {UserProfileExperienceFormValues} from '../../types/graphql/userProfileGetExperienceTypes';
 import {Controller, useForm} from 'react-hook-form';
 import {yesOrNoOptionsString} from '../../constants';
+import {ExperienceModalProps} from '../../screens/employees/experience/types';
+import {formatData} from '../../screens/employees/experience/utils';
 import useExperienceInsert from '../../services/graphql/userProfile/experience/useExperienceInsert';
+import {UserProfileExperienceFormValues} from '../../types/graphql/userProfileGetExperienceTypes';
+import {FileUploadWrapper, FormWrapper, Row} from './styles';
+import {parseToDate} from '../../utils/dateUtils';
 
 const initialValues: UserProfileExperienceFormValues = {
   id: null,
   user_profile_id: 0,
-  relevant: false,
+  relevant: null,
   amount_of_experience: 0,
   amount_of_insured_experience: 0,
-  date_of_end: '',
-  date_of_signature: '',
-  date_of_start: '',
+  date_of_end: null,
+  date_of_signature: null,
+  date_of_start: null,
   organization_unit: '',
   organization_unit_id: 0,
   reference_file_id: 0,
@@ -37,10 +37,12 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
       ? {
           ...selectedItem,
           relevant: {id: selectedItem?.relevant ? 'Da' : 'Ne', title: selectedItem?.relevant ? 'Da' : 'Ne'},
-          selectedOrganizationUnit: {
+          organization_unit_id: {
             id: selectedItem?.relevant ? selectedItem?.organization_unit_id : 0,
             title: selectedItem?.relevant ? selectedItem?.organization_unit : '',
           },
+          date_of_start: parseToDate(selectedItem?.date_of_start),
+          date_of_end: parseToDate(selectedItem?.date_of_end),
         }
       : {...initialValues, user_profile_id: Number(userProfileId)};
   }, [selectedItem]);
@@ -52,11 +54,12 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     watch,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: item || initialValues});
+  } = useForm({defaultValues: initialValues});
 
   const {mutate} = useExperienceInsert();
 
   const relevant = watch('relevant');
+  const dateOfStart = watch('date_of_start');
 
   useEffect(() => {
     if (item) {
@@ -125,7 +128,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
                   onChange={onChange}
                   label="POČETAK RADNOG ODNOSA:"
                   name={name}
-                  selected={value ? new Date(value) : ''}
+                  selected={value}
                   error={errors.date_of_start?.message as string}
                 />
               )}
@@ -133,9 +136,9 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
           </Row>
           <Row>
             <Controller
-              name="selectedOrganizationUnit"
+              name="organization_unit_id"
               rules={{
-                required: {value: relevant === true || relevant?.title === 'Da', message: 'Ovo polje je obavezno'},
+                required: {value: relevant?.title === 'Da', message: 'Ovo polje je obavezno'},
               }}
               control={control}
               render={({field: {onChange, name, value}}) => {
@@ -146,8 +149,8 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
                     name={name}
                     label="JEDINICA:"
                     options={units}
-                    isDisabled={relevant === false || relevant?.title === 'Ne'}
-                    error={errors.selectedOrganizationUnit?.message as string}
+                    isDisabled={relevant?.title === 'Ne'}
+                    error={errors.organization_unit_id?.message as string}
                   />
                 );
               }}
@@ -158,7 +161,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
               rules={{
                 required: 'Ovo polje je obavezno',
                 validate: value =>
-                  !value || !watch('date_of_start') || new Date(value) >= new Date(watch('date_of_start'))
+                  !value || !watch('date_of_start') || (dateOfStart && new Date(value) >= dateOfStart)
                     ? true
                     : 'Kraj radnog odnosa ne može biti prije početka radnog odnosa.',
               }}
@@ -167,7 +170,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
                   onChange={onChange}
                   label="KRAJ RADNOG ODNOSA:"
                   name={name}
-                  selected={value ? new Date(value) : ''}
+                  selected={value}
                   error={errors.date_of_end?.message as string}
                 />
               )}
@@ -176,11 +179,11 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
           <Row>
             <Input
               {...register('organization_unit', {
-                required: {value: relevant === false || relevant?.title === 'Ne', message: 'Ovo polje je obavezno'},
+                required: {value: relevant?.title === 'Ne', message: 'Ovo polje je obavezno'},
               })}
               label="ORGANIZACIJA/INSTITUCIJA:"
               error={errors.organization_unit?.message as string}
-              disabled={relevant === true || relevant?.title === 'Da'}
+              disabled={relevant?.title === 'Da'}
             />
             <Input
               {...register('amount_of_insured_experience', {required: 'Ovo polje je obavezno'})}

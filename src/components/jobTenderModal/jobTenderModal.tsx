@@ -1,16 +1,16 @@
-import {CheckIcon, Datepicker, Dropdown, FileUpload, Input, Modal, Theme, Typography} from 'client-library';
+import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import useJobTenderInsert from '../../services/graphql/jobTenders/useJobTenderInsert';
-import {JobTenderParams, JobTendersModal} from '../../types/graphql/jobTenders';
-import {parseDate} from '../../utils/dateUtils';
+import {JobTenderForm, JobTenderParams, JobTendersModal} from '../../types/graphql/jobTenders';
 import {FileUploadWrapper, ModalContentWrapper, Row} from '../education/modals/styles';
+import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 
-const initialValues: JobTenderParams = {
+const initialValues: JobTenderForm = {
   id: 0,
-  organization_unit_id: 0,
-  date_of_start: '',
-  date_of_end: '' || null,
+  organization_unit_id: null,
+  date_of_start: null,
+  date_of_end: null,
   serial_number: '',
   type: undefined,
   description: '',
@@ -30,7 +30,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
     return selectedItem
       ? {
           ...selectedItem,
-          type_tender: selectedItem.type,
+          type: selectedItem.type,
         }
       : initialValues;
   }, [selectedItem]);
@@ -41,13 +41,18 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
     control,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: item || initialValues});
+  } = useForm({defaultValues: initialValues});
 
   const {mutate} = useJobTenderInsert();
 
   useEffect(() => {
     if (item) {
-      reset(item);
+      reset({
+        ...item,
+        date_of_end: parseToDate(item.date_of_end),
+        date_of_start: parseToDate(item.date_of_start),
+        organization_unit_id: organizationUnitsList.find(org => org.id === item.organization_unit.id),
+      });
     }
   }, [item]);
 
@@ -60,8 +65,8 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
           type: values?.type?.id,
           description: '',
           serial_number: values.serial_number,
-          date_of_start: parseDate(values?.date_of_start, true),
-          date_of_end: values?.date_of_end ? parseDate(values?.date_of_end, true) : null,
+          date_of_start: parseDateForBackend(values?.date_of_start),
+          date_of_end: parseDateForBackend(values?.date_of_end),
           file_id: values.file_id,
         },
         () => {
@@ -103,13 +108,13 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
                   options={dropdownJobTenderType as any}
                   value={value as any}
                   onChange={onChange}
-                  error={errors.expertise_level?.message as string}
+                  error={errors.type?.message as string}
                 />
               )}
             />
 
             <Controller
-              name="organization_unit"
+              name="organization_unit_id"
               rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
@@ -119,7 +124,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
                   options={organizationUnitsList.slice(1) as any}
                   value={value as any}
                   onChange={onChange}
-                  error={errors.organization_unit?.message as string}
+                  error={errors.organization_unit_id?.message as string}
                 />
               )}
             />
@@ -157,7 +162,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
             <Input
               {...register('serial_number', {required: 'Ovo polje je obavezno'})}
               label="BROJ OGLASA:"
-              error={errors.certificate_issuer?.message as string}
+              error={errors.serial_number?.message as string}
             />
           </Row>
           <FileUploadWrapper>

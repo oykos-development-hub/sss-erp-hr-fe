@@ -1,13 +1,13 @@
-import {Typography, Button, Table, TableHead, EditIconTwo, TrashIcon, Theme, Dropdown} from 'client-library';
-import {Container, TableHeader, YearWrapper} from './styles';
+import {Button, Dropdown, EditIconTwo, Table, TableHead, Theme, TrashIcon, Typography} from 'client-library';
 import React, {ReactNode, useMemo, useState} from 'react';
 import {ConfirmationsModal} from '../../../components/confirmationsModal/confirmationsModal';
-import {UserProfileResolutionItem} from '../../../types/graphql/userProfileGetResolution';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
-import {MicroserviceProps} from '../../../types/micro-service-props';
-import useResolutionOverview from '../../../services/graphql/userProfile/resolution/useResolutionOverview';
 import useResolutionDelete from '../../../services/graphql/userProfile/resolution/useResolutionDelete';
+import useResolutionOverview from '../../../services/graphql/userProfile/resolution/useResolutionOverview';
+import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {UserProfileResolutionItem} from '../../../types/graphql/userProfileGetResolution';
+import {MicroserviceProps} from '../../../types/micro-service-props';
 import {parseDate} from '../../../utils/dateUtils';
+import {Container, TableHeader, YearWrapper} from './styles';
 
 interface ValueType {
   id: number | string;

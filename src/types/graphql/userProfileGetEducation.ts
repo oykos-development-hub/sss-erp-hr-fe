@@ -21,11 +21,11 @@ export interface UserProfileEducationFormValues {
   id: number;
   user_profile_id: number;
   type: DropdownDataNumber | null;
-  date_of_certification: string;
+  date_of_certification: Date | null;
   price: number;
   title: string;
-  date_of_start: string;
-  date_of_end: string;
+  date_of_start: Date | null;
+  date_of_end: Date | null;
   academic_title: DropdownDataString | null;
   expertise_level: '';
   certificate_issuer: string;

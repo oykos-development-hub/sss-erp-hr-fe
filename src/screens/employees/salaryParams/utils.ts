@@ -1,4 +1,5 @@
 import {UserProfileGetSalaryParams} from '../../../types/graphql/userProfileGetSalaryParams';
+import {parseDateForBackend} from '../../../utils/dateUtils';
 
 export const formatData = (data: any) => {
   const payload = {
@@ -11,6 +12,7 @@ export const formatData = (data: any) => {
     weekly_work_hours: data?.weekly_work_hours.id,
     salary_rank: data?.salary_rank.id,
     user_resolution_id: data?.user_resolution_id?.id,
+    created_at: parseDateForBackend(data?.created_at),
   };
 
   delete payload.updated_at;

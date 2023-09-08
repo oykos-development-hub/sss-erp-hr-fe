@@ -1,4 +1,4 @@
-import {parseDate} from '../../utils/dateUtils';
+import {parseDateForBackend} from '../../utils/dateUtils';
 
 export const formatDataSaveSystematization = (data: any) => {
   const payload = {
@@ -6,7 +6,7 @@ export const formatDataSaveSystematization = (data: any) => {
     id: data?.id || 0,
     user_profile_id: data?.user_profile_id || 1,
     organization_unit_id: data?.organization_unit?.id,
-    date_of_activation: data?.date_of_activation ? parseDate(data?.date_of_activation, true) : '',
+    date_of_activation: parseDateForBackend(data?.date_of_activation),
     file_id: data?.file_id || 0,
   };
 

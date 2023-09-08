@@ -17,7 +17,6 @@ import useBasicInfoInsert from '../../../services/graphql/userProfile/basicInfo/
 import useBasicInfoUpdate from '../../../services/graphql/userProfile/basicInfo/useBasicInfoUpdate';
 import {DropdownDataString} from '../../../types/dropdownData';
 import {UserProfileBasicInfoFormValues} from '../../../types/graphql/userProfiles';
-import {parseDate} from '../../../utils/dateUtils';
 import {initialValues} from './constants';
 import {
   Controls,
@@ -32,6 +31,7 @@ import {
 } from './styles';
 import {BasicInfoPageProps} from './types';
 import {booleanToYesOrNo, formatData} from './utils';
+import {parseToDate} from '../../../utils/dateUtils';
 
 const contractPositions = ['Ugovor na neodređeno vrijeme', 'Ugovor na određeno vrijeme'];
 
@@ -83,8 +83,10 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
     });
   }, [context.countries]);
 
-  const validateDateOfEnd = (value: string) =>
-    !value || !watch('contract.date_of_start') || new Date(value) >= new Date(watch('contract.date_of_start'))
+  const contractStart = watch('contract.date_of_start');
+
+  const validateDateOfEnd = (date: Date | null) =>
+    !date || !contractStart || (contractStart && date >= contractStart)
       ? true
       : 'Kraj radnog odnosa ne može biti prije početka radnog odnosa.';
 
@@ -169,8 +171,8 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
         ...profileData,
         nationality: countryOptions.find((opt: DropdownDataString) => opt.id === profileData.nationality),
         citizenship: countryOptions.find((opt: DropdownDataString) => opt.id === profileData.citizenship),
-        date_of_birth: parseDate(profileData?.date_of_birth, true),
-        date_of_becoming_judge: parseDate(profileData?.date_of_becoming_judge) || '',
+        date_of_birth: parseToDate(profileData?.date_of_birth),
+        date_of_becoming_judge: parseToDate(profileData?.date_of_becoming_judge),
         marital_status: maritalOptions.find(opt => opt.id === profileData?.marital_status),
         country_of_birth: countryOptions.find((opt: DropdownDataString) => opt.id === profileData?.country_of_birth),
         city_of_birth: profileData?.city_of_birth,
@@ -189,9 +191,9 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
           department_id: profileData?.contract?.department,
           job_position_in_organization_unit_id: profileData?.contract?.job_position_in_organization_unit,
           contract_type_id: profileData?.contract?.contract_type,
-          date_of_end: profileData?.contract?.date_of_end,
-          date_of_start: profileData?.contract?.date_of_start,
-          date_of_eligibility: profileData?.contract?.date_of_eligibility,
+          date_of_end: parseToDate(profileData?.contract?.date_of_end),
+          date_of_start: parseToDate(profileData?.contract?.date_of_start),
+          date_of_eligibility: parseToDate(profileData?.contract?.date_of_eligibility),
           user_profile_id: profileData?.contract?.user_profile,
           active: profileData?.contract?.active,
         },
@@ -208,6 +210,8 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
       ...context.navigation.location.state.user,
     });
   }, [context.navigation.location.state]);
+
+  // console.log(watch('date_of_birth'));
 
   return (
     <FormContainer>

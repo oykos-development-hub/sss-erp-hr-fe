@@ -1,7 +1,7 @@
 import React from 'react';
 import {TableHead, Typography} from 'client-library';
-import {DropdownItemType} from '../../types/graphql/jobTenders';
 import {DropdownDataString} from '../../types/dropdownData';
+import {DropdownItemType} from '../../types/graphql/jobTenders';
 import {parseDate} from '../../utils/dateUtils';
 
 export const tableHeads: TableHead[] = [

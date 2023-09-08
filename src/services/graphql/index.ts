@@ -1,5 +1,4 @@
 import {getEnvironment} from '../get-environment';
-import employees from './userProfile/userProfileOverview';
 import organizationUnits from './organizationUnits/organizationUnitOverview';
 import foreignerPermitDelete from './foreignerPermits/foreignerPermitDelete';
 import foreignerPermitInsert from './foreignerPermits/foreignerPermitInsert';

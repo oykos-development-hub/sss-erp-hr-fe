@@ -21,10 +21,10 @@ export interface ForeignerPermitFormValues {
   user_profile_id: number | null;
   work_permit_number: string;
   work_permit_issuer: DropdownDataString | string;
-  work_permit_date_of_start: string;
-  work_permit_date_of_end: string;
+  work_permit_date_of_start: Date | null;
+  work_permit_date_of_end: Date | null;
   work_permit_indefinite_length: boolean;
-  residence_permit_date_of_end: string;
+  residence_permit_date_of_end: Date | null;
   residence_permit_indefinite_length: boolean;
   residence_permit_number: string;
   country_of_origin: DropdownDataString | string;
