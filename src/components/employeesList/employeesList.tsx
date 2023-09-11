@@ -56,15 +56,16 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
       : [];
   }, [organizationUnits]);
 
-  const list = useMemo(
-    () =>
-      data?.items?.map((item: UserProfile) => ({
+  const list = useMemo(() => {
+    if (data.items) {
+      return data?.items?.map((item: UserProfile) => ({
         full_name: `${item.first_name} ${item.last_name}`,
         ...item,
         active: item.active ? 'Aktivan' : 'Neaktivan',
-      })),
-    [data],
-  );
+      }));
+    }
+    return [];
+  }, [data]);
 
   const jobPositionOptions = useMemo(() => {
     return [
@@ -140,7 +141,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
       </Header>
       <Table
         tableHeads={tableHeads}
-        data={list}
+        data={list || []}
         style={{marginBottom: 22}}
         isLoading={loading}
         onRowClick={row => {
