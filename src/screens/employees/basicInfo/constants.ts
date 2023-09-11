@@ -20,7 +20,7 @@ export const initialValues: UserProfileBasicInfoFormValues = {
   gender: null,
   single_parent: null,
   housing_done: null,
-  revisor_role: null,
+  revisor_role: false,
   housing_description: '',
   marital_status: null,
   date_of_becoming_judge: null,
