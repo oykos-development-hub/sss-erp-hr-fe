@@ -12,14 +12,14 @@ import useJobTendersTypesSearch from '../../services/graphql/jobPositions/useJob
 import useJobPositionsOrganizationUnit from '../../services/graphql/jobPositions/useJobPositionsOrganizationUnit';
 
 export interface JobTendersListFilters {
-  active?: DropdownDataBoolean | null;
+  active?: {id: boolean | null; title: string};
   organization_unit_id?: DropdownDataNumber | null;
   job_position_id?: DropdownDataNumber | null;
   type_id?: DropdownDataNumber | null;
 }
 
 const initialValues: JobTendersListFilters = {
-  active: null,
+  active: {id: null, title: 'Odaberite status'},
   organization_unit_id: null,
   job_position_id: null,
   type_id: null,
@@ -31,7 +31,6 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
   const [selectedItemId, setSelectedItemId] = useState(0);
   const {types, typesUnitsList} = useJobTendersTypesSearch('');
   const {organizationUnits} = useOrganizationUnits(context);
-  const {positions} = useJobPositionsOrganizationUnit(context?.organization_unit?.id);
 
   const [filters, setFilters] = useState<any>(initialValues);
 

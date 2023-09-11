@@ -84,12 +84,15 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({jobTend
         data={applications.items}
         style={{marginBottom: 22}}
         isLoading={loading}
-        onRowClick={item => toggleApplicationModal(item.id)}
+        onRowClick={() =>
+          applications.items.find((item: any) => item.status === 'Na čekanju' && toggleApplicationModal(item.id))
+        }
         tableActions={[
           {
             name: 'edit',
             onClick: item => toggleApplicationModal(item.id),
             icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+            shouldRender: () => applications.items.find((item: any) => item.status === 'Na čekanju'),
           },
           {
             name: 'delete',
@@ -98,6 +101,7 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({jobTend
               setDeleteItemID(item.id);
             },
             icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+            shouldRender: () => applications.items.find((item: any) => item.status === 'Na čekanju'),
           },
         ]}
       />

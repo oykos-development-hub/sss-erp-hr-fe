@@ -78,7 +78,7 @@ const JobTendersList: FC<JobTendersListProps> = ({
             label="STATUS:"
             options={statusOptions as any}
             onChange={value => onFilterChange(value, 'active')}
-            value={filters.active as any}
+            value={filters?.active as any}
             name="active"
             placeholder="Odaberite status"
           />

@@ -341,7 +341,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     onChange={onChange}
                     label="DRŽAVLJANSTVO:"
                     value={value as any}
-                    options={citizenshipOptions}
+                    options={countryOptions}
                     isDisabled={isDisabled}
                     error={errors.nationality?.message}
                     isSearchable

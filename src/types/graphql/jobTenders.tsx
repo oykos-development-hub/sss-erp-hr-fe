@@ -60,7 +60,7 @@ export interface JobTenderApplication {
   id?: number;
   status: string;
   job_tender?: DropdownItemType | null;
-  user_profile?: DropdownItemType | null;
+  user_profile?: DropdownItemType;
   type: 'external' | 'internal';
   first_name?: string;
   last_name?: string;
@@ -69,18 +69,22 @@ export interface JobTenderApplication {
   citizenship?: string;
   nationality?: string;
   evaluation?: string;
-  date_of_application: string | null;
+  date_of_application: string;
   created_at?: string;
   updated_at?: string;
   file_id?: number;
 }
 
 export interface JobTenderApplicationInsertParams
-  extends Omit<JobTenderApplication, 'job_tender' | 'user_profile' | 'create_at' | 'updated_at' | 'date_of_birth'> {
+  extends Omit<
+    JobTenderApplication,
+    'job_tender' | 'user_profile' | 'create_at' | 'updated_at' | 'date_of_birth' | 'date_of_application'
+  > {
   job_tender_id?: number;
   user_profile_id?: number;
   active?: boolean;
   date_of_birth?: string | null;
+  date_of_application: string | null;
 }
 
 export interface JobTenderApplicationsParams {

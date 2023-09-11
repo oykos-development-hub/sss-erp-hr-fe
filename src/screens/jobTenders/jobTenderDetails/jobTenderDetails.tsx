@@ -14,9 +14,11 @@ export const JobTenderDetailsScreen: React.FC<ScreenProps> = ({context}) => {
   const {alert} = context.alert;
 
   const {data} = useJobTendersOverview({page: 1, size: 10, id: jobTenderId});
+
   useEffect(() => {
-    if (data.items.length > 0) setJobTender(data.items[0]);
+    if (data?.items?.length > 0) setJobTender(data.items[0]);
   }, [data]);
+
   return (
     <ScreenWrapper context={context}>
       <SectionBox style={{marginTop: 25}}>

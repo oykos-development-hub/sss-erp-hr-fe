@@ -36,7 +36,7 @@ const JobTenderInfo = ({data}: JobTenderInfo) => {
             <StyledValue variant="bodyMedium" content={data?.organization_unit?.title} />
           </InfoPreview>
           <InfoPreview>
-            <StyledLabel variant="bodyMedium" content="Datum zaključivanja:" />
+            <StyledLabel variant="bodyMedium" content="Oglas je validan do:" />
             <StyledValue variant="bodyMedium" content={data?.date_of_end ? parseDate(data?.date_of_end) : ''} />
           </InfoPreview>
         </Column>

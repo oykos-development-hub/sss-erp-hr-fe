@@ -127,7 +127,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
                   options={organizationUnitsList.slice(1) as any}
                   value={value as any}
                   onChange={onChange}
-                  error={errors.organization_unit_id?.message as string}
+                  error={errors.organization_unit_id?.message}
                 />
               )}
             />
@@ -143,7 +143,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
                   label="DATUM OBJAVE:"
                   name={name}
                   selected={value ? new Date(value) : ''}
-                  error={errors.date_of_start?.message as string}
+                  error={errors.date_of_start?.message}
                 />
               )}
             />
@@ -151,12 +151,14 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
             <Controller
               name="date_of_end"
               control={control}
+              rules={{required: 'Ovo polje je obavezno'}}
               render={({field: {onChange, name, value}}) => (
                 <Datepicker
                   onChange={onChange}
-                  label="DATUM ZAKLJUČENJA:"
+                  label="OGLAS JE VALIDAN DO:"
                   name={name}
                   selected={value ? new Date(value) : null}
+                  error={errors.date_of_end?.message}
                 />
               )}
             />
@@ -165,7 +167,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
             <Input
               {...register('serial_number', {required: 'Ovo polje je obavezno'})}
               label="BROJ OGLASA:"
-              error={errors.serial_number?.message as string}
+              error={errors.serial_number?.message}
             />
           </Row>
           <FileUploadWrapper>

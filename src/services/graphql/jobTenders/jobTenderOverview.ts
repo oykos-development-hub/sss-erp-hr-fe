@@ -5,7 +5,7 @@ interface UseJobTendersParams {
   page?: number;
   size?: number;
   id?: number;
-  active?: boolean;
+  active?: boolean | null;
   organization_unit_id?: number;
   type_id?: number;
 }
