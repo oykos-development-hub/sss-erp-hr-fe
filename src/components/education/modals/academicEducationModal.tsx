@@ -38,13 +38,15 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
     reset,
   } = useForm({defaultValues: selectedItem});
 
-  const {mutate} = useEducationInsert();
+  const {mutate, loading: isSaving} = useEducationInsert();
 
   useEffect(() => {
     item && reset(item);
   }, [item]);
 
   const onSubmit = async (values: UserProfileEducationFormValues) => {
+    if (isSaving) return;
+
     const data = {
       id: values.id,
       title: values.title,
@@ -85,6 +87,7 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(onSubmit)}
+      buttonLoading={isSaving}
       content={
         <ModalContentWrapper>
           <FormGroup>

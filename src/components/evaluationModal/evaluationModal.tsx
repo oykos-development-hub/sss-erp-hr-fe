@@ -63,9 +63,11 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
     }
   }, [evaluationTypes]);
 
-  const {mutate} = useEvaluationInsert();
+  const {mutate, loading: isSaving} = useEvaluationInsert();
 
   const onSubmit = async (data: any) => {
+    if (isSaving) return;
+
     const payload: any = {
       user_profile_id: data?.user_profile_id,
       score: data?.score.title,
@@ -102,6 +104,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(onSubmit)}
+      buttonLoading={isSaving}
       content={
         <FormWrapper>
           <Row>

@@ -37,7 +37,6 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
   }, [selectedItem]);
 
   const {
-    watch,
     register,
     handleSubmit,
     control,
@@ -45,7 +44,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
     reset,
   } = useForm({defaultValues: initialValues});
 
-  const {mutate} = useJudgeNormsInsert();
+  const {mutate, loading: isSaving} = useJudgeNormsInsert();
 
   useEffect(() => {
     if (item) {
@@ -54,6 +53,8 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
   }, [item]);
 
   const onSubmit = async (values: any) => {
+    if (isSaving) return;
+
     try {
       await mutate(
         {
@@ -94,6 +95,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(onSubmit)}
+      buttonLoading={isSaving}
       content={
         <ModalContentWrapper>
           <Row>

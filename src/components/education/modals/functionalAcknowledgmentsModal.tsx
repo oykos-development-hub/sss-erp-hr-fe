@@ -30,7 +30,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
     reset,
   } = useForm({defaultValues: item});
 
-  const {mutate} = useEducationInsert();
+  const {mutate, loading: isSaving} = useEducationInsert();
 
   useEffect(() => {
     item &&
@@ -38,6 +38,8 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
   }, [item]);
 
   const onSubmit = async (values: UserProfileEducationFormValues) => {
+    if (isSaving) return;
+
     const data = {
       id: values.id,
       title: values.title,
@@ -84,6 +86,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(onSubmit)}
+      buttonLoading={isSaving}
       content={
         <ModalContentWrapper>
           <Row>

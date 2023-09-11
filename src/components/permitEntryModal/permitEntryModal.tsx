@@ -62,7 +62,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
 
   const indefinite = watch('residence_permit_indefinite_length');
 
-  const {mutate} = useForeignerPermitInsert();
+  const {mutate, loading: isSaving} = useForeignerPermitInsert();
 
   useEffect(() => {
     if (permitData) {
@@ -80,6 +80,8 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
   }, [permitData]);
 
   const onSubmit = async (values: any) => {
+    if (!isSaving) return;
+
     const data = {
       ...values,
       work_permit_issuer: values.work_permit_issuer.id,
@@ -112,6 +114,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
       title="DODAJTE DOZVOLU"
       style={{width: '1020px'}}
       rightButtonOnClick={handleSubmit(onSubmit)}
+      buttonLoading={isSaving}
       content={
         <Form>
           <FormColumn>

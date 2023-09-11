@@ -13,7 +13,6 @@ import {Sectors} from './sectors';
 import {Footer} from './footer';
 import {PrintPage} from './printPage';
 import {formatDataSaveSystematization} from '../utils';
-import {OrganisationalUnitModal} from '../../../components/organizationUnitModal/organizationUnitModal';
 import useDeleteOrganisationUnit from '../../../services/graphql/organizationUnits/useOrganizationUnitDelete';
 import {SectorType} from '../../../types/graphql/systematizationsGetDetailsTypes';
 import useSystematizationInsert from '../../../services/graphql/systematization/useSystematizationsInsert';
@@ -22,6 +21,7 @@ import {usePrompt} from '../../../shared/usePrompt';
 import useJobPositions from '../../../services/graphql/jobPositions/useJobPositionOverview';
 import useUserProfiles from '../../../services/graphql/userProfile/useUserProfiles';
 import {parseToDate} from '../../../utils/dateUtils';
+import {OrganizationalUnitModal} from '../../../components/organizationUnitModal/organizationUnitModal';
 
 const initialValues = {
   organization_unit: {id: 0, value: ''},
@@ -119,13 +119,6 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
 
   const handleCloseModal = (refetch: boolean, message: string) => {
     setShowEditSectorModal(false);
-    if (refetch) {
-      refreshData();
-      context.alert.success(message);
-    } else {
-      if (!message) return;
-      context.alert.error(message);
-    }
   };
 
   const handleDeleteSector = (id: number) => {
@@ -139,13 +132,13 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
 
   const setSerialNumbers = (data: any) => {
     let start = 1;
-    const counter = 0;
+    // const counter = 0;
     const updatedData = {...data};
 
-    const totalJobPositions = updatedData.sectors.reduce(
-      (sum: number, sector: any) => sum + sector.job_positions.length,
-      0,
-    );
+    // const totalJobPositions = updatedData.sectors.reduce(
+    //   (sum: number, sector: any) => sum + sector.job_positions.length,
+    //   0,
+    // );
 
     updatedData.sectors.forEach((sector: SectorType) => {
       sector.job_positions_organization_units.forEach(job_positions_organization_units => {
@@ -290,7 +283,9 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
           />
         </FormProvider>
         {showEditSectorModal && (
-          <OrganisationalUnitModal
+          <OrganizationalUnitModal
+            alert={context.alert}
+            refetch={refreshData}
             open={showEditSectorModal}
             onClose={(refetch: boolean, message: string) => {
               handleCloseModal(refetch, message);

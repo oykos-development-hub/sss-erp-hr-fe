@@ -43,7 +43,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
     reset,
   } = useForm({defaultValues: initialValues});
 
-  const {mutate} = useJobTenderInsert();
+  const {mutate, loading: isSaving} = useJobTenderInsert();
 
   useEffect(() => {
     if (item) {
@@ -57,7 +57,8 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
   }, [item]);
 
   const onSubmit = (values: any) => {
-    console.log(values);
+    if (isSaving) return;
+
     try {
       mutate(
         {
@@ -95,6 +96,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(onSubmit)}
+      buttonLoading={isSaving}
       content={
         <ModalContentWrapper>
           <Row>

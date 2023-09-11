@@ -87,7 +87,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
     setValue,
   } = useForm({defaultValues: item || initialValues});
 
-  const {mutate} = useFamilyInsert();
+  const {mutate, loading: isSaving} = useFamilyInsert();
 
   const country_of_birth = watch('country_of_birth');
 
@@ -107,6 +107,8 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
   }, [item]);
 
   const onSubmit = (data: any) => {
+    if (isSaving) return;
+
     const payload = formatData(data);
     mutate(
       payload,
@@ -137,6 +139,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(onSubmit)}
+      buttonLoading={isSaving}
       content={
         <FormWrapper>
           <Row>

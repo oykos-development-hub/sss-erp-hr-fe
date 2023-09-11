@@ -37,9 +37,11 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     setUploadedFiles(fileList);
   };
 
-  const {mutate: saveUserProfileResolution} = useResolutionInsert();
+  const {mutate: saveUserProfileResolution, loading: isSaving} = useResolutionInsert();
 
   const handleSave = (value: any) => {
+    if (isSaving) return;
+
     const payload = {
       ...value,
       id: value?.id || 0,
@@ -96,6 +98,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(handleSave)}
+      buttonLoading={isSaving}
       content={
         <ModalContentWrapper>
           <FormGroup>

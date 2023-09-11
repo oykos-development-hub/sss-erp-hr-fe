@@ -3,20 +3,20 @@ import {GraphQL} from '..';
 import {REQUEST_STATUSES} from '../../constants';
 import {OrganizationUnit} from '../../../types/graphql/organizationUnitsTypes';
 
-const useOrganizationUnitInsert = (onSuccess?: () => void, onError?: () => void) => {
+const useOrganizationUnitInsert = () => {
   const [loading, setLoading] = useState(false);
 
-  const insertOrganisation = async (data: OrganizationUnit) => {
+  const insertOrganisation = async (data: OrganizationUnit, onSuccess?: () => void, onError?: () => void) => {
     setLoading(true);
     const response = await GraphQL.organizationUnitInsert(data);
     if (response.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
-    } else if (response.status === REQUEST_STATUSES.error) {
+    } else {
       onError && onError();
     }
     setLoading(false);
   };
-  return {loading, mutate: insertOrganisation, success: onSuccess, error: onError};
+  return {loading, mutate: insertOrganisation};
 };
 
 export default useOrganizationUnitInsert;

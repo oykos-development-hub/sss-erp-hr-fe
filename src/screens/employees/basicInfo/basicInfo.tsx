@@ -42,8 +42,8 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
 
   const {organizationUnits} = useOrganizationUnits();
   const {options: contractTypes} = useSettingsDropdownOverview({entity: 'contract_types'});
-  const {mutate: createBasicInfo, userId} = useBasicInfoInsert();
-  const {mutate: updateBasicInfo} = useBasicInfoUpdate();
+  const {mutate: createBasicInfo, userId, loading: isCreating} = useBasicInfoInsert();
+  const {mutate: updateBasicInfo, loading: isUpdating} = useBasicInfoUpdate();
 
   const {
     register,
@@ -117,6 +117,8 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   const handleSave = (values: UserProfileBasicInfoFormValues, close: boolean) => {
     if (isValid) {
       if (!profileData?.id) {
+        if (isCreating) return;
+
         createBasicInfo(
           formatData(values),
           () => {
@@ -136,6 +138,8 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
           },
         );
       } else {
+        if (isUpdating) return;
+
         updateBasicInfo(
           formatData(values),
           () => {
@@ -210,8 +214,6 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
       ...context.navigation.location.state.user,
     });
   }, [context.navigation.location.state]);
-
-  // console.log(watch('date_of_birth'));
 
   return (
     <FormContainer>
@@ -736,11 +738,13 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 content="Sačuvaj i zatvori"
                 variant="secondary"
                 onClick={() => handleSubmit((data: UserProfileBasicInfoFormValues) => handleSave(data, true))()}
+                isLoading={isCreating}
               />
               <Button
                 content="Sačuvaj i nastavi"
                 variant="primary"
                 onClick={() => handleSubmit((data: UserProfileBasicInfoFormValues) => handleSave(data, false))()}
+                isLoading={isCreating}
               />
             </>
           ) : (
@@ -748,9 +752,9 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
               content="Sačuvaj"
               variant="primary"
               onClick={() => {
-                console.log('clicked');
                 handleSubmit((data: UserProfileBasicInfoFormValues) => handleSave(data, false))();
               }}
+              isLoading={isUpdating}
             />
           )}
         </Controls>

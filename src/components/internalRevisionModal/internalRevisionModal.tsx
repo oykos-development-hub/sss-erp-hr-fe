@@ -35,15 +35,6 @@ const secondFormSectionFields = [
   'implementation_suggestion',
 ];
 
-const thirdFormSectionFields = [
-  'state_of_implementation',
-  'implementation_failed_description',
-  'responsible_user_profile',
-  'second_implementation_month_span',
-  'implementation_failed_description',
-  'second_date_of_revision',
-];
-
 const initialValues: InternalRevisionFormValues = {
   revision_type: null,
   revision_type_id: 0,
@@ -82,10 +73,9 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
   alert,
 }) => {
   const {data} = useRevisionDetails(id);
-  const {mutate} = useRevisionInsert();
+  const {mutate, loading: isSaving} = useRevisionInsert();
   const {organizationUnits} = useOrganizationUnits();
   const {suppliers} = useSuppliersOverview();
-  const {data: settingsTypes} = useSettingsDropdownOverview({entity: 'revision_organization_units_types'});
 
   const {data: revisionTypes} = useSettingsDropdownOverview({entity: 'revision_types'});
 
@@ -101,18 +91,6 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
     [revisionTypes],
   );
 
-  const externalOrganizationUnitsList = useMemo(() => {
-    if (!settingsTypes) {
-      return [];
-    }
-
-    return [
-      ...settingsTypes.map(unit => {
-        return {id: unit.id, title: unit.title};
-      }),
-    ];
-  }, [settingsTypes]);
-
   const {
     register,
     handleSubmit,
@@ -126,6 +104,8 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
   });
 
   const onSubmit = (values: InternalRevisionFormValues) => {
+    if (isSaving) return;
+
     const data: InternalRevisionInsertParams = {
       implementation_user_profile_id: values?.implementation_user_profile?.id || null,
       revision_type_id: values?.revision_type?.id,
@@ -297,8 +277,9 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
       }}
       open={open}
       title={id ? 'IZMJENA REVIZIJE' : 'DODAVANJE REVIZIJE'}
-      style={{width: '805px'}}
+      width={805}
       rightButtonOnClick={handleSubmit(onSubmit)}
+      buttonLoading={isSaving}
       content={
         <ModalForm>
           {/* ***** PLAN REVIZIJE ****** */}

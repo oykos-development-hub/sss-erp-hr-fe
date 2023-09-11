@@ -17,12 +17,14 @@ const initialValues: OrganizationUnit = {
   icon: '',
 };
 
-export const OrganisationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
+export const OrganizationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
   open,
   onClose,
   dropdownData,
   organizationUnit,
   selectedItem,
+  alert,
+  refetch,
 }) => {
   const item = useMemo(() => {
     return selectedItem
@@ -44,15 +46,7 @@ export const OrganisationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
     reset,
   } = useForm({defaultValues: item || initialValues});
 
-  const {mutate, success, error} = useOrganizationUnitInsert(() => {
-    if (success) {
-      onClose(true, 'Uspješno sačuvano');
-
-      reset(initialValues);
-    } else if (error) {
-      onClose(false, 'Nije uspješno sačuvano');
-    }
-  });
+  const {mutate, loading: isSaving} = useOrganizationUnitInsert();
 
   useEffect(() => {
     if (item) {
@@ -61,17 +55,30 @@ export const OrganisationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
   }, [item]);
 
   const onSubmit = async (values: any) => {
+    if (!isSaving) return;
+
     try {
-      mutate({
-        ...values,
-        title: values?.title,
-        abbreviation: values?.abbreviation,
-        parent_id: organizationUnit?.id,
-        description: values?.description,
-        address: values?.address,
-        number_of_judges: values?.number_of_judges || 0,
-        folder_id: values?.folder_id || 0,
-      });
+      mutate(
+        {
+          ...values,
+          title: values?.title,
+          abbreviation: values?.abbreviation,
+          parent_id: organizationUnit?.id,
+          description: values?.description,
+          address: values?.address,
+          number_of_judges: values?.number_of_judges || 0,
+          folder_id: values?.folder_id || 0,
+        },
+        () => {
+          alert.success('Uspješno sačuvano.');
+          refetch();
+          onClose(true);
+          reset(initialValues);
+        },
+        () => {
+          alert.error('Greška. Promjena nije sačuvana.');
+        },
+      );
     } catch (e) {
       console.log(e);
     }
@@ -87,6 +94,7 @@ export const OrganisationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(onSubmit)}
+      buttonLoading={isSaving}
       content={
         <ModalContentWrapper>
           <FormGroup>

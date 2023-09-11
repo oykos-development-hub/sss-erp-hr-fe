@@ -1,9 +1,10 @@
 import {yesOrNoOptionsString} from '../../../constants';
 
 export const formatData = (data: any) => {
-  const isNew = !!data?.id;
+  const isNew = !data?.id;
 
   const payload: any = {
+    id: data?.id,
     first_name: data?.first_name,
     last_name: data?.last_name,
     birth_last_name: data?.birth_last_name,
@@ -26,11 +27,8 @@ export const formatData = (data: any) => {
     revisor_role: data?.revisor_role === 'Da' ? true : false,
     marital_status: data?.marital_status?.id,
     date_of_taking_oath: new Date(),
-    // date_of_becoming_judge: data?.date_of_becoming_judge, true) || '',
     national_minority: data?.national_minority?.id,
     official_personal_document_issuer: data?.official_personal_document_issuer?.id,
-    role_id: 2,
-    // user_account_id: 1,
     contract: {
       organization_unit_id: data?.contract?.organization_unit_id?.id || null,
       organization_unit_department_id: data?.contract.department_id?.id || null,
@@ -44,12 +42,14 @@ export const formatData = (data: any) => {
     },
   };
 
-  if (!isNew) {
+  if (isNew) {
+    delete payload.id;
     payload.password = data?.password;
     payload.email = data?.email;
     payload.pin = data?.pin;
     payload.phone = data?.phone;
     payload.secondary_email = data?.secondary_email;
+    payload.role_id = 2;
   }
 
   return payload;

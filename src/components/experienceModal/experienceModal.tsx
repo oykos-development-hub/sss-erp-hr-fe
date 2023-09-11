@@ -56,7 +56,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     reset,
   } = useForm({defaultValues: initialValues});
 
-  const {mutate} = useExperienceInsert();
+  const {mutate, loading: isSaving} = useExperienceInsert();
 
   const relevant = watch('relevant');
   const dateOfStart = watch('date_of_start');
@@ -68,6 +68,8 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
   }, [item]);
 
   const onSubmit = (data: UserProfileExperienceFormValues) => {
+    if (isSaving) return;
+
     const payload = formatData(data, !selectedItem);
 
     try {
@@ -99,6 +101,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(onSubmit)}
+      buttonLoading={isSaving}
       content={
         <FormWrapper>
           <Row>

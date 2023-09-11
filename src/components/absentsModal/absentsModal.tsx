@@ -56,9 +56,11 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
       });
   }, [organizationUnits]);
 
-  const {mutate, loading} = useAbsentInsert();
+  const {mutate, loading: isSaving} = useAbsentInsert();
 
   const handleSave = (values: any) => {
+    if (isSaving) return;
+
     const payload = {
       ...values,
       id: values?.id || 0,
@@ -120,7 +122,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(handleSave)}
-      buttonLoading={loading}
+      buttonLoading={isSaving}
       content={
         <ModalContentWrapper>
           <FormGroup>

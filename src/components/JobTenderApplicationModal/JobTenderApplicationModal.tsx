@@ -75,7 +75,6 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   jobTenderId,
   alert,
   context,
-  ...props
 }) => {
   const [selectedUserId, setSelectedIdUser] = useState<number>(0);
   const [selectedUser, setSelectedUser] = useState<UserProfile>();
@@ -134,7 +133,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   const official_personal_id = watch('official_personal_id');
   const evaluation = watch('evaluation');
 
-  const {mutate} = useJobTenderApplicationsInsert();
+  const {mutate, loading: isSaving} = useJobTenderApplicationsInsert();
 
   const onChangeSearchable = (value: any) => {
     const item = userOptions.find(user => user.id === value.id);
@@ -156,6 +155,8 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   };
 
   const onSubmit = (values: any) => {
+    if (isSaving) return;
+
     const data: JobTenderApplicationInsertParams = {
       type: applicationType.id,
       date_of_application: parseDateForBackend(values?.date_of_application),
@@ -251,6 +252,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
         leftButtonText="Otkaži"
         rightButtonText="Sačuvaj"
         rightButtonOnClick={handleSubmit(onSubmit)}
+        buttonLoading={isSaving}
         content={
           <ModalContentWrapper>
             <Row>

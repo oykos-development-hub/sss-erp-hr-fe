@@ -41,13 +41,15 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
     reset,
   } = useForm({defaultValues: initialValues});
 
-  const {mutate} = useEducationInsert();
+  const {mutate, loading: isSaving} = useEducationInsert();
 
   useEffect(() => {
     item && reset({...item, date_of_certification: parseToDate(item.date_of_certification)});
   }, [item]);
 
   const onSubmit = async (values: UserProfileEducationFormValues) => {
+    if (isSaving) return;
+
     const data = {
       id: values.id,
       title: values.title,
@@ -94,6 +96,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(onSubmit)}
+      buttonLoading={isSaving}
       content={
         <ModalContentWrapper>
           <FormGroup>
