@@ -12,12 +12,10 @@ export type UserProfileResolutionItem = {
 
 export type UserProfileResolutionForm = {
   id: number;
-  user_profile_id?: number;
+  user_profile_id: number;
   resolution_purpose: string;
   date_of_start: Date | null;
-  date_of_end?: Date | null;
-  created_at?: string;
-  updated_at?: string;
+  date_of_end: Date | null;
   file_id: number;
   resolution_type: ResolutionType | null;
 };

@@ -1,22 +1,23 @@
+import {yupResolver} from '@hookform/resolvers/yup';
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import * as yup from 'yup';
 import {ConfirmationsModalProps} from '../../screens/employees/confirmations/types';
 import useResolutionInsert from '../../services/graphql/userProfile/resolution/useResolutionInsert';
 import {DropdownDataNumber} from '../../types/dropdownData';
-import {UserProfileResolutionForm, UserProfileResolutionItem} from '../../types/graphql/userProfileGetResolution';
-import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
+import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
 
-const initialValues: UserProfileResolutionForm = {
-  id: 0,
-  user_profile_id: 0,
-  resolution_purpose: '',
-  date_of_start: null,
-  date_of_end: null,
-  file_id: 0,
-  resolution_type: null,
-};
+const confirmationSchema = yup.object().shape({
+  resolution_purpose: yup.string().required('Ovo polje je obavezno'),
+  date_of_start: yup.date().required('Ovo polje je obavezno'),
+  date_of_end: yup
+    .date()
+    .required('Ovo polje je obavezno')
+    .min(yup.ref('date_of_start'), 'Datum završetka mora biti veći od datuma početka'),
+  resolution_type: yup.object().required('Ovo polje je obavezno'),
+});
 
 export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
   selectedItem,
@@ -25,6 +26,16 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
   userProfileId,
   alert,
 }) => {
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: {errors},
+    reset,
+  } = useForm({
+    resolver: yupResolver(confirmationSchema),
+  });
+
   const dropdownOptions: DropdownDataNumber[] = [
     {id: 1, title: 'Potvrde'},
     {id: 2, title: 'Rješenja'},
@@ -71,16 +82,6 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     );
   };
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: {errors},
-    reset,
-  } = useForm<UserProfileResolutionForm>({
-    defaultValues: initialValues,
-  });
-
   useEffect(() => {
     if (selectedItem) {
       reset({
@@ -94,7 +95,10 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={() => {
+        reset();
+        onClose();
+      }}
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(handleSave)}
@@ -105,7 +109,6 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
             <Controller
               name="resolution_type"
               control={control}
-              rules={{required: 'Ovo polje je obavezno'}}
               render={({field: {onChange, name, value}}) => (
                 <Dropdown
                   label="VRSTA:"
@@ -124,14 +127,13 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
             <Controller
               name="date_of_start"
               control={control}
-              rules={{required: 'Ovo polje je obavezno'}}
               render={({field: {onChange, name, value}}) => (
                 <Datepicker
                   onChange={onChange}
                   label="DATUM RJEŠENJA/POTVRDE:"
                   name={name}
                   selected={value}
-                  error={errors.date_of_start?.message as string}
+                  error={errors.date_of_start?.message}
                 />
               )}
             />
@@ -141,14 +143,13 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
             <Controller
               name="date_of_end"
               control={control}
-              rules={{required: 'Ovo polje je obavezno'}}
               render={({field: {onChange, name, value}}) => (
                 <Datepicker
                   onChange={onChange}
                   label="DATUM ZAVRSETKA RJEŠENJA/POTVRDE:"
                   name={name}
                   selected={value}
-                  error={errors.date_of_start?.message as string}
+                  error={errors.date_of_end?.message}
                 />
               )}
             />
@@ -156,11 +157,11 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
 
           <FormGroup>
             <Input
-              {...register('resolution_purpose', {required: 'Ovo polje je obavezno'})}
+              {...register('resolution_purpose')}
               label="SVRHA:"
               placeholder="Unesite opis..."
               textarea
-              error={errors.resolution_purpose?.message as string}
+              error={errors.resolution_purpose?.message}
             />
           </FormGroup>
 
@@ -175,7 +176,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
             />
           </FileUploadWrapper>
 
-          {uploadedFiles.length > 0 && (
+          {!!uploadedFiles.length && (
             <UploadedFileWrapper>
               {uploadedFiles.map((file, index) => (
                 <UploadedFileContainer key={index}>
