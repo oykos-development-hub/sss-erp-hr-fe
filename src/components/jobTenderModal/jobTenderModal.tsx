@@ -57,11 +57,12 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
   }, [item]);
 
   const onSubmit = (values: any) => {
+    console.log(values);
     try {
       mutate(
         {
           id: values.id,
-          organization_unit_id: values?.organization_unit?.id,
+          organization_unit_id: values?.organization_unit_id?.id,
           type: values?.type?.id,
           description: '',
           serial_number: values.serial_number,
@@ -70,10 +71,10 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
           file_id: values.file_id,
         },
         () => {
-          reset(initialValues);
           alert.success('Uspješno sačuvano.');
           refetch();
           onClose();
+          reset(initialValues);
         },
         () => {
           alert.success('Uspješno sačuvano.');

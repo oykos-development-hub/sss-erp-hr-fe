@@ -13,10 +13,6 @@ const jobTenderInsert = async (data: JobTender): Promise<JobTendersResponse['dat
                   id
                   title
               }
-              job_position {
-                  id
-                  title
-              }
               type {
                   id
                   title

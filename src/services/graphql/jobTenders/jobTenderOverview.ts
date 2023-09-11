@@ -36,10 +36,6 @@ const jobTenderOverview = async ({
                 id
                 title
             }
-            job_position {
-                id
-                title
-            }
             type {
                 id
                 title
