@@ -61,6 +61,7 @@ import settingsDropdownOverview from './settingsDropdown/settingsDropdownOvervie
 import basicInfoUpdate from './userProfile/basicInfo/basicInfoUpdate';
 import jobPositionsAvailableOrganizationUnit from './jobPositions/jobPositionsAvailableOrganizationUnit';
 import getSuppliersOverview from './suppliers/getSuppliers';
+import organizationUintCalculateEmployeeStats from './judges/organizationUintCalculateEmployeeStats';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -139,6 +140,7 @@ export const GraphQL = {
   judgeResolutionDelete: judgeResolutionDelete,
   judgeResolutionInsert: judgeResolutionInsert,
   judgeResolutionOverview: judgeResolutionOverview,
+  organizationUintCalculateEmployeeStats: organizationUintCalculateEmployeeStats,
   settingsDropdownOverview: settingsDropdownOverview,
   getSuppliersOverview: getSuppliersOverview,
 };

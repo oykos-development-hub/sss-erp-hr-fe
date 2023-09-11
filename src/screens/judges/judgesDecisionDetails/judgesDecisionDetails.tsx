@@ -15,6 +15,7 @@ import {nanoid} from 'nanoid';
 import {DropdownDataString} from '../../../types/dropdownData';
 import useJudgeResolutionsInsert from '../../../services/graphql/judges/useJudgeResolutionInsert';
 import {ScreenWrapper} from '../../../shared/screenWrapper';
+import useOrganizationUintCalculateEmployeeStats from '../../../services/graphql/judges/useOrganizationUintCalculateEmployeeStats';
 
 export interface JudgesNumbersDetailsListProps extends ScreenProps {
   isNew?: boolean;
@@ -42,6 +43,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
   const [isDisabled, setIsDisabled] = useState<boolean>(isNew ? false : true);
   const [judgeInputs, setJudgeInputs] = useState<{[key: string]: string}>({});
   const {organizationUnits} = useOrganizationUnits();
+  const {data: organizationUintCalculateEmployeeStats} = useOrganizationUintCalculateEmployeeStats();
 
   const id = context.navigation.location.pathname.split('/')[4];
 
@@ -78,8 +80,16 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
     return organizationUnits
       .filter(unit => !unit.parent_id && unit.id)
       .map((orgItem: OrganizationUnit) => {
+        let dataValue;
+
+        if (id === 'new-decision')
+          dataValue = organizationUintCalculateEmployeeStats?.find(
+            (itemEmployeeStats: JudgeResolutionItem) => itemEmployeeStats?.organization_unit?.id === orgItem.id,
+          );
         const itemFromList = item?.items?.find((i: JudgeResolutionItem) => i.organization_unit.id === orgItem.id) ?? {
           ...initialValues,
+          number_of_judges: dataValue?.number_of_judges,
+          number_of_presidents: dataValue?.number_of_presidents,
           id: nanoid(),
         };
 
@@ -149,6 +159,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
 
   const availableYears = useMemo(() => {
     const yearOptions = [...yearsForDropdown(5).map(year => ({id: year.id.toString(), title: year.title.toString()}))];
+
     return data ? yearOptions.filter(year => !data.find(resolution => resolution.year === year.id)) : [];
   }, [data]);
 

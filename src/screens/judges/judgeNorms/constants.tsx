@@ -20,8 +20,18 @@ export const judgeResolutionTableHeads = (judgeInputs: {[key: string]: string}):
       return <Typography content={judges + Number(row.available_slots_presidents)} />;
     },
   },
-  {title: 'Broj popunjenih mjesta predsjednika', accessor: 'number_of_presidents'},
-  {title: 'Broj popunjenih mjesta sudija', accessor: 'number_of_judges'},
+  {
+    title: 'Broj popunjenih mjesta predsjednika',
+    accessor: '',
+    type: 'custom',
+    renderContents: (_, row) => <Typography content={row.number_of_presidents} />,
+  },
+  {
+    title: 'Broj popunjenih mjesta sudija',
+    accessor: '',
+    type: 'custom',
+    renderContents: (_, row) => <Typography content={row.number_of_judges} />,
+  },
   {
     title: 'Ukupno zaposlenih',
     accessor: '',

@@ -157,6 +157,16 @@ export interface JudgesResolutionsOverviewResponse {
   };
 }
 
+export interface OrganizationUintCalculateEmployeeStatsResponse {
+  data: {
+    organizationUintCalculateEmployeeStats: {
+      status?: string;
+      message?: string;
+      items?: JudgeResolutionItem[];
+    };
+  };
+}
+
 export interface JudgeResolutionsInsert {
   id: number;
   active: boolean;
