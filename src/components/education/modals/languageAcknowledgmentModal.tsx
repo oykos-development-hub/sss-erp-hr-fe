@@ -48,10 +48,10 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
     const data = {
       id: values.id,
       title: values.title,
-      date_of_certification: '',
+      date_of_certification: null,
       price: values.price,
-      date_of_start: '',
-      date_of_end: '',
+      date_of_start: null,
+      date_of_end: null,
       expertise_level: values.expertise_level.id,
       certificate_issuer: values.certificate_issuer,
       description: values.description,

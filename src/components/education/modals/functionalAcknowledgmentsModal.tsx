@@ -41,7 +41,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
     const data = {
       id: values.id,
       title: values.title,
-      date_of_certification: '',
+      date_of_certification: null,
       price: Number(values.price),
       date_of_start: parseDateForBackend(values?.date_of_start),
       date_of_end: parseDateForBackend(values?.date_of_end),
