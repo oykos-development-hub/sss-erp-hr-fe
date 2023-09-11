@@ -32,6 +32,7 @@ import {
 import {BasicInfoPageProps} from './types';
 import {booleanToYesOrNo, formatData} from './utils';
 import {parseToDate} from '../../../utils/dateUtils';
+import {Switch} from '@oykos-development/devkit-react-ts-styled-components';
 
 const contractPositions = ['Ugovor na neodređeno vrijeme', 'Ugovor na određeno vrijeme'];
 
@@ -183,7 +184,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
         housing_done: booleanToYesOrNo(profileData?.housing_done),
         single_parent: booleanToYesOrNo(profileData?.single_parent),
         gender: genderOptions.find((opt: DropdownDataString) => opt.id === profileData?.gender),
-        revisor_role: null,
+        revisor_role: profileData?.revisor_role,
         national_minority: nationalMinorities.find(
           (opt: DropdownDataString) => opt.id === profileData?.national_minority,
         ),
@@ -484,6 +485,25 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 label="OPIS STAMBENOG PITANJA:"
                 disabled={isDisabled}
                 error={errors.housing_description?.message}
+              />
+            </FormItem>
+            <FormItem>
+              <Controller
+                name="revisor_role"
+                control={control}
+                render={({field: {onChange, name, value}}) => (
+                  <Switch
+                    name={name}
+                    checked={value}
+                    onChange={onChange}
+                    // @TODO remove ts-ignore
+                    //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    //@ts-ignore
+                    content={<Typography variant="bodyMedium" content="REVIZOR:" style={{marginLeft: 10}} />}
+                    style={{margin: '20px 0 0 10px'}}
+                    disabled={isDisabled}
+                  />
+                )}
               />
             </FormItem>
           </FormColumn>

@@ -55,7 +55,7 @@ export interface UserProfileBasicInfoFormValues {
   gender: DropdownDataString | null;
   single_parent: DropdownDataString | null;
   housing_done: DropdownDataString | null;
-  revisor_role: DropdownDataString | null;
+  revisor_role: boolean;
   housing_description: string;
   marital_status: DropdownDataString | null;
   date_of_becoming_judge: Date | null;
