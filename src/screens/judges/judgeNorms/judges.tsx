@@ -83,7 +83,6 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
 
   const toggleJudgesNorms = (item?: JudgeOverview) => {
     setSelectedItemId(item?.id || 0);
-    normsListSet();
   };
 
   const onPageChange = (page: number) => {

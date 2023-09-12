@@ -18,7 +18,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const userProfileID = Number(context.navigation.location.pathname.split('/')[4]);
   const {data, refetch} = useSalaryParamsOverview(userProfileID);
-
   const {data: profileData} = useBasicInfoGet(Number(context.navigation.location.pathname.split('/')[4]));
   const {employeeEducationData: educationData} = useEducationOverview(
     Number(context.navigation.location.pathname.split('/')[4]),
@@ -46,7 +45,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
     return null;
   }, [data]);
 
-  const {mutate} = useSalaryParamsInsert();
+  const {mutate: createSalaryParams} = useSalaryParamsInsert();
 
   const {
     register,
@@ -66,20 +65,31 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
     reset(item);
   }, [item]);
 
-  const handleSave = (values: UserProfileGetSalaryParams) => {
+
+  const handleSave = (values: UserProfileGetSalaryParams, close: boolean) => {
     const payload = formatData({...values, user_profile_id: userProfileID});
 
     if (!item) {
       delete payload.id;
     }
+    delete payload.organization_unit;
+    delete payload.created_at;
+    delete payload.user_resolution_id;
+
+     payload.organization_unit_id = profileData?.contract.organization_unit?.id;
 
     if (isValid) {
-      mutate(
+      createSalaryParams(
         payload,
         () => {
           refetch();
           setIsDisabled(true);
           context.alert.success('Uspješno sačuvano.');
+
+          if (close) {
+            const overviewPathname = context.navigation.location.pathname.split('/').slice(0, 3).join('/');
+            context.navigation.navigate(overviewPathname);
+          }
         },
         () => {
           context.alert.error('Greška. Promjene nisu sačuvane.');
@@ -95,7 +105,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
           <FormColumn>
             <FormItem>
               <Controller
-                name="job_position_in_organization_unit_id"
+                name=""
                 control={control}
                 render={({field: {name}}) => (
                   <Dropdown
@@ -269,7 +279,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
               <Input
                 value={educationData?.[0]?.academic_title ? educationData[0].academic_title : ''}
                 label="STEPEN STRUČNOG OBRAZOVANJA:"
-                disabled={isDisabled}
+                disabled
               />
             </FormItem>
           </FormColumn>
@@ -292,12 +302,12 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
               <Button
                 content="Sačuvaj i zatvori"
                 variant="secondary"
-                onClick={() => handleSubmit((data: UserProfileGetSalaryParams) => handleSave(data))()}
+                onClick={() => handleSubmit((data: UserProfileGetSalaryParams) => handleSave(data, true))()}
               />
               <Button
                 content="Sačuvaj i nastavi"
                 variant="primary"
-                onClick={() => handleSubmit((data: UserProfileGetSalaryParams) => handleSave(data))()}
+                onClick={() => handleSubmit((data: UserProfileGetSalaryParams) => handleSave(data, false))()}
               />
             </>
           )}

@@ -7,20 +7,45 @@ import useJudgeNormsInsert from '../../services/graphql/judges/useJudgeNormInser
 import {JudgeNormForm, Norms} from '../../types/graphql/judges';
 import {ModalContentWrapper, Row} from '../education/modals/styles';
 import {parseDateForBackend} from '../../utils/dateUtils';
+import * as yup from 'yup';
+import {yupResolver} from '@hookform/resolvers/yup';
 
 const initialValues: JudgeNormForm = {
   id: 0,
   title: '',
   user_profile_id: null,
-  number_of_norm_decrease: 0,
-  number_of_items: 0,
-  number_of_items_solved: 0,
-  evaluation_id: 0,
-  relocation_id: 0,
+  number_of_norm_decrease: null,
+  number_of_items: null,
+  number_of_items_solved: null,
+  evaluation_id: null,
+  relocation_id: null,
   date_of_evaluation: null,
   date_of_evaluation_validity: null,
   topic: null,
 };
+
+const schema = yup.object().shape({
+  user_profile_id: yup.object().required('Ovo polje je obavezno'),
+  number_of_norm_decrease: yup
+    .number()
+    .transform(value => (Number.isNaN(value) ? null : value))
+    .nullable()
+    .required('Ovo polje je obavezno')
+    .min(0, 'Najmanji broj je 0')
+    .max(100, 'Najveći broj je 100'),
+  topic: yup.object().required('Ovo polje je obavezno'),
+  number_of_items: yup
+    .number()
+    .transform(value => (Number.isNaN(value) ? null : value))
+    .nullable()
+    .required('Ovo polje je obavezno'),
+  title: yup.string().required('Ovo polje je obavezno'),
+  number_of_items_solved: yup
+    .number()
+    .transform(value => (Number.isNaN(value) ? null : value))
+    .nullable()
+    .required('Ovo polje je obavezno'),
+});
 
 const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose, selectedItem, dropdownData}) => {
   const item = useMemo(() => {
@@ -42,7 +67,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
     control,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: initialValues});
+  } = useForm({resolver: yupResolver(schema)});
 
   const {mutate, loading: isSaving} = useJudgeNormsInsert();
 
@@ -60,7 +85,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
         {
           id: values?.id,
           title: values?.title,
-          user_profile_id: values?.user_profile?.id,
+          user_profile_id: values?.user_profile_id?.id,
           topic: values?.topic?.title,
           number_of_norm_decrease: values?.number_of_norm_decrease || 1,
           number_of_items: values?.number_of_items || 1,
@@ -101,7 +126,6 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
           <Row>
             <Controller
               name="user_profile_id"
-              rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
                 <Dropdown
@@ -115,11 +139,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               )}
             />
             <Input
-              {...register('number_of_norm_decrease', {
-                required: 'Ovo polje je obavezno',
-                min: {value: 0, message: 'Najmanji broj je 0'},
-                max: {value: 100, message: 'Najveći broj je 100'},
-              })}
+              {...register('number_of_norm_decrease')}
               label="UMANJENJE NORME %:"
               error={errors.number_of_norm_decrease?.message as string}
               type="number"
@@ -128,7 +148,6 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
           <Row>
             <Controller
               name="topic"
-              rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
                 <Dropdown
@@ -142,21 +161,19 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               )}
             />
             <Input
-              {...register('number_of_items', {required: 'Ovo polje je obavezno'})}
+              {...register('number_of_items')}
               label="BROJ PREDMETA:"
               error={errors.number_of_items?.message as string}
+              type="number"
             />
           </Row>
           <Row>
+            <Input {...register('title')} label="NORMA:" error={errors.title?.message as string} />
             <Input
-              {...register('title', {required: 'Ovo polje je obavezno'})}
-              label="NORMA:"
-              error={errors.title?.message as string}
-            />
-            <Input
-              {...register('number_of_items_solved', {required: 'Ovo polje je obavezno'})}
+              {...register('number_of_items_solved')}
               label="RIJEŠENO PREDMETA:"
               error={errors.number_of_items_solved?.message as string}
+              type="number"
             />
           </Row>
         </ModalContentWrapper>

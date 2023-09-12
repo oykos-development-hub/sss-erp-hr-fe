@@ -487,25 +487,6 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 error={errors.housing_description?.message}
               />
             </FormItem>
-            <FormItem>
-              <Controller
-                name="revisor_role"
-                control={control}
-                render={({field: {onChange, name, value}}) => (
-                  <Switch
-                    name={name}
-                    checked={value}
-                    onChange={onChange}
-                    // @TODO remove ts-ignore
-                    //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    //@ts-ignore
-                    content={<Typography variant="bodyMedium" content="REVIZOR:" style={{marginLeft: 10}} />}
-                    style={{margin: '20px 0 0 10px'}}
-                    disabled={isDisabled}
-                  />
-                )}
-              />
-            </FormItem>
           </FormColumn>
         </FormRow>
       </FormWrapper>
@@ -578,7 +559,26 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 )}
               />
             </FormItem>
+            <div>
+              <Controller
+                name="revisor_role"
+                control={control}
+                render={({field: {onChange, name, value}}) => (
+                  <Switch
+                    name={name}
+                    checked={value}
+                    onChange={onChange}
+                    // @TODO remove ts-ignore
+                    //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    //@ts-ignore
+                    content={<Typography variant="bodyMedium" content="REVIZOR:" style={{marginLeft: 10}} />}
+                    disabled={isDisabled}
+                  />
+                )}
+              />
+            </div>
           </FormColumn>
+
           <FormColumn>
             <FormItem>
               <Controller
@@ -647,6 +647,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 )}
               />
             </FormItem>
+
             <FormItem>
               <Controller
                 name="contract.date_of_end"

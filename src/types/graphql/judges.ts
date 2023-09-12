@@ -35,14 +35,14 @@ export type JudgeNormForm = {
   title: string;
   user_profile_id: DropdownDataNumber | null;
   topic: DropdownDataString | null;
-  number_of_norm_decrease: number;
-  number_of_items: number;
-  number_of_items_solved: number;
+  number_of_norm_decrease: number | null;
+  number_of_items: number | null;
+  number_of_items_solved: number | null;
   date_of_evaluation: Date | null;
   date_of_evaluation_validity: Date | null;
-  relocation_id: number;
+  relocation_id: number | null;
   file_id?: number;
-  evaluation_id?: number;
+  evaluation_id?: number | null;
 };
 
 export interface Norms {

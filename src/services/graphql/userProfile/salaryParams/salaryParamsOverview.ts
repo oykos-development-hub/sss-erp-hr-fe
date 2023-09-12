@@ -39,6 +39,8 @@ const salaryParamsOverview = async (id: number): Promise<UserProfileGetSalaryPar
                 date_of_end,
                 file_id
             }
+            created_at
+            updated_at
         }
     }
 }`;

@@ -12,7 +12,14 @@ const salaryParamsInsert = async (
         status
         item {
             id
-            user_profile_id
+            user_profile {
+                id
+                title
+            }
+            organization_unit {
+                id
+                title
+            }
             benefited_track
             without_raise
             insurance_basis
@@ -21,13 +28,26 @@ const salaryParamsInsert = async (
             weekly_work_hours
             education_rank
             education_naming
-            user_resolution_id
+            resolution {
+                id
+                user_profile {
+                    id
+                    title
+                },
+                resolution_type {
+                    id
+                    title
+                }
+                resolution_purpose,
+                date_of_start,
+                date_of_end,
+                file_id
+            }
             created_at
             updated_at
         }
     }
-}
-`;
+}`;
 
   const response = await GraphQL.fetch(mutation, {data});
 
