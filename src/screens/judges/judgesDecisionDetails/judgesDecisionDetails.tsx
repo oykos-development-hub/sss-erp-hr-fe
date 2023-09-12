@@ -43,7 +43,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
   const [isDisabled, setIsDisabled] = useState<boolean>(isNew ? false : true);
   const [judgeInputs, setJudgeInputs] = useState<{[key: string]: string}>({});
   const {organizationUnits} = useOrganizationUnits();
-  const {data: organizationUintCalculateEmployeeStats} = useOrganizationUintCalculateEmployeeStats();
+  const {organizationUintCalculateEmployee} = useOrganizationUintCalculateEmployeeStats();
 
   const id = context.navigation.location.pathname.split('/')[4];
 
@@ -84,10 +84,10 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
 
         if (
           id === 'new-decision' &&
-          Array.isArray(organizationUintCalculateEmployeeStats) &&
-          organizationUintCalculateEmployeeStats?.length > 0
+          Array.isArray(organizationUintCalculateEmployee) &&
+          organizationUintCalculateEmployee?.length > 0
         )
-          dataValue = organizationUintCalculateEmployeeStats?.find(
+          dataValue = organizationUintCalculateEmployee?.find(
             (itemEmployeeStats: JudgeResolutionItem) => itemEmployeeStats?.organization_unit?.id === orgItem.id,
           );
         const itemFromList = item?.items?.find((i: JudgeResolutionItem) => i.organization_unit.id === orgItem.id) ?? {
@@ -102,7 +102,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
           organization_unit: {id: orgItem.id, title: orgItem.title},
         };
       });
-  }, [organizationUnits, item, organizationUintCalculateEmployeeStats]);
+  }, [organizationUnits, item, organizationUintCalculateEmployee]);
 
   const {
     register,

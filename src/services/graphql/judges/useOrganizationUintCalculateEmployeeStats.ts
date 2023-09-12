@@ -3,7 +3,7 @@ import {GraphQL} from '..';
 import {JudgeResolutionItem} from '../../../types/graphql/judges';
 
 const useOrganizationUintCalculateEmployeeStats = () => {
-  const [data, setData] = useState<JudgeResolutionItem[]>();
+  const [organizationUintCalculateEmployee, setData] = useState<JudgeResolutionItem[]>();
   const [loading, setLoading] = useState(true);
 
   const fetchJudgesResolutionsOverview = async () => {
@@ -16,7 +16,7 @@ const useOrganizationUintCalculateEmployeeStats = () => {
     fetchJudgesResolutionsOverview();
   }, []);
 
-  return {data, loading, refetch: fetchJudgesResolutionsOverview};
+  return {organizationUintCalculateEmployee, loading, refetch: fetchJudgesResolutionsOverview};
 };
 
 export default useOrganizationUintCalculateEmployeeStats;
