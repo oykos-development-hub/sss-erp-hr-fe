@@ -1,6 +1,6 @@
 import {Button, Datepicker, Dropdown, Input, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
-import {Controller, useForm} from 'react-hook-form';
+import {Controller, set, useForm} from 'react-hook-form';
 import {
   cityData,
   femaleMaritalStatusOptions,
@@ -15,7 +15,7 @@ import useSettingsDropdownOverview from '../../../services/graphql/settingsDropd
 import useBasicInfoGet from '../../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
 import useBasicInfoInsert from '../../../services/graphql/userProfile/basicInfo/useBasicInfoInsert';
 import useBasicInfoUpdate from '../../../services/graphql/userProfile/basicInfo/useBasicInfoUpdate';
-import {DropdownDataString} from '../../../types/dropdownData';
+import {DropdownDataNumber, DropdownDataString} from '../../../types/dropdownData';
 import {UserProfileBasicInfoFormValues} from '../../../types/graphql/userProfiles';
 import {initialValues} from './constants';
 import {
@@ -99,9 +99,12 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   const {positions} = useJobPositionsAvailableOrganizationUnit(
     contract.organization_unit_id?.id,
     contract.department_id?.id,
+    () => {
+      setValue('contract.job_position_in_organization_unit_id', null);
+    },
   );
 
-  const departmentOptions = useMemo(() => {
+  const departmentOptions: DropdownDataNumber = useMemo(() => {
     if (!contract?.organization_unit_id) return [];
 
     if (contract?.organization_unit_id && organizationUnits && organizationUnits.length) {

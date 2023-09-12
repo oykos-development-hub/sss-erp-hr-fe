@@ -55,7 +55,7 @@ export const OrganizationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
   }, [item]);
 
   const onSubmit = async (values: any) => {
-    if (!isSaving) return;
+    if (isSaving) return;
 
     try {
       mutate(

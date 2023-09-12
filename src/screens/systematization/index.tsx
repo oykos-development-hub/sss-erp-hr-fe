@@ -20,14 +20,7 @@ const tableHeads: TableHead[] = [
       return <Typography variant="bodyMedium" content={item !== '' ? parseDate(item) : ''} />;
     },
   },
-  {
-    title: 'Status',
-    accessor: 'active',
-    type: 'custom',
-    renderContents: (item: any) => {
-      return <Typography variant="bodyMedium" content={item ? 'Odobreno' : 'Nacrt'} />;
-    },
-  },
+  {title: 'Status', accessor: 'active', type: 'badge'},
   {
     title: 'Organizaciona Jedinica',
     accessor: 'organization_unit',
@@ -85,6 +78,13 @@ export const SystematizationScreen: React.FC<ScreenProps> = ({context}) => {
     refetch();
   }, [params]);
 
+  const checkDate = (date: string): boolean => {
+    const inputDate = new Date(date.split('/').reverse().join('-'));
+    const currentDate = new Date();
+
+    return inputDate.getTime() > currentDate.getTime();
+  };
+
   return (
     <ScreenWrapper context={context}>
       <OverviewBox>
@@ -118,7 +118,7 @@ export const SystematizationScreen: React.FC<ScreenProps> = ({context}) => {
               name: 'delete',
               onClick: item => handleDeleteIconClick(item.id),
               icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-              shouldRender: row => (!row.active ? true : false),
+              shouldRender: row => (!row.active && checkDate(row.date_of_activation) ? true : false),
             },
           ]}
         />

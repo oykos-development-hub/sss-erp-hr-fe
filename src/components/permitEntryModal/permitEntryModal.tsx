@@ -80,7 +80,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
   }, [permitData]);
 
   const onSubmit = async (values: any) => {
-    if (!isSaving) return;
+    if (isSaving) return;
 
     const data = {
       ...values,
