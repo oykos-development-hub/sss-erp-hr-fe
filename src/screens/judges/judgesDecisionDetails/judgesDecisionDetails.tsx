@@ -82,7 +82,11 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       .map((orgItem: OrganizationUnit) => {
         let dataValue;
 
-        if (id === 'new-decision')
+        if (
+          id === 'new-decision' &&
+          Array.isArray(organizationUintCalculateEmployeeStats) &&
+          organizationUintCalculateEmployeeStats?.length > 0
+        )
           dataValue = organizationUintCalculateEmployeeStats?.find(
             (itemEmployeeStats: JudgeResolutionItem) => itemEmployeeStats?.organization_unit?.id === orgItem.id,
           );
@@ -98,7 +102,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
           organization_unit: {id: orgItem.id, title: orgItem.title},
         };
       });
-  }, [organizationUnits, item]);
+  }, [organizationUnits, item, organizationUintCalculateEmployeeStats]);
 
   const {
     register,
