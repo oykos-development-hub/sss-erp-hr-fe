@@ -182,7 +182,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
           </FileUploadWrapper>
         </ModalContentWrapper>
       }
-      title={'DODAJTE NOVI OGLAS'}
+      title={selectedItem?.id ? 'IZMJENITE OGLAS' : 'DODAJTE NOVI OGLAS'}
     />
   );
 };
