@@ -123,11 +123,11 @@ export const MenuItem = styled.div`
 `;
 
 export const DatepickerElement = styled(Datepicker)`
-  .kihwdC .react-datepicker__navigation--previous {
+  .react-datepicker__navigation--previous {
     margin-top: 0;
   }
 
-  .kihwdC .react-datepicker__navigation--next {
+  .react-datepicker__navigation--next {
     margin-top: 0;
   }
 `;
