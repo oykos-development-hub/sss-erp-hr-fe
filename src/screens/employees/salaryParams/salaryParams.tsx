@@ -63,15 +63,15 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
 
   useEffect(() => {
     if (item) {
-    reset(item);
-  }
+      reset(item);
+    }
   }, [item]);
 
   const handleSave = (values: UserProfileGetSalaryParams, close: boolean) => {
     const payload = formatData({
-      ...values, 
+      ...values,
       user_profile_id: userProfileID,
-      organization_unit_id: profileData?.contract.organization_unit?.id
+      organization_unit_id: profileData?.contract.organization_unit?.id,
     });
 
     if (!item) {
@@ -82,7 +82,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
     delete payload.user_resolution_id;
     delete payload.user_profile;
     delete payload.resolution;
-
 
     if (isValid) {
       createSalaryParams(
