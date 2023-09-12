@@ -1,9 +1,7 @@
 import {Button, Datepicker, Dropdown, Input} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {contractTypes, yesOrNoOptionsBoolean, yesOrNoOptionsString} from '../../../constants';
-import useJobPositions from '../../../services/graphql/jobPositions/useJobPositionOverview';
-import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
+import {yesOrNoOptionsBoolean, yesOrNoOptionsString} from '../../../constants';
 import useSalaryParamsOverview from '../../../services/graphql/userProfile/salaryParams/useSalaryParamsOverview';
 import useSalaryParamsInsert from '../../../services/graphql/userProfile/salaryParams/useSalaryParamsinsert';
 import {UserProfileGetSalaryParams} from '../../../types/graphql/userProfileGetSalaryParams';
@@ -12,11 +10,17 @@ import {Controls, FormColumn, FormContainer, FormFooter, FormItem, FormRow, Form
 import {SalaryParamsPageProps} from './types';
 import {formatData, initialValues} from './utils';
 import {parseToDate} from '../../../utils/dateUtils';
+import useBasicInfoGet from '../../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
+import useEducationOverview from '../../../services/graphql/userProfile/education/useEducationOverview';
+import { educationTypes } from '../../../components/education/modals/constants';
 
 export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const userProfileID = Number(context.navigation.location.pathname.split('/')[4]);
   const {data, refetch} = useSalaryParamsOverview(userProfileID);
+
+  const {data: profileData} = useBasicInfoGet(Number(context.navigation.location.pathname.split('/')[4]));
+  const {employeeEducationData: educationData} = useEducationOverview(Number(context.navigation.location.pathname.split('/')[4]), educationTypes.education_academic_types) as any;
 
   const item = useMemo(() => {
     if (data && data.length) {
@@ -39,15 +43,12 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
     return null;
   }, [data]);
 
-  const {data: jobPositions} = useJobPositions('');
-  const {organizationUnits} = useOrganizationUnits(context);
-
   const {mutate} = useSalaryParamsInsert();
 
   const {
     register,
     handleSubmit,
-    formState: {errors, isValid},
+    formState: {isValid},
     reset,
     control,
   } = useForm({
@@ -84,18 +85,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
     }
   };
 
-  const jobPositionOptions = useMemo(() => {
-    return jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title}));
-  }, [jobPositions]);
-
-  const organizationUnitsList = useMemo(() => {
-    return organizationUnits
-      .filter(i => !i.parent_id)
-      .map(unit => {
-        return {id: unit.id, title: unit.title};
-      });
-  }, [organizationUnits]);
-
   return (
     <FormContainer>
       <FormWrapper style={{marginTop: '20px'}}>
@@ -103,37 +92,30 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
           <FormColumn>
             <FormItem>
               <Controller
-                name="job_position_id"
-                rules={{required: 'Ovo polje je obavezno'}}
+                name="job_position_in_organization_unit_id"
                 control={control}
-                render={({field: {onChange, name, value}}) => (
+                render={({field: {name}}) => (
                   <Dropdown
                     name={name}
-                    onChange={onChange}
-                    label="STATUS ZAPOSLENOG:"
-                    value={value as any}
-                    noOptionsText="Prazno"
-                    options={jobPositionOptions}
-                    isDisabled={isDisabled}
-                    error={errors.job_position_id?.message as string}
+                    label="RADNO MJESTO:"
+                    isDisabled
+                    value={profileData?.job_position}
+                    options={profileData?.job_position ? new Array(profileData.job_position) : []}
                   />
                 )}
               />
             </FormItem>
             <FormItem>
               <Controller
-                name="organization_unit_id"
-                rules={{required: 'Ovo polje je obavezno'}}
+                name="organization_unit"
                 control={control}
-                render={({field: {onChange, name, value}}) => (
+                render={({field: {name}}) => (
                   <Dropdown
                     name={name}
-                    onChange={onChange}
                     label="ORGANIZACIONA JEDINICA:"
-                    isDisabled={isDisabled}
-                    value={value as any}
-                    options={organizationUnitsList as any}
-                    error={errors.organization_unit_id?.message as string}
+                    isDisabled
+                    value={profileData?.contract.organization_unit}
+                    options={profileData?.contract.organization_unit ? new Array(profileData?.contract.organization_unit) : []}
                   />
                 )}
               />
@@ -141,7 +123,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
             <FormItem>
               <Controller
                 name="benefited_track"
-                rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -151,7 +132,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                     isDisabled={isDisabled}
                     value={value}
                     options={yesOrNoOptionsString}
-                    error={errors.benefited_track?.message as string}
                   />
                 )}
               />
@@ -159,7 +139,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
             <FormItem>
               <Controller
                 name="without_raise"
-                rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -169,7 +148,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                     isDisabled={isDisabled}
                     value={value as any}
                     options={yesOrNoOptionsBoolean as any}
-                    error={errors.without_raise?.message as string}
                   />
                 )}
               />
@@ -177,7 +155,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
             <FormItem>
               <Controller
                 name="insurance_basis"
-                rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -187,7 +164,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                     isDisabled={isDisabled}
                     value={value}
                     options={insuranceBasis}
-                    error={errors.insurance_basis?.message as string}
                   />
                 )}
               />
@@ -213,7 +189,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
             <FormItem>
               <Controller
                 name="salary_rank"
-                rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -223,7 +198,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                     isDisabled={isDisabled}
                     value={value}
                     options={salaryRanks}
-                    error={errors.salary_rank?.message as string}
                   />
                 )}
               />
@@ -231,34 +205,29 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
             <FormItem>
               <Controller
                 name="user_resolution_id"
-                rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
-                render={({field: {onChange, name, value}}) => (
+                render={({field: {name}}) => (
                   <Dropdown
                     name={name}
-                    onChange={onChange}
-                    label="RJEŠENJE:"
-                    isDisabled={isDisabled}
-                    value={value}
-                    options={contractTypes}
-                    error={errors.user_resolution_id?.message as string}
+                    label="VRSTA UGOVORA:"
+                    isDisabled
+                    value={profileData?.contract.contract_type}
+                    options={profileData?.contract?.contract_type ? new Array(profileData.contract.contract_type) : []}
                   />
                 )}
               />
             </FormItem>
             <FormItem>
               <Controller
-                name="created_at"
-                rules={{required: 'Ovo polje je obavezno'}}
+                name=""
                 control={control}
-                render={({field: {name, onChange, value}}) => (
+                render={({field: {name}}) => (
                   <Datepicker
+                    onChange={() => {}}
                     name={name}
-                    selected={value}
-                    onChange={onChange}
-                    label="DATUM RJEŠENJA:"
-                    disabled={isDisabled}
-                    error={errors.created_at?.message}
+                    selected={parseToDate(profileData?.contract?.date_of_start || null)}
+                    label="POČETAK RADNOG ODNOSA:"
+                    disabled
                   />
                 )}
               />
@@ -269,7 +238,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
             <FormItem>
               <Controller
                 name="daily_work_hours"
-                rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -283,7 +251,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                       {id: '4', title: '4'},
                       {id: '2', title: '2'},
                     ]}
-                    error={errors.daily_work_hours?.message as string}
                   />
                 )}
               />
@@ -291,7 +258,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
             <FormItem>
               <Controller
                 name="weekly_work_hours"
-                rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -305,7 +271,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                       {id: '20', title: '20'},
                       {id: '40', title: '40'},
                     ]}
-                    error={errors.weekly_work_hours?.message as string}
                   />
                 )}
               />
@@ -315,10 +280,9 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
           <FormColumn>
             <FormItem>
               <Input
-                {...register('education_rank', {required: 'Ovo polje je obavezno'})}
+                value={educationData?.[0]?.academic_title ? educationData[0].academic_title : ''}
                 label="STEPEN STRUČNOG OBRAZOVANJA:"
                 disabled={isDisabled}
-                error={errors.education_rank?.message as string}
               />
             </FormItem>
           </FormColumn>
@@ -326,10 +290,9 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
             <FormItem>
               <FormItem>
                 <Input
-                  {...register('education_naming', {required: 'Ovo polje je obavezno'})}
+                  {...register('education_naming')}
                   label="ZANIMANJE PO STRUCI:"
                   disabled={isDisabled}
-                  error={errors.education_naming?.message as string}
                 />
               </FormItem>
             </FormItem>

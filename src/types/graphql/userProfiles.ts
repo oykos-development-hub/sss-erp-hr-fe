@@ -85,7 +85,6 @@ export interface UserContract {
   gross_salary: string;
   bank_account: string;
   bank_name: string;
-  date_of_signature: string;
   date_of_eligibility: string;
   date_of_start: string;
   date_of_end: string;
