@@ -25,19 +25,19 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
   ) as any;
 
   const item = useMemo(() => {
-    if (data && data.length) {
+    if (data) {
       return {
-        ...data[0],
-        benefited_track: data[0].benefited_track ? {id: 'Da', title: 'Da'} : {id: 'Ne', title: 'Ne'},
-        without_raise: data[0].without_raise ? {id: 'Da', title: 'Da'} : {id: 'Ne', title: 'Ne'},
-        insurance_basis: {id: data[0].insurance_basis, title: data[0].insurance_basis},
-        daily_work_hours: {id: data[0].daily_work_hours, title: data[0].daily_work_hours},
-        weekly_work_hours: {id: data[0].weekly_work_hours, title: data[0].weekly_work_hours},
-        salary_rank: {id: data[0].salary_rank, title: data[0].salary_rank},
-        created_at: parseToDate(data[0].created_at),
-        user_resolution_id: data[0].user_resolution_id ?? {
-          id: data[0].user_resolution_id,
-          title: data[0].user_resolution_id,
+        ...data,
+        benefited_track: data.benefited_track ? {id: 'Da', title: 'Da'} : {id: 'Ne', title: 'Ne'},
+        without_raise: data.without_raise ? {id: 'Da', title: 'Da'} : {id: 'Ne', title: 'Ne'},
+        insurance_basis: {id: data.insurance_basis, title: data.insurance_basis},
+        daily_work_hours: {id: data.daily_work_hours, title: data.daily_work_hours},
+        weekly_work_hours: {id: data.weekly_work_hours, title: data.weekly_work_hours},
+        salary_rank: {id: data.salary_rank, title: data.salary_rank},
+        created_at: parseToDate(data.created_at),
+        user_resolution_id: data.user_resolution_id ?? {
+          id: data.user_resolution_id,
+          title: data.user_resolution_id,
         },
       };
     }
@@ -62,11 +62,17 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
   }, [context.navigation.location]);
 
   useEffect(() => {
+    if (item) {
     reset(item);
+  }
   }, [item]);
 
   const handleSave = (values: UserProfileGetSalaryParams, close: boolean) => {
-    const payload = formatData({...values, user_profile_id: userProfileID});
+    const payload = formatData({
+      ...values, 
+      user_profile_id: userProfileID,
+      organization_unit_id: profileData?.contract.organization_unit?.id
+    });
 
     if (!item) {
       delete payload.id;
@@ -74,8 +80,9 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
     delete payload.organization_unit;
     delete payload.created_at;
     delete payload.user_resolution_id;
+    delete payload.user_profile;
+    delete payload.resolution;
 
-    payload.organization_unit_id = profileData?.contract.organization_unit?.id;
 
     if (isValid) {
       createSalaryParams(
