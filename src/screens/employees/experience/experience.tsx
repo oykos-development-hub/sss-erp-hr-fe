@@ -99,7 +99,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
       ...tableHeads.slice(0, 2),
       {
         ...tableHeads[2],
-        renderContents: (organization_unit, row) => {
+        renderContents: (organization_unit: string, row: UserProfileExperience) => {
           return (
             <Typography
               variant="bodyMedium"
