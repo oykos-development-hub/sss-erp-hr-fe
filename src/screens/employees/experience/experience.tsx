@@ -94,6 +94,28 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
       });
   }, [organizationUnits]);
 
+  const updatedTableHeads = useMemo(() => {
+    return [
+      ...tableHeads.slice(0, 2),
+      {
+        ...tableHeads[2],
+        renderContents: (organization_unit, row) => {
+          return (
+            <Typography
+              variant="bodyMedium"
+              content={
+                organization_unit
+                  ? organization_unit
+                  : organizationUnits.find(orgUnit => orgUnit.id === row.organization_unit_id)?.title || ''
+              }
+            />
+          );
+        },
+      },
+      ...tableHeads.slice(3),
+    ];
+  }, [organizationUnits, tableHeads]);
+
   return (
     <Container>
       <span>
@@ -105,7 +127,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
       </span>
       <div>
         <Table
-          tableHeads={tableHeads}
+          tableHeads={updatedTableHeads}
           data={tableData || []}
           isLoading={loading}
           tableActions={[

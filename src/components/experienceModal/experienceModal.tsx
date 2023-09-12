@@ -1,27 +1,51 @@
+import {yupResolver} from '@hookform/resolvers/yup';
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import * as yup from 'yup';
 import {yesOrNoOptionsString} from '../../constants';
 import {ExperienceModalProps} from '../../screens/employees/experience/types';
 import {formatData} from '../../screens/employees/experience/utils';
+import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
 import useExperienceInsert from '../../services/graphql/userProfile/experience/useExperienceInsert';
-import {UserProfileExperienceFormValues} from '../../types/graphql/userProfileGetExperienceTypes';
+import {DropdownDataString} from '../../types/dropdownData';
+import {calculateExperience, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormWrapper, Row} from './styles';
-import {parseToDate} from '../../utils/dateUtils';
 
-const initialValues: UserProfileExperienceFormValues = {
-  id: null,
-  user_profile_id: 0,
-  relevant: null,
-  amount_of_experience: 0,
-  amount_of_insured_experience: 0,
-  date_of_end: null,
-  date_of_signature: null,
-  date_of_start: null,
-  organization_unit: '',
-  organization_unit_id: 0,
-  reference_file_id: 0,
-};
+const experienceSchema = yup.object().shape({
+  relevant: yup
+    .object()
+    .default(undefined)
+    .required('Ovo polje je obavezno')
+    .shape({id: yup.string().required(), title: yup.string().required()}),
+  amount_of_experience: yup.number().required('Ovo polje je obavezno'),
+  amount_of_insured_experience: yup
+    .number()
+    .transform(value => (!value || isNaN(value) ? null : value))
+    .nullable()
+    .required('Ovo polje je obavezno'),
+  date_of_end: yup
+    .date()
+    .required('Ovo polje je obavezno')
+    .min(yup.ref('date_of_start'), 'Kraj radnog odnosa ne može biti prije početka radnog odnosa.')
+    .nullable(),
+  date_of_start: yup.date().required('Ovo polje je obavezno').nullable(),
+  organization_unit: yup.string().when('relevant', {
+    is: (value: DropdownDataString) => value && value.id === 'Ne',
+    then: schema => schema.required('Ovo polje je obavezno'),
+    otherwise: schema => schema.optional(),
+  }),
+  organization_unit_id: yup
+    .object()
+    .default(undefined)
+    .shape({id: yup.string().required(), title: yup.string().required()})
+    .when('relevant', {
+      is: (value: DropdownDataString) => value && value.id === 'Da',
+      then: schema => schema.required('Ovo polje je obavezno'),
+      otherwise: schema => schema.optional(),
+    }),
+  user_profile_id: yup.number().required(),
+});
 
 export const ExperienceModal: React.FC<ExperienceModalProps> = ({
   refetchList,
@@ -32,21 +56,6 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
   userProfileId,
   alert,
 }) => {
-  const item = useMemo(() => {
-    return selectedItem
-      ? {
-          ...selectedItem,
-          relevant: {id: selectedItem?.relevant ? 'Da' : 'Ne', title: selectedItem?.relevant ? 'Da' : 'Ne'},
-          organization_unit_id: {
-            id: selectedItem?.relevant ? selectedItem?.organization_unit_id : 0,
-            title: selectedItem?.relevant ? selectedItem?.organization_unit : '',
-          },
-          date_of_start: parseToDate(selectedItem?.date_of_start),
-          date_of_end: parseToDate(selectedItem?.date_of_end),
-        }
-      : {...initialValues, user_profile_id: Number(userProfileId)};
-  }, [selectedItem]);
-
   const {
     register,
     handleSubmit,
@@ -54,20 +63,30 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     watch,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: initialValues});
+    setValue,
+  } = useForm({resolver: yupResolver(experienceSchema), defaultValues: {user_profile_id: userProfileId}});
 
   const {mutate, loading: isSaving} = useExperienceInsert();
+  const {organizationUnitsList} = useOrganizationUnits();
 
-  const relevant = watch('relevant');
-  const dateOfStart = watch('date_of_start');
+  const {relevant, date_of_start, date_of_end} = watch();
 
   useEffect(() => {
-    if (item) {
-      reset(item);
+    if (selectedItem) {
+      reset({
+        ...selectedItem,
+        relevant: {id: selectedItem?.relevant ? 'Da' : 'Ne', title: selectedItem?.relevant ? 'Da' : 'Ne'},
+        organization_unit_id: organizationUnitsList
+          .slice(1)
+          .find(orgUnit => orgUnit.id === selectedItem?.organization_unit_id),
+        date_of_start: parseToDate(selectedItem?.date_of_start),
+        date_of_end: parseToDate(selectedItem?.date_of_end),
+        user_profile_id: userProfileId,
+      });
     }
-  }, [item]);
+  }, [selectedItem]);
 
-  const onSubmit = (data: UserProfileExperienceFormValues) => {
+  const onSubmit = (data: any) => {
     if (isSaving) return;
 
     const payload = formatData(data, !selectedItem);
@@ -88,15 +107,23 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     } catch (e) {
       console.log(e);
     } finally {
-      reset(initialValues);
+      reset();
     }
   };
+
+  useEffect(() => {
+    if (date_of_end && date_of_start) {
+      const calculatedExperience = calculateExperience(date_of_start, date_of_end);
+      setValue('amount_of_experience', calculatedExperience);
+    }
+  }, [date_of_end, date_of_start]);
 
   return (
     <Modal
       open={open}
       onClose={() => {
         onClose();
+        reset();
       }}
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
@@ -107,7 +134,6 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
           <Row>
             <Controller
               name="relevant"
-              rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => {
                 return (
@@ -117,7 +143,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
                     name={name}
                     label="SUDSTVO:"
                     options={yesOrNoOptionsString}
-                    error={errors.relevant?.message as string}
+                    error={errors.relevant?.message}
                   />
                 );
               }}
@@ -125,14 +151,13 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
             <Controller
               name="date_of_start"
               control={control}
-              rules={{required: 'Ovo polje je obavezno'}}
               render={({field: {onChange, name, value}}) => (
                 <Datepicker
                   onChange={onChange}
                   label="POČETAK RADNOG ODNOSA:"
                   name={name}
                   selected={value}
-                  error={errors.date_of_start?.message as string}
+                  error={errors.date_of_start?.message}
                 />
               )}
             />
@@ -140,9 +165,6 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
           <Row>
             <Controller
               name="organization_unit_id"
-              rules={{
-                required: {value: relevant?.title === 'Da', message: 'Ovo polje je obavezno'},
-              }}
               control={control}
               render={({field: {onChange, name, value}}) => {
                 return (
@@ -152,8 +174,8 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
                     name={name}
                     label="JEDINICA:"
                     options={units}
-                    isDisabled={relevant?.title === 'Ne'}
-                    error={errors.organization_unit_id?.message as string}
+                    isDisabled={relevant?.id === 'Ne' || !relevant}
+                    error={errors.organization_unit_id?.message}
                   />
                 );
               }}
@@ -161,37 +183,29 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
             <Controller
               name="date_of_end"
               control={control}
-              rules={{
-                required: 'Ovo polje je obavezno',
-                validate: value =>
-                  !value || !watch('date_of_start') || (dateOfStart && new Date(value) >= dateOfStart)
-                    ? true
-                    : 'Kraj radnog odnosa ne može biti prije početka radnog odnosa.',
-              }}
               render={({field: {onChange, name, value}}) => (
                 <Datepicker
                   onChange={onChange}
                   label="KRAJ RADNOG ODNOSA:"
                   name={name}
                   selected={value}
-                  error={errors.date_of_end?.message as string}
+                  error={errors.date_of_end?.message}
                 />
               )}
             />
           </Row>
           <Row>
             <Input
-              {...register('organization_unit', {
-                required: {value: relevant?.title === 'Ne', message: 'Ovo polje je obavezno'},
-              })}
+              {...register('organization_unit')}
               label="ORGANIZACIJA/INSTITUCIJA:"
-              error={errors.organization_unit?.message as string}
-              disabled={relevant?.title === 'Da'}
+              error={errors.organization_unit?.message}
+              disabled={relevant?.id === 'Da' || !relevant}
             />
             <Input
-              {...register('amount_of_insured_experience', {required: 'Ovo polje je obavezno'})}
+              {...register('amount_of_insured_experience')}
               label="PRIJAVLJENI STAŽ (MJESECI):"
-              error={errors.amount_of_insured_experience?.message as string}
+              error={errors.amount_of_insured_experience?.message}
+              type="number"
             />
           </Row>
 

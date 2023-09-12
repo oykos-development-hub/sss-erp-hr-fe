@@ -12,7 +12,11 @@ export const tableHeads: TableHead[] = [
       return item === 'hide' ? <></> : <Typography variant="bodyMedium" content={item ? 'Da' : 'Ne'} />;
     },
   },
-  {title: 'Organizacija', accessor: 'organization_unit', type: 'text'},
+  {
+    title: 'Organizacija',
+    accessor: 'organization_unit',
+    type: 'custom',
+  },
   {
     title: 'Početak',
     accessor: 'date_of_start',
@@ -25,8 +29,20 @@ export const tableHeads: TableHead[] = [
     type: 'custom',
     renderContents: (item: any) => (item ? <Typography variant="bodyMedium" content={parseDate(item)} /> : <></>),
   },
-  {title: 'Radni staž', accessor: 'amount_of_insured_experience', type: 'text'},
-  {title: 'Radno iskustvo', accessor: 'amount_of_experience', type: 'text'},
+  {
+    title: 'Radni staž',
+    accessor: 'amount_of_insured_experience',
+    type: 'custom',
+    renderContents: (_, row: any) => {
+      return <Typography variant="bodyMedium" content={row.amount_of_insured_experience} />;
+    },
+  },
+  {
+    title: 'Radno iskustvo',
+    accessor: 'amount_of_experience',
+    type: 'custom',
+    renderContents: (_, row: any) => <Typography variant="bodyMedium" content={row.amount_of_experience} />,
+  },
   {title: 'Dosije', accessor: 'reference_file_id', type: 'text'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];
