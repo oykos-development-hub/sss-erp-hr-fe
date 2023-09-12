@@ -88,6 +88,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
         refetchList();
         alert.success('Uspješno sačuvano.');
         onClose();
+        reset(initialValues);
       },
       () => {
         alert.error('Greška. Promjene nisu sačuvane.');
@@ -100,6 +101,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
       open={open}
       onClose={() => {
         onClose();
+        reset(initialValues);
       }}
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"

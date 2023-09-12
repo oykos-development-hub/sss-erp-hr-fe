@@ -63,6 +63,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
           alert.success('Uspješno sačuvano.');
           refetchList && refetchList();
           onClose();
+          reset(initialValues);
         },
         () => {
           alert.error('Greška. Promjene nisu sačuvane.');

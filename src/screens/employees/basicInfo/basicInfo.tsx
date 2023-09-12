@@ -75,15 +75,6 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
     });
   }, [context.countries]);
 
-  const citizenshipOptions = useMemo(() => {
-    return context.countries?.map((country: any) => {
-      return {
-        id: country.alpha_3_code,
-        title: country.nationality,
-      };
-    });
-  }, [context.countries]);
-
   const contractStart = watch('contract.date_of_start');
 
   const validateDateOfEnd = (date: Date | null) =>
@@ -166,7 +157,6 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
 
   useEffect(() => {
     refetch();
-
     // If new employee, enable the form immediately
     if (context.navigation.location.pathname.split('/')[3] === 'new-employee') {
       setIsDisabled(false);
@@ -218,6 +208,12 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
       ...context.navigation.location.state.user,
     });
   }, [context.navigation.location.state]);
+
+  useEffect(() => {
+    if (contract.organization_unit_id) {
+      setValue('contract.department_id', null);
+    }
+  }, [contract?.organization_unit_id]);
 
   return (
     <FormContainer>
@@ -432,6 +428,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
             <FormItem>
               <Controller
                 name="marital_status"
+                rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown

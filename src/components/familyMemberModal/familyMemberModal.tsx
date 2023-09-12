@@ -298,6 +298,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                       label="OPŠTINA:"
                       options={cityData}
                       error={errors.city_of_birth?.message as string}
+                      isSearchable
                     />
                   );
                 }}

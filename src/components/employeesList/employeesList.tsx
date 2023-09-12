@@ -8,6 +8,7 @@ import {EmployeeListFilters} from '../../screens/employees';
 import {statusOptions} from '../../constants';
 import useJobPositions from '../../services/graphql/jobPositions/useJobPositionOverview';
 import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
+import {OrganizationUnit} from '../../types/graphql/organizationUnitsTypes';
 
 export interface EmployeesListProps {
   navigation?: any;
@@ -39,7 +40,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   const overviewRef = useRef<HTMLDivElement>(null);
   const state = navigation.location.state;
 
-  const {organizationUnits} = useOrganizationUnits();
+  const {organizationUnits} = useOrganizationUnits(undefined, true);
 
   const {data: jobPositions} = useJobPositions('');
 
@@ -47,11 +48,9 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
     return organizationUnits
       ? [
           {id: 0, title: 'Sve organizacione jedinice'},
-          ...organizationUnits
-            .filter(i => !i.parent_id)
-            .map(unit => {
-              return {id: unit.id, title: unit.title};
-            }),
+          ...organizationUnits.map(unit => {
+            return {id: unit.id, title: unit.title};
+          }),
         ]
       : [];
   }, [organizationUnits]);
