@@ -25,44 +25,24 @@ export enum educationTypes {
 
 export const academicTitles = [
   {
-    id: '0-Doktor nauka',
-    title: '0-Doktor nauka',
+    id: 'Osnovna stručna sprema',
+    title: 'Osnovna stručna sprema',
   },
   {
-    id: '1-Magistar nauka',
-    title: '1-Magistar nauka',
+    id: 'Srednja stručna sprema',
+    title: 'Srednja stručna sprema',
   },
   {
-    id: '2-Visoka stručna sprema',
-    title: '2-Visoka stručna sprema',
+    id: 'Viša stručna sprema',
+    title: 'Viša stručna sprema',
   },
   {
-    id: '3-Viša stručna sprema',
-    title: '3-Viša stručna sprema',
+    id: 'Visoka stručna sprema',
+    title: 'Visoka stručna sprema',
   },
   {
-    id: '4-Srednja stručna sprema',
-    title: '4-Srednja stručna sprema',
-  },
-  {
-    id: '5-Niža stručna sprema',
-    title: '5-Niža stručna sprema',
-  },
-  {
-    id: '6-Visokokvalifikovani radnik',
-    title: '6-Visokokvalifikovani radnik',
-  },
-  {
-    id: '7-Kvalifikovani radnik',
-    title: '7-Kvalifikovani radnik',
-  },
-  {
-    id: '7-Polukvalifikovani radnik',
-    title: '7-Polukvalifikovani radnik',
-  },
-  {
-    id: '7-Nekvalifikovani radnik',
-    title: '7-Nekvalifikovani radnik',
+    id: 'Postdiplomske studije i doktorske studije',
+    title: 'Postdiplomske studije i doktorske studije',
   },
 ];
 
