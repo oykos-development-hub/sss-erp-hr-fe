@@ -81,6 +81,6 @@ export const judgeTableHeads: TableHead[] = [
 export const judgesNumberResolutionTableHeads: TableHead[] = [
   {title: 'Redni Broj', accessor: 'serial_number'},
   {title: 'Godina', accessor: 'year'},
-  {title: 'Ukupan Broj Sudija', accessor: 'number_of_judges'},
+  {title: 'Ukupan Broj Sudija', accessor: 'available_slots_judges'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];
