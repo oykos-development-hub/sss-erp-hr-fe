@@ -79,7 +79,7 @@ export const SystematizationScreen: React.FC<ScreenProps> = ({context}) => {
   }, [params]);
 
   const checkDate = (date: string): boolean => {
-    if (!date) return false;
+    if (!date) return true;
     const inputDate = new Date(date.split('/').reverse().join('-'));
     const currentDate = new Date();
 
