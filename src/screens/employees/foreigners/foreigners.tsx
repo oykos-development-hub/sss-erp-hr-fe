@@ -12,7 +12,7 @@ import {ForeignerPermit} from '../../../types/graphql/foreignerPermits';
 
 const Foreigners: React.FC<ForeignersProps> = ({context}) => {
   const [entryModal, setEntryModal] = useState(false);
-  const [editData, setEditData] = useState<ForeignerPermit | null>();
+  const [editData, setEditData] = useState<ForeignerPermit | undefined>();
   const [deleteModal, setDeleteModal] = useState(0);
   const id = Number(context?.navigation.location.pathname.split('/')[4]);
 
@@ -25,7 +25,7 @@ const Foreigners: React.FC<ForeignersProps> = ({context}) => {
 
   const closeModal = () => {
     setEntryModal(false);
-    setEditData(null);
+    setEditData(undefined);
   };
 
   const handleDelete = () => {

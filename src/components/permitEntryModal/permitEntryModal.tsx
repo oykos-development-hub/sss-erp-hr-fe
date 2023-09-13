@@ -1,36 +1,63 @@
+import {yupResolver} from '@hookform/resolvers/yup';
 import {Checkbox, Datepicker, Dropdown, Input} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import * as yup from 'yup';
 import {cityData} from '../../constants';
 import useForeignerPermitInsert from '../../services/graphql/foreignerPermits/useForeignerPermitInsert';
-import {ForeignerPermit, ForeignerPermitFormValues} from '../../types/graphql/foreignerPermits';
-import {CheckboxContainer, CheckboxLabel, ColumnTitle, Form, FormColumn, FormGroup, PermitModal} from './styles';
+import {ForeignerPermit} from '../../types/graphql/foreignerPermits';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
+import {CheckboxContainer, CheckboxLabel, ColumnTitle, Form, FormColumn, FormGroup, PermitModal} from './styles';
+
+const permitSchema = yup.object().shape({
+  work_permit_number: yup.string().required('Ovo polje je obavezno'),
+  work_permit_issuer: yup
+    .object()
+    .default(undefined)
+    .shape({id: yup.string(), title: yup.string()})
+    .required('Ovo polje je obavezno'),
+  work_permit_date_of_start: yup.date().required('Ovo polje je obavezno'),
+  work_permit_date_of_end: yup
+    .date()
+    .nullable()
+    .min(yup.ref('work_permit_date_of_start'), 'Datum isteka ne može biti prije datuma izdavanja')
+    .when('residence_permit_indefinite_length', {
+      is: (value: any) => !value,
+      then: schema => schema.required('Ovo polje je obavezno'),
+    }),
+  residence_permit_date_of_end: yup.date(),
+  residence_permit_number: yup.string().required('Ovo polje je obavezno'),
+  country_of_origin: yup
+    .object()
+    .default(undefined)
+    .shape({id: yup.string(), title: yup.string()})
+    .required('Ovo polje je obavezno'),
+  user_profile_id: yup.number().required('Ovo polje je obavezno'),
+  residence_permit_indefinite_length: yup.boolean().required('Ovo polje je obavezno'),
+});
+
+const initialValues = {
+  user_profile_id: 0,
+  work_permit_number: '',
+  work_permit_issuer: undefined,
+  work_permit_date_of_start: undefined,
+  work_permit_date_of_end: undefined,
+  work_permit_indefinite_length: false,
+  residence_permit_date_of_end: undefined,
+  residence_permit_indefinite_length: false,
+  residence_permit_number: '',
+  country_of_origin: undefined,
+};
 
 interface PermitEntryModalProps {
   open: boolean;
   onClose: () => void;
-  permitData?: ForeignerPermit | null;
+  permitData?: ForeignerPermit;
   id: number;
   refetchList: () => void;
   countries: any[];
   alert: any;
 }
-
-const initialValues: ForeignerPermitFormValues = {
-  user_profile_id: null,
-  work_permit_number: '',
-  work_permit_issuer: '',
-  work_permit_date_of_start: null,
-  work_permit_date_of_end: null,
-  work_permit_indefinite_length: false,
-  residence_permit_date_of_end: null,
-  residence_permit_indefinite_length: false,
-  residence_permit_number: '',
-  country_of_origin: '',
-  work_permit_file_id: null,
-  residence_permit_file_id: null,
-};
 
 const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
   onClose,
@@ -44,7 +71,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
   const countryOptions = useMemo(() => {
     return countries?.map((country: any) => {
       return {
-        id: country.alpha_3_code,
+        id: country.en_short_name,
         title: country.en_short_name,
       };
     });
@@ -56,9 +83,8 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
     control,
     watch,
     formState: {errors},
-    setValue,
     reset,
-  } = useForm({defaultValues: initialValues});
+  } = useForm({defaultValues: {user_profile_id: id ?? 0}, resolver: yupResolver(permitSchema)});
 
   const indefinite = watch('residence_permit_indefinite_length');
 
@@ -66,16 +92,14 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
 
   useEffect(() => {
     if (permitData) {
-      const editData = {
+      reset({
         ...permitData,
         country_of_origin: countryOptions.find((country: any) => country.id === permitData.country_of_origin),
         work_permit_issuer: cityData.find((city: any) => city.id === permitData.work_permit_issuer),
-        work_permit_date_of_start: parseToDate(permitData.work_permit_date_of_start),
+        work_permit_date_of_start: parseToDate(permitData.work_permit_date_of_start) ?? undefined,
         work_permit_date_of_end: parseToDate(permitData.work_permit_date_of_end),
-        residence_permit_date_of_end: parseToDate(permitData.residence_permit_date_of_end),
-      };
-
-      reset(editData);
+        residence_permit_date_of_end: parseToDate(permitData.residence_permit_date_of_end) ?? undefined,
+      });
     }
   }, [permitData]);
 
@@ -88,7 +112,9 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
       country_of_origin: values.country_of_origin.id,
       user_profile_id: id,
       work_permit_date_of_start: parseDateForBackend(values.work_permit_date_of_start),
-      work_permit_date_of_end: parseDateForBackend(values.work_permit_date_of_end),
+      work_permit_date_of_end: values.residence_permit_indefinite_length
+        ? null
+        : parseDateForBackend(values.work_permit_date_of_end),
       residence_permit_date_of_end: parseDateForBackend(values.residence_permit_date_of_end),
       residence_permit_file_id: values.residence_permit_file_id || 0,
       work_permit_file_id: values.work_permit_file_id || 0,
@@ -109,7 +135,10 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
 
   return (
     <PermitModal
-      onClose={onClose}
+      onClose={() => {
+        reset(initialValues);
+        onClose();
+      }}
       open={open}
       title="DODAJTE DOZVOLU"
       style={{width: '1020px'}}
@@ -121,16 +150,15 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
             <ColumnTitle content="PODACI O RADNOJ DOZVOLI" variant="bodySmall" style={{fontWeight: 600}} />
             <FormGroup>
               <Input
-                {...register('work_permit_number', {required: 'Ovo polje je obavezno'})}
+                {...register('work_permit_number')}
                 label="BROJ:"
-                error={errors.work_permit_number?.message as string}
+                error={errors.work_permit_number?.message}
                 placeholder="Unesite broj radne dozvole"
               />
             </FormGroup>
             <FormGroup>
               <Controller
                 name="work_permit_issuer"
-                rules={{required: 'Ovo polje je obavezno'}}
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -139,7 +167,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                     name={name}
                     label="IZDAVALAC:"
                     options={cityData}
-                    error={errors.work_permit_issuer?.message as string}
+                    error={errors.work_permit_issuer?.message}
                     placeholder="Izaberite izdavaoca"
                   />
                 )}
@@ -149,14 +177,13 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
               <Controller
                 name="work_permit_date_of_start"
                 control={control}
-                rules={{required: 'Ovo polje je obavezno'}}
                 render={({field: {onChange, name, value}}) => (
                   <Datepicker
                     onChange={onChange}
                     label="VAŽI OD:"
                     name={name}
                     selected={value}
-                    error={errors.work_permit_date_of_start?.message as string}
+                    error={errors.work_permit_date_of_start?.message}
                   />
                 )}
               />
@@ -165,7 +192,6 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
               <Controller
                 name="work_permit_date_of_end"
                 control={control}
-                rules={{required: {value: !indefinite, message: 'Ovo polje je obavezno'}}}
                 render={({field: {onChange, name, value}}) => {
                   return (
                     <Datepicker
@@ -173,7 +199,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                       label="VAŽI DO:"
                       name={name}
                       selected={value}
-                      error={errors.work_permit_date_of_end?.message as string}
+                      error={errors.work_permit_date_of_end?.message}
                       disabled={indefinite}
                     />
                   );
@@ -184,14 +210,10 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
             <Controller
               name="residence_permit_indefinite_length"
               control={control}
-              render={({field: {name, value}}) => {
+              render={({field: {name, value, onChange}}) => {
                 return (
                   <CheckboxContainer>
-                    <Checkbox
-                      onChange={() => setValue('residence_permit_indefinite_length', !value)}
-                      name={name}
-                      checked={value}
-                    />
+                    <Checkbox onChange={onChange} name={name} checked={value} />
                     <CheckboxLabel content="Neograničeno Trajanje" variant="bodySmall" />
                   </CheckboxContainer>
                 );
@@ -204,7 +226,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
               <Input
                 {...register('residence_permit_number')}
                 label="BROJ PASOŠA:"
-                error={errors.residence_permit_number?.message as string}
+                error={errors.residence_permit_number?.message}
                 placeholder="Unesite broj pasoša"
               />
             </FormGroup>
@@ -218,7 +240,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                     label="VAŽI DO:"
                     name={name}
                     selected={value}
-                    error={errors.residence_permit_date_of_end?.message as string}
+                    error={errors.residence_permit_date_of_end?.message}
                   />
                 )}
               />
@@ -230,7 +252,6 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
               <Controller
                 name="country_of_origin"
                 control={control}
-                rules={{required: 'Ovo polje je obavezno'}}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
                     onChange={onChange}
@@ -238,7 +259,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                     label="DRŽAVA:"
                     name={name}
                     options={countryOptions}
-                    error={errors.residence_permit_date_of_end?.message as string}
+                    error={errors.country_of_origin?.message}
                     placeholder="Izaberite državu"
                     isSearchable
                   />

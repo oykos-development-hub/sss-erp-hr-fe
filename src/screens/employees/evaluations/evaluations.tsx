@@ -35,6 +35,7 @@ export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
 
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
+
   const selectedItem = useMemo(() => {
     return userEvaluationData?.find((item: UserProfileEvaluation) => item.id === selectedItemId);
   }, [selectedItemId]);
@@ -103,15 +104,18 @@ export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
           ]}
         />
       </div>
-      <EvaluationModal
-        alert={context.alert}
-        refetchList={refetchData}
-        open={showModal}
-        onClose={closeModal}
-        selectedItem={selectedItem}
-        userProfileId={userProfileID}
-        evaluationTypes={evaluationTypes || []}
-      />
+      {showModal && (
+        <EvaluationModal
+          alert={context.alert}
+          refetchList={refetchData}
+          open={showModal}
+          onClose={closeModal}
+          selectedItem={selectedItem}
+          userProfileId={userProfileID}
+          evaluationTypes={evaluationTypes || []}
+        />
+      )}
+
       <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />
     </Container>
   );

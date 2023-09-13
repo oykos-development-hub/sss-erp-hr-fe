@@ -1,24 +1,29 @@
+import {yupResolver} from '@hookform/resolvers/yup';
 import {Datepicker, Dropdown, FileUpload, Modal, Typography} from 'client-library';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import * as yup from 'yup';
 import {yesOrNoOptionsString} from '../../constants';
 import {EvaluationModalProps} from '../../screens/employees/evaluations/types';
 import useEvaluationInsert from '../../services/graphql/userProfile/evaluation/useEvaluationInsert';
 import {DropdownDataNumber} from '../../types/dropdownData';
-import {UserProfileEvaluation, UserProfileEvaluationFormValues} from '../../types/graphql/userProfileGetEvaluations';
-import {FileUploadWrapper, FormWrapper, Row} from './styles';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
+import {FileUploadWrapper, FormWrapper, Row} from './styles';
 
-const initialValues: UserProfileEvaluationFormValues = {
-  id: 0,
-  user_profile_id: 0,
-  date_of_evaluation: null,
-  score: '',
-  evaluator: '',
-  is_relevant: false,
-  file_id: 0,
-  evaluation_type_id: 1,
-};
+const evaluationSchema = yup.object().shape({
+  date_of_evaluation: yup.date().required('Ovo polje je obavezno'),
+  is_relevant: yup
+    .object()
+    .default(undefined)
+    .shape({id: yup.string(), title: yup.string()})
+    .required('Ovo polje je obavezno'),
+  score: yup
+    .object()
+    .default(undefined)
+    .shape({id: yup.string(), title: yup.string()})
+    .required('Ovo polje je obavezno'),
+  user_profile_id: yup.number().required('Ovo polje je obavezno'),
+});
 
 export const EvaluationModal: React.FC<EvaluationModalProps> = ({
   alert,
@@ -31,30 +36,15 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
 }) => {
   const [evaluationTypesOption, setEvaluationTypesOption] = useState<DropdownDataNumber[]>([]);
 
-  const item = useMemo(() => {
-    return selectedItem
-      ? {
-          ...selectedItem,
-          is_relevant: {id: selectedItem?.is_relevant ? 'Da' : 'Ne', title: selectedItem?.is_relevant ? 'Da' : 'Ne'},
-          date_of_evaluation: parseToDate(selectedItem?.date_of_evaluation),
-          score: {id: selectedItem?.evaluation_type.id, title: selectedItem?.evaluation_type.title},
-          user_profile_id: Number(userProfileId),
-        }
-      : {...initialValues, user_profile_id: Number(userProfileId)};
-  }, [selectedItem]);
-
   const {
     handleSubmit,
     control,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: item || initialValues});
-
-  useEffect(() => {
-    if (item) {
-      reset(item);
-    }
-  }, [item]);
+  } = useForm({
+    resolver: yupResolver(evaluationSchema),
+    defaultValues: {user_profile_id: Number(userProfileId) ?? null},
+  });
 
   useEffect(() => {
     if (Array.isArray(evaluationTypes) && evaluationTypes.length > 0) {
@@ -78,8 +68,8 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
       evaluator: '',
     };
 
-    if (item) {
-      payload.id = item.id ? item.id : 0;
+    if (selectedItem) {
+      payload.id = selectedItem.id ? selectedItem.id : 0;
     }
 
     await mutate(
@@ -88,7 +78,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
         refetchList();
         alert.success('Uspješno sačuvano.');
         onClose();
-        reset(initialValues);
+        reset();
       },
       () => {
         alert.error('Greška. Promjene nisu sačuvane.');
@@ -96,12 +86,24 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
     );
   };
 
+  useEffect(() => {
+    if (selectedItem) {
+      reset({
+        ...selectedItem,
+        is_relevant: {id: selectedItem?.is_relevant ? 'Da' : 'Ne', title: selectedItem?.is_relevant ? 'Da' : 'Ne'},
+        date_of_evaluation: parseToDate(selectedItem?.date_of_evaluation),
+        score: {id: selectedItem?.evaluation_type.id, title: selectedItem?.evaluation_type.title},
+        user_profile_id: Number(userProfileId),
+      });
+    }
+  }, [selectedItem]);
+
   return (
     <Modal
       open={open}
       onClose={() => {
         onClose();
-        reset(initialValues);
+        reset();
       }}
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
@@ -113,20 +115,18 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
             <Controller
               name="date_of_evaluation"
               control={control}
-              rules={{required: 'Ovo polje je obavezno'}}
               render={({field: {onChange, name, value}}) => (
                 <Datepicker
                   onChange={onChange}
                   selected={value ? new Date(value) : ''}
                   name={name}
                   label="DATUM:"
-                  error={errors.date_of_evaluation?.message as string}
+                  error={errors.date_of_evaluation?.message}
                 />
               )}
             />
             <Controller
               name="is_relevant"
-              rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => {
                 return (
@@ -136,7 +136,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
                     name={name}
                     label="PRAVOSNAŽNOST:"
                     options={yesOrNoOptionsString}
-                    error={errors.is_relevant?.message as string}
+                    error={errors.is_relevant?.message}
                   />
                 );
               }}
@@ -145,7 +145,6 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
           <Row>
             <Controller
               name="score"
-              rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => {
                 return (
@@ -155,7 +154,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
                     name={name}
                     label="OCJENA:"
                     options={evaluationTypesOption}
-                    error={errors.is_relevant?.message as string}
+                    error={errors.is_relevant?.message}
                   />
                 );
               }}
