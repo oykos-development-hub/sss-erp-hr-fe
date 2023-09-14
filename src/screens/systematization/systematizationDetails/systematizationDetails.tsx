@@ -25,7 +25,7 @@ import {OrganizationalUnitModal} from '../../../components/organizationUnitModal
 
 const initialValues = {
   organization_unit: {id: 0, value: ''},
-  user_profile_id: 0,
+  user_profile_id: Number(localStorage.getItem('user_id')),
   serial_number: '',
   description: '',
   active: false,
@@ -39,6 +39,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
   const onTabChange = (tab: Tab) => {
     setActiveTab(tab.id as number);
   };
+
   const [showEditSectorModal, setShowEditSectorModal] = useState(false);
   const systematizationID = context?.navigation?.location?.pathname.split('/')[4];
   const {systematizationDetails, refetch: refreshData} = useSystematizationGetDetails(systematizationID);
