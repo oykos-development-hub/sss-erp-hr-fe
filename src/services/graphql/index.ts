@@ -62,6 +62,9 @@ import basicInfoUpdate from './userProfile/basicInfo/basicInfoUpdate';
 import jobPositionsAvailableOrganizationUnit from './jobPositions/jobPositionsAvailableOrganizationUnit';
 import getSuppliersOverview from './suppliers/getSuppliers';
 import organizationUintCalculateEmployeeStats from './judges/organizationUintCalculateEmployeeStats';
+import vacationInsert from './userProfile/vacation/vacationInsert';
+import vacationDelete from './userProfile/absents/vacationDelete';
+import GetVacation from './userProfile/vacation/vacationGet';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -143,4 +146,7 @@ export const GraphQL = {
   organizationUintCalculateEmployeeStats: organizationUintCalculateEmployeeStats,
   settingsDropdownOverview: settingsDropdownOverview,
   getSuppliersOverview: getSuppliersOverview,
+  getVacation: GetVacation,
+  vacationInsert: vacationInsert,
+  vacationDelete: vacationDelete,
 };

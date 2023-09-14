@@ -2,12 +2,12 @@ import {useState} from 'react';
 import {GraphQL} from '../..';
 import {REQUEST_STATUSES} from '../../../constants';
 
-const useAbsentDelete = () => {
+const useVacationDelete = () => {
   const [loading, setLoading] = useState(false);
 
-  const deleteAbsents = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+  const deleteVacation = async (id: number, onSuccess?: () => void, onError?: () => void) => {
     setLoading(true);
-    const response = await GraphQL.absentDelete(id);
+    const response = await GraphQL.vacationDelete(id);
 
     if (response.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
@@ -17,7 +17,7 @@ const useAbsentDelete = () => {
     setLoading(false);
   };
 
-  return {loading, mutate: deleteAbsents};
+  return {loading, deleteVacation: deleteVacation};
 };
 
-export default useAbsentDelete;
+export default useVacationDelete;

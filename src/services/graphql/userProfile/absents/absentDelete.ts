@@ -3,16 +3,15 @@ import {UserProfileAbsentsDeleteResponse} from '../../../../types/graphql/profil
 
 const absentDelete = async (
   id: number,
-  absent_type_id: number,
 ): Promise<UserProfileAbsentsDeleteResponse['data']['userProfile_Absent_Delete']> => {
-  const mutation = `mutation($id: Int!, $absent_type_id: Int) {
-    userProfile_Absent_Delete(id: $id, absent_type_id: $absent_type_id) {
-        message
-        status
+  const mutation = `mutation($id: Int!) {
+    userProfile_Absent_Delete(id: $id) {
+      message
+      status
     }
 }`;
 
-  const response = await GraphQL.fetch(mutation, {id, absent_type_id});
+  const response = await GraphQL.fetch(mutation, {id});
 
   return response?.data?.userProfile_Absent_Delete || {};
 };

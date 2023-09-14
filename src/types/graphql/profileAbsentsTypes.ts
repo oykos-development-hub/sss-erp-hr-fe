@@ -36,12 +36,20 @@ export type UserProfileAbsentsParams = {
   id: number | null;
   user_profile_id: number;
   absent_type_id: DropdownDataNumber | null;
-  location: string;
   target_organization_unit_id: DropdownDataNumber | null;
-  date_of_start: Date | null;
-  date_of_end: Date | null;
+  date_of_start: string | null;
+  date_of_end: string | null;
   description: string;
   file_id: number | null;
+  absent_type?: {
+    id: number;
+    title: string;
+    accounting_days_off: boolean;
+  };
+  target_organization_unit?: {
+    id: number;
+    title: string;
+  };
 };
 
 export interface UserProfileAbsentsResponse {

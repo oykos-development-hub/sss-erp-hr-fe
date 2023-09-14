@@ -7,13 +7,12 @@ import useAbsentInsert from '../../services/graphql/userProfile/absents/useAbsen
 import {AbsentType, UserProfileAbsentsParams} from '../../types/graphql/profileAbsentsTypes';
 import {dropdownOptions, dropdownVacationOptions} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
-import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
+import {parseDate, parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 
 const initialValues: UserProfileAbsentsParams = {
   id: null,
   user_profile_id: 0,
   absent_type_id: null,
-  location: '',
   target_organization_unit_id: null,
   date_of_start: null,
   date_of_end: null,
@@ -31,7 +30,8 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
 }) => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [absentChildType, setAbsentChildType] = useState<AbsentType[]>([]);
-  const [isVacation, setIsVacation] = useState<boolean>(true);
+  const [isVacation, setIsVacation] = useState<boolean | null>(null);
+  const [selectedAbsentTypeId, setSelectedAbsentTypeId] = useState(null);
 
   const handleUpload = (files: FileList) => {
     const fileList = Array.from(files);
@@ -39,11 +39,13 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
   };
 
   const handleTypeChange = (selectedValue: any) => {
-    const vacation = selectedValue.id === 1;
     if (selectedValue.id === 1) {
       setIsVacation(true);
-    } else setIsVacation(false);
-    setAbsentChildType([...absentTypes.filter(item => item.accounting_days_off === vacation)]);
+      setAbsentChildType([...absentTypes.filter(item => item.accounting_days_off)]);
+    } else {
+      setIsVacation(false);
+      setAbsentChildType([...absentTypes.filter(item => !item.accounting_days_off)]);
+    }
   };
 
   const {organizationUnits} = useOrganizationUnits();
@@ -60,15 +62,15 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
 
   const handleSave = (values: any) => {
     if (isSaving) return;
-
     const payload = {
-      ...values,
       id: values?.id || 0,
       user_profile_id: userProfileId,
       date_of_start: parseDateForBackend(values?.date_of_start),
       date_of_end: parseDateForBackend(values?.date_of_end),
-      absent_type_id: values?.absent_type_id?.id || 0,
-      target_organization_unit_id: values?.target_organization_unit_id?.id || 1,
+      absent_type_id: isVacation ? absentChildType[0]?.id : values?.absent_type?.id,
+      description: values?.description,
+      target_organization_unit_id: values?.target_organization_unit?.id || null,
+      file_id: values?.file_id || null,
     };
 
     mutate(
@@ -90,27 +92,41 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
     control,
     formState: {errors},
     reset,
-  } = useForm<UserProfileAbsentsParams>({defaultValues: selectedItem || initialValues});
+  } = useForm<UserProfileAbsentsParams>({defaultValues: initialValues});
 
   useEffect(() => {
     if (selectedItem) {
-      console.log(selectedItem);
       reset({
         ...selectedItem,
         date_of_end: parseToDate(selectedItem.date_of_end),
-        date_of_start: parseToDate(selectedItem.date_of_start),
+        date_of_start: parseToDate(selectedItem?.date_of_start),
       });
       if (selectedItem.id !== 0) {
-        if (dropdownVacationOptions.find(option => option.id === selectedItem.absent_type_id.id)) {
+        if (selectedItem?.absent_type.accounting_days_off) {
+          setAbsentChildType([...absentTypes.filter(item => item.accounting_days_off)]);
           setIsVacation(true);
-        } else setIsVacation(false);
+        } else {
+          setAbsentChildType([...absentTypes.filter(item => !item.accounting_days_off)]);
+          handleAbsentTypeChange(selectedItem?.absent_type.title);
+          setIsVacation(false);
+        }
       }
     }
   }, [selectedItem, reset]);
 
-  useEffect(() => {
-    setAbsentChildType([...absentTypes.filter(item => item.accounting_days_off === true)]);
-  }, [absentTypes]);
+  const handleAbsentTypeChange = (selectedValue: any) => {
+    setSelectedAbsentTypeId(selectedValue);
+  };
+
+  const VacationValue = () => {
+    if (isVacation) {
+      return dropdownOptions[1];
+    } else if (isVacation === false) {
+      return dropdownOptions[2];
+    } else {
+      return dropdownOptions[0];
+    }
+  };
 
   return (
     <Modal
@@ -128,52 +144,55 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
           <FormGroup>
             <Dropdown
               label="VRSTA ZAHTJEVA:"
-              options={dropdownOptions}
-              value={isVacation ? dropdownOptions[0] : dropdownOptions[1]}
+              options={dropdownOptions.slice(1)}
+              value={VacationValue() as any}
               onChange={handleTypeChange}
               placeholder="Birajte vrstu"
-              name={'vacation'}
+              name="vacation"
             />
           </FormGroup>
-
-          <FormGroup>
-            <Controller
-              name="absent_type_id"
-              control={control}
-              rules={{required: 'Ovo polje je obavezno'}}
-              render={({field: {onChange, name, value}}) => (
-                <Dropdown
-                  label="VRSTA:"
-                  name={name}
-                  options={absentChildType}
-                  value={value as any}
-                  onChange={onChange}
-                  error={errors.absent_type_id?.message}
-                  placeholder="Birajte vrstu"
-                />
-              )}
-            />
-          </FormGroup>
-
-          <FormGroup>
-            <Controller
-              name="target_organization_unit_id"
-              control={control}
-              render={({field: {onChange, name, value}}) => (
-                <Dropdown
-                  label="DRŽAVNI ORGAN:"
-                  name={name}
-                  options={organizationUnitsList as any}
-                  value={value as any}
-                  onChange={onChange}
-                  error={errors.target_organization_unit_id?.message}
-                  placeholder="Birajte državni organ"
-                  isDisabled={isVacation}
-                />
-              )}
-            />
-          </FormGroup>
-
+          {!isVacation && (
+            <FormGroup>
+              <Controller
+                name="absent_type"
+                control={control}
+                rules={{required: 'Ovo polje je obavezno'}}
+                render={({field: {onChange, name, value}}) => (
+                  <Dropdown
+                    label="VRSTA:"
+                    name={name}
+                    options={absentChildType}
+                    value={value as any}
+                    onChange={selectedValue => {
+                      handleAbsentTypeChange(selectedValue.title);
+                      onChange(selectedValue);
+                    }}
+                    error={errors.absent_type?.message}
+                    placeholder="Birajte vrstu"
+                  />
+                )}
+              />
+            </FormGroup>
+          )}
+          {!isVacation && selectedAbsentTypeId === 'Upućivanje u drugi državni organ' && (
+            <FormGroup>
+              <Controller
+                name="target_organization_unit"
+                control={control}
+                render={({field: {onChange, name, value}}) => (
+                  <Dropdown
+                    label="DRŽAVNI ORGAN:"
+                    name={name}
+                    options={organizationUnitsList as any}
+                    value={value as any}
+                    onChange={onChange}
+                    error={errors.target_organization_unit?.message}
+                    placeholder="Birajte državni organ"
+                  />
+                )}
+              />
+            </FormGroup>
+          )}
           <FormGroup>
             <Controller
               name="date_of_start"
@@ -190,7 +209,6 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
               )}
             />
           </FormGroup>
-
           <FormGroup>
             <Controller
               name="date_of_end"
@@ -199,7 +217,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
               render={({field: {onChange, name, value}}) => (
                 <Datepicker
                   onChange={onChange}
-                  label="KRAJ TRAJANJA:"
+                  label="KRAJ TRAJANJA (Uključujuci taj dan):"
                   name={name}
                   selected={value}
                   error={errors.date_of_end?.message as string}
@@ -209,15 +227,8 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
           </FormGroup>
 
           <FormGroup>
-            <Input
-              {...register('description', {required: 'Ovo polje je obavezno'})}
-              label="OPIS:"
-              placeholder="Unesite opis..."
-              textarea
-              error={errors.description?.message as string}
-            />
+            <Input {...register('description')} label="OPIS:" placeholder="Unesite opis..." textarea />
           </FormGroup>
-
           <FileUploadWrapper>
             <FileUpload
               icon={<></>}
@@ -228,7 +239,6 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
               buttonText="Učitaj"
             />
           </FileUploadWrapper>
-
           {uploadedFiles.length > 0 && (
             <UploadedFileWrapper>
               {uploadedFiles.map((file, index) => (

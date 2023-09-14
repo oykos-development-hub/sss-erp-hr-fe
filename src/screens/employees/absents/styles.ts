@@ -84,3 +84,8 @@ export const TableTitle = styled(Typography)`
   line-height: 24px;
   margin-top: 30px;
 `;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;

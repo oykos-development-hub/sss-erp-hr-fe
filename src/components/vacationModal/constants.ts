@@ -1,7 +1,6 @@
 import {DropdownDataNumber} from '../../types/dropdownData';
 
 export const dropdownOptions: DropdownDataNumber[] = [
-  {id: 0, title: 'Izaberite opciju'},
   {id: 1, title: 'Odmori'},
   {id: 2, title: 'Odsustvo'},
 ];
