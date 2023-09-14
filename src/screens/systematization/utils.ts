@@ -4,7 +4,7 @@ export const formatDataSaveSystematization = (data: any) => {
   const payload = {
     ...data,
     id: data?.id || 0,
-    user_profile_id: data?.user_profile_id || 1,
+    user_profile_id: Number(localStorage.getItem('user_id')),
     organization_unit_id: data?.organization_unit?.id,
     date_of_activation: parseDateForBackend(data?.date_of_activation),
     file_id: data?.file_id || 0,
