@@ -1,4 +1,4 @@
-import {Divider, ValueType} from '@oykos-development/devkit-react-ts-styled-components';
+import {Divider} from '@oykos-development/devkit-react-ts-styled-components';
 import {Button, Dropdown, EditIconTwo, Table, Theme, TrashIcon, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {AbsentModal} from '../../../components/absentsModal/absentsModal';
@@ -120,7 +120,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
     setSelectedItemId(id);
   };
 
-  const handleChange = (value: ValueType, name: string) => {
+  const handleChange = (value: any, name: string) => {
     setForm((prevState: any) => ({
       ...prevState,
       [name]: value,
@@ -220,7 +220,6 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
               name="year"
               value={form?.year || null}
               placeholder="Odaberite godinu:"
-              // @ts-ignore
               onChange={handleChange}
             />
           </YearContainer>

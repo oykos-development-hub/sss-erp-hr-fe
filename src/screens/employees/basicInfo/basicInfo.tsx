@@ -568,9 +568,6 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     name={name}
                     checked={value}
                     onChange={onChange}
-                    // @TODO remove ts-ignore
-                    //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    //@ts-ignore
                     content={<Typography variant="bodyMedium" content="REVIZOR:" style={{marginLeft: 10}} />}
                     disabled={isDisabled}
                   />
