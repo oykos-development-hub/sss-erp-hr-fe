@@ -1,15 +1,14 @@
 import React, {useMemo, useState} from 'react';
 import {JobTenderModal} from '../../components/jobTenderModal/jobTenderModal';
 import JobTendersList from '../../components/jobTendersList/jobTendersList';
+import useJobTendersTypesSearch from '../../services/graphql/jobPositions/useJobTendersTypesSearch';
+import useJobTendersDelete from '../../services/graphql/jobTenders/useJobTenderDelete';
+import useJobTendersOverview from '../../services/graphql/jobTenders/useJobTenderOverview';
 import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
 import {ScreenWrapper} from '../../shared/screenWrapper';
+import {DropdownDataNumber} from '../../types/dropdownData';
 import {JobTender} from '../../types/graphql/jobTenders';
 import {ScreenProps} from '../../types/screen-props';
-import {DropdownDataBoolean, DropdownDataNumber} from '../../types/dropdownData';
-import useJobTendersOverview from '../../services/graphql/jobTenders/useJobTenderOverview';
-import useJobTendersDelete from '../../services/graphql/jobTenders/useJobTenderDelete';
-import useJobTendersTypesSearch from '../../services/graphql/jobPositions/useJobTendersTypesSearch';
-import useJobPositionsOrganizationUnit from '../../services/graphql/jobPositions/useJobPositionsOrganizationUnit';
 
 export interface JobTendersListFilters {
   active?: {id: boolean | null; title: string};
@@ -112,7 +111,7 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
           open={showModal}
           onClose={handleCloseModal}
           selectedItem={selectedItem}
-          dropdownJobTenderType={types?.items || []}
+          jobTenderTypeOptions={types?.items || []}
           organizationUnitsList={organizationUnitsList || []}
           refetch={refetch}
           alert={alert}

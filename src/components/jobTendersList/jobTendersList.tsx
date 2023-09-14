@@ -4,7 +4,6 @@ import {FC, useState} from 'react';
 import {JobTendersListFilters} from '../../screens/jobTenders';
 import {tableHeads} from '../../screens/jobTenders/constants';
 import {DeleteModal} from '../../shared/deleteModal/deleteModal';
-import {DropdownDataBoolean} from '../../types/dropdownData';
 import {JobTender, JobTendersResponse} from '../../types/graphql/jobTenders';
 import {MicroserviceProps} from '../../types/micro-service-props';
 import {Controls, FilterDropdown, Filters, Header, MainTitle, OverviewBox} from './styles';

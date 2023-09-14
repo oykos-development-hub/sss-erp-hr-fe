@@ -2,59 +2,72 @@ import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import useJobTenderInsert from '../../services/graphql/jobTenders/useJobTenderInsert';
-import {JobTenderForm, JobTenderParams, JobTendersModal} from '../../types/graphql/jobTenders';
+import {JobTendersModalProps} from '../../types/graphql/jobTenders';
 import {FileUploadWrapper, ModalContentWrapper, Row} from '../education/modals/styles';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
+import * as yup from 'yup';
+import {yupResolver} from '@hookform/resolvers/yup';
 
-const initialValues: JobTenderForm = {
+const jobTenderSchema = yup.object().shape({
+  type: yup
+    .object()
+    .default(undefined)
+    .shape({id: yup.number(), title: yup.string()})
+    .required('Ovo polje je obavezno'),
+  organization_unit_id: yup
+    .object()
+    .default(undefined)
+    .shape({id: yup.string(), title: yup.string()})
+    .required('Ovo polje je obavezno'),
+  date_of_start: yup.date().required('Ovo polje je obavezno'),
+  date_of_end: yup
+    .date()
+    .required('Ovo polje je obavezno')
+    .min(yup.ref('date_of_start'), 'Datum mora biti veći od datuma početka'),
+  serial_number: yup.string().required('Ovo polje je obavezno'),
+  id: yup.number(),
+});
+
+const initialValues = {
   id: 0,
-  organization_unit_id: null,
-  date_of_start: null,
-  date_of_end: null,
+  organization_unit_id: undefined,
+  date_of_start: undefined,
+  date_of_end: undefined,
   serial_number: '',
   type: undefined,
   description: '',
   file_id: 0,
 };
 
-export const JobTenderModal: React.FC<JobTendersModal> = ({
+export const JobTenderModal: React.FC<JobTendersModalProps> = ({
   selectedItem,
   open,
   onClose,
   organizationUnitsList,
-  dropdownJobTenderType,
+  jobTenderTypeOptions,
   alert,
   refetch,
 }) => {
-  const item = useMemo(() => {
-    return selectedItem
-      ? {
-          ...selectedItem,
-          type: selectedItem.type,
-        }
-      : initialValues;
-  }, [selectedItem]);
-
   const {
     register,
     handleSubmit,
     control,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: initialValues});
+  } = useForm({resolver: yupResolver(jobTenderSchema)});
 
   const {mutate, loading: isSaving} = useJobTenderInsert();
 
   useEffect(() => {
-    if (item) {
+    if (selectedItem) {
       reset({
-        ...item,
-        date_of_end: parseToDate(item.date_of_end),
-        date_of_start: parseToDate(item.date_of_start),
-        organization_unit_id: organizationUnitsList.find(org => org.id === item.organization_unit?.id),
+        ...selectedItem,
+        date_of_end: parseToDate(selectedItem.date_of_end),
+        date_of_start: parseToDate(selectedItem.date_of_start),
+        organization_unit_id: organizationUnitsList.find(org => org.id === selectedItem.organization_unit?.id),
       });
     }
-  }, [item]);
+  }, [selectedItem]);
 
   const onSubmit = (values: any) => {
     if (isSaving) return;
@@ -91,7 +104,7 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
       open={open}
       onClose={() => {
         onClose();
-        reset(item);
+        reset(initialValues);
       }}
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
@@ -102,29 +115,26 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
           <Row>
             <Controller
               name="type"
-              rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
                 <Dropdown
                   label="TIP OGLASA:"
                   name={name}
-                  options={dropdownJobTenderType as any}
+                  options={jobTenderTypeOptions}
                   value={value as any}
                   onChange={onChange}
-                  error={errors.type?.message as string}
+                  error={errors.type?.message}
                 />
               )}
             />
-
             <Controller
               name="organization_unit_id"
-              rules={{required: 'Ovo polje je obavezno'}}
               control={control}
               render={({field: {onChange, name, value}}) => (
                 <Dropdown
                   label="ORGANIZACIONA JEDINICA:"
                   name={name}
-                  options={organizationUnitsList.slice(1) as any}
+                  options={organizationUnitsList.slice(1)}
                   value={value as any}
                   onChange={onChange}
                   error={errors.organization_unit_id?.message}
@@ -136,39 +146,32 @@ export const JobTenderModal: React.FC<JobTendersModal> = ({
             <Controller
               name="date_of_start"
               control={control}
-              rules={{required: 'Ovo polje je obavezno'}}
               render={({field: {onChange, name, value}}) => (
                 <Datepicker
                   onChange={onChange}
                   label="DATUM OBJAVE:"
                   name={name}
-                  selected={value ? new Date(value) : ''}
+                  selected={value}
                   error={errors.date_of_start?.message}
                 />
               )}
             />
-
             <Controller
               name="date_of_end"
               control={control}
-              rules={{required: 'Ovo polje je obavezno'}}
               render={({field: {onChange, name, value}}) => (
                 <Datepicker
                   onChange={onChange}
                   label="OGLAS JE VALIDAN DO:"
                   name={name}
-                  selected={value ? new Date(value) : null}
+                  selected={value}
                   error={errors.date_of_end?.message}
                 />
               )}
             />
           </Row>
           <Row>
-            <Input
-              {...register('serial_number', {required: 'Ovo polje je obavezno'})}
-              label="BROJ OGLASA:"
-              error={errors.serial_number?.message}
-            />
+            <Input {...register('serial_number')} label="BROJ OGLASA:" error={errors.serial_number?.message} />
           </Row>
           <FileUploadWrapper>
             <FileUpload
