@@ -8,11 +8,7 @@ import {UserProfileResolutionItem} from '../../../types/graphql/userProfileGetRe
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import {parseDate} from '../../../utils/dateUtils';
 import {Container, TableHeader, YearWrapper} from './styles';
-
-interface ValueType {
-  id: number | string;
-  title: ReactNode;
-}
+import {yearsForDropdownFilter} from '../../../utils/constants';
 
 const tableHeads: TableHead[] = [
   {
@@ -34,27 +30,21 @@ const tableHeads: TableHead[] = [
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];
 
-const currentYear = new Date().getFullYear();
-
-const YearList: ValueType[] = Array.from({length: 10}, (_, index) => {
-  const year = currentYear - index;
-  return {id: year.toString(), title: year.toString()};
-});
-
 export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({context}) => {
+  const years = yearsForDropdownFilter();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(0);
+  const [form, setForm] = useState<any>();
   const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {data, fetch, loading} = useResolutionOverview(userProfileID);
   const tableData = data;
-
-  const [showModal, setShowModal] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState(0);
+  const {mutate} = useResolutionDelete();
 
   const selectedItem = useMemo(
     () => tableData?.find((item: UserProfileResolutionItem) => item.id === selectedItemId),
     [selectedItemId, tableData],
   );
-
-  const [form, setForm] = useState<any>();
 
   const filteredTableData = useMemo(() => {
     if (form?.year?.id) {
@@ -63,11 +53,7 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
     return tableData;
   }, [tableData, form?.year?.id]);
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  const {mutate} = useResolutionDelete();
-
-  const handleChange = (value: ValueType, name: string) => {
+  const handleChange = (value: any, name: string) => {
     setForm((prevState: any) => ({
       ...prevState,
       [name]: value,
@@ -117,12 +103,9 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
         <YearWrapper>
           <Dropdown
             label={<Typography variant="bodySmall" content="GODINA:" />}
-            options={YearList}
+            options={years}
             name="year"
             value={form?.year || null}
-            // @TODO remove ts-ignore
-            //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            //@ts-ignore
             onChange={handleChange}
             placeholder="Odaberite godinu:"
           />

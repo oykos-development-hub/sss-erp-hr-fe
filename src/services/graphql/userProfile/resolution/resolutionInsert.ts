@@ -9,6 +9,7 @@ const resolutionInsert = async (
     userProfile_Resolution_Insert(data: $data) {
         message
         status
+        data
         item {
             id
             user_profile {

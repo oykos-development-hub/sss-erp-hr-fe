@@ -6,7 +6,7 @@ import useAbsentDelete from '../../../services/graphql/userProfile/absents/useAb
 import useAbsentOverview from '../../../services/graphql/userProfile/absents/useAbsentOverview';
 import useAbsentTypesOverview from '../../../services/graphql/userProfile/absents/useAbsentsType';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
-import {UserProfileAbsents, UserProfileAbsentsParams, VacationType} from '../../../types/graphql/profileAbsentsTypes';
+import {UserProfileAbsents, UserProfileAbsentsParams} from '../../../types/graphql/profileAbsentsTypes';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import {
   ButtonWrapper,
@@ -76,6 +76,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
       selectedItemId,
       () => {
         refetcUserVacation();
+        refetchData();
         context.alert.success('Uspješno obrisano.');
         setShowDeleteVacationModal(false);
         setSelectedItemId(0);
@@ -93,10 +94,11 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
     refetch && refetchData();
   };
 
-  const handleCloseVacationModal = (refetch?: boolean) => {
+  const handleCloseVacationModal = (refetch: boolean) => {
     setShowVacationModal(false);
     setSelectedItemId(0);
     setEditItemVacation(undefined);
+    refetchData();
     refetch && refetcUserVacation();
   };
 
@@ -200,7 +202,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
         </VacationContainer>
         <VacationContainer>
           <SuperTitle variant="bodySmall" content={`${summary?.used_days}` || ''}></SuperTitle>
-          <Title variant="bodySmall" content="UZETI DANI" />
+          <Title variant="bodySmall" content="ISKORIŠTENI DANI U TEKUĆOJ GODINI" />
           <Subtitle variant="bodySmall" content="" />
         </VacationContainer>
         <VacationContainer>
