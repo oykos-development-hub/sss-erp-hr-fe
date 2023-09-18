@@ -192,12 +192,12 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
       <VacationWrapper>
         <VacationContainer>
           <SuperTitle variant="bodySmall" content={`${summary?.current_available_days}` || null}></SuperTitle>
-          <Title variant="bodySmall" content="DOSTUPNIH DANA" />
-          <Subtitle variant="bodySmall" content="TRENUTNA GODINA" />
+          <Title variant="bodySmall" content="DOSTUPNI DANI GODIŠNJEG ODMORA" />
+          <Subtitle variant="bodySmall" content="TEKUĆA GODINA" />
         </VacationContainer>
         <VacationContainer>
           <SuperTitle variant="bodySmall" content={`${summary?.past_available_days}` || null}></SuperTitle>
-          <Title variant="bodySmall" content="DOSTUPNIH DANA" />
+          <Title variant="bodySmall" content="DOSTUPNI DANI GODIŠNJEG ODMORA" />
           <Subtitle variant="bodySmall" content="PRETHODNA GODINA" />
         </VacationContainer>
         <VacationContainer>
@@ -209,8 +209,8 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
           <SuperTitle
             variant="bodySmall"
             content={`${summary ? summary?.current_available_days + summary?.past_available_days : ''}`}></SuperTitle>
-          <Title variant="bodySmall" content="UKUPNO RASPOLOŽIVIH DANA" />
-          <Subtitle variant="bodySmall" content="TEKUĆA + PRETHODNE" />
+          <Title variant="bodySmall" content="UKUPNO RASPOLOŽIVIH DANA " />
+          <Subtitle variant="bodySmall" content="TEKUĆA + PRETHODNA" />
         </VacationContainer>
       </VacationWrapper>
       <TableHeader>

@@ -201,12 +201,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
               error={errors.organization_unit?.message}
               disabled={relevant?.id === 'Da' || !relevant}
             />
-            <Input
-              {...register('amount_of_insured_experience')}
-              label="PRIJAVLJENI STAŽ (MJESECI):"
-              error={errors.amount_of_insured_experience?.message}
-              type="number"
-            />
+            <Input {...register('amount_of_insured_experience')} label="PRIJAVLJENI STAŽ (MJESECI):" type="number" />
           </Row>
 
           <FileUploadWrapper>
