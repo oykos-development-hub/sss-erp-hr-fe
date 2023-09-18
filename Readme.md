@@ -23,7 +23,7 @@ GITLAB_PAT=${PERSONAL_ACCESS_TOKEN}
 - Make sure you have exactly the same NodeJS version that's noted in the file `.node-version` by running command `node -v`
 - If you don't have that version of NodeJS installed, install it manually from the official website, or by using NVM - https://github.com/coreybutler/nvm-windows/releases/download/1.1.10/nvm-setup.exe
 
-**NOTE - if you have a problem with certificate issue, then use export `GIT_SSL_NO_VERIFY=true` before running `npm run setup`
+**NOTE - if you have a problem with certificate issue, then use `export GIT_SSL_NO_VERIFY=true` before running `npm run setup`
 
 ### Development
 
