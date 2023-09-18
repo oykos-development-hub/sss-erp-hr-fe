@@ -4,25 +4,23 @@ import {UserProfileBasicInfoFormValues} from '../../../../types/graphql/userProf
 
 const useBasicInfoInsert = () => {
   const [loading, setLoading] = useState(false);
-  const [userId, setUserId] = useState(0);
 
   const insertBasicInfo = async (
     data: UserProfileBasicInfoFormValues,
-    onSuccess?: () => void,
+    onSuccess?: (userId: number) => void,
     onError?: () => void,
   ) => {
     setLoading(true);
     const response = await GraphQL.basicInfoInsert(data);
     if (response.status === 'success') {
-      setUserId(response?.item?.id || 0);
-      onSuccess && onSuccess();
+      onSuccess && onSuccess(response?.item?.id || 0);
     } else {
       onError && onError();
     }
     setLoading(false);
   };
 
-  return {loading, mutate: insertBasicInfo, userId};
+  return {loading, mutate: insertBasicInfo};
 };
 
 export default useBasicInfoInsert;

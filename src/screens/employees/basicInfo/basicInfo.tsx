@@ -1,6 +1,6 @@
 import {Button, Datepicker, Dropdown, Input, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
-import {Controller, set, useForm} from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import {
   cityData,
   femaleMaritalStatusOptions,
@@ -43,7 +43,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
 
   const {organizationUnits} = useOrganizationUnits();
   const {options: contractTypes} = useSettingsDropdownOverview({entity: 'contract_types'});
-  const {mutate: createBasicInfo, userId, loading: isCreating} = useBasicInfoInsert();
+  const {mutate: createBasicInfo, loading: isCreating} = useBasicInfoInsert();
   const {mutate: updateBasicInfo, loading: isUpdating} = useBasicInfoUpdate();
 
   const {
@@ -116,7 +116,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
 
         createBasicInfo(
           formatData(values),
-          () => {
+          userId => {
             refetch();
             context.alert.success('Uspješno sačuvano.');
             setIsDisabled(true);
