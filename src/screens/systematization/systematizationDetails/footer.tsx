@@ -1,5 +1,5 @@
-import {Button, Switch, Typography} from 'client-library';
-import React from 'react';
+import {Button, Switch, Typography, Modal} from 'client-library';
+import React, {useState} from 'react';
 import {Controller, useFormContext} from 'react-hook-form';
 import {FooterProps} from '../types';
 import {Activation, DatepickerElement, FooterWrapper} from './styles';
@@ -13,6 +13,7 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id =
   } = useFormContext();
 
   const isActive = watch('active');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <FooterWrapper>
@@ -40,7 +41,7 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id =
               <Switch
                 name={name}
                 onChange={() => {
-                  setValue('active', !value);
+                  setIsModalOpen(true);
                 }}
                 checked={value}
                 // @TODO remove ts-ignore
@@ -63,6 +64,19 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id =
       ) : (
         <Button content={'Nastavi'} variant="primary" onClick={handleSaveButton} />
       )}
+
+      <Modal
+        open={isModalOpen}
+        content="Da li ste sigurni da želite da aktivirate sistematizaciju? Prethodna sistematizacija će biti deaktivirana!"
+        onClose={() => setIsModalOpen(false)}
+        leftButtonOnClick={() => setIsModalOpen(false)}
+        leftButtonText="Otkaži"
+        rightButtonOnClick={() => {
+          setValue('active', !isActive);
+          setIsModalOpen(false);
+        }}
+        rightButtonText="Aktiviraj"
+      />
     </FooterWrapper>
   );
 };

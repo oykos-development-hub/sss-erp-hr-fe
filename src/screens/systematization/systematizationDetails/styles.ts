@@ -55,13 +55,13 @@ export const FooterWrapper = styled.div`
   display: flex;
   align-items: center;
   margin-top: 30px;
-  justify-content: space-between;
   background-color: ${Theme?.palette?.gray50};
   padding: 20px 10px;
   border-radius: 0px 0px 8px 8px;
   border-top: 2px solid ${Theme?.palette?.primary500};
   & button {
     margin-top: 27px;
+    margin-left: auto;
   }
 `;
 
