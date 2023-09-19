@@ -27,7 +27,7 @@ export interface JudgeNormInsertParams {
   date_of_evaluation_validity?: string | null;
   relocation_id: number;
   file_id?: number;
-  evaluation_id?: number;
+  evaluation_id?: number | null;
 }
 
 export type JudgeNormForm = {
@@ -61,7 +61,7 @@ export interface Norms {
   relocation_title?: string;
   full_name?: string;
   file_id?: number;
-  evaluation_id?: number;
+  evaluation_id?: number | null;
 }
 
 export interface RelocationNorm {

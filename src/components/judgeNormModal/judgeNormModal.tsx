@@ -90,7 +90,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
           number_of_norm_decrease: values?.number_of_norm_decrease || 1,
           number_of_items: values?.number_of_items || 1,
           number_of_items_solved: values?.number_of_items_solved || 1,
-          evaluation_id: values?.evaluation?.id || 1,
+          evaluation_id: null,
           relocation_id: values?.relocation?.id || 1,
           date_of_evaluation: parseDateForBackend(values?.date_of_start),
           date_of_evaluation_validity: parseDateForBackend(values?.date_of_end),
