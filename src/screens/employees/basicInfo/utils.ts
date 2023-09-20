@@ -1,4 +1,6 @@
 import {yesOrNoOptionsString} from '../../../constants';
+import * as yup from 'yup';
+import {dropdownNumberSchema, dropdownStringSchema, requiredError} from './constants';
 
 export const formatData = (data: any) => {
   const isNew = !data?.id;
@@ -56,5 +58,108 @@ export const formatData = (data: any) => {
 };
 
 export const booleanToYesOrNo = (value: boolean) => {
-  return value !== null ? (value ? yesOrNoOptionsString[0] : yesOrNoOptionsString[1]) : null;
+  return value !== null ? (value ? yesOrNoOptionsString[0] : yesOrNoOptionsString[1]) : undefined;
 };
+
+export const validateDateOfBirth = (jmbg: string, dateOfBirth: Date) => {
+  let year = jmbg.substring(3, 7);
+
+  const millennium = year.charAt(0) === '0' ? 2 : 1;
+  year = `${millennium}${year.substring(1)}`;
+
+  const month = jmbg.substring(2, 4);
+  const day = jmbg.substring(0, 2);
+
+  const jmbgDateOfBirth = new Date(`${month}/${day}/${year}`);
+
+  return (
+    jmbgDateOfBirth.getFullYear() === dateOfBirth.getFullYear() &&
+    jmbgDateOfBirth.getMonth() === dateOfBirth.getMonth() &&
+    jmbgDateOfBirth.getDate() === dateOfBirth.getDate()
+  );
+};
+
+export const getSchema = (isNew: boolean) =>
+  yup.object({
+    id: yup.number(),
+    first_name: yup.string().required(requiredError),
+    last_name: yup.string().required(requiredError),
+    date_of_birth: yup
+      .date()
+      .test('more than 18 year old', 'Zaposleni mora biti punoljetan', value => {
+        if (!value) return true;
+        const today = new Date();
+        const birthDate = new Date(value);
+        const age = today.getFullYear() - birthDate.getFullYear();
+        return age >= 18;
+      })
+      .test({
+        name: 'is same as date in jmbg',
+        message: 'Datum rođenja mora da se poklapa sa JMBG-om',
+        test: function (value) {
+          if (!value || !this.parent.official_personal_id) return true;
+          return validateDateOfBirth(this.parent.official_personal_id, value);
+        },
+      })
+      .required(requiredError)
+      .nullable(),
+    birth_last_name: yup.string(),
+    country_of_birth: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
+    city_of_birth: yup.lazy(value => {
+      switch (typeof value) {
+        case 'object':
+          return yup.object(dropdownStringSchema).required(requiredError).default(undefined);
+        case 'string':
+          return yup.string().required(requiredError);
+        default:
+          return yup.object(dropdownStringSchema).default(undefined);
+      }
+    }),
+    nationality: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
+    citizenship: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
+    national_minority: yup.object(dropdownStringSchema),
+    address: yup.string().required(requiredError),
+    father_name: yup.string().required(requiredError),
+    mother_name: yup.string().required(requiredError),
+    mother_birth_last_name: yup.string(),
+    official_personal_id: yup.string().required(requiredError).default(undefined),
+    official_personal_document_number: yup.string().required(requiredError).default(undefined),
+    official_personal_document_issuer: yup
+      .object()
+      .shape(dropdownStringSchema)
+      .required(requiredError)
+      .default(undefined),
+    gender: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
+    single_parent: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
+    housing_done: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
+    revisor_role: yup.boolean().default(false),
+    housing_description: yup.string(),
+    marital_status: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
+    date_of_becoming_judge: yup.date().nullable(),
+    middle_name: yup.string(),
+    contract: yup.object().shape({
+      organization_unit_id: yup.object(dropdownNumberSchema).required(requiredError).default(undefined),
+      department_id: yup.object(dropdownNumberSchema).default(undefined),
+      job_position_in_organization_unit_id: yup.object(dropdownNumberSchema).default(undefined),
+      contract_type_id: yup.object(dropdownNumberSchema).required(requiredError).default(undefined),
+      date_of_end: yup.date().nullable(),
+      date_of_start: yup.date().required(requiredError).nullable(),
+      date_of_eligibility: yup.date().required(requiredError).nullable(),
+      user_profile_id: yup.number().when([], {is: () => !isNew, then: schema => schema.required(requiredError)}),
+      active: yup.boolean(),
+    }),
+    email: yup
+      .string()
+      .email('Nije validan e-mail')
+      .when([], {is: () => isNew, then: schema => schema.required()}),
+    phone: yup.string().when([], {
+      is: () => isNew,
+      then: schema => schema.required(requiredError),
+    }),
+    secondary_email: yup
+      .string()
+      .email('Nije validan e-mail')
+      .when([], {is: () => isNew, then: schema => schema.required()}),
+    pin: yup.string().when([], {is: () => isNew, then: schema => schema.required()}),
+    password: yup.string().when([], {is: () => isNew, then: schema => schema.required()}),
+  });

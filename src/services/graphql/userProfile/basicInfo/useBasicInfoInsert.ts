@@ -8,14 +8,16 @@ const useBasicInfoInsert = () => {
   const insertBasicInfo = async (
     data: UserProfileBasicInfoFormValues,
     onSuccess?: (userId: number) => void,
-    onError?: () => void,
+    onError?: (response: any) => void,
   ) => {
     setLoading(true);
+
     const response = await GraphQL.basicInfoInsert(data);
+
     if (response.status === 'success') {
       onSuccess && onSuccess(response?.item?.id || 0);
     } else {
-      onError && onError();
+      onError && onError(response);
     }
     setLoading(false);
   };
