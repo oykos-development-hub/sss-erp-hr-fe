@@ -99,7 +99,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
     return countries?.map(country => {
       return {
         id: country.alpha_3_code,
-        title: country.nationality,
+        title: country.en_short_name,
       };
     });
   }, [countries]);
@@ -246,14 +246,13 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   }, [user_profile]);
 
   const countryOptions = useMemo(() => {
-    return context.countries?.map((country: any) => {
+    return countries?.map(country => {
       return {
-        id: country.en_short_name,
+        id: country.alpha_3_code,
         title: country.en_short_name,
       };
     });
-  }, [context.countries]);
-
+  }, [countries]);
   return (
     <>
       <Modal

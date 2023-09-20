@@ -33,7 +33,7 @@ export const judgeResolutionTableHeads = (judgeInputs: {[key: string]: string}):
     renderContents: (_, row) => <Typography content={row.number_of_judges} />,
   },
   {
-    title: 'Ukupno zaposlenih',
+    title: 'Ukupno sudija',
     accessor: '',
     type: 'custom',
     renderContents: (_, row) => <Typography content={row.number_of_presidents + row.number_of_judges} />,

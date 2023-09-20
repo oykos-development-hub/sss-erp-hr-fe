@@ -585,7 +585,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
                     name={name}
-                    label="VRSTA UGOVORA:"
+                    label="VRSTA ZAPOSLENJA:"
                     onChange={onChange}
                     value={value as any}
                     noOptionsText="Prazno"
