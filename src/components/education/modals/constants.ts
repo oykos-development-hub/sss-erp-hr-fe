@@ -22,6 +22,9 @@ export enum educationTypes {
   education_functional_types = 'education_functional_types',
   education_exam_types = 'education_exam_types',
 }
+export enum resolutionTypes {
+  resolution_types = 'resolution_types',
+}
 
 export const academicTitles = [
   {

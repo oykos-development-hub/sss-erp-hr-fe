@@ -1,6 +1,6 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {ConfirmationsModalProps} from '../../screens/employees/confirmations/types';
@@ -8,6 +8,8 @@ import useResolutionInsert from '../../services/graphql/userProfile/resolution/u
 import {DropdownDataNumber} from '../../types/dropdownData';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
+import useSettingsDropdownOverview from '../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import {educationTypes, resolutionTypes} from '../education/modals/constants';
 
 const confirmationSchema = yup.object().shape({
   resolution_purpose: yup.string(),
@@ -32,10 +34,11 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     resolver: yupResolver(confirmationSchema),
   });
 
-  const dropdownOptions: DropdownDataNumber[] = [
-    {id: 1, title: 'Potvrde'},
-    {id: 2, title: 'Rješenja'},
-  ];
+  const {data: types} = useSettingsDropdownOverview({entity: resolutionTypes.resolution_types});
+
+  const resolutionTypesOptions = useMemo(() => {
+    return types?.slice(1, 3).filter(type => ({id: type?.id as number, title: type?.title} || []));
+  }, [types]);
 
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
@@ -102,21 +105,23 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
       content={
         <ModalContentWrapper>
           <FormGroup>
-            <Controller
-              name="resolution_type"
-              control={control}
-              render={({field: {onChange, name, value}}) => (
-                <Dropdown
-                  label="VRSTA:"
-                  name={name}
-                  options={dropdownOptions}
-                  value={value as any}
-                  onChange={onChange}
-                  error={errors.resolution_type?.message}
-                  placeholder="Birajte vrstu"
-                />
-              )}
-            />
+            {resolutionTypesOptions && (
+              <Controller
+                name="resolution_type"
+                control={control}
+                render={({field: {onChange, name, value}}) => (
+                  <Dropdown
+                    label="VRSTA:"
+                    name={name}
+                    options={resolutionTypesOptions as DropdownDataNumber[]}
+                    value={value as any}
+                    onChange={onChange}
+                    error={errors.resolution_type?.message}
+                    placeholder="Birajte vrstu"
+                  />
+                )}
+              />
+            )}
           </FormGroup>
 
           <FormGroup>
