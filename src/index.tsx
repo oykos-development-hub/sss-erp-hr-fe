@@ -3,6 +3,7 @@ import ReactDOM, {Root} from 'react-dom/client';
 import {MICRO_SERVICE_SLUG} from './services/constants';
 import {MicroserviceProps} from './types/micro-service-props';
 import {Router} from './router';
+import AppContextProvider from './context/hrModuleContext';
 
 const renderMicroService = (App: React.FC) => {
   const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
@@ -37,7 +38,9 @@ const renderMicroService = (App: React.FC) => {
 renderMicroService((props: MicroserviceProps) => {
   return (
     <React.StrictMode>
-      <Router {...props} />
+      <AppContextProvider microserviceProps={props}>
+        <Router {...props} />
+      </AppContextProvider>
     </React.StrictMode>
   );
 });

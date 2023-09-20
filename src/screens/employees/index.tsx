@@ -1,16 +1,13 @@
-import {AlertVariants} from '@oykos-development/devkit-react-ts-styled-components';
-import {Alert, CircleCheckIcon, DangerIcon, Typography} from 'client-library';
 import {ValueType} from 'client-library/dist/components/dropdown/types';
 import React, {useMemo, useRef, useState} from 'react';
 import EmployeeDetails from '../../components/employeeDetails/employeeDetails';
 import EmployeesList from '../../components/employeesList/employeesList';
 import NewEmployeeSearch from '../../components/newEmployeeSearch/newEmployeeSearch';
 import useUserProfiles from '../../services/graphql/userProfile/useUserProfiles';
-import {AlertWrapper} from '../../shared/alertWrapper';
+import {ScreenWrapper} from '../../shared/screenWrapper';
 import {DropdownDataBoolean, DropdownDataNumber} from '../../types/dropdownData';
 import {ScreenProps} from '../../types/screen-props';
 import {useDebounce} from '../../utils/useDebounce';
-import {ScreenWrapper} from '../../shared/screenWrapper';
 
 export interface EmployeeListFilters {
   is_active?: DropdownDataBoolean | null;
@@ -28,10 +25,7 @@ const initialValues: EmployeeListFilters = {
 
 export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
   const [employeeModal, setEmployeeModal] = useState(false);
-  const [alert, setAlert] = useState<{variant: AlertVariants; message: string}>({
-    variant: AlertVariants.success,
-    message: '',
-  });
+
   const [filters, setFilters] = useState<any>(initialValues);
   const [search, setSearch] = useState('');
 
@@ -91,23 +85,7 @@ export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
         loading={loading}
       />
       {isNewEmployeeRoute && <NewEmployeeSearch onSearch={onSearch} />}
-      {isDetails && <EmployeeDetails context={context} setAlert={(alert: any) => setAlert(alert)} />}
-      {alert.message && (
-        <AlertWrapper>
-          <Alert
-            variant={alert.variant}
-            content={<Typography variant="bodySmall" content={alert.message} />}
-            icon={
-              alert.variant === AlertVariants.success ? (
-                <CircleCheckIcon fill={'none'} stroke={'white'} />
-              ) : (
-                <DangerIcon fill={'none'} stroke={'white'} />
-              )
-            }
-            onClose={() => setAlert({variant: AlertVariants.success, message: ''})}
-          />
-        </AlertWrapper>
-      )}
+      {isDetails && <EmployeeDetails context={context} />}
     </ScreenWrapper>
   );
 };

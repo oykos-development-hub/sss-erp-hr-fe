@@ -13,10 +13,10 @@ import {ConfirmationsPage} from '../../screens/employees/confirmations/confirmat
 import {EvaluationsPage} from '../../screens/employees/evaluations/evaluations';
 import {SalaryParams} from '../../screens/employees/salaryParams/salaryParams';
 import Absents from '../../screens/employees/absents/absents';
+import useAppContext from '../../context/useAppContext';
 
 interface EmployeeDetailsProps {
   context: MicroserviceProps;
-  setAlert: (alert: {variant: string; message: string}) => void;
 }
 
 const getCurrentTab = (pathname: string) => {
