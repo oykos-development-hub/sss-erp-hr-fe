@@ -10,6 +10,7 @@ export const tableHeadsAbsence: TableHead[] = [
     renderContents: (_, item: any) => {
       return <Typography variant="bodyMedium" content={parseDate(item.date_of_start, true)} />;
     },
+    width: '15%',
   },
   {
     title: 'Vrsta prilagodbe',
@@ -18,6 +19,7 @@ export const tableHeadsAbsence: TableHead[] = [
     renderContents: (item: any) => {
       return <Typography variant="bodyMedium" content={item.title} />;
     },
+    width: '30%',
   },
   {
     title: 'Dana',
@@ -38,6 +40,7 @@ export const tableHeadsAbsence: TableHead[] = [
 
       return <Typography variant="bodyMedium" content={numberOfDays} />;
     },
+    width: '10%',
   },
   {title: 'Datoteka', accessor: 'file_id', type: 'text'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
@@ -51,7 +54,9 @@ export const tableHeadsVacation: TableHead[] = [
     renderContents: (_, item: any) => {
       return <Typography variant="bodyMedium" content={item.year ? item.year : parseDate(item.date_of_start, true)} />;
     },
+    width: '15%',
   },
+
   {
     title: 'Vrsta prilagodbe',
     accessor: 'absent_type',
@@ -59,7 +64,9 @@ export const tableHeadsVacation: TableHead[] = [
     renderContents: (item: any, row) => {
       return <Typography variant="bodyMedium" content={item.title} />;
     },
+    width: '30%',
   },
+
   {
     title: 'Dana',
     accessor: '',
@@ -78,6 +85,7 @@ export const tableHeadsVacation: TableHead[] = [
       }
       return <Typography variant="bodyMedium" content={row.number_of_days ? row.number_of_days : numberOfDays} />;
     },
+    width: '10%',
   },
   {title: 'Datoteka', accessor: 'file_id', type: 'text'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
@@ -91,6 +99,7 @@ export const tableHeadsYearVacation: TableHead[] = [
     renderContents: year => {
       return <Typography variant="bodyMedium" content={year} />;
     },
+    width: '15%',
   },
   {
     title: 'Vrsta prilagodbe',
@@ -99,6 +108,7 @@ export const tableHeadsYearVacation: TableHead[] = [
     renderContents: item => {
       return <Typography variant="bodyMedium" content={item.title} />;
     },
+    width: '30%',
   },
   {
     title: 'Dana',
@@ -107,6 +117,7 @@ export const tableHeadsYearVacation: TableHead[] = [
     renderContents: (_, row: any) => {
       return <Typography variant="bodyMedium" content={row.number_of_days ? row.number_of_days : ''} />;
     },
+    width: '10%',
   },
   {title: 'Datoteka', accessor: 'file_id', type: 'text'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
