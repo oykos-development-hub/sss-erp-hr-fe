@@ -2,7 +2,6 @@ import {TableHead} from 'client-library';
 import {parseDate} from '../../utils/dateUtils';
 
 export const tableHeads: TableHead[] = [
-  {title: 'ID', accessor: 'id'},
   {title: 'Ime i Prezime', accessor: 'full_name', sortable: true},
   {
     title: 'Datum rođenja',
