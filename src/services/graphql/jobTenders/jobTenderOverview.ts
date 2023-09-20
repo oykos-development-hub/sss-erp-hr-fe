@@ -40,6 +40,7 @@ const jobTenderOverview = async ({
                 id
                 title
             }
+            number_of_vacant_seats
             description
             serial_number
             active

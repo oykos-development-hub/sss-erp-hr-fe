@@ -37,6 +37,7 @@ const initialValues = {
   type: undefined,
   description: '',
   file_id: 0,
+  number_of_vacant_seats: 0,
 };
 
 export const JobTenderModal: React.FC<JobTendersModalProps> = ({
@@ -82,7 +83,8 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
           serial_number: values.serial_number,
           date_of_start: parseDateForBackend(values?.date_of_start),
           date_of_end: parseDateForBackend(values?.date_of_end),
-          file_id: values.file_id,
+          file_id: values?.file_id,
+          number_of_vacant_seats: values?.number_of_vacant_seats,
         },
         () => {
           alert.success('Uspješno sačuvano.');
@@ -172,6 +174,7 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
           </Row>
           <Row>
             <Input {...register('serial_number')} label="BROJ OGLASA:" error={errors.serial_number?.message} />
+            <Input {...register('number_of_vacant_seats')} label="BROJ UPRAŽNJENIH MJESTA:" type="number" />
           </Row>
           <FileUploadWrapper>
             <FileUpload

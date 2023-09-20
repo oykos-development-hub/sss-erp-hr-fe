@@ -18,6 +18,7 @@ const jobTenderInsert = async (data: JobTender): Promise<JobTendersResponse['dat
                   title
               }
               description
+              number_of_vacant_seats
               serial_number
               active
               date_of_start
