@@ -26,6 +26,7 @@ const jobTenderSchema = yup.object().shape({
     .min(yup.ref('date_of_start'), 'Datum mora biti veći od datuma početka'),
   serial_number: yup.string().required('Ovo polje je obavezno'),
   id: yup.number(),
+  number_of_vacant_seats: yup.number(),
 });
 
 const initialValues = {
