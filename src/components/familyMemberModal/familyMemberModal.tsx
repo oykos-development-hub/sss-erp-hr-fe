@@ -73,6 +73,10 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
           date_of_birth: parseToDate(selectedItem?.date_of_birth),
           national_minority: nationalMinorities?.find(nm => nm.id === selectedItem.national_minority),
           nationality: citizenshipArray?.find(c => c.title === selectedItem.nationality),
+          city_of_birth:
+            typeof selectedItem.city_of_birth === 'string'
+              ? selectedItem.city_of_birth
+              : cityData.find(city => city.id === selectedItem.city_of_birth.id),
         }
       : {...initialValues, user_profile_id: Number(userProfileId)};
   }, [selectedItem]);
@@ -84,7 +88,6 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
     watch,
     formState: {errors},
     reset,
-    setValue,
   } = useForm({defaultValues: item || initialValues});
 
   const {mutate, loading: isSaving} = useFamilyInsert();
@@ -123,12 +126,6 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
       },
     );
   };
-
-  useEffect(() => {
-    if (country_of_birth) {
-      setValue('city_of_birth', null, {shouldValidate: true});
-    }
-  }, [country_of_birth]);
 
   return (
     <Modal
@@ -281,19 +278,23 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
               label="PREZIME:"
               error={errors.last_name?.message as string}
             />
-            {country_of_birth?.title === 'Montenegro' ? (
-              <Controller
-                name="city_of_birth"
-                rules={{required: 'Ovo polje je obavezno'}}
-                control={control}
-                render={({field: {onChange, name, value}}) => {
-                  const valueToUse = typeof value === 'string' ? {id: value, title: value} : null;
+            <Controller
+              name="city_of_birth"
+              rules={{
+                validate: (value: any) =>
+                  (!value && country_of_birth?.id === 'MNE') || country_of_birth?.title === null
+                    ? 'Ovo polje je obavezno'
+                    : true,
+              }}
+              control={control}
+              render={({field: {onChange, name, value}}) => {
+                const isMontenegro = country_of_birth?.id === 'MNE';
+
+                if (isMontenegro) {
                   return (
                     <Dropdown
-                      onChange={selectedValue => {
-                        setValue('city_of_birth', selectedValue, {shouldValidate: true}); // Manually set the value and trigger validation
-                      }}
-                      value={valueToUse || value}
+                      onChange={onChange}
+                      value={value}
                       name={name}
                       label="OPŠTINA:"
                       options={cityData}
@@ -301,15 +302,23 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                       isSearchable
                     />
                   );
-                }}
-              />
-            ) : (
-              <Input
-                {...register('city_of_birth', {required: 'Ovo polje je obavezno'})}
-                label="OPŠTINA:"
-                error={errors.city_of_birth?.message as string}
-              />
-            )}
+                } else {
+                  return (
+                    <Input
+                      {...register('city_of_birth', {
+                        validate: (value: any) =>
+                          (!value && country_of_birth?.id !== 'MNE') || country_of_birth?.title === ''
+                            ? 'Ovo polje je obavezno'
+                            : true,
+                      })}
+                      label="OPŠTINA:"
+                      error={errors.city_of_birth?.message as string}
+                    />
+                  );
+                }
+              }}
+            />
+
             <Input {...register('address')} label="ADRESA:" />
           </Row>
           <Row>
