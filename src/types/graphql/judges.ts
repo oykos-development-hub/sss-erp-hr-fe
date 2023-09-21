@@ -141,6 +141,7 @@ export interface JudgeResolutionOverview {
   serial_number: string;
   available_slots_judges?: number;
   number_of_judges: number;
+  active?: boolean;
   items: JudgeResolutionItem[];
 }
 

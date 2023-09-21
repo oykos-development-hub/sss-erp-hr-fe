@@ -14,6 +14,7 @@ const judgeResolutionOverview = async (
             serial_number
             available_slots_judges
             number_of_judges
+            active
             items {
                 id
                 organization_unit {
