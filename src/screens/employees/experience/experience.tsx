@@ -146,18 +146,15 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
           ]}
         />
       </div>
-      {showModal && (
-        <ExperienceModal
-          alert={context.alert}
-          refetchList={refetchData}
-          open={showModal}
-          onClose={closeModal}
-          selectedItem={selectedItem}
-          units={organizationUnitsList as UnitType[]}
-          userProfileId={userProfileID}
-        />
-      )}
-
+      <ExperienceModal
+        alert={context.alert}
+        refetchList={refetchData}
+        open={showModal}
+        onClose={closeModal}
+        selectedItem={selectedItem}
+        units={organizationUnitsList as UnitType[]}
+        userProfileId={userProfileID}
+      />
       <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />
     </Container>
   );

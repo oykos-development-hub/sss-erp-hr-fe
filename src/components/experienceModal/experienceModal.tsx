@@ -69,14 +69,16 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
   const {mutate, loading: isSaving} = useExperienceInsert();
   const {organizationUnitsList} = useOrganizationUnits();
 
-  const {relevant, date_of_start, date_of_end, organization_unit, organization_unit_id} = watch();
+  const {relevant, date_of_start, date_of_end} = watch();
 
   useEffect(() => {
     if (selectedItem) {
       reset({
         ...selectedItem,
         relevant: {id: selectedItem?.relevant ? 'Da' : 'Ne', title: selectedItem?.relevant ? 'Da' : 'Ne'},
-        organization_unit_id: organizationUnitsList.find(orgUnit => orgUnit.id === selectedItem?.organization_unit_id),
+        organization_unit_id: organizationUnitsList
+          .slice(1)
+          .find(orgUnit => orgUnit.id === selectedItem?.organization_unit_id),
         date_of_start: parseToDate(selectedItem?.date_of_start),
         date_of_end: parseToDate(selectedItem?.date_of_end),
         user_profile_id: userProfileId,
@@ -84,17 +86,17 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     }
   }, [selectedItem]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = (data: any) => {
     if (isSaving) return;
 
     const payload = formatData(data, !selectedItem);
 
     try {
-      await mutate(
+      mutate(
         payload,
         () => {
           alert.success('Uspješno sačuvano.');
-          refetchList && refetchList();
+          refetchList();
           onClose();
         },
         () => {
@@ -109,22 +111,12 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     }
   };
 
-  const isOrgUnitDisabled = relevant?.id === 'Da' || !relevant;
-
   useEffect(() => {
     if (date_of_end && date_of_start) {
       const calculatedExperience = calculateExperience(date_of_start, date_of_end);
       setValue('amount_of_experience', calculatedExperience);
     }
-
-    if (organization_unit && isOrgUnitDisabled) {
-      setValue('organization_unit', '');
-    }
-
-    if (organization_unit_id && !isOrgUnitDisabled) {
-      setValue('organization_unit_id', {id: '', title: ''});
-    }
-  }, [date_of_end, date_of_start, isOrgUnitDisabled]);
+  }, [date_of_end, date_of_start]);
 
   return (
     <Modal
@@ -182,7 +174,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
                     name={name}
                     label="JEDINICA:"
                     options={units}
-                    isDisabled={!isOrgUnitDisabled}
+                    isDisabled={relevant?.id === 'Ne' || !relevant}
                     error={errors.organization_unit_id?.message}
                   />
                 );
@@ -207,7 +199,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
               {...register('organization_unit')}
               label="ORGANIZACIJA/INSTITUCIJA:"
               error={errors.organization_unit?.message}
-              disabled={isOrgUnitDisabled}
+              disabled={relevant?.id === 'Da' || !relevant}
             />
             <Input {...register('amount_of_insured_experience')} label="PRIJAVLJENI STAŽ (MJESECI):" type="number" />
           </Row>
