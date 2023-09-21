@@ -41,15 +41,6 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
   alert,
   refetch,
 }) => {
-  const citizenshipArray = useMemo(() => {
-    return countries?.map(country => {
-      return {
-        id: country.alpha3,
-        title: country.name,
-      };
-    });
-  }, [countries]);
-
   const {
     register,
     handleSubmit,
@@ -63,14 +54,17 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
   const {mutate, loading: isSaving} = useFamilyInsert();
 
   const country_of_birth = watch('country_of_birth');
+  const countryIsMontenegro = country_of_birth?.id === 'mne';
 
-  const countriesForDropdown = useMemo(() => {
-    return countries?.map(country => {
-      return {
-        id: country.alpha3,
-        title: country.name,
-      };
-    });
+  const countryOptions = useMemo(() => {
+    return (
+      countries?.map(country => {
+        return {
+          id: country.alpha3,
+          title: country.name,
+        };
+      }) || []
+    );
   }, [countries]);
 
   useEffect(() => {
@@ -86,15 +80,15 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
           title: selectedItem?.insurance_coverage === 'Ne' ? 'Ne' : 'Da',
         },
         employee_relationship: {id: selectedItem?.employee_relationship, title: selectedItem?.employee_relationship},
-        country_of_birth: countries?.find(country => country.alpha3 === selectedItem?.country_of_birth),
-        citizenship: {id: selectedItem?.citizenship, title: selectedItem?.citizenship},
+        country_of_birth: countryOptions?.find(country => country.id === selectedItem?.country_of_birth),
+        citizenship: countryOptions?.find(country => country.id === selectedItem?.citizenship),
         gender: {id: selectedItem?.gender, title: selectedItem?.gender},
         user_profile_id: selectedItem?.user_profile_id,
         date_of_birth: parseToDate(selectedItem?.date_of_birth),
         national_minority: nationalMinorities?.find(nm => nm.id === selectedItem.national_minority),
-        nationality: citizenshipArray?.find(c => c.title === selectedItem.nationality),
+        nationality: countryOptions?.find(c => c.title === selectedItem.nationality),
         city_of_birth:
-          selectedItem.country_of_birth !== 'MNE'
+          selectedItem.country_of_birth !== 'mne'
             ? selectedItem.city_of_birth
             : cityData.find(city => city.id === selectedItem.city_of_birth),
       });
@@ -102,7 +96,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
   }, [selectedItem]);
 
   useEffect(() => {
-    if (country_of_birth?.id !== 'MNE' && dirtyFields.country_of_birth) {
+    if (countryIsMontenegro && dirtyFields.country_of_birth) {
       resetField('city_of_birth', {defaultValue: ''});
     }
   }, [country_of_birth]);
@@ -150,7 +144,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     name={name}
                     label="SRODSTVO:"
                     options={employeeRelationshipDropdownData}
-                    error={errors.employee_relationship?.message as string}
+                    error={errors.employee_relationship?.message}
                   />
                 );
               }}
@@ -167,8 +161,8 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     name={name}
                     isSearchable
                     label="DRŽAVA ROĐENJA:"
-                    options={countriesForDropdown || []}
-                    error={errors.country_of_birth?.message as string}
+                    options={countryOptions}
+                    error={errors.country_of_birth?.message}
                   />
                 );
               }}
@@ -188,7 +182,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                       {id: 'Da', title: 'Da'},
                       {id: 'Ne', title: 'Ne'},
                     ]}
-                    error={errors.insurance_coverage?.message as string}
+                    error={errors.insurance_coverage?.message}
                   />
                 );
               }}
@@ -208,7 +202,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                       {id: 'Da', title: 'Da'},
                       {id: 'Ne', title: 'Ne'},
                     ]}
-                    error={errors.handicapped_person?.message as string}
+                    error={errors.handicapped_person?.message}
                   />
                 );
               }}
@@ -218,7 +212,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
             <Input
               {...register('first_name', {required: 'Ovo polje je obavezno'})}
               label="IME:"
-              error={errors.first_name?.message as string}
+              error={errors.first_name?.message}
             />
             <Controller
               name="citizenship"
@@ -231,8 +225,8 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     value={value as any}
                     name={name}
                     label="DRŽAVLJANSTVO:"
-                    options={citizenshipArray || []}
-                    error={errors.citizenship?.message as string}
+                    options={countryOptions}
+                    error={errors.citizenship?.message}
                     isSearchable
                   />
                 );
@@ -248,7 +242,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     value={value as any}
                     name={name}
                     label="NACIONALNOST:"
-                    options={citizenshipArray || []}
+                    options={countryOptions}
                     isSearchable
                   />
                 );
@@ -274,7 +268,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
             <Input
               {...register('last_name', {required: 'Ovo polje je obavezno'})}
               label="PREZIME:"
-              error={errors.last_name?.message as string}
+              error={errors.last_name?.message}
             />
             <Controller
               name="city_of_birth"
@@ -286,34 +280,28 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
               }}
               control={control}
               render={({field: {onChange, name, value}}) => {
-                const isMontenegro = country_of_birth?.id === 'MNE';
-
-                if (isMontenegro) {
-                  return (
-                    <Dropdown
-                      onChange={onChange}
-                      value={value as any}
-                      name={name}
-                      label="OPŠTINA:"
-                      options={cityData}
-                      error={errors.city_of_birth?.message as string}
-                      isSearchable
-                    />
-                  );
-                } else {
-                  return (
-                    <Input
-                      {...register('city_of_birth', {
-                        validate: (value: any) =>
-                          (!value && country_of_birth?.id !== 'MNE') || country_of_birth?.title === ''
-                            ? 'Ovo polje je obavezno'
-                            : true,
-                      })}
-                      label="OPŠTINA:"
-                      error={errors.city_of_birth?.message as string}
-                    />
-                  );
-                }
+                return countryIsMontenegro ? (
+                  <Dropdown
+                    onChange={onChange}
+                    value={value as any}
+                    name={name}
+                    label="OPŠTINA:"
+                    options={cityData}
+                    error={errors.city_of_birth?.message}
+                    isSearchable
+                  />
+                ) : (
+                  <Input
+                    {...register('city_of_birth', {
+                      validate: (value: any) =>
+                        (!value && countryIsMontenegro) || country_of_birth?.title === ''
+                          ? 'Ovo polje je obavezno'
+                          : true,
+                    })}
+                    label="OPŠTINA:"
+                    error={errors.city_of_birth?.message}
+                  />
+                );
               }}
             />
 
@@ -335,7 +323,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                       {id: 'Muški', title: 'Muški'},
                       {id: 'Ženski', title: 'Ženski'},
                     ]}
-                    error={errors.gender?.message as string}
+                    error={errors.gender?.message}
                   />
                 );
               }}
@@ -343,7 +331,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
             <Input
               {...register('father_name', {required: 'Ovo polje je obavezno'})}
               label="IME OCA:"
-              error={errors.father_name?.message as string}
+              error={errors.father_name?.message}
             />
           </Row>
           <Row>
@@ -357,21 +345,21 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                   label="DATUM ROĐENJA:"
                   name={name}
                   selected={value ? new Date(value) : ''}
-                  error={errors.date_of_birth?.message as string}
+                  error={errors.date_of_birth?.message}
                 />
               )}
             />
             <Input
               {...register('mother_name', {required: 'Ovo polje je obavezno'})}
               label="IME MAJKE:"
-              error={errors.mother_name?.message as string}
+              error={errors.mother_name?.message}
             />
           </Row>
           <Row>
             <Input
               {...register('official_personal_id', {required: 'Ovo polje je obavezno'})}
               label="JMBG:"
-              error={errors.official_personal_id?.message as string}
+              error={errors.official_personal_id?.message}
             />
             <Input {...register('mother_birth_last_name')} label="PREZIME PO ROĐENJU:" />
           </Row>

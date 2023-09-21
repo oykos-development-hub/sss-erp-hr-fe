@@ -7,7 +7,7 @@ export const formatData = (data: any) => {
     handicapped_person: data?.handicapped_person?.id === 'Da' ? true : false,
     insurance_coverage: data?.insurance_coverage?.id === 'Ne' ? 'Ne' : 'Da',
     date_of_birth: parseDateForBackend(data?.date_of_birth),
-    citizenship: data?.citizenship?.title,
+    citizenship: data?.citizenship?.id,
     country_of_birth: data?.country_of_birth?.id,
     city_of_birth: typeof data?.city_of_birth === 'string' ? data?.city_of_birth : data?.city_of_birth?.title || '',
     employee_relationship: data?.employee_relationship?.title,

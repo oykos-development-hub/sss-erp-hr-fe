@@ -124,8 +124,6 @@ const JobTendersList: FC<JobTendersListProps> = ({
         onChange={onPageChange}
         variant="filled"
         itemsPerPage={2}
-        previousLabel="Previous"
-        nextLabel="Next"
         pageRangeDisplayed={3}
       />
       <DeleteModal

@@ -97,8 +97,6 @@ const InternalRevisionList: React.FC<InternalRevisionListProps> = ({
         onChange={onPageChange}
         variant="filled"
         itemsPerPage={2}
-        previousLabel="Previous"
-        nextLabel="Next"
         pageRangeDisplayed={3}
       />
       <DeleteModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleDelete={handleDelete} />

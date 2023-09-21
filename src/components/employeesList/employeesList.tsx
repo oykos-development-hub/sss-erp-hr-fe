@@ -153,8 +153,6 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
         onChange={onPageChange}
         variant="filled"
         itemsPerPage={2}
-        previousLabel="Previous"
-        nextLabel="Next"
         pageRangeDisplayed={3}
       />
     </OverviewBox>
