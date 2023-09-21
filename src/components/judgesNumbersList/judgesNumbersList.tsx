@@ -73,16 +73,7 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
       <MainTitle variant="bodyMedium" content="PREGLED ODLUKA O BROJU SUDIJA I PREDSJEDNIKA" />
       <Divider color="#615959" height="1px" />
       <Header>
-        <Filters>
-          <FilterDropdown
-            label="GODINA:"
-            options={years}
-            value={filters.year as any}
-            name="year"
-            onChange={value => onFilterChange(value, 'year')}
-            placeholder="Odaberite godinu"
-          />
-        </Filters>
+        <Filters></Filters>
         <Controls>
           <Button
             content="Dodaj odluku"

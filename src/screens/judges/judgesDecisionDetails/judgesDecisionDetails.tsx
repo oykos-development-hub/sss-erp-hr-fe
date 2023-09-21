@@ -71,7 +71,6 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       id: item?.id ?? 0,
       user_profile_id: 1,
       serial_number: item?.serial_number ?? '',
-      year: item?.year ? {id: item?.year, title: item?.year} : null,
       items: values,
     };
   }, [organizationUnits, item]);
@@ -161,12 +160,6 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
     );
   };
 
-  const availableYears = useMemo(() => {
-    const yearOptions = [...yearsForDropdown(5).map(year => ({id: year.id.toString(), title: year.title.toString()}))];
-
-    return data ? yearOptions.filter(year => !data.find(resolution => resolution.year === year.id)) : [];
-  }, [data]);
-
   useEffect(() => {
     if (getInitialValues) {
       reset(getInitialValues);
@@ -198,23 +191,6 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
                 error={errors.serial_number?.message}
                 placeholder="Unesite redni broj"
                 disabled={isDisabled}
-              />
-              <Controller
-                control={control}
-                rules={{required: 'Godina je obavezna'}}
-                name="year"
-                render={({field: {onChange, name, value}}) => (
-                  <CustomDropdown
-                    label="GODINA:"
-                    name={name}
-                    options={availableYears as any}
-                    value={value as any}
-                    onChange={onChange}
-                    placeholder="Odaberite godinu"
-                    error={errors.year?.message}
-                    isDisabled={isDisabled}
-                  />
-                )}
               />
             </Filters>
           }

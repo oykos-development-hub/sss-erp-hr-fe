@@ -4,36 +4,34 @@ import {JudgesResolutionsOverviewQueryParams, JudgesResolutionsOverviewResponse}
 const judgeResolutionOverview = async (
   data: JudgesResolutionsOverviewQueryParams,
 ): Promise<JudgesResolutionsOverviewResponse['data']['judgeResolutions_Overview']> => {
-  const response = await GraphQL.fetch(`   
-      query {
-        judgeResolutions_Overview(year: "${data?.year ? data?.year : ''}", page: ${data.page}, size: ${data.size}) {
-            status 
-            message
-            total 
+  const query = `query JudgeResolutionsOverview($year: String, $page: Int, $size: Int) {
+    judgeResolutions_Overview(year: $year, page: $page, size: $size) {
+        status 
+        message
+        total 
+        items {
+            id
+            serial_number
+            available_slots_judges
+            number_of_judges
             items {
                 id
-                serial_number
-                year
+                organization_unit {
+                    title
+                    id
+                }
+                available_slots_presidents
                 available_slots_judges
                 number_of_judges
-                items {
-                    id
-                    organization_unit {
-                        title
-                        id
-                    }
-                    available_slots_presidents
-                    available_slots_judges
-                    number_of_judges
-                    number_of_presidents
-                    number_of_employees
-                    number_of_relocated_judges
-                    number_of_suspended_judges
-                }
+                number_of_presidents
+                number_of_employees
+                number_of_relocated_judges
+                number_of_suspended_judges
             }
         }
-  }
-`);
+    }
+}`;
+  const response = await GraphQL.fetch(query, {...data});
 
   return response?.data?.judgeResolutions_Overview || {};
 };

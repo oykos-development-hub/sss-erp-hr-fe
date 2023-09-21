@@ -6,7 +6,7 @@ export type SystematizationType = {
   organizationUnit: DropdownDataNumber;
   description: string;
   serial_number: number | string;
-  active: boolean;
+  active: number;
   date_of_activation: string;
   created_at: string;
   updated_at: string;

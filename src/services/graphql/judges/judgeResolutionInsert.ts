@@ -12,7 +12,6 @@ const judgeResolutionInsert = async (
           item {
               id
               serial_number
-              year
               active
               available_slots_judges
               number_of_judges

@@ -8,7 +8,16 @@ import {ScreenWrapper} from '../../shared/screenWrapper';
 import {ScreenProps} from '../../types/screen-props';
 import {parseDate} from '../../utils/dateUtils';
 import {SystematizationFilters} from './filters/systematizationFilters';
-import {Header} from './styles';
+import {Badge, Header} from './styles';
+
+type SistematizationStatusTitle = {
+  [key in 0 | 1 | 2]: string;
+};
+const systematizationStatusTitle: SistematizationStatusTitle = {
+  0: 'Draft',
+  1: 'Neaktivan',
+  2: 'Aktivna',
+};
 
 const tableHeads: TableHead[] = [
   {title: 'Broj sistematizacije', accessor: 'serial_number', type: 'text'},
@@ -20,7 +29,15 @@ const tableHeads: TableHead[] = [
       return <Typography variant="bodyMedium" content={item !== '' ? parseDate(item) : ''} />;
     },
   },
-  {title: 'Status', accessor: 'active', type: 'badge'},
+
+  {
+    title: 'Status',
+    accessor: 'active',
+    type: 'custom',
+    renderContents: (item: 0 | 1 | 2) => {
+      return <Badge content={systematizationStatusTitle[item] || 'Draft'} />;
+    },
+  },
   {
     title: 'Organizaciona Jedinica',
     accessor: 'organization_unit',

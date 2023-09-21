@@ -122,7 +122,6 @@ export interface JudgeNormsDeleteResponse {
 export interface JudgesResolutionsOverviewQueryParams {
   page: number;
   size: number;
-  year?: string;
 }
 
 export interface JudgeResolutionItem {
@@ -140,7 +139,6 @@ export interface JudgeResolutionItem {
 export interface JudgeResolutionOverview {
   id: number;
   serial_number: string;
-  year: string;
   available_slots_judges?: number;
   number_of_judges: number;
   items: JudgeResolutionItem[];
