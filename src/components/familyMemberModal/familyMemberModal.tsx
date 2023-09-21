@@ -50,45 +50,15 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
     });
   }, [countries]);
 
-  const item = useMemo(() => {
-    return selectedItem
-      ? {
-          ...selectedItem,
-          handicapped_person: {
-            id: selectedItem?.handicapped_person ? 'Da' : 'Ne',
-            title: selectedItem?.handicapped_person ? 'Da' : 'Ne',
-          },
-          insurance_coverage: {
-            id: selectedItem?.insurance_coverage === 'Ne' ? 'Ne' : 'Da',
-            title: selectedItem?.insurance_coverage === 'Ne' ? 'Ne' : 'Da',
-          },
-          employee_relationship: {id: selectedItem?.employee_relationship, title: selectedItem?.employee_relationship},
-          country_of_birth: {id: selectedItem?.country_of_birth, title: selectedItem?.country_of_birth} || {
-            id: selectedItem?.city_of_birth_montenegro,
-            title: selectedItem?.city_of_birth_montenegro,
-          },
-          citizenship: {id: selectedItem?.citizenship, title: selectedItem?.citizenship},
-          gender: {id: selectedItem?.gender, title: selectedItem?.gender},
-          user_profile_id: selectedItem?.user_profile_id,
-          date_of_birth: parseToDate(selectedItem?.date_of_birth),
-          national_minority: nationalMinorities?.find(nm => nm.id === selectedItem.national_minority),
-          nationality: citizenshipArray?.find(c => c.title === selectedItem.nationality),
-          city_of_birth:
-            typeof selectedItem.city_of_birth === 'string'
-              ? selectedItem.city_of_birth
-              : cityData.find(city => city.id === selectedItem.city_of_birth.id),
-        }
-      : {...initialValues, user_profile_id: Number(userProfileId)};
-  }, [selectedItem]);
-
   const {
     register,
     handleSubmit,
     control,
     watch,
-    formState: {errors},
+    formState: {errors, dirtyFields},
     reset,
-  } = useForm({defaultValues: item || initialValues});
+    resetField,
+  } = useForm({defaultValues: initialValues});
 
   const {mutate, loading: isSaving} = useFamilyInsert();
 
@@ -104,10 +74,41 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
   }, [countries]);
 
   useEffect(() => {
-    if (item) {
-      reset(item);
+    if (selectedItem) {
+      reset({
+        ...selectedItem,
+        handicapped_person: {
+          id: selectedItem?.handicapped_person ? 'Da' : 'Ne',
+          title: selectedItem?.handicapped_person ? 'Da' : 'Ne',
+        },
+        insurance_coverage: {
+          id: selectedItem?.insurance_coverage === 'Ne' ? 'Ne' : 'Da',
+          title: selectedItem?.insurance_coverage === 'Ne' ? 'Ne' : 'Da',
+        },
+        employee_relationship: {id: selectedItem?.employee_relationship, title: selectedItem?.employee_relationship},
+        country_of_birth: {id: selectedItem?.country_of_birth, title: selectedItem?.country_of_birth} || {
+          id: selectedItem?.city_of_birth_montenegro,
+          title: selectedItem?.city_of_birth_montenegro,
+        },
+        citizenship: {id: selectedItem?.citizenship, title: selectedItem?.citizenship},
+        gender: {id: selectedItem?.gender, title: selectedItem?.gender},
+        user_profile_id: selectedItem?.user_profile_id,
+        date_of_birth: parseToDate(selectedItem?.date_of_birth),
+        national_minority: nationalMinorities?.find(nm => nm.id === selectedItem.national_minority),
+        nationality: citizenshipArray?.find(c => c.title === selectedItem.nationality),
+        city_of_birth:
+          selectedItem.country_of_birth !== 'MNE'
+            ? selectedItem.city_of_birth
+            : cityData.find(city => city.id === selectedItem.city_of_birth),
+      });
     }
-  }, [item]);
+  }, [selectedItem]);
+
+  useEffect(() => {
+    if (country_of_birth?.id !== 'MNE' && dirtyFields.country_of_birth) {
+      resetField('city_of_birth', {defaultValue: ''});
+    }
+  }, [country_of_birth]);
 
   const onSubmit = (data: any) => {
     if (isSaving) return;
@@ -294,7 +295,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                   return (
                     <Dropdown
                       onChange={onChange}
-                      value={value}
+                      value={value as any}
                       name={name}
                       label="OPŠTINA:"
                       options={cityData}
