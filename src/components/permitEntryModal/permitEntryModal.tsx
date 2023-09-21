@@ -71,8 +71,8 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
   const countryOptions = useMemo(() => {
     return countries?.map((country: any) => {
       return {
-        id: country.en_short_name,
-        title: country.en_short_name,
+        id: country.alpha3,
+        title: country.name,
       };
     });
   }, [countries]);

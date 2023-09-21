@@ -44,8 +44,8 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
   const citizenshipArray = useMemo(() => {
     return countries?.map(country => {
       return {
-        id: country.alpha_3_code,
-        title: country.nationality,
+        id: country.alpha3,
+        title: country.name,
       };
     });
   }, [countries]);
@@ -67,8 +67,8 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
   const countriesForDropdown = useMemo(() => {
     return countries?.map(country => {
       return {
-        id: country.alpha_3_code,
-        title: country.en_short_name,
+        id: country.alpha3,
+        title: country.name,
       };
     });
   }, [countries]);
@@ -86,10 +86,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
           title: selectedItem?.insurance_coverage === 'Ne' ? 'Ne' : 'Da',
         },
         employee_relationship: {id: selectedItem?.employee_relationship, title: selectedItem?.employee_relationship},
-        country_of_birth: {id: selectedItem?.country_of_birth, title: selectedItem?.country_of_birth} || {
-          id: selectedItem?.city_of_birth_montenegro,
-          title: selectedItem?.city_of_birth_montenegro,
-        },
+        country_of_birth: countries?.find(country => country.alpha3 === selectedItem?.country_of_birth),
         citizenship: {id: selectedItem?.citizenship, title: selectedItem?.citizenship},
         gender: {id: selectedItem?.gender, title: selectedItem?.gender},
         user_profile_id: selectedItem?.user_profile_id,

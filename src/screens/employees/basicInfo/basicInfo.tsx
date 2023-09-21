@@ -69,8 +69,8 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   const countryOptions = useMemo(() => {
     return context.countries?.map((country: any) => {
       return {
-        id: country.en_short_name,
-        title: country.en_short_name,
+        id: country.alpha3,
+        title: country.name,
       };
     });
   }, [context.countries]);

@@ -98,8 +98,8 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   const citizenshipArray = useMemo(() => {
     return countries?.map(country => {
       return {
-        id: country.alpha_3_code,
-        title: country.en_short_name,
+        id: country.alpha3,
+        title: country.name,
       };
     });
   }, [countries]);
@@ -248,8 +248,8 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   const countryOptions = useMemo(() => {
     return countries?.map(country => {
       return {
-        id: country.alpha_3_code,
-        title: country.en_short_name,
+        id: country.alpha3,
+        title: country.name,
       };
     });
   }, [countries]);
