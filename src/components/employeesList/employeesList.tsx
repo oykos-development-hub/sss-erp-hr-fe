@@ -8,7 +8,6 @@ import {EmployeeListFilters} from '../../screens/employees';
 import {statusOptions} from '../../constants';
 import useJobPositions from '../../services/graphql/jobPositions/useJobPositionOverview';
 import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
-import {OrganizationUnit} from '../../types/graphql/organizationUnitsTypes';
 
 export interface EmployeesListProps {
   navigation?: any;
@@ -122,12 +121,6 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
           />
         </Filters>
         <Controls>
-          <Button
-            content="Uvoz zaposlenih"
-            variant="secondary"
-            style={{marginRight: 10, width: 170}}
-            onClick={() => toggleEmployeeImportModal()}
-          />
           <Button
             content="Dodaj zaposlenog"
             variant="secondary"
