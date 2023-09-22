@@ -1,21 +1,20 @@
-import {Button, Divider, Table, Input, TableHead} from 'client-library';
+import {Button, Divider, Input, TableHead} from 'client-library';
+import {nanoid} from 'nanoid';
 import React, {useEffect, useMemo, useState} from 'react';
-import {Controller, useForm} from 'react-hook-form';
-import {Controls, CustomDropdown, CustomTable, Filters, FormFooter} from './styles';
+import {useForm} from 'react-hook-form';
 import {OverviewBox} from '../../../components/employeesList/styles';
+import useJudgeResolutionsInsert from '../../../services/graphql/judges/useJudgeResolutionInsert';
+import useJudgeResolutionsOverview from '../../../services/graphql/judges/useJudgeResolutionOverview';
+import useOrganizationUintCalculateEmployeeStats from '../../../services/graphql/judges/useOrganizationUintCalculateEmployeeStats';
 import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
 import {MainTitle} from '../../../shared/mainTitle';
-import {JudgeResolutionOverview, JudgeResolutionItem} from '../../../types/graphql/judges';
-import {yearsForDropdown} from '../../../utils/constants';
-import {judgeResolutionTableHeads} from '../judgeNorms/constants';
-import {ScreenProps} from '../../../types/screen-props';
-import useJudgeResolutionsOverview from '../../../services/graphql/judges/useJudgeResolutionOverview';
-import {OrganizationUnit} from '../../../types/graphql/organizationUnitsTypes';
-import {nanoid} from 'nanoid';
-import {DropdownDataString} from '../../../types/dropdownData';
-import useJudgeResolutionsInsert from '../../../services/graphql/judges/useJudgeResolutionInsert';
 import {ScreenWrapper} from '../../../shared/screenWrapper';
-import useOrganizationUintCalculateEmployeeStats from '../../../services/graphql/judges/useOrganizationUintCalculateEmployeeStats';
+import {DropdownDataString} from '../../../types/dropdownData';
+import {JudgeResolutionItem, JudgeResolutionOverview} from '../../../types/graphql/judges';
+import {OrganizationUnit} from '../../../types/graphql/organizationUnitsTypes';
+import {ScreenProps} from '../../../types/screen-props';
+import {judgeResolutionTableHeads} from '../judgeNorms/constants';
+import {Controls, CustomTable, Filters, FormFooter} from './styles';
 
 export interface JudgesNumbersDetailsListProps extends ScreenProps {
   isNew?: boolean;
@@ -62,8 +61,8 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       .forEach((unit: OrganizationUnit) => {
         values[unit.id] = item
           ? item?.items?.find((i: JudgeResolutionItem) => {
-            return i.organization_unit.id === unit.id;
-          })?.available_slots_judges
+              return i.organization_unit.id === unit.id;
+            })?.available_slots_judges
           : '';
       });
 

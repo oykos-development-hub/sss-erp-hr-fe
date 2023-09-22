@@ -38,13 +38,13 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
   const organizationUnitsList = useMemo(() => {
     return organizationUnits
       ? [
-        {id: 0, title: 'Sve organizacione jedinice'},
-        ...organizationUnits
-          .filter(i => !i.parent_id)
-          .map(unit => {
-            return {id: unit.id, title: unit.title};
-          }),
-      ]
+          {id: 0, title: 'Sve organizacione jedinice'},
+          ...organizationUnits
+            .filter(i => !i.parent_id)
+            .map(unit => {
+              return {id: unit.id, title: unit.title};
+            }),
+        ]
       : [];
   }, [organizationUnits]);
 

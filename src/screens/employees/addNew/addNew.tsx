@@ -11,7 +11,7 @@ export const AddNewEmployee: React.FC<ScreenProps> = ({context}: {context: any})
       <OverviewBox>
         <MainTitle content="DODAVANJE NOVOG ZAPOSLENOG" />
         <Divider />
-        <BasicInfo context={context} />
+        <BasicInfo />
       </OverviewBox>
     </ScreenWrapper>
   );
