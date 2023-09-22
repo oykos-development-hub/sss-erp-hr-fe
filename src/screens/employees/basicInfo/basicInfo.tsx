@@ -354,7 +354,6 @@ export const BasicInfo: React.FC = () => {
                     value={value as any}
                     options={countryOptions}
                     isDisabled={isDisabled}
-                    error={errors.nationality?.message}
                     isSearchable
                   />
                 )}

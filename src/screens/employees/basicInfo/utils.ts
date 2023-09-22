@@ -115,7 +115,7 @@ export const getSchema = (isNew: boolean) =>
           return yup.object(dropdownStringSchema).default(undefined);
       }
     }),
-    nationality: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
+    nationality: yup.object(dropdownStringSchema).default(undefined),
     citizenship: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
     national_minority: yup.object(dropdownStringSchema),
     address: yup.string().required(requiredError),

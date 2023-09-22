@@ -83,7 +83,6 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
         country_of_birth: countryOptions?.find(country => country.id === selectedItem?.country_of_birth),
         citizenship: countryOptions?.find(country => country.id === selectedItem?.citizenship),
         gender: {id: selectedItem?.gender, title: selectedItem?.gender},
-        user_profile_id: selectedItem?.user_profile_id,
         date_of_birth: parseToDate(selectedItem?.date_of_birth),
         national_minority: nationalMinorities?.find(nm => nm.id === selectedItem.national_minority),
         nationality: countryOptions?.find(c => c.title === selectedItem.nationality),
@@ -106,7 +105,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
 
     const payload = formatData(data);
     mutate(
-      payload,
+      {...payload, user_profile_id: userProfileId || 0},
       () => {
         alert.success('Uspješno sačuvano.');
         refetch();
