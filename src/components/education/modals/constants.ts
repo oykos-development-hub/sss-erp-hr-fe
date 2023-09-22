@@ -14,6 +14,7 @@ export const initialValues: UserProfileEducationFormValues = {
   certificate_issuer: '',
   description: '',
   file_id: 0,
+  score: '',
 };
 
 export enum educationTypes {
