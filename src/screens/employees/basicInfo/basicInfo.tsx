@@ -29,14 +29,16 @@ import {
   FormWrapper,
   TextWrapper,
 } from './styles';
-import {BasicInfoPageProps} from './types';
 import {booleanToYesOrNo, formatData, getSchema, validateDateOfBirth} from './utils';
 import {parseToDate} from '../../../utils/dateUtils';
 import {Switch} from '@oykos-development/devkit-react-ts-styled-components';
 import {yupResolver} from '@hookform/resolvers/yup';
+import useAppContext from '../../../context/useAppContext';
 
-export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
-  const {data: profileData, refetch} = useBasicInfoGet(Number(context.navigation.location.pathname.split('/')[4]));
+export const BasicInfo: React.FC = () => {
+  const context = useAppContext();
+
+  const {data: profileData, refetch} = useBasicInfoGet(Number(context?.navigation.location.pathname.split('/')[4]));
   const isNew = !profileData?.id;
   const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
 
@@ -48,7 +50,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   const {
     register,
     handleSubmit,
-    formState: {errors, isValid},
+    formState: {errors, isValid, dirtyFields},
     reset,
     control,
     watch,
@@ -76,7 +78,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
   }, [context.countries]);
 
   const gender = watch('gender')?.id;
-  const contract = watch('contract');
+  const [contract, is_judge, is_president] = watch(['contract', 'is_judge', 'is_president']);
 
   const maritalOptions = gender === 'M' ? maleMaritalStatusOptions : femaleMaritalStatusOptions;
 
@@ -171,7 +173,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
         housing_done: booleanToYesOrNo(profileData?.housing_done),
         single_parent: booleanToYesOrNo(profileData?.single_parent),
         gender: genderOptions.find((opt: DropdownDataString) => opt.id === profileData?.gender),
-        revisor_role: profileData?.revisor_role,
+        is_president: profileData?.is_president,
         national_minority: nationalMinorities.find(
           (opt: DropdownDataString) => opt.id === profileData?.national_minority,
         ),
@@ -186,7 +188,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
           date_of_end: parseToDate(profileData?.contract?.date_of_end),
           date_of_start: parseToDate(profileData?.contract?.date_of_start),
           date_of_eligibility: parseToDate(profileData?.contract?.date_of_eligibility),
-          user_profile_id: profileData?.contract?.user_profile?.id,
+          user_profile_id: profileData?.id,
           active: profileData?.contract?.active,
         },
       });
@@ -208,6 +210,19 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
       resetField('contract.department_id');
     }
   }, [contract?.organization_unit_id]);
+
+  useEffect(() => {
+    if (dirtyFields.is_president) {
+      is_president ? setValue('is_judge', true) : setValue('is_judge', false);
+    }
+  }, [is_president]);
+
+  const isJobPositionInputDisabled =
+    isDisabled ||
+    !contract?.organization_unit_id ||
+    !contract?.department_id ||
+    !(contract?.contract_type_id?.title && contractPositions.indexOf(contract?.contract_type_id?.title) > -1) ||
+    is_judge;
 
   return (
     <FormContainer>
@@ -256,6 +271,14 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                 label="JMBG:"
                 disabled={isDisabled}
                 error={errors.official_personal_id?.message}
+              />
+            </FormItem>
+            <FormItem>
+              <Input
+                {...register('personal_id')}
+                label="ID:"
+                disabled={isDisabled}
+                error={errors.personal_id?.message}
               />
             </FormItem>
             <FormItem>
@@ -510,7 +533,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     onChange={onChange}
                     noOptionsText="Prazno"
                     options={departmentOptions as any}
-                    isDisabled={isDisabled || !contract?.organization_unit_id}
+                    isDisabled={isDisabled || !contract?.organization_unit_id || is_judge}
                     error={errors.contract?.department_id?.message}
                   />
                 )}
@@ -528,16 +551,7 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
                     value={value as any}
                     noOptionsText="Prazno"
                     options={positions as any}
-                    isDisabled={
-                      isDisabled ||
-                      !contract?.organization_unit_id ||
-                      !contract?.department_id ||
-                      positions.length === 0 ||
-                      !(
-                        contract?.contract_type_id?.title &&
-                        contractPositions.indexOf(contract?.contract_type_id?.title) > -1
-                      )
-                    }
+                    isDisabled={isJobPositionInputDisabled}
                     error={errors.contract?.job_position_in_organization_unit_id?.message}
                   />
                 )}
@@ -545,7 +559,22 @@ export const BasicInfo: React.FC<BasicInfoPageProps> = ({context}) => {
             </FormItem>
             <div>
               <Controller
-                name="revisor_role"
+                name="is_judge"
+                control={control}
+                render={({field: {onChange, name, value}}) => (
+                  <Switch
+                    name={name}
+                    checked={value}
+                    onChange={onChange}
+                    content={<Typography variant="bodyMedium" content="SUDIJA:" style={{marginLeft: 10}} />}
+                    disabled={isDisabled}
+                  />
+                )}
+              />
+            </div>
+            <div>
+              <Controller
+                name="is_president"
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Switch

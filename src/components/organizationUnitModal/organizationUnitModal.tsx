@@ -29,13 +29,13 @@ export const OrganizationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
   const item = useMemo(() => {
     return selectedItem
       ? {
-          ...selectedItem,
-          parent_id: {id: organizationUnit?.id, title: organizationUnit?.title},
-        }
+        ...selectedItem,
+        parent_id: {id: organizationUnit?.id, title: organizationUnit?.title},
+      }
       : {
-          ...initialValues,
-          parent_id: {id: organizationUnit?.id, title: organizationUnit?.title},
-        };
+        ...initialValues,
+        parent_id: {id: organizationUnit?.id, title: organizationUnit?.title},
+      };
   }, [selectedItem]);
 
   const {

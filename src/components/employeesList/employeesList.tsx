@@ -46,11 +46,11 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   const organizationUnitsList = useMemo(() => {
     return organizationUnits
       ? [
-          {id: 0, title: 'Sve organizacione jedinice'},
-          ...organizationUnits.map(unit => {
-            return {id: unit.id, title: unit.title};
-          }),
-        ]
+        {id: 0, title: 'Sve organizacione jedinice'},
+        ...organizationUnits.map(unit => {
+          return {id: unit.id, title: unit.title};
+        }),
+      ]
       : [];
   }, [organizationUnits]);
 

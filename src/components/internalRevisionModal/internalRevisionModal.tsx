@@ -176,16 +176,16 @@ const InternalRevisionModal: React.FC<InternalRevisionModalProps> = ({
         internal_organization_unit_id:
           data.item.revision_organization_unit?.value === 'internal'
             ? {
-                id: data.item.revision_organization_unit.id,
-                title: data.item.revision_organization_unit.title,
-              }
+              id: data.item.revision_organization_unit.id,
+              title: data.item.revision_organization_unit.title,
+            }
             : null,
         external_organization_unit_id:
           data.item.revision_organization_unit?.value === 'external'
             ? {
-                id: data.item.revision_organization_unit.id,
-                title: data.item.revision_organization_unit.title,
-              }
+              id: data.item.revision_organization_unit.id,
+              title: data.item.revision_organization_unit.title,
+            }
             : null,
         planned_quarter: {id: data.item.planned_quarter, title: data.item.planned_quarter},
         priority: revisionPriorityOptions.find(option => option.id === data.item.priority),

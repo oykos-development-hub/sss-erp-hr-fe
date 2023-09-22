@@ -23,7 +23,7 @@ export interface UserProfileBasicInfo {
   single_parent: boolean;
   housing_done: boolean;
   housing_description: string;
-  revisor_role: boolean;
+  is_president: boolean;
   marital_status: string;
   date_of_taking_oath: string;
   date_of_becoming_judge: string;
@@ -33,6 +33,7 @@ export interface UserProfileBasicInfo {
   job_position: DropdownDataNumber;
   contract: UserContract;
   national_minority: string;
+  personal_id: string;
 }
 
 export interface UserProfileBasicInfoFormValues {
@@ -68,6 +69,7 @@ export interface UserProfileBasicInfoFormValues {
   middle_name: string;
   role_id: number;
   contract: BasicInfoUserContractValues;
+  personal_id: string;
 }
 
 export interface UserContract {

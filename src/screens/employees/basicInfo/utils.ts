@@ -107,12 +107,12 @@ export const getSchema = (isNew: boolean) =>
     country_of_birth: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
     city_of_birth: yup.lazy(value => {
       switch (typeof value) {
-        case 'object':
-          return yup.object(dropdownStringSchema).required(requiredError).default(undefined);
-        case 'string':
-          return yup.string().required(requiredError);
-        default:
-          return yup.object(dropdownStringSchema).default(undefined);
+      case 'object':
+        return yup.object(dropdownStringSchema).required(requiredError).default(undefined);
+      case 'string':
+        return yup.string().required(requiredError);
+      default:
+        return yup.object(dropdownStringSchema).default(undefined);
       }
     }),
     nationality: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
@@ -122,6 +122,7 @@ export const getSchema = (isNew: boolean) =>
     father_name: yup.string().required(requiredError),
     mother_name: yup.string().required(requiredError),
     mother_birth_last_name: yup.string(),
+    personal_id: yup.string(),
     official_personal_id: yup.string().required(requiredError).default(undefined),
     official_personal_document_number: yup.string().required(requiredError).default(undefined),
     official_personal_document_issuer: yup
@@ -132,7 +133,8 @@ export const getSchema = (isNew: boolean) =>
     gender: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
     single_parent: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
     housing_done: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
-    revisor_role: yup.boolean().default(false),
+    is_president: yup.boolean().default(false),
+    is_judge: yup.boolean().default(false),
     housing_description: yup.string(),
     marital_status: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
     date_of_becoming_judge: yup.date().nullable(),

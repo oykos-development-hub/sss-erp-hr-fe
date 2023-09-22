@@ -27,6 +27,7 @@ const basicInfoUpdate = async (
             bank_account
             bank_name
             official_personal_id
+            personal_id
             official_personal_document_number
             official_personal_document_issuer
             gender
