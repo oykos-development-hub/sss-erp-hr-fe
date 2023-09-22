@@ -1,4 +1,4 @@
-import {Datepicker, Dropdown, FileUpload, Modal, Typography} from 'client-library';
+import {Datepicker, Dropdown, FileUpload, Modal, Typography, Input} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
@@ -39,6 +39,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
     control,
     formState: {errors},
     reset,
+    register,
   } = useForm({defaultValues: initialValues});
 
   const {mutate, loading: isSaving} = useEducationInsert();
@@ -64,6 +65,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
       academic_title: values.academic_title?.id || '',
       type_id: values.type?.id || 0,
       user_profile_id: Number(navigation.location.pathname.split('/')[4]),
+      score: values?.score,
     };
 
     try {
@@ -114,6 +116,13 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
                   error={errors.type?.message as string}
                 />
               )}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Input
+              {...register('score', {required: 'Ovo polje je obavezno'})}
+              label="BROJ BODOVA:"
+              error={errors.score?.message as string}
             />
           </FormGroup>
           <FormGroup>

@@ -31,6 +31,7 @@ export interface UserProfileEducationFormValues {
   certificate_issuer: string;
   description: string;
   file_id: number;
+  score: string;
 }
 
 export type UserProfileEducation = {
