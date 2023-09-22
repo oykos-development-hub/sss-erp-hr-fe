@@ -70,6 +70,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
   const {organizationUnitsList} = useOrganizationUnits();
 
   const {relevant, date_of_start, date_of_end, organization_unit, organization_unit_id} = watch();
+  console.log(selectedItem);
 
   useEffect(() => {
     if (selectedItem) {
@@ -99,13 +100,10 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
         },
         () => {
           alert.error('Greška. Promjene nisu sačuvane.');
-          onClose();
         },
       );
     } catch (e) {
       console.log(e);
-    } finally {
-      reset();
     }
   };
 

@@ -5,7 +5,6 @@ export type UserProfileExperience = {
   amount_of_insured_experience: number;
   created_at: string;
   date_of_end: string;
-  date_of_signature: string;
   date_of_start: string;
   id: number;
   organization_unit: string;
@@ -20,7 +19,6 @@ export type UserProfileExperienceFormValues = {
   amount_of_experience: number;
   amount_of_insured_experience: number;
   date_of_end: Date | null;
-  date_of_signature: Date | null;
   date_of_start: Date | null;
   id: number | null;
   organization_unit: string;

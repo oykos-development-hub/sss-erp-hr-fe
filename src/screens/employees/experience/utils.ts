@@ -8,7 +8,6 @@ export const formatData = (data: any, newExperience?: boolean) => {
     organization_unit: data.organization_unit,
     date_of_start: parseDateForBackend(data?.date_of_start),
     date_of_end: parseDateForBackend(data?.date_of_end),
-    date_of_signature: data?.date_of_signature ? parseDateForBackend(data?.date_of_signature) : null,
     amount_of_experience: data?.amount_of_experience,
     amount_of_insured_experience:
       Number(data?.amount_of_insured_experience) >= data?.amount_of_experience

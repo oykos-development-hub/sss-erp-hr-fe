@@ -16,7 +16,6 @@ const exerienceOverview = async (
             organization_unit_id
             amount_of_experience
             amount_of_insured_experience
-            date_of_signature
             date_of_start
             date_of_end
             created_at
