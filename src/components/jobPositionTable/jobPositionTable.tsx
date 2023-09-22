@@ -181,8 +181,8 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
 
     insertJobPosition(
       payload,
-      jobPositionResponse => {
-        console.log('');
+      () => {
+        refetch && refetch();
       },
       () => {
         alert.error('Greška. Promjene nisu sačuvane.');
