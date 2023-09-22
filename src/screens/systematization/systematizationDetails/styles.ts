@@ -16,7 +16,7 @@ export const Row = styled.div`
 export const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  margin: 30px 0;
+  margin: 30px 0 50px 0;
 `;
 
 export const SectorsWrapper = styled.div`
@@ -136,7 +136,6 @@ export const FileUploadWrapper = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-
   > div > div {
     display: flex;
     justify-content: space-between;
@@ -150,5 +149,14 @@ export const FileUploadWrapper = styled.div`
 
   > div > div > div {
     flex-direction: row-reverse;
+  }
+`;
+
+export const UploadWrapper = styled.div`
+  margin: 50px 0 50px 0;
+  display: flex;
+  gap: 1.25em;
+  & > div > div {
+    width: 100%;
   }
 `;

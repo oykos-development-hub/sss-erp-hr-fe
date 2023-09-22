@@ -38,7 +38,10 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   const {mutate: insertEmployee} = useOrganizationUnitEmployeeInsert();
   const {mutate: deleteEmployee} = useEmployeeInOrganizationUnitDelete();
 
-  const jobPositionsForDropdown = jobPositionData?.map((item: any) => ({id: item.id, title: item.title}));
+  const jobPositionsForDropdown = jobPositionData
+    ?.filter((item: any) => !item.is_judge)
+    .map((item: any) => ({id: item.id, title: item.title}));
+
   const employeesForDropdown = allEmployees?.map((item: any) => ({
     id: item.id,
     title: `${item.first_name} ${item.last_name}`,
@@ -83,6 +86,11 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
           return {
             ...item,
             [name]: {...item[name], value: value},
+          };
+        } else if (name === 'requirements' || name === 'description') {
+          return {
+            ...item,
+            [name]: value,
           };
         } else {
           return {
@@ -167,13 +175,13 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
       job_position_id: selectedItem?.job_position?.id,
       available_slots: Number(selectedItem?.available_slots.value),
       employees: selectedItem?.employees?.map((item: any) => item.id),
+      description: selectedItem.description,
+      requirements: selectedItem.requirements,
     };
 
     insertJobPosition(
       payload,
-      jobPositionResponse => {
-        refetch && refetch(true);
-      },
+      jobPositionResponse => {},
       () => {
         alert.error('Greška. Promjene nisu sačuvane.');
       },
@@ -206,7 +214,23 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
         );
       },
     },
-    {title: 'Uvjeti', accessor: 'requirements', type: 'text'},
+    {
+      title: 'Uslovi',
+      accessor: 'requirements',
+      type: 'custom',
+      renderContents: (item: any, row) => {
+        return (
+          <Input
+            textarea
+            value={item}
+            name="requirements"
+            style={{width: 100}}
+            disabled={row?.id !== editTableRow}
+            onChange={ev => handleChange(ev.target.value, 'requirements')}
+          />
+        );
+      },
+    },
     {
       title: 'Broj izvršilaca',
       accessor: 'available_slots',
@@ -223,7 +247,23 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
         );
       },
     },
-    {title: 'Opis poslova', accessor: 'description', type: 'text'},
+    {
+      title: 'Opis poslova',
+      accessor: 'description',
+      type: 'custom',
+      renderContents: (item: any, row) => {
+        return (
+          <Input
+            textarea
+            value={item}
+            name="description"
+            style={{width: 100}}
+            disabled={row?.id !== editTableRow}
+            onChange={ev => handleChange(ev.target.value, 'description')}
+          />
+        );
+      },
+    },
     {
       title: 'Zaposleni',
       accessor: 'employees',
@@ -287,6 +327,8 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
       if (item.id === 0) setEditTableRow(0);
       return {
         ...item,
+        description: item?.description,
+        requirements: item?.requirements,
         serial_number: item?.serial_number || 0,
         job_position: {...item.job_positions},
         employees: item?.employees?.map((employee: any) => ({
@@ -310,7 +352,9 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
             name: 'edit',
             onClick: item => selectRow(item.id),
             icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            shouldRender: item => editTableRow !== item.id,
+            shouldRender: item => {
+              return editTableRow !== item.id;
+            },
           },
           {name: 'save', onClick: handleSave, icon: <CheckIcon />, shouldRender: item => editTableRow === item.id},
           {

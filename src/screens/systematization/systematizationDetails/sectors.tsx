@@ -97,11 +97,7 @@ export const Sectors: React.FC<SectorsProps> = ({
               isOpen={selectedItemId === sector?.id ? true : false}
               customHeader={
                 <AccordionHeader color={sector?.color}>
-                  <Typography
-                    variant="bodyMedium"
-                    content={`${sector?.id}. ${sector?.title}`}
-                    style={{fontWeight: 600}}
-                  />
+                  <Typography variant="bodyMedium" content={`${sector?.title}`} style={{fontWeight: 600}} />
                   <AccordionIconsWrapper isOpen={selectedItemId === sector?.id}>
                     <ChevronDownIcon
                       width="15px"

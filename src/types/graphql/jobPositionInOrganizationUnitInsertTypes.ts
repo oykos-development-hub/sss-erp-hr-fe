@@ -5,6 +5,8 @@ export type JobPositionInOrganizationUnitInsert = {
   job_position_id: number;
   available_slots: number;
   employees: number[];
+  requirements: string;
+  description: string;
 };
 
 export type JobPositionInOrganizationUnitInsertResponse = {

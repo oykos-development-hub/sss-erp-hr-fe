@@ -17,6 +17,8 @@ const jobPositionInOrganizationUnitInsert = async (
             parent_organization_unit_id
             job_position_id
             available_slots
+            requirements
+            description
         }
     }
 }`;

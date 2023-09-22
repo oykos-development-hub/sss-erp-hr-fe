@@ -48,7 +48,11 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id =
                 //eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 //@ts-ignore
                 content={
-                  <Typography variant="bodyMedium" content="Aktiviraj sistematizaciju" style={{marginLeft: 10}} />
+                  <Typography
+                    variant="bodyMedium"
+                    content="Aktiviraj sistematizaciju"
+                    style={{marginLeft: 10, fontSize: '14px'}}
+                  />
                 }
                 style={{margin: '20px 0 0 10px'}}
                 disabled={!watch('date_of_activation') || active}

@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {StyledTabs} from '../../../components/employeeDetails/styles';
 import {OverviewBox} from '../../../components/employeesList/styles';
 import {SystematizationDetailsPageProps} from '../types';
-import {ButtonWrapper, FileUploadWrapper, Row, TitleWrapper} from './styles';
+import {ButtonWrapper, FileUploadWrapper, Row, TitleWrapper, UploadWrapper} from './styles';
 import {Typography, Divider, Theme, Button, Input, Dropdown, FileUpload} from 'client-library';
 import {systematizationDetailsTabs} from '../constants';
 import {Tab} from '@oykos-development/devkit-react-ts-styled-components';
@@ -237,28 +237,28 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
                   }}
                 />
               </Row>
-              <Input
-                {...methods?.register('description', {required: 'Ovo polje je obavezno'})}
-                label="OPIS:"
-                error={methods?.formState?.errors.description?.message as string}
-                textarea
-                onChange={(event: any) => setIsBlocking(event.target.value.length > 0)}
-              />
-              <ButtonWrapper>
+
+              <UploadWrapper>
                 <FileUploadWrapper>
                   <FileUpload
                     icon={<></>}
-                    style={{width: '50%'}}
                     variant="secondary"
                     onUpload={handleUpload}
                     buttonText="Dodaj dokument"
                     note="Izaberite datoteku ili je prevucite ovdje"
                   />
                 </FileUploadWrapper>
-                {systematizationID && Number(systematizationID) > 0 && !systematizationDetails?.active && (
-                  <Button variant="secondary" content="Dodaj odjeljenje" onClick={() => setShowEditSectorModal(true)} />
-                )}
-              </ButtonWrapper>
+
+                <FileUploadWrapper>
+                  <FileUpload
+                    icon={<></>}
+                    variant="secondary"
+                    onUpload={handleUpload}
+                    buttonText="Dodaj dokument"
+                    note="Izaberite datoteku ili je prevucite ovdje"
+                  />
+                </FileUploadWrapper>
+              </UploadWrapper>
               <Sectors
                 sectors={systematizationDetails?.sectors}
                 handleDeleteSector={id => handleDeleteSector(id)}
@@ -275,6 +275,22 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
           ) : (
             <PrintPage sectorDetails={systematizationDetails?.sectors} />
           )}
+
+          <ButtonWrapper>
+            <FileUploadWrapper>
+              <FileUpload
+                icon={<></>}
+                style={{width: 'calc(50% - 2em)'}}
+                variant="secondary"
+                onUpload={handleUpload}
+                buttonText="Dodaj dokument"
+                note="Izaberite datoteku ili je prevucite ovdje"
+              />
+            </FileUploadWrapper>
+            {systematizationID && Number(systematizationID) > 0 && !systematizationDetails?.active && (
+              <Button variant="secondary" content="Dodaj odjeljenje" onClick={() => setShowEditSectorModal(true)} />
+            )}
+          </ButtonWrapper>
 
           <Footer
             activeTab={activeTab}
