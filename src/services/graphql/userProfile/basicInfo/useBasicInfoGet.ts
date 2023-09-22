@@ -7,7 +7,6 @@ const useBasicInfoGet = (id: number) => {
   const [loading, setLoading] = useState(true);
 
   const fetchUserBasicInfo = async () => {
-    console.log(id);
     const response = await GraphQL.basicInfoGet(id);
     const user = response?.data?.userProfile_Basic?.item;
 

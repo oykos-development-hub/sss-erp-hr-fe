@@ -124,7 +124,6 @@ export const BasicInfo: React.FC = () => {
             context.navigation.navigate(`/hr/employees/details/${userId}/basic-info`, {state: {scroll: true}});
           },
           (res: any) => {
-            console.log(res);
             context.alert.error('Greška. Promjene nisu sačuvane.');
           },
         );

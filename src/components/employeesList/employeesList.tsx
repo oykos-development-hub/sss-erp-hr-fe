@@ -26,7 +26,6 @@ export interface EmployeesListProps {
 const EmployeesList: React.FC<EmployeesListProps> = ({
   navigation,
   navigate,
-  toggleEmployeeImportModal,
   onPageChange,
   data,
   search,
@@ -38,6 +37,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
 }) => {
   const overviewRef = useRef<HTMLDivElement>(null);
   const state = navigation.location.state;
+  const isDetails = navigation.location.pathname.split('/').length === 6;
 
   const {organizationUnits} = useOrganizationUnits(undefined, true);
 
@@ -75,8 +75,10 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   }, [jobPositions]);
 
   useEffect(() => {
-    state?.scroll && scrollToTheNextElement(parentRef, overviewRef);
-  }, []);
+    if (state?.scroll || isDetails) {
+      scrollToTheNextElement(parentRef, overviewRef);
+    }
+  }, [isDetails]);
 
   return (
     <OverviewBox ref={overviewRef}>

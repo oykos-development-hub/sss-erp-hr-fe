@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState, RefObject, useRef} from 'react';
 import {EmployeeDetailsBox, StyledTabs} from './styles';
 import {Tab} from '@oykos-development/devkit-react-ts-styled-components';
 import {employeeTabs} from '../../screens/employees/constants';
@@ -13,7 +13,7 @@ import {ConfirmationsPage} from '../../screens/employees/confirmations/confirmat
 import {EvaluationsPage} from '../../screens/employees/evaluations/evaluations';
 import {SalaryParams} from '../../screens/employees/salaryParams/salaryParams';
 import Absents from '../../screens/employees/absents/absents';
-import useAppContext from '../../context/useAppContext';
+import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
 
 interface EmployeeDetailsProps {
   context: MicroserviceProps;
@@ -33,6 +33,7 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({context}) => {
       location: {pathname},
     },
   } = context;
+  const detailsRef = useRef<HTMLDivElement>(null);
 
   const employeesPath = pathname && pathname.split('/')[pathname.split('/').length - 1];
 
