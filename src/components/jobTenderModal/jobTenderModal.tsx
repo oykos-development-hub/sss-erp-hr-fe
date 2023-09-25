@@ -26,7 +26,7 @@ const jobTenderSchema = yup.object().shape({
     .min(yup.ref('date_of_start'), 'Datum mora biti veći od datuma početka'),
   serial_number: yup.string().required('Ovo polje je obavezno'),
   id: yup.number(),
-  number_of_vacant_seats: yup.number(),
+  number_of_vacant_seats: yup.number().nullable(),
 });
 
 const initialValues = {
@@ -56,6 +56,8 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
     control,
     formState: {errors},
     reset,
+    watch,
+    setValue,
   } = useForm({resolver: yupResolver(jobTenderSchema)});
 
   const {mutate, loading: isSaving} = useJobTenderInsert();
@@ -70,6 +72,16 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
       });
     }
   }, [selectedItem]);
+
+  const {type, number_of_vacant_seats} = watch();
+
+  const isNumOfVacantSeatsDisabled = type?.title === 'Javni oglas za predsjednika suda';
+
+  useEffect(() => {
+    if (isNumOfVacantSeatsDisabled) {
+      setValue('number_of_vacant_seats', null);
+    }
+  }, [number_of_vacant_seats]);
 
   const onSubmit = (values: any) => {
     if (isSaving) return;
@@ -175,7 +187,12 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
           </Row>
           <Row>
             <Input {...register('serial_number')} label="BROJ OGLASA:" error={errors.serial_number?.message} />
-            <Input {...register('number_of_vacant_seats')} label="BROJ UPRAŽNJENIH MJESTA:" type="number" />
+            <Input
+              {...register('number_of_vacant_seats')}
+              label="BROJ UPRAŽNJENIH MJESTA:"
+              type="number"
+              disabled={isNumOfVacantSeatsDisabled}
+            />
           </Row>
           <FileUploadWrapper>
             <FileUpload

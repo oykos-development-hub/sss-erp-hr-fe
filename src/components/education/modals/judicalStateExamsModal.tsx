@@ -119,11 +119,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
             />
           </FormGroup>
           <FormGroup>
-            <Input
-              {...register('score', {required: 'Ovo polje je obavezno'})}
-              label="BROJ BODOVA:"
-              error={errors.score?.message as string}
-            />
+            <Input {...register('score')} label="BROJ BODOVA:" type="number" />
           </FormGroup>
           <FormGroup>
             <Controller
