@@ -1,17 +1,49 @@
-import React from 'react';
-import {Divider, Pagination, Table, Theme} from 'client-library';
+import React, {useMemo} from 'react';
+import {Divider, Pagination, Table, Theme, SearchIcon} from 'client-library';
 import {useState} from 'react';
 import useJobTenderApplications from '../../../services/graphql/jobTenders/useJobTenderApplicationOverview';
 import {MainTitle} from '../../../shared/mainTitle';
 import {ScreenWrapper} from '../../../shared/screenWrapper';
 import SectionBox from '../../../shared/sectionBox';
-import {JobTenderApplication} from '../../../types/graphql/jobTenders';
+import {ApplicationScreenFilters, JobTenderApplication} from '../../../types/graphql/jobTenders';
 import {ScreenProps} from '../../../types/screen-props';
 import {applicationsTableHeads} from '../constants';
+import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
+import useJobTendersTypesSearch from '../../../services/graphql/jobPositions/useJobTendersTypesSearch';
+import {useDebounce} from '../../../utils/useDebounce';
+import {FilterDropdown, FilterInput, FilterWrapper} from './style';
+
+const initialValues: ApplicationScreenFilters = {
+  organization_unit_id: undefined,
+  type_id: undefined,
+};
 
 const ApplicationsScreen = (props: ScreenProps) => {
   const [page, setPage] = useState(1);
-  const {data: applications, loading} = useJobTenderApplications({page, size: 10, job_tender_id: 0});
+  const [filters, setFilters] = useState<any>(initialValues);
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 500);
+  const {data: applications, loading} = useJobTenderApplications({page, size: 10, ...filters, search: debouncedSearch});
+  const {typesUnitsList} = useJobTendersTypesSearch('');
+  const {organizationUnits} = useOrganizationUnits();
+
+  const tableData = applications?.items?.map((item: JobTenderApplication) => ({
+    ...item,
+    full_name: `${item.first_name} ${item.last_name}` || '',
+  }));
+
+  const organizationUnitsList = [
+    {id: 0, title: 'Sve organizacione jedinice'},
+    ...organizationUnits.map(unit => ({id: unit.id, title: unit.title})),
+  ];
+
+  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
+
+  const onFilterChange = (value: any, name: string) => {
+    setFilters({...filters, [name]: value});
+  };
 
   const onPageChange = (page: number) => {
     setPage(page + 1);
@@ -31,9 +63,36 @@ const ApplicationsScreen = (props: ScreenProps) => {
         <MainTitle content="PREGLED SVIH KANDIDATA" />
         <Divider color={Theme?.palette?.gray200} height="1px" />
 
+        <FilterWrapper>
+          <FilterDropdown
+            label="TIP OGLASA:"
+            name="type_id"
+            onChange={value => onFilterChange(value, 'type_id')}
+            value={filters.type_id}
+            options={typesUnitsList}
+            placeholder="Tip oglasa:"
+          />
+          <FilterDropdown
+            label="ORGANIZACIONA JEDINICA:"
+            name="organization_unit_id"
+            onChange={value => onFilterChange(value, 'organization_unit_id')}
+            value={filters.organization_unit_id}
+            options={organizationUnitsList}
+            placeholder="Odaberite organizacionu jedinicu"
+          />
+
+          <FilterInput
+            label="PRETRAGA PO IMENU:"
+            placeholder="Unesi Pretragu"
+            onChange={onSearch}
+            value={search}
+            rightContent={<SearchIcon />}
+          />
+        </FilterWrapper>
+
         <Table
           tableHeads={applicationsTableHeads}
-          data={applications.items || []}
+          data={tableData || []}
           style={{marginBottom: 22}}
           onRowClick={navigateToDetails}
           isLoading={loading}

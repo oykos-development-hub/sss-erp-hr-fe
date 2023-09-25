@@ -1,5 +1,6 @@
 import {ModalProps} from '../../screens/employees/education/types';
 import {DropdownDataNumber} from '../dropdownData';
+import {MicroserviceProps} from '../micro-service-props';
 import {OrganizationUnit} from './organizationUnitsTypes';
 
 import {JobTenderType} from './useJobTendersTypes';
@@ -61,6 +62,8 @@ export interface JobTenderApplication {
   id?: number;
   status: string;
   job_tender?: DropdownItemType | null;
+  organization_unit: DropdownDataNumber | null;
+  tender_type: DropdownDataNumber | null;
   user_profile?: DropdownItemType;
   type: 'external' | 'internal';
   first_name?: string;
@@ -74,6 +77,11 @@ export interface JobTenderApplication {
   created_at?: string;
   updated_at?: string;
   file_id?: number;
+}
+
+export interface ApplicationScreenFilters {
+  organization_unit_id?: DropdownDataNumber;
+  type_id?: DropdownDataNumber;
 }
 
 export interface JobTenderApplicationInsertParams
@@ -91,8 +99,10 @@ export interface JobTenderApplicationInsertParams
 export interface JobTenderApplicationsParams {
   page: number;
   size: number;
-  job_tender_id?: number;
+  search?: string;
   id?: number;
+  organization_unit_id?: number;
+  type_id?: number;
 }
 
 export interface JobTenderApplicationResponse {

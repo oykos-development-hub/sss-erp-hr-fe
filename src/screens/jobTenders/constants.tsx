@@ -35,19 +35,15 @@ export const tableHeads: TableHead[] = [
 
 export const applicationsTableHeads: TableHead[] = [
   {
-    title: 'Tip',
-    accessor: 'type',
-    sortable: true,
+    title: 'Tip Oglasa',
+    accessor: 'tender_type',
     type: 'custom',
-    renderContents: (type: string) => {
-      return <Typography content={applicationTypeOptions.find(option => option.id === type)?.title ?? ''} />;
-    },
+    renderContents: type => <Typography variant="bodyMedium" content={type.title} />,
   },
   {
     title: 'Ime',
-    accessor: 'first_name',
+    accessor: 'full_name',
   },
-  {title: 'Prezime', accessor: 'last_name'},
   {
     title: 'Datum rođenja',
     accessor: 'date_of_birth',
@@ -67,7 +63,12 @@ export const applicationsTableHeads: TableHead[] = [
       return <Typography content={date_of_application ? parseDate(date_of_application) : ''} />;
     },
   },
-  {title: 'Ocjena', accessor: 'evaluation'},
+  {
+    title: 'Organizaciona jedinica',
+    accessor: 'organization_unit',
+    type: 'custom',
+    renderContents: item => <Typography variant="bodyMedium" content={item.title} />,
+  },
   {title: 'Status', accessor: 'status'},
   {
     title: '',

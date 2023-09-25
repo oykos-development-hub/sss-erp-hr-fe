@@ -5,20 +5,31 @@ const jobTenderApplicationOverview = async ({
   page,
   size,
   id,
-  job_tender_id,
+  organization_unit_id,
+  type_id,
+  search,
 }: JobTenderApplicationsParams): Promise<{data: JobTenderApplicationResponse['data']['jobTender_Applications']}> => {
-  const query = `query JobTendersApplications($id: Int, $job_tender_id: Int, $page: Int, $size: Int) {
-    jobTender_Applications(id: $id, job_tender_id: $job_tender_id, page: $page, size: $size) {
+  const query = `query JobTendersApplications($id: Int, $organization_unit_id: Int, $type_id: Int  $page: Int!, $search: String, $size: Int!) {
+    jobTender_Applications(id: $id, organization_unit_id: $organization_unit_id, type_id: $type_id, page: $page, size: $size, search: $search) {
         message
         status
+        data
         total
         items {
             id
             active
-            job_tender {
+           job_tender {
                 title
                 id
             }
+            tender_type {
+                title
+                id
+            }
+            organization_unit {
+              title
+              id
+          }
             user_profile {
                 title
                 id
@@ -38,7 +49,7 @@ const jobTenderApplicationOverview = async ({
         }
     }
 }`;
-  const response = await GraphQL.fetch(query, {page, size, id, job_tender_id});
+  const response = await GraphQL.fetch(query, {page, size, id, organization_unit_id, type_id, search});
 
   return response.data.jobTender_Applications || {};
 };

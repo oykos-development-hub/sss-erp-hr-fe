@@ -1,9 +1,23 @@
 import {useEffect, useState} from 'react';
-import {JobTenderApplicationsParams} from '../../../types/graphql/jobTenders';
+import {ApplicationScreenFilters, JobTenderApplicationsParams} from '../../../types/graphql/jobTenders';
 import {GraphQL} from '..';
 const initialState = {items: [], total: 0, message: '', status: ''};
 
-const useJobTenderApplicationOverview = ({page, size, id = 0, job_tender_id = 0}: JobTenderApplicationsParams) => {
+interface UseJobTenderApplicationsParams extends ApplicationScreenFilters {
+  page: number;
+  size: number;
+  id: number;
+  search: string;
+}
+
+const useJobTenderApplicationOverview = ({
+  page,
+  size,
+  id,
+  organization_unit_id,
+  type_id,
+  search,
+}: UseJobTenderApplicationsParams) => {
   const [data, setData] = useState<any>(initialState);
   const [loading, setLoading] = useState(true);
 
@@ -12,7 +26,9 @@ const useJobTenderApplicationOverview = ({page, size, id = 0, job_tender_id = 0}
       page,
       size,
       id,
-      job_tender_id,
+      organization_unit_id: organization_unit_id ? organization_unit_id?.id : 0,
+      type_id: type_id ? type_id?.id : 0,
+      search,
     });
     setData(jobTenderApplications);
     setLoading(false);
@@ -20,7 +36,7 @@ const useJobTenderApplicationOverview = ({page, size, id = 0, job_tender_id = 0}
 
   useEffect(() => {
     fetchJobTenderApplications();
-  }, [page, size, id, job_tender_id]);
+  }, [page, size, id, organization_unit_id, type_id, search]);
 
   return {data, loading, refreshData: fetchJobTenderApplications};
 };
