@@ -34,6 +34,8 @@ const basicInfoUpdate = async (
             single_parent
             housing_done
             housing_description
+            is_president
+            is_judge
             marital_status
             date_of_taking_oath
             date_of_becoming_judge

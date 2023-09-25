@@ -17,7 +17,7 @@ export const judgeResolutionTableHeads = (judgeInputs: {[key: string]: string}):
     type: 'custom',
     renderContents: (_, row) => {
       const judges = Number(judgeInputs[row.organization_unit.id]) || Number(row.available_slots_judges);
-      return <Typography content={judges + Number(row.available_slots_presidents)} />;
+      return <Typography content={judges} />;
     },
   },
   {
@@ -36,7 +36,7 @@ export const judgeResolutionTableHeads = (judgeInputs: {[key: string]: string}):
     title: 'Ukupno sudija',
     accessor: '',
     type: 'custom',
-    renderContents: (_, row) => <Typography content={row.number_of_presidents + row.number_of_judges} />,
+    renderContents: (_, row) => <Typography content={row.number_of_judges} />,
   },
 ];
 

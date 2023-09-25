@@ -26,7 +26,7 @@ export const formatData = (data: any) => {
     gender: data?.gender?.id,
     single_parent: data?.single_parent.id === 'Da' ? true : false,
     housing_done: data?.housing_done.id === 'Da' ? true : false,
-    revisor_role: data?.is_president,
+    is_president: data?.is_president,
     is_judge: data?.is_judge,
     marital_status: data?.marital_status?.id,
     date_of_taking_oath: new Date(),

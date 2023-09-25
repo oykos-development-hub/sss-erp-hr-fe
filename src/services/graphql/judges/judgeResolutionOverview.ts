@@ -4,8 +4,8 @@ import {JudgesResolutionsOverviewQueryParams, JudgesResolutionsOverviewResponse}
 const judgeResolutionOverview = async (
   data: JudgesResolutionsOverviewQueryParams,
 ): Promise<JudgesResolutionsOverviewResponse['data']['judgeResolutions_Overview']> => {
-  const query = `query JudgeResolutionsOverview($year: String, $page: Int, $size: Int) {
-    judgeResolutions_Overview(year: $year, page: $page, size: $size) {
+  const query = `query JudgeResolutionsOverview($page: Int, $size: Int) {
+    judgeResolutions_Overview(page: $page, size: $size) {
         status 
         message
         total 
