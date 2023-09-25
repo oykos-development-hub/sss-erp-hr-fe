@@ -31,7 +31,7 @@ const basicInfoGet = async (user_profile_id: number): Promise<UserProfileBasicRe
             single_parent
             housing_done
             housing_description
-            revisor_role
+            is_judge
             marital_status
             date_of_taking_oath
             date_of_becoming_judge

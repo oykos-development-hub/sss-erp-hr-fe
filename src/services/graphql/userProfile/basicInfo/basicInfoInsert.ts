@@ -34,12 +34,12 @@ const basicInfoInsert = async (
             single_parent
             housing_done
             housing_description
-            revisor_role
             marital_status
             date_of_taking_oath
             date_of_becoming_judge
             email
             phone
+            is_judge
             position_in_organization_unit_id
             organization_unit {
                 id
