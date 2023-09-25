@@ -22,7 +22,7 @@ export interface JobTender {
   updated_at?: string;
   file_id: number;
   job_position?: DropdownItemType;
-  number_of_vacant_seats: number;
+  number_of_vacant_seats: number | null;
 }
 
 export interface JobTenderParams {
