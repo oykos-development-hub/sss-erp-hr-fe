@@ -1,6 +1,6 @@
 import React from 'react';
 import {MainTitle, OverviewBox} from '../../../components/employeesList/styles';
-import {ScreenWrapper} from '../../../shared/screenWrapper';
+import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {ScreenProps} from '../../../types/screen-props';
 import {BasicInfo} from '../basicInfo/basicInfo';
 import {Divider} from 'client-library';

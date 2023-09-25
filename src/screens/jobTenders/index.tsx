@@ -5,7 +5,7 @@ import useJobTendersTypesSearch from '../../services/graphql/jobPositions/useJob
 import useJobTendersDelete from '../../services/graphql/jobTenders/useJobTenderDelete';
 import useJobTendersOverview from '../../services/graphql/jobTenders/useJobTenderOverview';
 import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
-import {ScreenWrapper} from '../../shared/screenWrapper';
+import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
 import {DropdownDataNumber} from '../../types/dropdownData';
 import {JobTender} from '../../types/graphql/jobTenders';
 import {ScreenProps} from '../../types/screen-props';

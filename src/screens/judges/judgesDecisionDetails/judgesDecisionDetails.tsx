@@ -8,7 +8,7 @@ import useJudgeResolutionsOverview from '../../../services/graphql/judges/useJud
 import useOrganizationUintCalculateEmployeeStats from '../../../services/graphql/judges/useOrganizationUintCalculateEmployeeStats';
 import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
 import {MainTitle} from '../../../shared/mainTitle';
-import {ScreenWrapper} from '../../../shared/screenWrapper';
+import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {DropdownDataString} from '../../../types/dropdownData';
 import {JudgeResolutionItem, JudgeResolutionOverview} from '../../../types/graphql/judges';
 import {OrganizationUnit} from '../../../types/graphql/organizationUnitsTypes';

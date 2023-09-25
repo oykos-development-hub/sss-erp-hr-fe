@@ -1,23 +1,18 @@
-import React, {useEffect, useMemo, useState, RefObject, useRef} from 'react';
-import {EmployeeDetailsBox, StyledTabs} from './styles';
 import {Tab} from '@oykos-development/devkit-react-ts-styled-components';
-import {employeeTabs} from '../../screens/employees/constants';
-import {getRouteName} from '../../utils/getRouteName';
-import {MicroserviceProps} from '../../types/micro-service-props';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import useAppContext from '../../context/useAppContext';
+import Absents from '../../screens/employees/absents/absents';
 import {BasicInfo} from '../../screens/employees/basicInfo/basicInfo';
+import {ConfirmationsPage} from '../../screens/employees/confirmations/confirmations';
+import {employeeTabs} from '../../screens/employees/constants';
 import {EducationPage} from '../../screens/employees/education/education';
+import {EvaluationsPage} from '../../screens/employees/evaluations/evaluations';
 import {ExperiencePage} from '../../screens/employees/experience/experience';
 import {FamilyPage} from '../../screens/employees/family/family';
 import Foreigners from '../../screens/employees/foreigners/foreigners';
-import {ConfirmationsPage} from '../../screens/employees/confirmations/confirmations';
-import {EvaluationsPage} from '../../screens/employees/evaluations/evaluations';
 import {SalaryParams} from '../../screens/employees/salaryParams/salaryParams';
-import Absents from '../../screens/employees/absents/absents';
-import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
-
-interface EmployeeDetailsProps {
-  context: MicroserviceProps;
-}
+import {getRouteName} from '../../utils/getRouteName';
+import {EmployeeDetailsBox, StyledTabs} from './styles';
 
 const getCurrentTab = (pathname: string) => {
   const path = pathname.split('/');
@@ -25,7 +20,8 @@ const getCurrentTab = (pathname: string) => {
   return employeeTabs.find(tab => tab.routeName === name)?.id;
 };
 
-const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({context}) => {
+const EmployeeDetails: React.FC = () => {
+  const context = useAppContext();
   const [activeTab, setActiveTab] = useState(getCurrentTab(context.navigation.location.pathname) || 1);
   const {
     navigation: {

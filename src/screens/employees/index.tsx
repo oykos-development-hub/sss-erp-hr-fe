@@ -1,10 +1,11 @@
 import {ValueType} from 'client-library/dist/components/dropdown/types';
-import React, {useMemo, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import EmployeeDetails from '../../components/employeeDetails/employeeDetails';
 import EmployeesList from '../../components/employeesList/employeesList';
 import NewEmployeeSearch from '../../components/newEmployeeSearch/newEmployeeSearch';
+import useAppContext from '../../context/useAppContext';
 import useUserProfiles from '../../services/graphql/userProfile/useUserProfiles';
-import {ScreenWrapper} from '../../shared/screenWrapper';
+import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
 import {DropdownDataBoolean, DropdownDataNumber} from '../../types/dropdownData';
 import {ScreenProps} from '../../types/screen-props';
 import {useDebounce} from '../../utils/useDebounce';
@@ -23,7 +24,8 @@ const initialValues: EmployeeListFilters = {
   type: null,
 };
 
-export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
+export const EmployeesScreen: React.FC<ScreenProps> = () => {
+  const [page, setPage] = useState(1);
   const [employeeModal, setEmployeeModal] = useState(false);
 
   const [filters, setFilters] = useState<any>(initialValues);
@@ -33,32 +35,19 @@ export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
 
   const debouncedSearch = useDebounce(search, 500);
 
-  const onFilterChange = (value: any, name: string) => {
-    setFilters({...filters, [name]: value});
+  const {navigation} = useAppContext();
+
+  const isDetails = navigation.location.pathname.split('/')[3] === 'details';
+
+  const {userProfiles, total, loading} = useUserProfiles({page, size: 10, ...filters, name: debouncedSearch});
+
+  const isNewEmployeeRoute = (): boolean => {
+    const paths = navigation.location.pathname.split('/');
+    return !!Number(paths[paths.length - 1]);
   };
 
-  const [page, setPage] = useState(1);
-
-  const {
-    navigation: {
-      navigate,
-      location: {pathname},
-    },
-  } = context;
-
-  const {data, loading} = useUserProfiles({page, size: 10, ...filters, name: debouncedSearch});
-
-  const isNewEmployeeRoute = useMemo(() => {
-    const paths = pathname.split('/');
-    if (Number(paths[paths.length - 1])) {
-      return true;
-    }
-  }, [pathname]);
-
-  const isDetails = pathname.split('/')[3] === 'details';
-
-  const onSearch = (value: ValueType, name: string) => {
-    console.log(value, name);
+  const onFilterChange = (value: any, name: string) => {
+    setFilters({...filters, [name]: value});
   };
 
   const onPageChange = (page: number) => {
@@ -70,13 +59,12 @@ export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
   };
 
   return (
-    <ScreenWrapper context={context} ref={screenWrapperRef}>
+    <ScreenWrapper ref={screenWrapperRef}>
       <EmployeesList
-        navigation={context.navigation}
+        navigation={navigation}
         onPageChange={onPageChange}
         toggleEmployeeImportModal={toggleEmployeeImportModal}
-        navigate={navigate}
-        data={data}
+        data={{items: userProfiles, total}}
         filters={filters}
         search={search}
         onFilterChange={onFilterChange}
@@ -84,8 +72,7 @@ export const EmployeesScreen: React.FC<ScreenProps> = ({context}) => {
         parentRef={screenWrapperRef}
         loading={loading}
       />
-      {isNewEmployeeRoute && <NewEmployeeSearch onSearch={onSearch} />}
-      {isDetails && <EmployeeDetails context={context} />}
+      {isDetails && <EmployeeDetails />}
     </ScreenWrapper>
   );
 };

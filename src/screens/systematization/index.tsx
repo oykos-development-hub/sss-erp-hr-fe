@@ -4,7 +4,7 @@ import {MainTitle, OverviewBox} from '../../components/employeesList/styles';
 import useSystematizationOverview from '../../services/graphql/systematization/useSystematizations';
 import useSystematizationsDelete from '../../services/graphql/systematization/useSystematizationsDelete';
 import {DeleteModal} from '../../shared/deleteModal/deleteModal';
-import {ScreenWrapper} from '../../shared/screenWrapper';
+import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
 import {ScreenProps} from '../../types/screen-props';
 import {parseDate} from '../../utils/dateUtils';
 import {SystematizationFilters} from './filters/systematizationFilters';

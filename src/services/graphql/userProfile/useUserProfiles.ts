@@ -1,15 +1,7 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '..';
-import {UserProfileResponse} from '../../../types/graphql/userProfiles';
-import {EmployeeListFilters} from '../../../screens/employees';
-import {PaginationProps} from '../../../types/paginationParams';
-
-const initialState = {items: [], total: 0, message: '', status: ''};
-
-interface UserProfileHookParams extends EmployeeListFilters, PaginationProps {
-  id?: number;
-  name?: string;
-}
+import useAppContext from '../../../context/useAppContext';
+import {UserProfile, UserProfileOverviewParams, UserProfileResponse} from '../../../types/graphql/userProfiles';
 
 const useUserProfiles = ({
   page,
@@ -18,13 +10,19 @@ const useUserProfiles = ({
   is_active,
   job_position_id,
   organization_unit_id,
+  type,
   name,
-}: UserProfileHookParams) => {
-  const [data, setData] = useState<UserProfileResponse>(initialState);
+}: UserProfileOverviewParams) => {
+  const [userProfiles, setUserProfile] = useState<UserProfile[]>([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  const {fetch} = useAppContext();
+
   const fetchEmployees = async () => {
-    const userProfiles: any = await GraphQL.userProfileOverview({
+    setLoading(true);
+
+    const response: UserProfileResponse = await fetch(GraphQL.userProfileOverview, {
       page,
       size,
       id: id ?? 0,
@@ -33,15 +31,20 @@ const useUserProfiles = ({
       organization_unit_id: organization_unit_id ? organization_unit_id.id : 0,
       name: name ?? '',
     });
-    setData(userProfiles);
+
+    if (response.userProfiles_Overview) {
+      setUserProfile(response.userProfiles_Overview.items);
+      setTotal(response.userProfiles_Overview.total);
+    }
+
     setLoading(false);
   };
 
   useEffect(() => {
     fetchEmployees();
-  }, [page, size, id, is_active, job_position_id, organization_unit_id, name]);
+  }, [page, size, id, is_active, job_position_id, organization_unit_id, type, name]);
 
-  return {data, loading, refetch: fetchEmployees};
+  return {userProfiles, total, loading, refetch: fetchEmployees};
 };
 
 export default useUserProfiles;

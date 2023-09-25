@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ScreenWrapper} from '../../../shared/screenWrapper';
+import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {ScreenProps} from '../../../types/screen-props';
 import JobTenderInfo from '../../../components/jobTenderInfo/jobTenderInfo';
 import SectionBox from '../../../shared/sectionBox';

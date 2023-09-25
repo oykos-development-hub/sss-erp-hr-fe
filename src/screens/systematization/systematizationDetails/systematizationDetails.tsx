@@ -16,7 +16,7 @@ import {formatDataSaveSystematization} from '../utils';
 import useDeleteOrganisationUnit from '../../../services/graphql/organizationUnits/useOrganizationUnitDelete';
 import {SectorType} from '../../../types/graphql/systematizationsGetDetailsTypes';
 import useSystematizationInsert from '../../../services/graphql/systematization/useSystematizationsInsert';
-import {ScreenWrapper} from '../../../shared/screenWrapper';
+import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import useJobPositions from '../../../services/graphql/jobPositions/useJobPositionOverview';
 import useUserProfiles from '../../../services/graphql/userProfile/useUserProfiles';
 import {parseToDate} from '../../../utils/dateUtils';
@@ -56,7 +56,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
 
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
-  const {data: allEmployees, refetch: refetchEmployees} = useUserProfiles({
+  const {userProfiles, refetch: refetchEmployees} = useUserProfiles({
     page: 1,
     size: 100,
     is_active: null,
@@ -197,7 +197,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
   }, [systematizationDetails]);
 
   return (
-    <ScreenWrapper context={context}>
+    <ScreenWrapper>
       <OverviewBox>
         <FormProvider {...methods}>
           <TitleWrapper>
@@ -285,7 +285,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
                 handleEditSector={(id: number) => editSector(id)}
                 context={context}
                 jobPositionData={jobPositionData?.items}
-                allEmployees={allEmployees?.items}
+                allEmployees={userProfiles}
                 activeEmployees={systematizationDetails?.active_employees}
                 isInactive={isSystematizationInactive}
               />

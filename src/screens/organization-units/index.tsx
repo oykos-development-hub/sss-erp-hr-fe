@@ -4,7 +4,7 @@ import {REQUEST_STATUSES} from '../../services/constants';
 import {OrganizationUnit} from '../../types/graphql/organizationUnitsTypes';
 import {Typography} from 'client-library';
 import {GraphQL} from '../../services/graphql';
-import {ScreenWrapper} from '../../shared/screenWrapper';
+import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
 
 export const OrganizationUnitsScreen: React.FC<ScreenProps> = ({context}) => {
   const [organizationUnits, setOrganizationUnits] = useState<OrganizationUnit[]>([]);

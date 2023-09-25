@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import JudgesNumbersList from '../../../components/judgesNumbersList/judgesNumbersList';
-import {ScreenWrapper} from '../../../shared/screenWrapper';
+import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {DropdownDataString} from '../../../types/dropdownData';
 import {ScreenProps} from '../../../types/screen-props';
 import {yearsForDropdown, yearsForDropdownFilter} from '../../../utils/constants';

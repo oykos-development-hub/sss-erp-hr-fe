@@ -1,6 +1,8 @@
+import {yupResolver} from '@hookform/resolvers/yup';
 import {Datepicker, Dropdown, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import * as yup from 'yup';
 import {
   applicationStatusOptions,
   applicationTypeOptions,
@@ -9,9 +11,8 @@ import {
 import useJobTenderApplicationsInsert from '../../services/graphql/jobTenders/useJobTenderApplicationInsert';
 import useBasicInfoGet from '../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
 import useUserProfiles from '../../services/graphql/userProfile/useUserProfiles';
-import {DropdownDataNumber, DropdownDataString} from '../../types/dropdownData';
+import {DropdownDataString} from '../../types/dropdownData';
 import {JobTenderApplication, JobTenderApplicationInsertParams} from '../../types/graphql/jobTenders';
-import {UserProfile} from '../../types/graphql/userProfiles';
 import {MicroserviceProps} from '../../types/micro-service-props';
 import {ScreenProps} from '../../types/screen-props';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
@@ -22,8 +23,6 @@ import {
   RowFullWidth,
   TriangleIcon,
 } from '../JobTenderApplicationModal/styles';
-import * as yup from 'yup';
-import {yupResolver} from '@hookform/resolvers/yup';
 
 const tenderApplicationSchema = yup.object().shape({
   type: yup
@@ -93,7 +92,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 
   const {data: userData} = useBasicInfoGet(selectedUserId);
 
-  const {data: userListData} = useUserProfiles({page: 1, size: 1000});
+  const {userProfiles} = useUserProfiles({page: 1, size: 1000});
 
   const citizenshipArray = useMemo(() => {
     return countries?.map(country => {
@@ -169,10 +168,10 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 
   const userOptions = useMemo(
     () =>
-      userListData && userListData.items
-        ? [...userListData.items.map(item => ({...item, title: `${item.first_name} ${item.last_name}`}))]
+      userProfiles && userProfiles
+        ? [...userProfiles.map(item => ({...item, title: `${item.first_name} ${item.last_name}`}))]
         : [],
-    [userListData],
+    [userProfiles],
   );
 
   const toggleConfirmModal = () => {

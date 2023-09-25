@@ -1,8 +1,4 @@
-import {UserProfileParams, UserProfileResponse} from '../../../types/graphql/userProfiles';
-import {GraphQL} from '..';
-
-const userProfileOverview = async (data: UserProfileParams): Promise<{data: UserProfileResponse}> => {
-  const query = `query UserProfileOverview($id: Int, $is_active: Boolean, $organization_unit_id: Int, $job_position_id: Int, $name: String, $page: Int, $size: Int) {
+const userProfileOverview = `query UserProfileOverview($id: Int, $is_active: Boolean, $organization_unit_id: Int, $job_position_id: Int, $name: String, $page: Int, $size: Int) {
     userProfiles_Overview(id: $id, is_active: $is_active, organization_unit_id: $organization_unit_id, job_position_id: $job_position_id, name: $name, page: $page, size: $size) {
         message
         status
@@ -34,10 +30,5 @@ const userProfileOverview = async (data: UserProfileParams): Promise<{data: User
         }
     }
 }`;
-
-  const response = await GraphQL.fetch(query, {...data});
-
-  return response?.data?.userProfiles_Overview || {};
-};
 
 export default userProfileOverview;

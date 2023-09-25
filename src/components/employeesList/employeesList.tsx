@@ -11,21 +11,22 @@ import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
 
 export interface EmployeesListProps {
   navigation?: any;
-  navigate: (path: string) => void;
   toggleEmployeeImportModal: () => void;
   onPageChange: (page: number) => void;
-  data: any;
   search: string;
   filters: EmployeeListFilters;
   onFilterChange: (value: any, name: string) => void;
   onSearch: (e: ChangeEvent<HTMLInputElement>) => void;
   parentRef: RefObject<HTMLDivElement>;
   loading: boolean;
+  data: {
+    items: UserProfile[];
+    total: number;
+  };
 }
 
 const EmployeesList: React.FC<EmployeesListProps> = ({
   navigation,
-  navigate,
   onPageChange,
   data,
   search,
@@ -40,7 +41,6 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   const isDetails = navigation.location.pathname.split('/').length === 6;
 
   const {organizationUnits} = useOrganizationUnits(undefined, true);
-
   const {data: jobPositions} = useJobPositions('');
 
   const organizationUnitsList = useMemo(() => {
@@ -54,25 +54,20 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
       : [];
   }, [organizationUnits]);
 
-  const list = useMemo(() => {
-    if (data.items) {
-      return data?.items?.map((item: UserProfile) => ({
+  const userProfileList = data.items
+    ? data?.items?.map((item: UserProfile) => ({
         full_name: `${item.first_name} ${item.last_name}`,
         ...item,
         active: item.active ? 'Aktivan' : 'Neaktivan',
-      }));
-    }
-    return [];
-  }, [data]);
+      }))
+    : [];
 
-  const jobPositionOptions = useMemo(() => {
-    return [
-      {id: 0, title: 'Sva radna mjesta'},
-      ...(jobPositions?.items
-        ? jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title}))
-        : []),
-    ];
-  }, [jobPositions]);
+  const jobPositionOptions = [
+    {id: 0, title: 'Sva radna mjesta'},
+    ...(jobPositions?.items
+      ? jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title}))
+      : []),
+  ];
 
   useEffect(() => {
     if (state?.scroll || isDetails) {
@@ -83,24 +78,23 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   return (
     <OverviewBox ref={overviewRef}>
       <MainTitle variant="bodyMedium" content="PREGLED SVIH ZAPOSLENIH" />
-      {/*TODO: theme color */}
       <Divider color={Theme?.palette?.gray200} height="1px" />
       <Header>
         <Filters>
           <FilterDropdown
             label="FILTER ORGANIZACIONIH JEDINICA:"
-            options={organizationUnitsList as any}
+            options={organizationUnitsList}
             onChange={value => onFilterChange(value, 'organization_unit_id')}
-            value={filters.organization_unit_id as any}
+            value={filters.organization_unit_id}
             name="organization_unit_id"
             placeholder="Odaberite organizacionu jedinicu"
           />
 
           <FilterDropdown
             label="RADNO MJESTO:"
-            options={jobPositionOptions as any}
+            options={jobPositionOptions}
             onChange={value => onFilterChange(value, 'job_position_id')}
-            value={filters.job_position_id as any}
+            value={filters.job_position_id}
             name="job_position_id"
             placeholder="Odaberite radno mjesto"
           />
@@ -109,7 +103,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
             label="STATUS:"
             options={statusOptions as any}
             onChange={value => onFilterChange(value, 'is_active')}
-            value={filters.is_active as any}
+            value={filters.is_active}
             name="is_active"
             placeholder="Odaberite status"
           />
@@ -128,18 +122,18 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
             variant="secondary"
             style={{width: 170}}
             onClick={() => {
-              navigate('/hr/employees/add-new');
+              navigation.navigate('/hr/employees/add-new');
             }}
           />
         </Controls>
       </Header>
       <Table
         tableHeads={tableHeads}
-        data={list || []}
+        data={userProfileList}
         style={{marginBottom: 22}}
         isLoading={loading}
         onRowClick={row => {
-          navigate(`/hr/employees/details/${row.id}/basic-info`);
+          navigation.navigate(`/hr/employees/details/${row.id}/basic-info`);
           scrollToTheNextElement(parentRef, overviewRef);
         }}
       />

@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import InternalRevisionList from '../../components/internalRevisionList/internalRevisionList';
 import InternalRevisionModal from '../../components/internalRevisionModal/internalRevisionModal';
 import useInternalRevisions from '../../services/graphql/internalRevision/useRevisionOverview';
-import {ScreenWrapper} from '../../shared/screenWrapper';
+import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
 import {InternalRevision} from '../../types/graphql/internalRevision';
 
 const InternalRevision: React.FC<MicroserviceProps> = ({context}) => {

@@ -1,4 +1,5 @@
 import {DropdownDataBoolean, DropdownDataNumber, DropdownDataString} from '../dropdownData';
+import {PaginationProps} from '../paginationParams';
 
 export interface UserProfileBasicInfo {
   id: number;
@@ -118,12 +119,10 @@ export interface ContractType {
 }
 
 export interface UserProfileBasicResponse {
-  data: {
-    userProfile_Basic: {
-      status?: string;
-      message?: string;
-      item?: UserProfileBasicInfo;
-    };
+  userProfile_Basic: {
+    status?: string;
+    message?: string;
+    item?: UserProfileBasicInfo;
   };
 }
 
@@ -154,9 +153,20 @@ export interface UserProfile {
   updated_at: string;
 }
 
-export interface UserProfileResponse {
-  items: UserProfile[];
-  message: string;
-  status: string;
-  total: number;
+export type UserProfileResponse = {
+  userProfiles_Overview: {
+    items: UserProfile[];
+    message: string;
+    status: string;
+    total: number;
+  };
+};
+
+export interface UserProfileOverviewParams extends PaginationProps {
+  id?: number;
+  name?: string;
+  is_active?: DropdownDataBoolean | null;
+  organization_unit_id?: DropdownDataNumber | null;
+  job_position_id?: DropdownDataNumber | null;
+  type?: DropdownDataNumber | null;
 }
