@@ -12,6 +12,8 @@ const initialValues: OrganizationUnit = {
   number_of_judges: 0,
   title: '',
   abbreviation: '',
+  description: '',
+  address: '',
   color: '',
   folder_id: 0,
   icon: '',
@@ -56,19 +58,18 @@ export const OrganizationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
 
   const onSubmit = async (values: any) => {
     if (isSaving) return;
+    const data = {
+      ...values,
+      parent_id: organizationUnit?.id,
+      number_of_judges: values?.number_of_judges || 0,
+      folder_id: values?.folder_id || 0,
+    };
+
+    delete data.job_positions_organization_units;
 
     try {
       mutate(
-        {
-          ...values,
-          title: values?.title,
-          abbreviation: values?.abbreviation,
-          parent_id: organizationUnit?.id,
-          description: values?.description,
-          address: values?.address,
-          number_of_judges: values?.number_of_judges || 0,
-          folder_id: values?.folder_id || 0,
-        },
+        data,
         () => {
           alert.success('Uspješno sačuvano.');
           refetch();
@@ -129,16 +130,11 @@ export const OrganizationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
             />
           </FormGroup>
           <FormGroup>
-            <Input {...register('address')} label="ADRESA:" error={errors.address?.message as string} />
+            <Input {...register('address')} label="ADRESA:" />
           </FormGroup>
 
           <FormGroup>
-            <Input
-              {...register('description')}
-              textarea={true}
-              label="OPIS:"
-              error={errors.description?.message as string}
-            />
+            <Input {...register('description')} textarea label="OPIS:" />
           </FormGroup>
         </ModalContentWrapper>
       }

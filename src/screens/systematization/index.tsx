@@ -14,8 +14,8 @@ type SistematizationStatusTitle = {
   [key in 0 | 1 | 2]: string;
 };
 const systematizationStatusTitle: SistematizationStatusTitle = {
-  0: 'Draft',
-  1: 'Neaktivan',
+  0: 'Skica',
+  1: 'Neaktivna',
   2: 'Aktivna',
 };
 
@@ -35,7 +35,7 @@ const tableHeads: TableHead[] = [
     accessor: 'active',
     type: 'custom',
     renderContents: (item: 0 | 1 | 2) => {
-      return <Badge content={systematizationStatusTitle[item] || 'Draft'} />;
+      return <Badge content={systematizationStatusTitle[item] || 'Skica'} status={item} />;
     },
   },
   {
@@ -68,10 +68,10 @@ export const SystematizationScreen: React.FC<ScreenProps> = ({context}) => {
     navigation: {navigate},
   } = context;
 
-  const handleEdit = (id: number) => {
+  const handleEdit = (id: number, serial_number: string) => {
     navigate(`/hr/systematization/systematization-details/${id}`);
     context.breadcrumbs.add({
-      name: `Sistematizacija broj ${id}`,
+      name: `Sistematizacija broj ${serial_number}`,
       to: `/hr/systematization/systematization-details/${id}`,
     });
   };
@@ -126,11 +126,13 @@ export const SystematizationScreen: React.FC<ScreenProps> = ({context}) => {
           tableHeads={tableHeads}
           data={data || []}
           isLoading={loading}
+          onRowClick={row => handleEdit(row.id, row.serial_number)}
           tableActions={[
             {
               name: 'edit',
-              onClick: item => handleEdit(item.id),
+              onClick: item => handleEdit(item.id, item.serial_number),
               icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+              shouldRender: row => row.active !== 1,
             },
             {
               name: 'delete',

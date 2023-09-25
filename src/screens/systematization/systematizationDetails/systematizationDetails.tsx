@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {StyledTabs} from '../../../components/employeeDetails/styles';
 import {OverviewBox} from '../../../components/employeesList/styles';
 import {SystematizationDetailsPageProps} from '../types';
-import {ButtonWrapper, FileUploadWrapper, Row, TitleWrapper, UploadWrapper} from './styles';
+import {MainWrapper, FileUploadWrapper, Row, TitleWrapper, UploadWrapper} from './styles';
 import {Typography, Divider, Theme, Button, Input, Dropdown, FileUpload} from 'client-library';
 import {systematizationDetailsTabs} from '../constants';
 import {Tab} from '@oykos-development/devkit-react-ts-styled-components';
@@ -17,18 +17,18 @@ import useDeleteOrganisationUnit from '../../../services/graphql/organizationUni
 import {SectorType} from '../../../types/graphql/systematizationsGetDetailsTypes';
 import useSystematizationInsert from '../../../services/graphql/systematization/useSystematizationsInsert';
 import {ScreenWrapper} from '../../../shared/screenWrapper';
-import {usePrompt} from '../../../shared/usePrompt';
 import useJobPositions from '../../../services/graphql/jobPositions/useJobPositionOverview';
 import useUserProfiles from '../../../services/graphql/userProfile/useUserProfiles';
 import {parseToDate} from '../../../utils/dateUtils';
 import {OrganizationalUnitModal} from '../../../components/organizationUnitModal/organizationUnitModal';
+import {SystematizationsInsertParams} from '../../../types/graphql/systematizationsInsertTypes';
 
 const initialValues = {
-  organization_unit: {id: 0, value: ''},
+  organization_unit: null,
   user_profile_id: Number(localStorage.getItem('user_id')),
   serial_number: '',
   description: '',
-  active: false,
+  active: 0,
   date_of_activation: null,
   sectors: [],
   file_id: 0,
@@ -40,17 +40,22 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
     setActiveTab(tab.id as number);
   };
 
-  const [showEditSectorModal, setShowEditSectorModal] = useState(false);
+  const {data: jobPositionData} = useJobPositions('');
+
   const systematizationID = context?.navigation?.location?.pathname.split('/')[4];
   const {systematizationDetails, refetch: refreshData} = useSystematizationGetDetails(systematizationID);
+  const isSystematizationInactive = systematizationDetails?.active === 1;
+
   const {organizationUnits} = useOrganizationUnits(context);
+
+  const [showEditSectorModal, setShowEditSectorModal] = useState(false);
   const [sectorId, setSectorId] = useState<number>(0);
   const selectedSector = useMemo(() => {
     return systematizationDetails?.sectors?.find((i: SectorType) => i.id === sectorId);
   }, [sectorId]);
+
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
-  const {data: jobPositionData} = useJobPositions('');
   const {data: allEmployees, refetch: refetchEmployees} = useUserProfiles({
     page: 1,
     size: 100,
@@ -59,10 +64,6 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
     job_position_id: null,
     type: null,
   });
-
-  const [isBlocking, setIsBlocking] = useState(false);
-
-  usePrompt('Da li ste sigurni da želite da napustite stranicu? Izmjene neće biti sačuvane!', isBlocking);
 
   const handleUpload = (files: FileList) => {
     const fileList = Array.from(files);
@@ -81,15 +82,21 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
     navigation: {navigate},
   } = context;
 
-  const {mutate, success, error} = useSystematizationInsert(id => {
+  const {mutate, success, error} = useSystematizationInsert((id, serial_number) => {
     if (success) {
       const route = id > 0 ? `/hr/systematization/systematization-details/${id}` : '/hr/systematization';
-      navigate(route);
-      if (systematizationDetails && systematizationDetails.id) refreshData();
-      context.breadcrumbs.remove();
-      context.alert.success('Uspješno sačuvano');
+      navigate(route, {replace: true});
 
-      setIsBlocking(false);
+      // reset breadcrumbs
+      context.breadcrumbs.remove();
+      id &&
+        context.breadcrumbs.add({
+          name: `Sistematizacija broj ${serial_number}`,
+          to: `/hr/systematization/systematization-details/${id}`,
+        });
+
+      if (systematizationDetails && systematizationDetails.id) refreshData();
+      context.alert.success('Uspješno sačuvano');
     } else if (error) {
       context.alert.error('Greška. Promjene nisu sačuvane.');
     }
@@ -112,10 +119,9 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
     defaultValues: systematizationDetails || initialValues,
   });
 
-  const handleSave = (data: any) => {
+  const handleSave = (data: SystematizationsInsertParams) => {
     const payload = formatDataSaveSystematization(data);
     mutate(payload);
-    setIsBlocking(false);
   };
 
   const handleCloseModal = (refetch: boolean, message: string) => {
@@ -201,7 +207,7 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
               content={systematizationDetails?.organization_unit?.title?.toUpperCase() || ''}
             />
             <StyledTabs
-              tabs={systematizationDetailsTabs}
+              tabs={systematizationDetailsTabs(Number(systematizationID))}
               activeTab={activeTab}
               onChange={onTabChange}
               //TODO: change in devkit/library
@@ -210,13 +216,12 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
           </TitleWrapper>
           <Divider color={Theme?.palette?.gray200} height="1px" style={{margin: 0}} />
           {activeTab === 1 ? (
-            <div>
+            <MainWrapper>
               <Row>
                 <Input
                   {...methods?.register('serial_number', {required: 'Ovo polje je obavezno'})}
                   label="BROJ SISTEMATIZACIJE:"
                   error={methods?.formState?.errors.serial_number?.message as string}
-                  onChange={(event: any) => setIsBlocking(event.target.value.length > 0)}
                 />
                 <Controller
                   name="organization_unit"
@@ -240,8 +245,10 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
 
               <UploadWrapper>
                 <FileUploadWrapper>
+                  <Typography content="Uvodni dio dokumenta" variant="bodySmall" />
                   <FileUpload
                     icon={<></>}
+                    disabled={isSystematizationInactive}
                     variant="secondary"
                     onUpload={handleUpload}
                     buttonText="Dodaj dokument"
@@ -250,8 +257,10 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
                 </FileUploadWrapper>
 
                 <FileUploadWrapper>
+                  <Typography content="Zaključni dio dokumenta" variant="bodySmall" />
                   <FileUpload
                     icon={<></>}
+                    disabled={isSystematizationInactive}
                     variant="secondary"
                     onUpload={handleUpload}
                     buttonText="Dodaj dokument"
@@ -259,6 +268,15 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
                   />
                 </FileUploadWrapper>
               </UploadWrapper>
+
+              {systematizationID && Number(systematizationID) > 0 && !isSystematizationInactive && (
+                <Button
+                  style={{height: '72px'}}
+                  variant="secondary"
+                  content="Dodaj odjeljenje"
+                  onClick={() => setShowEditSectorModal(true)}
+                />
+              )}
               <Sectors
                 sectors={systematizationDetails?.sectors}
                 handleDeleteSector={id => handleDeleteSector(id)}
@@ -269,28 +287,25 @@ export const SystematizationDetails: React.FC<SystematizationDetailsPageProps> =
                 jobPositionData={jobPositionData?.items}
                 allEmployees={allEmployees?.items}
                 activeEmployees={systematizationDetails?.active_employees}
-                isActive={systematizationDetails?.active}
+                isInactive={isSystematizationInactive}
               />
-            </div>
+
+              <FileUploadWrapper>
+                <Typography content="dokument o usvajanju sistematizacije" variant="bodySmall" />
+                <FileUpload
+                  icon={<></>}
+                  disabled={isSystematizationInactive}
+                  style={{width: '100%', marginRight: 10}}
+                  variant="secondary"
+                  onUpload={handleUpload}
+                  buttonText="Dodaj dokument"
+                  note="Izaberite datoteku ili je prevucite ovdje"
+                />
+              </FileUploadWrapper>
+            </MainWrapper>
           ) : (
             <PrintPage sectorDetails={systematizationDetails?.sectors} />
           )}
-
-          <ButtonWrapper>
-            <FileUploadWrapper>
-              <FileUpload
-                icon={<></>}
-                style={{width: 'calc(50% - 2em)'}}
-                variant="secondary"
-                onUpload={handleUpload}
-                buttonText="Dodaj dokument"
-                note="Izaberite datoteku ili je prevucite ovdje"
-              />
-            </FileUploadWrapper>
-            {systematizationID && Number(systematizationID) > 0 && !systematizationDetails?.active && (
-              <Button variant="secondary" content="Dodaj odjeljenje" onClick={() => setShowEditSectorModal(true)} />
-            )}
-          </ButtonWrapper>
 
           <Footer
             activeTab={activeTab}

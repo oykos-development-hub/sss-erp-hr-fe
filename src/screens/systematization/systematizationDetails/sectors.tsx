@@ -17,7 +17,7 @@ export const Sectors: React.FC<SectorsProps> = ({
   jobPositionData,
   allEmployees,
   activeEmployees,
-  isActive,
+  isInactive,
 }) => {
   const [showMenu, setShowMenu] = useState<number>(0);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -107,7 +107,7 @@ export const Sectors: React.FC<SectorsProps> = ({
                         openAccordion(sector.id);
                       }}
                     />
-                    {!isActive && (
+                    {!isInactive && (
                       <MoreVerticalIcon
                         width="5px"
                         height="16px"
@@ -119,7 +119,7 @@ export const Sectors: React.FC<SectorsProps> = ({
                       />
                     )}
                   </AccordionIconsWrapper>
-                  {!isActive && (
+                  {!isInactive && (
                     <Menu open={showMenu === sector?.id}>
                       <MenuItem
                         onClick={(e: any) => {
@@ -158,7 +158,7 @@ export const Sectors: React.FC<SectorsProps> = ({
                   allEmployees={allEmployees}
                   activeEmployees={activeEmployees}
                   cancel={cancelJobPosition}
-                  isActive={isActive}
+                  isInactive={isInactive}
                 />
               }
             />

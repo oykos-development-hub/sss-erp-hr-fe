@@ -17,7 +17,7 @@ export interface SectorsProps {
   jobPositionData: JobPosition[];
   allEmployees: UserProfile[];
   activeEmployees: ActiveEmployees[];
-  isActive: boolean;
+  isInactive: boolean;
 }
 
 export interface SystematizationFiltersProps {
@@ -33,7 +33,7 @@ export interface PrintPageProps {
 export interface FooterProps {
   activeTab: number;
   handleSaveButton: () => void;
-  active: boolean;
+  active: number;
   id: number;
 }
 

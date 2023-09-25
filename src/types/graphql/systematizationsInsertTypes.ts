@@ -6,7 +6,7 @@ export interface SystematizationsInsertParams {
   organization_unit_id: number;
   description: string;
   serial_number: string;
-  active: boolean;
+  active: number;
   date_of_activation: string;
   file_id: number;
 }

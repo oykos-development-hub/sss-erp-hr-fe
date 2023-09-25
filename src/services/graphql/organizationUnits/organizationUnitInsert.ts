@@ -9,13 +9,15 @@ const organizationUnitInsert = async (
         message
         status
         item {
-            id,
-            parent_id,
-            number_of_judges,
-            title,
-            abbreviation,
-            color,
-            icon,
+            id
+            parent_id
+            number_of_judges
+            title
+            abbreviation
+            description
+            address
+            color
+            icon
             folder_id
         }
     }

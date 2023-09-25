@@ -30,7 +30,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   allEmployees,
   activeEmployees,
   cancel,
-  isActive,
+  isInactive,
 }) => {
   const {mutate: insertJobPosition} = useOrganizationUnitInsertJobPosition();
   const {mutate: deleteJobPosition} = useOrganizationUnitDeleteJobPosition();
@@ -226,7 +226,6 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
             textarea
             value={item}
             name="requirements"
-            style={{width: 100}}
             disabled={row?.id !== editTableRow}
             onChange={ev => handleChange(ev.target.value, 'requirements')}
           />
@@ -242,8 +241,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
           <Input
             value={item.value}
             name="available_slots"
-            style={{width: 100}}
-            disabled={item?.row_id !== editTableRow || isActive || row.is_judge_president}
+            disabled={item?.row_id !== editTableRow || isInactive || row.is_judge_president}
             onChange={ev => handleChange(ev.target.value, 'available_slots')}
           />
         );
@@ -259,7 +257,6 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
             textarea
             value={item}
             name="description"
-            style={{width: 100}}
             disabled={row?.id !== editTableRow}
             onChange={ev => handleChange(ev.target.value, 'description')}
           />
@@ -354,16 +351,14 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
             name: 'edit',
             onClick: item => selectRow(item.id),
             icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            shouldRender: item => {
-              return editTableRow !== item.id;
-            },
+            shouldRender: item => editTableRow !== item.id && !isInactive,
           },
           {name: 'save', onClick: handleSave, icon: <CheckIcon />, shouldRender: item => editTableRow === item.id},
           {
             name: 'delete',
             onClick: item => deleteIconClick(item.id),
             icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-            shouldRender: item => editTableRow !== item.id && !isActive,
+            shouldRender: item => editTableRow !== item.id && !isInactive,
           },
           {
             name: 'cancel',

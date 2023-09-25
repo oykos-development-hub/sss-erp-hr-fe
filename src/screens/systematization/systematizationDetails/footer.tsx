@@ -1,30 +1,59 @@
-import {Button, Switch, Typography, Modal} from 'client-library';
-import React, {useState} from 'react';
+import {Button, Switch, Typography, Modal, Tooltip} from 'client-library';
+import React, {useEffect, useState} from 'react';
 import {Controller, useFormContext} from 'react-hook-form';
 import {FooterProps} from '../types';
-import {Activation, DatepickerElement, FooterWrapper} from './styles';
+import {Activation, DatepickerElement, FooterWrapper, SwitchWrapper} from './styles';
+import {TooltipPositions, TooltipVariants} from '@oykos-development/devkit-react-ts-styled-components';
 
-export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id = 0, active = false}) => {
+export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id = 0, active = 0}) => {
+  // conditions:
+  const isOverViewTab = activeTab === 1;
+  const isActive = active === 2; // if active isn't equal to 2, it could be inactive(1), or draft(0)
+  const isDraft = active === 0;
+
   const {
     control,
     watch,
     setValue,
     formState: {errors},
   } = useFormContext();
-
-  const isActive = watch('active');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSwitchChecked, setIsSwitchChecked] = useState(isActive);
+
+  const handleSwitch = () => {
+    if (!isSwitchChecked) setIsModalOpen(true); // if it was previously unchecked, open confirmation modal
+    else {
+      // uncheck and set active to previous status(inactive(1), or draft(0))
+      setIsSwitchChecked(false);
+      setValue('active', active);
+    }
+  };
+
+  const switchElement = (name: string) => (
+    <Switch
+      name={name}
+      onChange={handleSwitch}
+      checked={isSwitchChecked}
+      disabled={!watch('date_of_activation') || !!active}
+    />
+  );
+
+  const buttonContent = id > 0 ? (isOverViewTab ? 'Sačuvaj' : 'Ispis') : 'Nastavi';
+
+  useEffect(() => {
+    setIsSwitchChecked(isActive);
+  }, [active]);
 
   return (
     <FooterWrapper>
-      {activeTab === 1 ? (
+      {isOverViewTab ? (
         <Activation>
           <Controller
             name="date_of_activation"
             control={control}
-            rules={isActive === true ? {required: 'Ovo polje je obavezno'} : {}}
             render={({field: {onChange, name, value}}) => (
               <DatepickerElement
+                disabled={!!active}
                 onChange={onChange}
                 label="DATUM USVAJANJA SISTEMATIZACIJE:"
                 name={name}
@@ -37,37 +66,27 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id =
           <Controller
             name="active"
             control={control}
-            render={({field: {name, value}}) => (
-              <Switch
-                name={name}
-                onChange={() => {
-                  setIsModalOpen(true);
-                }}
-                checked={value}
-                // @TODO remove ts-ignore
-                //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                //@ts-ignore
-                content={
-                  <Typography
-                    variant="bodyMedium"
-                    content="Aktiviraj sistematizaciju"
-                    style={{marginLeft: 10, fontSize: '14px'}}
-                  />
-                }
-                style={{margin: '20px 0 0 10px'}}
-                disabled={!watch('date_of_activation') || active}
-              />
+            render={({field: {name}}) => (
+              <SwitchWrapper>
+                <Typography content="Aktiviraj sistematizaciju" variant="bodySmall" />
+                {isDraft && !watch('date_of_activation') ? (
+                  <Tooltip
+                    arrow
+                    variant={TooltipVariants.standard}
+                    position={TooltipPositions.top}
+                    content={'Za aktivaciju sistematizacije neophodno je unijeti datum usvajanja sistematizacije.'}>
+                    {switchElement(name)}
+                  </Tooltip>
+                ) : (
+                  <> {switchElement(name)}</>
+                )}
+              </SwitchWrapper>
             )}
           />
         </Activation>
-      ) : (
-        <div></div>
-      )}
-      {id > 0 ? (
-        <Button content={activeTab === 1 ? 'Sačuvaj' : 'Ispis'} variant="primary" onClick={handleSaveButton} />
-      ) : (
-        <Button content={'Nastavi'} variant="primary" onClick={handleSaveButton} />
-      )}
+      ) : null}
+
+      <Button content={buttonContent} variant="primary" onClick={handleSaveButton} />
 
       <Modal
         open={isModalOpen}
@@ -76,7 +95,8 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id =
         leftButtonOnClick={() => setIsModalOpen(false)}
         leftButtonText="Otkaži"
         rightButtonOnClick={() => {
-          setValue('active', !isActive);
+          setIsSwitchChecked(!isSwitchChecked);
+          setValue('active', 2);
           setIsModalOpen(false);
         }}
         rightButtonText="Aktiviraj"
