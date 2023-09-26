@@ -7,7 +7,7 @@ import {Divider} from 'client-library';
 
 export const AddNewEmployee: React.FC<ScreenProps> = ({context}: {context: any}) => {
   return (
-    <ScreenWrapper context={context}>
+    <ScreenWrapper>
       <OverviewBox>
         <MainTitle content="DODAVANJE NOVOG ZAPOSLENOG" />
         <Divider />

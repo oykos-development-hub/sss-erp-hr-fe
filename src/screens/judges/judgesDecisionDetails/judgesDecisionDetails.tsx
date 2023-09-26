@@ -174,7 +174,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
   };
 
   return (
-    <ScreenWrapper context={context}>
+    <ScreenWrapper>
       <OverviewBox>
         <MainTitle variant="bodyMedium" content="DETALJI ODLUKE" />
         {/*TODO: theme color */}

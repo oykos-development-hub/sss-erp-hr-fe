@@ -58,7 +58,7 @@ const ApplicationsScreen = (props: ScreenProps) => {
   };
 
   return (
-    <ScreenWrapper context={props.context}>
+    <ScreenWrapper>
       <SectionBox style={{marginTop: 25}}>
         <MainTitle content="PREGLED SVIH KANDIDATA" />
         <Divider color={Theme?.palette?.gray200} height="1px" />

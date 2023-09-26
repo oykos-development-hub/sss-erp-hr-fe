@@ -37,7 +37,7 @@ const InternalRevision: React.FC<MicroserviceProps> = ({context}) => {
   };
 
   return (
-    <ScreenWrapper context={context}>
+    <ScreenWrapper>
       <InternalRevisionList
         data={data ? prepareTableData(data?.items) : []}
         navigate={context?.navigation?.navigate}

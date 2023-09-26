@@ -19,7 +19,7 @@ const ApplicationDetailsScreen = (props: ScreenProps) => {
 
   const application = data.items[0];
   return (
-    <ScreenWrapper context={props.context}>
+    <ScreenWrapper>
       <SectionBox style={{marginTop: 25}}>
         <MainTitle content={`KANDIDAT: ${application?.first_name} ${application?.last_name}`} />
         <Divider color={Theme?.palette?.gray200} height="1px" />

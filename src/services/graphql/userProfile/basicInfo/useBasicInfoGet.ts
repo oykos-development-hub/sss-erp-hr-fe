@@ -8,7 +8,7 @@ const useBasicInfoGet = (id: number) => {
 
   const fetchUserBasicInfo = async () => {
     const response = await GraphQL.basicInfoGet(id);
-    const user = response?.data?.userProfile_Basic?.item;
+    const user = response?.userProfile_Basic?.item;
 
     setUserBasicInfo(user);
     setLoading(false);

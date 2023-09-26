@@ -90,7 +90,7 @@ const basicInfoGet = async (user_profile_id: number): Promise<UserProfileBasicRe
 
   const response = await GraphQL.fetch(query, {user_profile_id});
 
-  return response || {};
+  return response.data || {};
 };
 
 export default basicInfoGet;

@@ -22,7 +22,7 @@ export const OrganizationUnitsScreen: React.FC<ScreenProps> = ({context}) => {
   }, []);
 
   return (
-    <ScreenWrapper context={context}>
+    <ScreenWrapper>
       <Typography content="Organization Units" variant="h1" />
       <ul>
         {!!organizationUnits.length &&

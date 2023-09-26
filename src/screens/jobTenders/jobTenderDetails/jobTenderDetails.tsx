@@ -20,7 +20,7 @@ export const JobTenderDetailsScreen: React.FC<ScreenProps> = ({context}) => {
   }, [data]);
 
   return (
-    <ScreenWrapper context={context}>
+    <ScreenWrapper>
       <SectionBox style={{marginTop: 25}}>
         <JobTenderInfo data={jobTender} {...context} />
         <JobTenderApplicationsList jobTenderId={jobTenderId} alert={alert} context={context} />

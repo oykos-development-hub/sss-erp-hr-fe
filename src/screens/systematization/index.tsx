@@ -104,7 +104,7 @@ export const SystematizationScreen: React.FC<ScreenProps> = ({context}) => {
   };
 
   return (
-    <ScreenWrapper context={context}>
+    <ScreenWrapper>
       <OverviewBox>
         <MainTitle variant="bodyMedium" content="Sistematizacija" />
         <Divider color={Theme?.palette?.gray200} height="1px" />

@@ -33,7 +33,7 @@ const JudgesNumberDecisions: React.FC<ScreenProps> = ({context}) => {
   );
 
   return (
-    <ScreenWrapper context={context}>
+    <ScreenWrapper>
       <JudgesNumbersList
         years={yearOptions}
         data={judgesResolutions || []}

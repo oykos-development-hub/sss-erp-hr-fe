@@ -110,7 +110,7 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
   };
 
   return (
-    <ScreenWrapper context={context}>
+    <ScreenWrapper>
       <JudgesList
         toggleJudgesNorms={toggleJudgesNorms}
         onPageChange={onPageChange}

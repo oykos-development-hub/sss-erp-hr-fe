@@ -92,7 +92,7 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
   }, [organizationUnits]);
 
   return (
-    <ScreenWrapper context={context}>
+    <ScreenWrapper>
       <JobTendersList
         navigate={navigate}
         toggleJobTenderImportModal={toggleEmployeeImportModal}
