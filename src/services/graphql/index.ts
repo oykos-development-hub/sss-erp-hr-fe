@@ -64,11 +64,8 @@ import getSuppliersOverview from './suppliers/getSuppliers';
 import organizationUintCalculateEmployeeStats from './judges/organizationUintCalculateEmployeeStats';
 import vacationInsert from './userProfile/vacation/vacationInsert';
 import GetVacation from './userProfile/vacation/vacationGet';
-<<<<<<< HEAD
 import insertAbsence from './userProfile/absents/insertAbsence';
-=======
 import judgeAndPresidentCheckIsAvailable from './judges/judgeAndPresidentCheckIsAvailable';
->>>>>>> d196da8339cb6155c3da0e999cedf535de4ad504
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
