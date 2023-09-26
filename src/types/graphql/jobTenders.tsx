@@ -84,16 +84,19 @@ export interface ApplicationScreenFilters {
   type_id?: DropdownDataNumber;
 }
 
-export interface JobTenderApplicationInsertParams
-  extends Omit<
-    JobTenderApplication,
-    'job_tender' | 'user_profile' | 'create_at' | 'updated_at' | 'date_of_birth' | 'date_of_application'
-  > {
-  job_tender_id?: number;
+export interface JobTenderApplicationInsertParams {
+  active: boolean;
+  citizenship?: string;
+  date_of_application: string;
+  date_of_birth?: string;
+  first_name?: string;
+  id?: number;
+  job_tender_id: number;
+  last_name?: string;
+  official_personal_id?: string;
+  status: string;
+  type: string;
   user_profile_id?: number;
-  active?: boolean;
-  date_of_birth?: string | null;
-  date_of_application: string | null;
 }
 
 export interface JobTenderApplicationsParams {
@@ -101,7 +104,7 @@ export interface JobTenderApplicationsParams {
   size: number;
   search?: string;
   id?: number;
-  organization_unit_id?: number;
+  organization_unit_id?: number | null;
   type_id?: number;
 }
 

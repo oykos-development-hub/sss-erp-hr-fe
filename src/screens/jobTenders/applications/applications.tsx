@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {Divider, Pagination, Table, Theme, SearchIcon} from 'client-library';
 import {useState} from 'react';
 import useJobTenderApplications from '../../../services/graphql/jobTenders/useJobTenderApplicationOverview';
@@ -67,7 +67,7 @@ const ApplicationsScreen = (props: ScreenProps) => {
           <FilterDropdown
             label="TIP OGLASA:"
             name="type_id"
-            onChange={value => onFilterChange(value, 'type_id')}
+            onChange={(value: any) => onFilterChange(value, 'type_id')}
             value={filters.type_id}
             options={typesUnitsList}
             placeholder="Tip oglasa:"
@@ -75,7 +75,7 @@ const ApplicationsScreen = (props: ScreenProps) => {
           <FilterDropdown
             label="ORGANIZACIONA JEDINICA:"
             name="organization_unit_id"
-            onChange={value => onFilterChange(value, 'organization_unit_id')}
+            onChange={(value: any) => onFilterChange(value, 'organization_unit_id')}
             value={filters.organization_unit_id}
             options={organizationUnitsList}
             placeholder="Odaberite organizacionu jedinicu"

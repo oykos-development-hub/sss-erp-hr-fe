@@ -1,13 +1,15 @@
 import {useEffect, useState} from 'react';
-import {ApplicationScreenFilters, JobTenderApplicationsParams} from '../../../types/graphql/jobTenders';
 import {GraphQL} from '..';
+import {DropdownDataNumber} from '../../../types/dropdownData';
 const initialState = {items: [], total: 0, message: '', status: ''};
 
-interface UseJobTenderApplicationsParams extends ApplicationScreenFilters {
+interface UseJobTenderApplicationsParams {
   page: number;
   size: number;
   id: number;
-  search: string;
+  search?: string;
+  organization_unit_id?: DropdownDataNumber | null;
+  type_id?: DropdownDataNumber | null;
 }
 
 const useJobTenderApplicationOverview = ({
@@ -26,7 +28,7 @@ const useJobTenderApplicationOverview = ({
       page,
       size,
       id,
-      organization_unit_id: organization_unit_id ? organization_unit_id?.id : 0,
+      organization_unit_id: organization_unit_id ? organization_unit_id?.id : null,
       type_id: type_id ? type_id?.id : 0,
       search,
     });

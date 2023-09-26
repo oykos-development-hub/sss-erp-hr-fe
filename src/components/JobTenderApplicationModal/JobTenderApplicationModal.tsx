@@ -125,7 +125,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 
     const data: JobTenderApplicationInsertParams = {
       type: values.type.id,
-      date_of_application: parseDateForBackend(values?.date_of_application),
+      date_of_application: parseDateForBackend(values?.date_of_application) ?? '',
       status: values?.status?.title,
       job_tender_id: jobTenderId,
       active: true,
@@ -133,11 +133,11 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 
     if (values?.id) data.id = values?.id;
     if (data.type === 'external') {
-      data.evaluation = values?.evaluation?.id;
+      // data.evaluation = values?.evaluation?.id;
       data.first_name = values.first_name;
       data.last_name = values.last_name;
       data.citizenship = values?.citizenship?.id;
-      data.date_of_birth = parseDateForBackend(values?.date_of_birth);
+      data.date_of_birth = parseDateForBackend(values?.date_of_birth) ?? '';
       data.official_personal_id = values?.official_personal_id;
     } else {
       data.user_profile_id = values?.user_profile?.id;

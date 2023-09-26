@@ -14,7 +14,6 @@ const ApplicationDetailsScreen = (props: ScreenProps) => {
     page: 1,
     size: 10,
     id: props.context.navigation.location.pathname.split('/')[4],
-    job_tender_id: 0,
   });
 
   const application = data.items[0];
