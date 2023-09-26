@@ -1,8 +1,8 @@
-import {AbsentType} from '../../../types/graphql/profileAbsentsTypes';
+import {AbsenceType} from '../../../types/graphql/absents';
 
-export interface AbsentsModalProps {
+export interface AbsenceTypeModalProps {
   selectedItem?: any;
-  absentTypes: AbsentType[];
+  absenceTypes: AbsenceType[];
   open: boolean;
   onClose: (action?: any) => void;
   userProfileId: number;
@@ -11,7 +11,7 @@ export interface AbsentsModalProps {
 
 export interface VacationModalProps {
   selectedItem?: any;
-  absentTypes?: AbsentType[];
+  absenceTypes?: AbsenceType[];
   open: boolean;
   onClose: (action?: any) => void;
   userProfileId: number;

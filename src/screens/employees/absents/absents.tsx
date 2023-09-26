@@ -2,12 +2,18 @@ import {Divider} from '@oykos-development/devkit-react-ts-styled-components';
 import {Button, Dropdown, EditIconTwo, Table, Theme, TrashIcon, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {AbsentModal} from '../../../components/absentsModal/absentsModal';
-import useAbsentDelete from '../../../services/graphql/userProfile/absents/useAbsentDelete';
-import useAbsentOverview from '../../../services/graphql/userProfile/absents/useAbsentOverview';
-import useAbsentTypesOverview from '../../../services/graphql/userProfile/absents/useAbsentsType';
+import {VacationModal} from '../../../components/vacationModal/VacationModal';
+import useAbsentDelete from '../../../services/graphql/userProfile/absents/useDeleteAbsence';
+import useGetAbsence from '../../../services/graphql/userProfile/absents/useGetAbsence';
+import useGetAbsenceTypes from '../../../services/graphql/userProfile/absents/useGetAbsentsType';
+import useResolutionDelete from '../../../services/graphql/userProfile/resolution/useResolutionDelete';
+import useVacationGet from '../../../services/graphql/userProfile/vacation/useVacationGet';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
-import {UserProfileAbsents, UserProfileAbsentsParams} from '../../../types/graphql/profileAbsentsTypes';
+import {Absence, AbsenceParams} from '../../../types/graphql/absents';
+import {UserProfileVacationParams, YearVacationType} from '../../../types/graphql/profileVacationTypes';
 import {MicroserviceProps} from '../../../types/micro-service-props';
+import {yearsForDropdownFilter} from '../../../utils/constants';
+import {tableHeadsAbsence, tableHeadsVacation, tableHeadsYearVacation} from './constants';
 import {
   ButtonWrapper,
   Container,
@@ -22,29 +28,22 @@ import {
   YearWrapper,
 } from './styles';
 
-import {VacationModal} from '../../../components/vacationModal/VacationModal';
-import useVacationGet from '../../../services/graphql/userProfile/vacation/useVacationGet';
-import {yearsForDropdownFilter} from '../../../utils/constants';
-import {tableHeadsAbsence, tableHeadsVacation, tableHeadsYearVacation} from './constants';
-import {UserProfileVacationParams, YearVacationType} from '../../../types/graphql/profileVacationTypes';
-import useVacationDelete from '../../../services/graphql/userProfile/absents/useVacationDelete';
-
 const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const years = yearsForDropdownFilter();
   const userProfileID = context.navigation.location.pathname.split('/')[4];
-  const {absentsData, refetchData, summary} = useAbsentOverview(userProfileID);
-  const {vacationData, refetcUserVacation} = useVacationGet(userProfileID);
-  const [firstTableData, setFirstTableData] = useState<UserProfileAbsents[]>([]);
+  const {absence, refetch, summary} = useGetAbsence(userProfileID);
+  const {vacationData, refetchUserVacation} = useVacationGet(userProfileID);
+  const [firstTableData, setFirstTableData] = useState<Absence[]>([]);
   const [secondTableData, setSecondTableData] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showVacationModal, setShowVacationModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
   const [form, setForm] = useState<any>();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const {absentsTypeData, loading} = useAbsentTypesOverview();
+  const {absenceTypes, loading} = useGetAbsenceTypes();
   const {mutate} = useAbsentDelete();
-  const {deleteVacation} = useVacationDelete();
-  const [editItem, setEditItem] = useState<UserProfileAbsents | undefined>();
+  const {mutate: vacationDelete} = useResolutionDelete();
+  const [editItem, setEditItem] = useState<Absence | undefined>();
   const [editItemVacation, setEditItemVacation] = useState<YearVacationType | undefined>();
   const [showDeleteVacationModal, setShowDeleteVacationModal] = useState<boolean>(false);
 
@@ -60,7 +59,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
     mutate(
       selectedItemId,
       () => {
-        refetchData();
+        refetch();
         context.alert.success('Uspješno obrisano.');
         setShowDeleteModal(false);
         setSelectedItemId(0);
@@ -72,11 +71,11 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   };
 
   const handleDeleteVacation = async () => {
-    deleteVacation(
+    vacationDelete(
       selectedItemId,
       () => {
-        refetcUserVacation();
-        refetchData();
+        refetchUserVacation();
+        refetch();
         context.alert.success('Uspješno obrisano.');
         setShowDeleteVacationModal(false);
         setSelectedItemId(0);
@@ -87,24 +86,24 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
     );
   };
 
-  const handleCloseAbsentsModal = (refetch?: boolean) => {
+  const handleCloseAbsentsModal = (shouldRefetch?: boolean) => {
     setShowModal(false);
     setSelectedItemId(0);
     setEditItem(undefined);
-    refetch && refetchData();
+    shouldRefetch && refetch();
   };
 
-  const handleCloseVacationModal = (refetch: boolean) => {
+  const handleCloseVacationModal = (shouldRefetch: boolean) => {
     setShowVacationModal(false);
     setSelectedItemId(0);
     setEditItemVacation(undefined);
-    refetchData();
-    refetch && refetcUserVacation();
+    refetch();
+    shouldRefetch && refetchUserVacation();
   };
 
-  const handleEdit = (item: UserProfileAbsentsParams) => {
+  const handleEdit = (item: AbsenceParams) => {
     setShowModal(true);
-    setEditItem(absentsData?.find(tableItem => tableItem.id === item.id));
+    setEditItem(absence?.find(tableItem => tableItem.id === item.id));
   };
 
   const handleEditVacation = (item: UserProfileVacationParams) => {
@@ -130,8 +129,8 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   };
 
   const filterFirstTableData = () => {
-    if (absentsData) {
-      const filteredData = [...absentsData].filter(absent => !absent?.absent_type?.accounting_days_off);
+    if (absence) {
+      const filteredData = [...absence].filter(absent => !absent?.absent_type?.accounting_days_off);
       setFirstTableData(filteredData);
       return filteredData;
     } else {
@@ -141,8 +140,8 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   };
 
   const filterSecondTableData = () => {
-    if (absentsData) {
-      const filteredData = absentsData.filter(item => item?.absent_type?.accounting_days_off);
+    if (absence) {
+      const filteredData = absence.filter(item => item?.absent_type?.accounting_days_off);
       const combinedData = [...filteredData];
       setSecondTableData(combinedData);
       return combinedData;
@@ -154,7 +153,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
 
   const filteredFirstTableData = useMemo(() => {
     return (
-      firstTableData?.filter((item: UserProfileAbsents) => {
+      firstTableData?.filter((item: Absence) => {
         const yearMatches = !form?.year?.id || item.date_of_start.includes(form.year.id);
         return yearMatches;
       }) || []
@@ -163,7 +162,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
 
   const filteredSecondTableData = useMemo(() => {
     return (
-      secondTableData?.filter((item: UserProfileAbsents) => {
+      secondTableData?.filter((item: Absence) => {
         const yearMatches = !form?.year?.id || item.date_of_start.includes(form.year.id);
         return yearMatches;
       }) || []
@@ -185,7 +184,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   useEffect(() => {
     filterFirstTableData();
     filterSecondTableData();
-  }, [absentsData, vacationData]);
+  }, [absence, vacationData]);
 
   return (
     <Container>
@@ -318,7 +317,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
           selectedItem={editItem}
           userProfileId={Number(userProfileID)}
           alert={context.alert}
-          absentTypes={absentsTypeData || []}
+          absenceTypes={absenceTypes || []}
           key={editItem ? editItem.id : 'new'}
         />
       )}

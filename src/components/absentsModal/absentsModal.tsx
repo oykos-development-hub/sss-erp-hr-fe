@@ -1,15 +1,15 @@
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {AbsentsModalProps} from '../../screens/employees/absents/types';
+import {AbsenceTypeModalProps} from '../../screens/employees/absents/types';
 import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
-import useAbsentInsert from '../../services/graphql/userProfile/absents/useAbsentInsert';
-import {AbsentType, UserProfileAbsentsParams} from '../../types/graphql/profileAbsentsTypes';
-import {dropdownOptions, dropdownVacationOptions} from './constants';
+import useInsertAbsence from '../../services/graphql/userProfile/absents/useInsertAbsence';
+import {AbsenceType, AbsenceParams} from '../../types/graphql/absents';
+import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
+import {dropdownOptions} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
-import {parseDate, parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 
-const initialValues: UserProfileAbsentsParams = {
+const initialValues: AbsenceParams = {
   id: null,
   user_profile_id: 0,
   absent_type_id: null,
@@ -20,18 +20,18 @@ const initialValues: UserProfileAbsentsParams = {
   file_id: null,
 };
 
-export const AbsentModal: React.FC<AbsentsModalProps> = ({
+export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
   selectedItem,
-  absentTypes,
+  absenceTypes,
   open,
   onClose,
   userProfileId,
   alert,
 }) => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [absentChildType, setAbsentChildType] = useState<AbsentType[]>([]);
+  const [absenceChildTypes, setAbsenceChildTypes] = useState<AbsenceType[]>([]);
   const [isVacation, setIsVacation] = useState<boolean | null>(null);
-  const [selectedAbsentTypeId, setSelectedAbsentTypeId] = useState(null);
+  const [selectedAbsenceTypeId, setSelectedAbsenceTypeId] = useState(null);
 
   const handleUpload = (files: FileList) => {
     const fileList = Array.from(files);
@@ -41,10 +41,10 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
   const handleTypeChange = (selectedValue: any) => {
     if (selectedValue.id === 1) {
       setIsVacation(true);
-      setAbsentChildType([...absentTypes.filter(item => item.accounting_days_off)]);
+      setAbsenceChildTypes([...absenceTypes.filter(item => item.accounting_days_off)]);
     } else {
       setIsVacation(false);
-      setAbsentChildType([...absentTypes.filter(item => !item.accounting_days_off)]);
+      setAbsenceChildTypes([...absenceTypes.filter(item => !item.accounting_days_off)]);
     }
   };
 
@@ -58,7 +58,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
       });
   }, [organizationUnits]);
 
-  const {mutate, loading: isSaving} = useAbsentInsert();
+  const {mutate, loading: isSaving} = useInsertAbsence();
 
   const handleSave = (values: any) => {
     if (isSaving) return;
@@ -67,7 +67,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
       user_profile_id: userProfileId,
       date_of_start: parseDateForBackend(values?.date_of_start),
       date_of_end: parseDateForBackend(values?.date_of_end),
-      absent_type_id: isVacation ? absentChildType[0]?.id : values?.absent_type?.id,
+      absent_type_id: isVacation ? absenceChildTypes[0]?.id : values?.absent_type?.id,
       description: values?.description,
       target_organization_unit_id: values?.target_organization_unit?.id || null,
       file_id: values?.file_id || null,
@@ -92,7 +92,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
     control,
     formState: {errors},
     reset,
-  } = useForm<UserProfileAbsentsParams>({defaultValues: initialValues});
+  } = useForm<AbsenceParams>({defaultValues: initialValues});
 
   useEffect(() => {
     if (selectedItem) {
@@ -103,19 +103,19 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
       });
       if (selectedItem.id !== 0) {
         if (selectedItem?.absent_type.accounting_days_off) {
-          setAbsentChildType([...absentTypes.filter(item => item.accounting_days_off)]);
+          setAbsenceChildTypes([...absenceTypes.filter(item => item.accounting_days_off)]);
           setIsVacation(true);
         } else {
-          setAbsentChildType([...absentTypes.filter(item => !item.accounting_days_off)]);
-          handleAbsentTypeChange(selectedItem?.absent_type.title);
+          setAbsenceChildTypes([...absenceTypes.filter(item => !item.accounting_days_off)]);
+          handleAbsenceTypeChange(selectedItem?.absent_type.title);
           setIsVacation(false);
         }
       }
     }
   }, [selectedItem, reset]);
 
-  const handleAbsentTypeChange = (selectedValue: any) => {
-    setSelectedAbsentTypeId(selectedValue);
+  const handleAbsenceTypeChange = (selectedValue: any) => {
+    setSelectedAbsenceTypeId(selectedValue);
   };
 
   const VacationValue = () => {
@@ -161,10 +161,10 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
                   <Dropdown
                     label="VRSTA:"
                     name={name}
-                    options={absentChildType}
+                    options={absenceChildTypes}
                     value={value as any}
                     onChange={selectedValue => {
-                      handleAbsentTypeChange(selectedValue.title);
+                      handleAbsenceTypeChange(selectedValue.title);
                       onChange(selectedValue);
                     }}
                     error={errors.absent_type?.message}
@@ -174,7 +174,7 @@ export const AbsentModal: React.FC<AbsentsModalProps> = ({
               />
             </FormGroup>
           )}
-          {!isVacation && selectedAbsentTypeId === 'Upućivanje u drugi državni organ' && (
+          {!isVacation && selectedAbsenceTypeId === 'Upućivanje u drugi državni organ' && (
             <FormGroup>
               <Controller
                 name="target_organization_unit"

@@ -17,7 +17,7 @@ const useVacationGet = (user_profile_id: number) => {
     fetchUserVacation();
   }, [user_profile_id]);
 
-  return {vacationData: userVacation, loading, refetcUserVacation: fetchUserVacation};
+  return {vacationData: userVacation, loading, refetchUserVacation: fetchUserVacation};
 };
 
 export default useVacationGet;

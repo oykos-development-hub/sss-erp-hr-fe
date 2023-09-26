@@ -106,6 +106,7 @@ export interface JobTenderApplicationsParams {
   id?: number;
   organization_unit_id?: number | null;
   type_id?: number;
+  job_tender_id?: number;
 }
 
 export interface JobTenderApplicationResponse {

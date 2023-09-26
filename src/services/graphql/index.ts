@@ -27,9 +27,9 @@ import evaluationOverview from './userProfile/evaluation/evalutationOverview';
 import resolutionDelete from './userProfile/resolution/resolutionDelete';
 import resolutionInsert from './userProfile/resolution/resolutionInsert';
 import resolutionOverview from './userProfile/resolution/resolutionOverview';
-import absentDelete from './userProfile/absents/absentDelete';
-import absentInsert from './userProfile/absents/absentInsert';
-import absentOverview from './userProfile/absents/absentOverview';
+import absentDelete from './userProfile/absents/deleteAbsence';
+import absentInsert from './userProfile/absents/insertAbsence';
+import absentOverview from './userProfile/absents/getAbsence';
 import judgeOverview from './judges/judgeOverview';
 import judgeNormDelete from './judges/judgeNormDelete';
 import judgeNormInsert from './judges/judgeNormInsert';
@@ -56,16 +56,19 @@ import systematizationInsert from './systematization/systematizationsInsert';
 import systematizationDelete from './systematization/systematizationsDelete';
 import userProfileOverview from './userProfile/userProfileOverview';
 import jobPositionsOrganizationUnit from './jobPositions/jobPositionsOrganizationUnit';
-import absentTypesOverview from './userProfile/absents/absentsType';
+import absentTypesOverview from './userProfile/absents/getAbsenceTypes';
 import settingsDropdownOverview from './settingsDropdown/settingsDropdownOverview';
 import basicInfoUpdate from './userProfile/basicInfo/basicInfoUpdate';
 import jobPositionsAvailableOrganizationUnit from './jobPositions/jobPositionsAvailableOrganizationUnit';
 import getSuppliersOverview from './suppliers/getSuppliers';
 import organizationUintCalculateEmployeeStats from './judges/organizationUintCalculateEmployeeStats';
 import vacationInsert from './userProfile/vacation/vacationInsert';
-import vacationDelete from './userProfile/absents/vacationDelete';
 import GetVacation from './userProfile/vacation/vacationGet';
+<<<<<<< HEAD
+import insertAbsence from './userProfile/absents/insertAbsence';
+=======
 import judgeAndPresidentCheckIsAvailable from './judges/judgeAndPresidentCheckIsAvailable';
+>>>>>>> d196da8339cb6155c3da0e999cedf535de4ad504
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -135,10 +138,10 @@ export const GraphQL = {
   jobPositionsAvailableOrganizationUnit: jobPositionsAvailableOrganizationUnit,
   employeeInOrganizationUnitInsert: employeeInOrganizationUnitInsert,
   employeeInOrganizationUnitDelete: employeeInOrganizationUnitDelete,
-  absentOverview: absentOverview,
-  absentTypesOverview: absentTypesOverview,
-  absentInsert: absentInsert,
-  absentDelete: absentDelete,
+  getAbsence: absentOverview,
+  getAbsenceTypes: absentTypesOverview,
+  insertAbsence: insertAbsence,
+  deleteAbsence: absentDelete,
   judgeOverview: judgeOverview,
   judgeNormDelete: judgeNormDelete,
   judgeNormInsert: judgeNormInsert,
@@ -150,5 +153,4 @@ export const GraphQL = {
   getSuppliersOverview: getSuppliersOverview,
   getVacation: GetVacation,
   vacationInsert: vacationInsert,
-  vacationDelete: vacationDelete,
 };
