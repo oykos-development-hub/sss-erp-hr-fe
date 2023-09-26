@@ -34,12 +34,15 @@ import {parseToDate} from '../../../utils/dateUtils';
 import {Switch} from '@oykos-development/devkit-react-ts-styled-components';
 import {yupResolver} from '@hookform/resolvers/yup';
 import useAppContext from '../../../context/useAppContext';
+import useJudgesAvailable from '../../../services/graphql/judges/useJudgesAvailable';
 
 export const BasicInfo: React.FC = () => {
   const context = useAppContext();
 
   const {data: profileData, refetch} = useBasicInfoGet(Number(context?.navigation.location.pathname.split('/')[4]));
   const isNew = !profileData?.id;
+  const isJudge = profileData?.is_judge;
+  const isPresident = profileData?.is_president;
   const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
 
   const {organizationUnits} = useOrganizationUnits();
@@ -82,6 +85,8 @@ export const BasicInfo: React.FC = () => {
 
   const maritalOptions = gender === 'M' ? maleMaritalStatusOptions : femaleMaritalStatusOptions;
 
+  const {checkAvailable, refetch: refetchCheckAvailable} = useJudgesAvailable();
+
   const {positions} = useJobPositionsAvailableOrganizationUnit(
     contract?.organization_unit_id?.id,
     contract?.department_id?.id,
@@ -105,6 +110,7 @@ export const BasicInfo: React.FC = () => {
   };
 
   const handleSave = (values: UserProfileBasicInfoFormValues, close: boolean) => {
+    debugger;
     if (isValid) {
       if (!profileData?.id) {
         if (isCreating) return;
@@ -207,6 +213,13 @@ export const BasicInfo: React.FC = () => {
   useEffect(() => {
     if (contract?.organization_unit_id) {
       resetField('contract.department_id');
+      if (
+        contract?.organization_unit_id &&
+        contract?.organization_unit_id?.id &&
+        contract.organization_unit_id.title?.indexOf('Sudski savjet') == -1
+      ) {
+        refetchCheckAvailable(contract?.organization_unit_id?.id);
+      }
     }
   }, [contract?.organization_unit_id]);
 
@@ -215,6 +228,22 @@ export const BasicInfo: React.FC = () => {
       is_president ? setValue('is_judge', true) : setValue('is_judge', false);
     }
   }, [is_president]);
+
+  const disabledJudge = (): boolean => {
+    if (contract?.organization_unit_id?.title && contract.organization_unit_id.title?.indexOf('Sudski savjet') > -1)
+      return true;
+    if (isJudge) return false;
+    if (checkAvailable?.judge) return false;
+    return true;
+  };
+  const disabledPresident = (): boolean => {
+    if (contract?.organization_unit_id?.title && contract.organization_unit_id.title?.indexOf('Sudski savjet') > -1)
+      return true;
+    if (isPresident) return false;
+    if (checkAvailable?.president) return false;
+
+    return true;
+  };
 
   const isJobPositionInputDisabled =
     isDisabled ||
@@ -565,7 +594,7 @@ export const BasicInfo: React.FC = () => {
                     checked={value}
                     onChange={onChange}
                     content={<Typography variant="bodyMedium" content="SUDIJA:" style={{marginLeft: 10}} />}
-                    disabled={isDisabled}
+                    disabled={disabledJudge()}
                   />
                 )}
               />
@@ -580,7 +609,7 @@ export const BasicInfo: React.FC = () => {
                     checked={value}
                     onChange={onChange}
                     content={<Typography variant="bodyMedium" content="PREDSJEDNIK SUDA:" style={{marginLeft: 10}} />}
-                    disabled={isDisabled}
+                    disabled={disabledPresident()}
                   />
                 )}
               />

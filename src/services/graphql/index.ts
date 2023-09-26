@@ -65,6 +65,7 @@ import organizationUintCalculateEmployeeStats from './judges/organizationUintCal
 import vacationInsert from './userProfile/vacation/vacationInsert';
 import vacationDelete from './userProfile/absents/vacationDelete';
 import GetVacation from './userProfile/vacation/vacationGet';
+import judgeAndPresidentCheckIsAvailable from './judges/judgeAndPresidentCheckIsAvailable';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -99,6 +100,7 @@ export const GraphQL = {
   jobTenderTypesSearch: jobTenderTypesSearch,
   jobTenderApplicationOverview: jobTenderApplicationOverview,
   jobTenderApplicationInsert: jobTenderApplicationInsert,
+  judgeAndPresidentCheckIsAvailable: judgeAndPresidentCheckIsAvailable,
   foreignerPermits: foreignerPermits,
   educationOverview: educationOverview,
   educationInsert: educationInsert,

@@ -199,3 +199,17 @@ export interface JudgeResolutionsDeleteResponse {
     };
   };
 }
+
+export interface CheckJudgeAndPresidentIsAvailableResponse {
+  data: {
+    checkJudgeAndPresidentIsAvailable: {
+      status?: string;
+      message?: string;
+      item: JudgeAndPresidentIsAvailable;
+    };
+  };
+}
+export interface JudgeAndPresidentIsAvailable {
+  judge: boolean;
+  president: boolean;
+}

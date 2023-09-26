@@ -25,12 +25,12 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
     () =>
       selectedItem
         ? {
-            ...selectedItem,
-            expertise_level: {
-              id: selectedItem.expertise_level || '',
-              title: selectedItem?.expertise_level || '',
-            },
-          }
+          ...selectedItem,
+          expertise_level: {
+            id: selectedItem.expertise_level || '',
+            title: selectedItem?.expertise_level || '',
+          },
+        }
         : initialValues,
     [selectedItem],
   );

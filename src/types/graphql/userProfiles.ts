@@ -25,6 +25,7 @@ export interface UserProfileBasicInfo {
   housing_done: boolean;
   housing_description: string;
   is_president: boolean;
+  is_judge: boolean;
   marital_status: string;
   date_of_taking_oath: string;
   date_of_becoming_judge: string;

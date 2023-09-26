@@ -61,8 +61,8 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       .forEach((unit: OrganizationUnit) => {
         values[unit.id] = item
           ? item?.items?.find((i: JudgeResolutionItem) => {
-              return i.organization_unit.id === unit.id;
-            })?.available_slots_judges
+            return i.organization_unit.id === unit.id;
+          })?.available_slots_judges
           : '';
       });
 
@@ -76,7 +76,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
 
   const list = useMemo(() => {
     return organizationUnits
-      .filter(unit => !unit.parent_id && unit.id)
+      .filter(unit => !unit.parent_id && unit.id && unit?.title.indexOf('Sudski savjet') == -1)
       .map((orgItem: OrganizationUnit) => {
         let dataValue;
 

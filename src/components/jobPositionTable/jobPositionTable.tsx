@@ -167,7 +167,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
 
   const handleSave = () => {
     const selectedItem = tableDataState.find((item: any) => item.id === editTableRow);
-
+    debugger;
     const payload = {
       id: selectedItem.id ? selectedItem.id : 0,
       systematization_id: systematizationID,
