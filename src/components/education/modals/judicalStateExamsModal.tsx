@@ -24,12 +24,12 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
     () =>
       selectedItem
         ? {
-          ...selectedItem,
-          academic_title: {
-            id: selectedItem?.academic_title,
-            title: selectedItem?.academic_title,
-          },
-        }
+            ...selectedItem,
+            academic_title: {
+              id: selectedItem?.academic_title,
+              title: selectedItem?.academic_title,
+            },
+          }
         : initialValues,
     [selectedItem],
   );

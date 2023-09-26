@@ -108,12 +108,12 @@ export const getSchema = (isNew: boolean) =>
     country_of_birth: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
     city_of_birth: yup.lazy(value => {
       switch (typeof value) {
-      case 'object':
-        return yup.object(dropdownStringSchema).required(requiredError).default(undefined);
-      case 'string':
-        return yup.string().required(requiredError);
-      default:
-        return yup.object(dropdownStringSchema).default(undefined);
+        case 'object':
+          return yup.object(dropdownStringSchema).required(requiredError).default(undefined);
+        case 'string':
+          return yup.string().required(requiredError);
+        default:
+          return yup.object(dropdownStringSchema).default(undefined);
       }
     }),
     nationality: yup.object(dropdownStringSchema).default(undefined),

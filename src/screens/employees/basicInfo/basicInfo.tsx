@@ -110,7 +110,6 @@ export const BasicInfo: React.FC = () => {
   };
 
   const handleSave = (values: UserProfileBasicInfoFormValues, close: boolean) => {
-    debugger;
     if (isValid) {
       if (!profileData?.id) {
         if (isCreating) return;
