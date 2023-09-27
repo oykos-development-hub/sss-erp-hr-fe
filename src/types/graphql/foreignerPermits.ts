@@ -1,4 +1,5 @@
 import {DropdownDataString} from '../dropdownData';
+import {DeleteResponse, GetResponse, InsertResponse} from './response';
 
 export interface ForeignerPermit {
   id: number;
@@ -30,3 +31,15 @@ export interface ForeignerPermitFormValues {
   work_permit_file_id: number | null;
   residence_permit_file_id: number | null;
 }
+
+export type ForeignerPermitResponse = {
+  get: {
+    userProfile_Foreigner: GetResponse<ForeignerPermit>;
+  };
+  insert: {
+    userProfile_Foreigner_Insert: InsertResponse<ForeignerPermit>;
+  };
+  delete: {
+    userProfile_Foreigner_Delete: DeleteResponse;
+  };
+};

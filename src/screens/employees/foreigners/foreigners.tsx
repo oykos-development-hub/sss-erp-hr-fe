@@ -2,13 +2,13 @@ import {EditIconTwo, Theme, TrashIcon} from '@oykos-development/devkit-react-ts-
 import {Button, Table} from 'client-library';
 import React, {useState} from 'react';
 import PermitEntryModal from '../../../components/permitEntryModal/permitEntryModal';
-import useForeignerPermitDelete from '../../../services/graphql/foreignerPermits/useForeignerPermitDelete';
-import useForeignerPermits from '../../../services/graphql/foreignerPermits/useForeignerPermitOverview';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {ForeignerPermit} from '../../../types/graphql/foreignerPermits';
 import {tableHeads} from './constants';
 import {ButtonContainer, TableContainer} from './styles';
 import {ForeignersProps} from './types';
-import {ForeignerPermit} from '../../../types/graphql/foreignerPermits';
+import useGetForeignerPermits from '../../../services/graphql/foreignerPermits/useGetForeignerPermits';
+import useDeleteForeignerPermit from '../../../services/graphql/foreignerPermits/useDeleteForeignerPermit';
 
 const Foreigners: React.FC<ForeignersProps> = ({context}) => {
   const [entryModal, setEntryModal] = useState(false);
@@ -16,8 +16,8 @@ const Foreigners: React.FC<ForeignersProps> = ({context}) => {
   const [deleteModal, setDeleteModal] = useState(0);
   const id = Number(context?.navigation.location.pathname.split('/')[4]);
 
-  const {data, refetch, loading} = useForeignerPermits(id);
-  const {mutate: deleteEntry} = useForeignerPermitDelete();
+  const {foreignerPermits, refetch, loading} = useGetForeignerPermits(id);
+  const {mutate: deleteEntry} = useDeleteForeignerPermit();
 
   const openModal = () => {
     setEntryModal(true);
@@ -61,7 +61,7 @@ const Foreigners: React.FC<ForeignersProps> = ({context}) => {
       </ButtonContainer>
       <Table
         tableHeads={tableHeads}
-        data={data?.items || []}
+        data={foreignerPermits}
         isLoading={loading}
         tableActions={[
           {

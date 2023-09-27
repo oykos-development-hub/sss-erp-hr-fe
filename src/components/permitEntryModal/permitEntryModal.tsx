@@ -4,7 +4,7 @@ import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {cityData} from '../../constants';
-import useForeignerPermitInsert from '../../services/graphql/foreignerPermits/useForeignerPermitInsert';
+import useInsertForeignerPermits from '../../services/graphql/foreignerPermits/useInsertForeignerPermit';
 import {ForeignerPermit} from '../../types/graphql/foreignerPermits';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {CheckboxContainer, CheckboxLabel, ColumnTitle, Form, FormColumn, FormGroup, PermitModal} from './styles';
@@ -35,19 +35,6 @@ const permitSchema = yup.object().shape({
   user_profile_id: yup.number().required('Ovo polje je obavezno'),
   residence_permit_indefinite_length: yup.boolean().required('Ovo polje je obavezno'),
 });
-
-const initialValues = {
-  user_profile_id: 0,
-  work_permit_number: '',
-  work_permit_issuer: undefined,
-  work_permit_date_of_start: undefined,
-  work_permit_date_of_end: undefined,
-  work_permit_indefinite_length: false,
-  residence_permit_date_of_end: undefined,
-  residence_permit_indefinite_length: false,
-  residence_permit_number: '',
-  country_of_origin: undefined,
-};
 
 interface PermitEntryModalProps {
   open: boolean;
@@ -84,11 +71,16 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
     watch,
     formState: {errors},
     reset,
-  } = useForm({defaultValues: {user_profile_id: id ?? 0}, resolver: yupResolver(permitSchema)});
+  } = useForm({
+    defaultValues: {user_profile_id: id ?? 0, residence_permit_indefinite_length: false},
+    resolver: yupResolver(permitSchema),
+  });
 
   const indefinite = watch('residence_permit_indefinite_length');
 
-  const {mutate, loading: isSaving} = useForeignerPermitInsert();
+  console.log(errors);
+
+  const {mutate, loading: isSaving} = useInsertForeignerPermits();
 
   useEffect(() => {
     if (permitData) {
@@ -125,7 +117,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
         refetchList();
         alert.success('Uspješno sačuvano.');
         onClose();
-        reset(initialValues);
+        reset();
       });
     } catch (e) {
       alert.error('Greška. Promjene nisu sačuvane.');
@@ -136,7 +128,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
   return (
     <PermitModal
       onClose={() => {
-        reset(initialValues);
+        reset();
         onClose();
       }}
       open={open}

@@ -1,71 +1,70 @@
 import {getEnvironment} from '../get-environment';
-import organizationUnits from './organizationUnits/organizationUnitOverview';
-import foreignerPermitDelete from './foreignerPermits/foreignerPermitDelete';
-import foreignerPermitInsert from './foreignerPermits/foreignerPermitInsert';
-import foreignerPermits from './foreignerPermits/foreignerPermitOverview';
-import jobPositionsGet from './jobPositions/jobPositionOverview';
-import jobPositionInOrganizationUnitInsert from './organizationUnitsJobPositions/jobPositionInOrganizationUnitInsert';
-import employeeInOrganizationUnitInsert from './organizationUnitsEmployees/employeeInOrganizationUnitInsert';
-import employeeInOrganizationUnitDelete from './organizationUnitsEmployees/employeeInOrganizationUnitDelete';
-import jobPositionInOrganizationUnitDelete from './organizationUnitsJobPositions/jobPositionInOrganizationUnitDelete';
-import basicInfoGet from './userProfile/basicInfo/basicInfoGet';
-import basicInfoInsert from './userProfile/basicInfo/basicInfoInsert';
-import experienceOverview from './userProfile/experience/experienceOverview';
-import experienceInsert from './userProfile/experience/experienceInsert';
-import experienceDelete from './userProfile/experience/experienceDelete';
-import educationOverview from './userProfile/education/educationOverview';
-import educationDelete from './userProfile/education/educationDelete';
-import educationInsert from './userProfile/education/educationInsert';
-import familyInsert from './userProfile/family/familyinsert';
-import familyOverview from './userProfile/family/familyOverview';
-import familyDelete from './userProfile/family/familyDelete';
-import salaryParamsInsert from './userProfile/salaryParams/salarayParamsInsert';
-import salaryParamsOverview from './userProfile/salaryParams/salaryParamsOverview';
-import evaluationDelete from './userProfile/evaluation/evaluationDelete';
-import evaluationInsert from './userProfile/evaluation/evaluationInsert';
-import evaluationOverview from './userProfile/evaluation/evalutationOverview';
-import resolutionDelete from './userProfile/resolution/resolutionDelete';
-import resolutionInsert from './userProfile/resolution/resolutionInsert';
-import resolutionOverview from './userProfile/resolution/resolutionOverview';
-import absentDelete from './userProfile/absents/deleteAbsence';
-import absentInsert from './userProfile/absents/insertAbsence';
-import absentOverview from './userProfile/absents/getAbsence';
-import judgeOverview from './judges/judgeOverview';
-import judgeNormDelete from './judges/judgeNormDelete';
-import judgeNormInsert from './judges/judgeNormInsert';
-import judgeResolutionDelete from './judges/judgeResolutionDelete';
-import judgeResolutionInsert from './judges/judgeResolutionInsert';
-import judgeResolutionOverview from './judges/judgeResolutionOverview';
-import organizationUnitInsert from './organizationUnits/organizationUnitInsert';
-import organizationUnitDelete from './organizationUnits/organizationUnitDelete';
-import jobTenderApplicationDelete from './jobTenders/jobTenderApplicationDelete';
-import jobTenderInsert from './jobTenders/jobTenderInsert';
-import jobPositionSearch from './jobPositions/jobPositionsSearch';
-import jobTenderTypesSearch from './jobTenderTypes/jobTenderTypesSearch';
+import deleteForeignerPermit from './foreignerPermits/deleteForeignerPermit';
+import getForeignerPermits from './foreignerPermits/getForeignerPermits';
+import insertForeignerPermit from './foreignerPermits/insertForeignerPermit';
 import revisionDelete from './internalRevision/revisionDelete';
 import revisionDetails from './internalRevision/revisionDetails';
 import revisionInsert from './internalRevision/revisionInsert';
 import revisionOverview from './internalRevision/revisionOverview';
-import jobTenderDelete from './jobTenders/jobTenderDelete';
-import jobTenderOverview from './jobTenders/jobTenderOverview';
-import jobTenderApplicationOverview from './jobTenders/jobTenderApplicationOverview';
+import jobPositionsGet from './jobPositions/jobPositionOverview';
+import jobPositionsAvailableOrganizationUnit from './jobPositions/jobPositionsAvailableOrganizationUnit';
+import jobPositionsOrganizationUnit from './jobPositions/jobPositionsOrganizationUnit';
+import jobPositionSearch from './jobPositions/jobPositionsSearch';
+import jobTenderTypesSearch from './jobTenderTypes/jobTenderTypesSearch';
+import jobTenderApplicationDelete from './jobTenders/jobTenderApplicationDelete';
 import jobTenderApplicationInsert from './jobTenders/jobTenderApplicationInsert';
+import jobTenderApplicationOverview from './jobTenders/jobTenderApplicationOverview';
+import jobTenderDelete from './jobTenders/jobTenderDelete';
+import jobTenderInsert from './jobTenders/jobTenderInsert';
+import jobTenderOverview from './jobTenders/jobTenderOverview';
+import judgeAndPresidentCheckIsAvailable from './judges/judgeAndPresidentCheckIsAvailable';
+import judgeNormDelete from './judges/judgeNormDelete';
+import judgeNormInsert from './judges/judgeNormInsert';
+import judgeOverview from './judges/judgeOverview';
+import judgeResolutionDelete from './judges/judgeResolutionDelete';
+import judgeResolutionInsert from './judges/judgeResolutionInsert';
+import judgeResolutionOverview from './judges/judgeResolutionOverview';
+import organizationUintCalculateEmployeeStats from './judges/organizationUintCalculateEmployeeStats';
+import organizationUnitDelete from './organizationUnits/organizationUnitDelete';
+import organizationUnitInsert from './organizationUnits/organizationUnitInsert';
+import organizationUnits from './organizationUnits/organizationUnitOverview';
+import employeeInOrganizationUnitDelete from './organizationUnitsEmployees/employeeInOrganizationUnitDelete';
+import employeeInOrganizationUnitInsert from './organizationUnitsEmployees/employeeInOrganizationUnitInsert';
+import jobPositionInOrganizationUnitDelete from './organizationUnitsJobPositions/jobPositionInOrganizationUnitDelete';
+import jobPositionInOrganizationUnitInsert from './organizationUnitsJobPositions/jobPositionInOrganizationUnitInsert';
+import settingsDropdownOverview from './settingsDropdown/settingsDropdownOverview';
+import getSuppliersOverview from './suppliers/getSuppliers';
 import systematizationDetails from './systematization/systematizationDetails';
 import systematizationOverview from './systematization/systematizationOverview';
-import systematizationInsert from './systematization/systematizationsInsert';
 import systematizationDelete from './systematization/systematizationsDelete';
-import userProfileOverview from './userProfile/userProfileOverview';
-import jobPositionsOrganizationUnit from './jobPositions/jobPositionsOrganizationUnit';
+import systematizationInsert from './systematization/systematizationsInsert';
+import absentDelete from './userProfile/absents/deleteAbsence';
+import absentOverview from './userProfile/absents/getAbsence';
 import absentTypesOverview from './userProfile/absents/getAbsenceTypes';
-import settingsDropdownOverview from './settingsDropdown/settingsDropdownOverview';
-import basicInfoUpdate from './userProfile/basicInfo/basicInfoUpdate';
-import jobPositionsAvailableOrganizationUnit from './jobPositions/jobPositionsAvailableOrganizationUnit';
-import getSuppliersOverview from './suppliers/getSuppliers';
-import organizationUintCalculateEmployeeStats from './judges/organizationUintCalculateEmployeeStats';
-import vacationInsert from './userProfile/vacation/vacationInsert';
-import GetVacation from './userProfile/vacation/vacationGet';
 import insertAbsence from './userProfile/absents/insertAbsence';
-import judgeAndPresidentCheckIsAvailable from './judges/judgeAndPresidentCheckIsAvailable';
+import basicInfoGet from './userProfile/basicInfo/basicInfoGet';
+import basicInfoInsert from './userProfile/basicInfo/basicInfoInsert';
+import basicInfoUpdate from './userProfile/basicInfo/basicInfoUpdate';
+import educationDelete from './userProfile/education/educationDelete';
+import educationInsert from './userProfile/education/educationInsert';
+import educationOverview from './userProfile/education/educationOverview';
+import evaluationDelete from './userProfile/evaluation/evaluationDelete';
+import evaluationInsert from './userProfile/evaluation/evaluationInsert';
+import evaluationOverview from './userProfile/evaluation/evalutationOverview';
+import experienceDelete from './userProfile/experience/experienceDelete';
+import experienceInsert from './userProfile/experience/experienceInsert';
+import experienceOverview from './userProfile/experience/experienceOverview';
+import familyDelete from './userProfile/family/familyDelete';
+import familyOverview from './userProfile/family/familyOverview';
+import familyInsert from './userProfile/family/familyinsert';
+import resolutionDelete from './userProfile/resolution/resolutionDelete';
+import resolutionInsert from './userProfile/resolution/resolutionInsert';
+import resolutionOverview from './userProfile/resolution/resolutionOverview';
+import salaryParamsInsert from './userProfile/salaryParams/salarayParamsInsert';
+import salaryParamsOverview from './userProfile/salaryParams/salaryParamsOverview';
+import userProfileOverview from './userProfile/userProfileOverview';
+import GetVacation from './userProfile/vacation/vacationGet';
+import vacationInsert from './userProfile/vacation/vacationInsert';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -101,15 +100,15 @@ export const GraphQL = {
   jobTenderApplicationOverview: jobTenderApplicationOverview,
   jobTenderApplicationInsert: jobTenderApplicationInsert,
   judgeAndPresidentCheckIsAvailable: judgeAndPresidentCheckIsAvailable,
-  foreignerPermits: foreignerPermits,
   educationOverview: educationOverview,
   educationInsert: educationInsert,
   educationDelete: educationDelete,
   familyOverview: familyOverview,
   familyInsert: familyInsert,
   familyDelete: familyDelete,
-  foreignerPermitDelete: foreignerPermitDelete,
-  foreignerPermitInsert: foreignerPermitInsert,
+  getForeignerPermits: getForeignerPermits,
+  deleteForeignerPermit: deleteForeignerPermit,
+  insertForeignerPermit: insertForeignerPermit,
   systematizationOverview: systematizationOverview,
   systematizationInsert: systematizationInsert,
   systematizationDetails: systematizationDetails,

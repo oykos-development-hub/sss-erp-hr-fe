@@ -8,10 +8,5 @@ export interface UserProfileInsertExperienceResponse {
       message?: string;
       item?: UserProfileExperience;
     };
-    userProfile_Foreigner_Insert: {
-      item: ForeignerPermit;
-      status: string;
-      message: string;
-    };
   };
 }
