@@ -6,7 +6,6 @@ import {MicroserviceProps} from './types/micro-service-props';
 import {NotFound404} from './screens/404';
 import {OrganizationUnitsScreen} from './screens/organization-units';
 import {SystematizationDetails} from './screens/systematization/systematizationDetails/systematizationDetails';
-import InternalRevision from './screens/internalRevision';
 import JudgeNorms from './screens/judges/judgeNorms/judges';
 import JudgesNumberDecisions from './screens/judges/judgesNumberDecisions/judgesNumberDecision';
 import {JobTendersScreen} from './screens/jobTenders';
@@ -17,6 +16,9 @@ import {JudgesNumbersDetails} from './screens/judges/judgesDecisionDetails/judge
 import {AddNewEmployee} from './screens/employees/addNew/addNew';
 import Judges from './screens/judges/landing';
 import JobTenders from './screens/jobTenders/landing';
+import RevisionPlansList from './screens/internalRevision/revisionsPlans/revisionsPlansList';
+import RevisionList from './screens/internalRevision/revisions/revisions';
+import RevisionTips from './screens/internalRevision/revisionTips/revisionTips';
 
 const employeesRegex = /\/hr\/employees(?!\/add-new)(\/.)?/;
 const systematizationDetailsRegex = /^\/hr\/systematization\/systematization-details(?:\/(\d+))?$/;
@@ -25,6 +27,8 @@ const JobTendersDetailsRegex = /^\/hr\/job-tenders\/job-tenders-list\/\d+/;
 const ApplicationsRegex = /^\/hr\/job-tenders\/job-tender-applications$/;
 const ApplicationsDetailsRegex = /^\/hr\/job-tenders\/job-tender-applications\/\d+/;
 const judgesNumberDetailsRegex = /^\/hr\/judges\/number-decision\/\d+/;
+const revisionsRegex = /^\/hr\/revision-recommendations\/\d+\/revision/;
+const recommendationsRegex = /^\/hr\/revision-recommendations\/\d+\/revision\/\d+\/recommendations/;
 
 export const Router: React.FC<MicroserviceProps> = props => {
   const pathname = props?.navigation?.location?.pathname;
@@ -37,7 +41,10 @@ export const Router: React.FC<MicroserviceProps> = props => {
     if (pathname === '/hr/organization-units') return <OrganizationUnitsScreen context={context} />;
     if (employeesRegex.test(pathname)) return <EmployeesScreen context={context} />;
     if (pathname === '/hr/systematization') return <SystematizationScreen context={context} />;
-    if (pathname === '/hr/revision-recommendations') return <InternalRevision context={context} />;
+    if (pathname === '/hr/revision-recommendations') return <RevisionPlansList context={context} />;
+    if (recommendationsRegex.test(pathname)) return <RevisionTips context={context} />;
+    if (revisionsRegex.test(pathname)) return <RevisionList context={context} />;
+
     // if (pathname === '/hr/job-positions') return <LandingScreen context={context} />;
     if (JobTendersRegex.test(pathname)) return <JobTendersScreen context={context} />;
     if (JobTendersDetailsRegex.test(pathname)) return <JobTenderDetailsScreen context={context} />;

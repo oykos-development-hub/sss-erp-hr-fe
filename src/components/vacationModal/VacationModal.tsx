@@ -58,7 +58,6 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
   } = useForm<any>({defaultValues: initialValues});
 
   useEffect(() => {
-    console.log(selectedItem);
     reset({...selectedItem, year: yearOptions.find(yearOption => yearOption.id === selectedItem?.year)});
   }, [selectedItem]);
 

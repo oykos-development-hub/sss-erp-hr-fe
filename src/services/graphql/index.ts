@@ -2,10 +2,6 @@ import {getEnvironment} from '../get-environment';
 import deleteForeignerPermit from './foreignerPermits/deleteForeignerPermit';
 import getForeignerPermits from './foreignerPermits/getForeignerPermits';
 import insertForeignerPermit from './foreignerPermits/insertForeignerPermit';
-import revisionDelete from './internalRevision/revisionDelete';
-import revisionDetails from './internalRevision/revisionDetails';
-import revisionInsert from './internalRevision/revisionInsert';
-import revisionOverview from './internalRevision/revisionOverview';
 import jobPositionsGet from './jobPositions/jobPositionOverview';
 import jobPositionsAvailableOrganizationUnit from './jobPositions/jobPositionsAvailableOrganizationUnit';
 import jobPositionsOrganizationUnit from './jobPositions/jobPositionsOrganizationUnit';
@@ -65,6 +61,18 @@ import salaryParamsOverview from './userProfile/salaryParams/salaryParamsOvervie
 import userProfileOverview from './userProfile/userProfileOverview';
 import GetVacation from './userProfile/vacation/vacationGet';
 import vacationInsert from './userProfile/vacation/vacationInsert';
+import revisionPlansOverview from './revisionsPlans/revisionPlanOverview';
+import revisionPlanInsert from './revisionsPlans/revisionPlanInsert';
+import revisionPlanDelete from './revisionsPlans/revisionPlanDelete';
+import revisionPlanDetails from './revisionsPlans/revisionPlanDetails';
+import revisionOverview from './revision/revisionOverview';
+import revisionInsert from './revision/revisionInsert';
+import revisionDelete from './revision/revisionDelete';
+import revisionDetails from './revision/revisionDetails';
+import revisionTipsOverview from './revisionTips/revisionTipsOverview';
+import revisionTipsDetails from './revisionTips/revisionTipsDetails';
+import revisionTipsInsert from './revisionTips/revisionTipsInsert';
+import revisionTipsDelete from './revisionTips/revisionTipsDelete';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -123,10 +131,6 @@ export const GraphQL = {
   evaluationOverview: evaluationOverview,
   evaluationInsert: evaluationInsert,
   evaluationDelete: evaluationDelete,
-  revisionOverview: revisionOverview,
-  revisionDetails: revisionDetails,
-  revisionDelete: revisionDelete,
-  revisionInsert: revisionInsert,
   organizationUnitInsert: organizationUnitInsert,
   organizationUnitDelete: organizationUnitDelete,
   jobPositionInOrganizationUnitInsert: jobPositionInOrganizationUnitInsert,
@@ -149,4 +153,16 @@ export const GraphQL = {
   getSuppliersOverview: getSuppliersOverview,
   getVacation: GetVacation,
   vacationInsert: vacationInsert,
+  revisionPlansOverview: revisionPlansOverview,
+  revisionPlanInsert: revisionPlanInsert,
+  revisionPlanDelete: revisionPlanDelete,
+  revisionPlanDetails: revisionPlanDetails,
+  revisionOverview: revisionOverview,
+  revisionInsert: revisionInsert,
+  revisionDelete: revisionDelete,
+  revisionDetails: revisionDetails,
+  revisionTipsOverview: revisionTipsOverview,
+  revisionTipsDetails: revisionTipsDetails,
+  revisionTipsInsert: revisionTipsInsert,
+  revisionTipsDelete: revisionTipsDelete,
 };

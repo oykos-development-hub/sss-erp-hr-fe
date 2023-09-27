@@ -1,4 +1,4 @@
-export const parseDate = (date: Date | string | null, parseForBFF?: boolean) => {
+export const parseDate = (date: Date | string | null) => {
   if (!date) return '';
   const dateObj = new Date(date);
   const day = dateObj.toLocaleDateString('sr-latn-SR', {day: '2-digit'});

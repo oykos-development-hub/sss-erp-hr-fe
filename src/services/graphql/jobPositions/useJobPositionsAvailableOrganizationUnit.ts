@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '..';
-import {JobPositionResponse} from '../../../types/graphql/useJobPositions';
 import {DropdownDataNumber} from '../../../types/dropdownData';
 
 const useJobPositionsAvailableOrganizationUnit = (

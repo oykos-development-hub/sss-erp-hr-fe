@@ -1,9 +1,6 @@
 import {useState} from 'react';
 import {GraphQL} from '../..';
-import {
-  UserProfileEvaluation,
-  UserProfileEvaluationFormValues,
-} from '../../../../types/graphql/userProfileGetEvaluations';
+import {UserProfileEvaluationFormValues} from '../../../../types/graphql/userProfileGetEvaluations';
 
 const useEvaluationInsert = () => {
   const [loading, setLoading] = useState(false);
