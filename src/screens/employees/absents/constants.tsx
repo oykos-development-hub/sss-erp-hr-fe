@@ -8,7 +8,7 @@ export const tableHeadsAbsence: TableHead[] = [
     accessor: 'date_of_start',
     type: 'custom',
     renderContents: (_, item: any) => {
-      return <Typography variant="bodyMedium" content={parseDate(item.date_of_start, true)} />;
+      return <Typography variant="bodyMedium" content={parseDate(item.date_of_start)} />;
     },
     width: '15%',
   },
@@ -52,7 +52,7 @@ export const tableHeadsVacation: TableHead[] = [
     accessor: 'date_of_start',
     type: 'custom',
     renderContents: (_, item: any) => {
-      return <Typography variant="bodyMedium" content={item.year ? item.year : parseDate(item.date_of_start, true)} />;
+      return <Typography variant="bodyMedium" content={item.year ? item.year : parseDate(item.date_of_start)} />;
     },
     width: '15%',
   },
