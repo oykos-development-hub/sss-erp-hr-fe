@@ -142,7 +142,13 @@ export const getSchema = (isNew: boolean) =>
     middle_name: yup.string(),
     contract: yup.object().shape({
       organization_unit_id: yup.object(dropdownNumberSchema).required(requiredError).default(undefined),
-      department_id: yup.object(dropdownNumberSchema).default(undefined),
+      department_id: yup
+        .object(dropdownNumberSchema)
+        .when(['is_judge', 'is_president'], {
+          is: (is_judge: boolean, is_president: boolean) => !is_judge && !is_president,
+          then: schema => schema.required(requiredError),
+        })
+        .default(undefined),
       job_position_in_organization_unit_id: yup.object(dropdownNumberSchema).default(undefined),
       contract_type_id: yup.object(dropdownNumberSchema).required(requiredError).default(undefined),
       date_of_end: yup.date().nullable(),
@@ -154,7 +160,7 @@ export const getSchema = (isNew: boolean) =>
     email: yup
       .string()
       .email('Nije validan e-mail')
-      .when([], {is: () => isNew, then: schema => schema.required()}),
+      .when([], {is: () => isNew, then: schema => schema.required(requiredError)}),
     phone: yup.string().when([], {
       is: () => isNew,
       then: schema => schema.required(requiredError),
@@ -162,7 +168,10 @@ export const getSchema = (isNew: boolean) =>
     secondary_email: yup
       .string()
       .email('Nije validan e-mail')
-      .when([], {is: () => isNew, then: schema => schema.required()}),
-    pin: yup.string().when([], {is: () => isNew, then: schema => schema.required()}),
-    password: yup.string().when([], {is: () => isNew, then: schema => schema.required()}),
+      .when([], {is: () => isNew, then: schema => schema.required(requiredError)}),
+    pin: yup
+      .string()
+      .matches(/^(0|[1-9]\d*)(\.\d+)?$/, 'Ovo polje je obavezno')
+      .when([], {is: () => isNew, then: schema => schema.required(requiredError)}),
+    password: yup.string().when([], {is: () => isNew, then: schema => schema.required(requiredError)}),
   });

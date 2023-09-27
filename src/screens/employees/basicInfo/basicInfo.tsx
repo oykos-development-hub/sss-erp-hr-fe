@@ -184,6 +184,7 @@ export const BasicInfo: React.FC = () => {
         official_personal_document_issuer: cityData.find(
           (opt: DropdownDataString) => opt.id === profileData?.official_personal_document_issuer,
         ),
+        personal_id: profileData?.personal_id ?? '',
         contract: {
           organization_unit_id: profileData?.contract?.organization_unit ?? undefined,
           department_id: profileData?.contract?.department ?? undefined,
@@ -250,7 +251,7 @@ export const BasicInfo: React.FC = () => {
     !contract?.department_id ||
     !(contract?.contract_type_id?.title && contractPositions.indexOf(contract?.contract_type_id?.title) > -1) ||
     is_judge;
-
+  console.log(errors);
   return (
     <FormContainer>
       <FormWrapper>
@@ -301,12 +302,7 @@ export const BasicInfo: React.FC = () => {
               />
             </FormItem>
             <FormItem>
-              <Input
-                {...register('personal_id')}
-                label="ID:"
-                disabled={isDisabled}
-                error={errors.personal_id?.message}
-              />
+              <Input {...register('personal_id')} label="ID:" disabled={isDisabled} />
             </FormItem>
             <FormItem>
               <Input
@@ -383,12 +379,18 @@ export const BasicInfo: React.FC = () => {
                     options={countryOptions}
                     isDisabled={isDisabled}
                     isSearchable
+                    error={errors.citizenship?.message}
                   />
                 )}
               />
             </FormItem>
             <FormItem>
-              <Input {...register('city_of_birth')} label="OPŠTINA ROĐENJA:" disabled={isDisabled} />
+              <Input
+                {...register('city_of_birth')}
+                label="OPŠTINA ROĐENJA:"
+                disabled={isDisabled}
+                error={errors.city_of_birth?.message}
+              />
             </FormItem>
             <FormItem>
               <Controller
@@ -403,7 +405,6 @@ export const BasicInfo: React.FC = () => {
                     value={value as any}
                     options={nationalMinorities}
                     isDisabled={isDisabled}
-                    error={errors.national_minority?.message}
                   />
                 )}
               />
@@ -435,12 +436,7 @@ export const BasicInfo: React.FC = () => {
               />
             </FormItem>
             <FormItem>
-              <Input
-                {...register('birth_last_name')}
-                label="PREZIME PO ROĐENJU:"
-                disabled={isDisabled}
-                error={errors.birth_last_name?.message}
-              />
+              <Input {...register('birth_last_name')} label="PREZIME PO ROĐENJU:" disabled={isDisabled} />
             </FormItem>
             <FormItem>
               <Controller
@@ -514,12 +510,7 @@ export const BasicInfo: React.FC = () => {
               />
             </FormItem>
             <FormItem>
-              <Input
-                {...register('housing_description')}
-                label="OPIS STAMBENOG PITANJA:"
-                disabled={isDisabled}
-                error={errors.housing_description?.message}
-              />
+              <Input {...register('housing_description')} label="OPIS STAMBENOG PITANJA:" disabled={isDisabled} />
             </FormItem>
           </FormColumn>
         </FormRow>
@@ -747,19 +738,20 @@ export const BasicInfo: React.FC = () => {
             </FormColumn>
             <FormColumn>
               <FormItem>
-                <Input {...register('secondary_email')} label="PRIVATNI E-MAIL:" disabled={isDisabled} />
+                <Input
+                  {...register('secondary_email')}
+                  label="PRIVATNI E-MAIL:"
+                  disabled={isDisabled}
+                  error={errors.secondary_email?.message}
+                />
               </FormItem>
               <FormItem>
                 <Controller
                   name="pin"
                   control={control}
-                  render={({field: {value, name}}) => (
+                  render={({field: {value, name, onChange}}) => (
                     <Input
-                      onChange={e => {
-                        if (e.target.value.match(/^(0|[1-9]\d*)(\.\d+)?$/)) {
-                          setValue('pin', e.target.value);
-                        }
-                      }}
+                      onChange={onChange}
                       value={value}
                       name={name}
                       maxLength={4}
