@@ -27,6 +27,10 @@ const tableHeads: TableHead[] = [
     renderContents: (value: string) => <Typography content={parseDate(value)}></Typography>,
   },
   {
+    title: 'Broj bodova',
+    accessor: 'score',
+  },
+  {
     title: 'Datoteka',
     accessor: 'file_id',
     sortable: true,
@@ -49,6 +53,11 @@ export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert, navigati
   const [selectedItemId, setSelectedItemId] = useState(0);
 
   const {mutate: deleteEducation} = useEducationDelete();
+
+  const tableData = employeeEducationData?.map((item: UserProfileEducation) => ({
+    ...item,
+    score: item?.score,
+  }));
 
   const selectedItem = useMemo(
     () => employeeEducationData?.find((item: UserProfileEducation) => item.id === selectedItemId),
@@ -107,7 +116,7 @@ export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert, navigati
     <div>
       <TableContainer
         tableHeads={tableHeads}
-        data={employeeEducationData || []}
+        data={tableData || []}
         isLoading={loading}
         tableActions={[
           {name: 'edit', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},

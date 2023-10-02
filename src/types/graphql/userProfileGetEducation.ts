@@ -15,6 +15,7 @@ export type UserProfileEducationItem = {
   created_at?: string;
   updated_at?: string;
   file_id: number;
+  score: string;
 };
 
 export interface UserProfileEducationFormValues {
@@ -39,6 +40,7 @@ export type UserProfileEducation = {
   abbreviation: string;
   title?: string;
   value?: string;
+  score?: string;
   items?: UserProfileEducationItem[];
 };
 

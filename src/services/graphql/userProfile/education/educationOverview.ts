@@ -27,6 +27,7 @@ const educationOverview = async (
             created_at
             updated_at
             file_id
+            score
         }
     }
 }`;
