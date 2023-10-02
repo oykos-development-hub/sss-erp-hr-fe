@@ -54,6 +54,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
       academic_title: values.academic_title?.id || '',
       type_id: values.type?.id || 0,
       user_profile_id: Number(navigation.location.pathname.split('/')[4]),
+      score: '',
     };
 
     try {
