@@ -103,7 +103,13 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
           data={filteredTableData || []}
           style={{marginBottom: 22}}
           isLoading={loading}
-          onRowClick={row => context.navigation.navigate(`/hr/revision-recommendations/${row.id}/revision`)}
+          onRowClick={row => {
+            context.navigation.navigate(`/hr/revision-recommendations/${row.id}/revision`);
+            context.breadcrumbs.add({
+              name: `Revizije za ${row.name}`,
+              to: `/hr/revision-recommendations/${row.id}/revision`,
+            });
+          }}
           tableActions={[
             {
               name: 'edit',

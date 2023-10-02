@@ -54,7 +54,7 @@ const RevisionTips: React.FC<RevisionTipsListProps> = ({context}) => {
   return (
     <ScreenWrapper>
       <RevisionListContainer>
-        <MainTitle variant="bodyMedium" content="GODIŠNJI PLAN REVIZIJA" />
+        <MainTitle variant="bodyMedium" content="PREPORUKE" />
         <Divider color={Theme?.palette?.gray200} height="1px" />
         <TableHeader>
           <Button content="Dodaj preporuku" variant="secondary" onClick={() => toogleRevisionTipsModal(0)} />

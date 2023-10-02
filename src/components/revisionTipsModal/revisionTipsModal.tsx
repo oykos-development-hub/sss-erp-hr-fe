@@ -1,7 +1,7 @@
 import {Datepicker, Dropdown, Input} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {revisionDeadlineOptions} from '../../constants';
+import {revisionDeadlineOptions, revisionStatusOptions} from '../../constants';
 import useRevisionTipsDetails from '../../services/graphql/revisionTips/useRevisionTipsDetails';
 import useRevisionTipsInsert from '../../services/graphql/revisionTips/useRevisionTipsInsert';
 import useRevisionTipsOverview from '../../services/graphql/revisionTips/useRevisionTipsOverview';
@@ -80,10 +80,11 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
       date_of_accept: parseDateForBackend(values?.date_of_accept) ?? undefined,
       due_date: values?.due_date.id ?? undefined,
       date_of_reject: parseDateForBackend(values?.date_of_reject) ?? undefined,
-      date_of_execution: parseDateForBackend(secondDateOfImplementation) ?? undefined,
+      date_of_execution: parseDateForBackend(dateOfImplementation) ?? undefined,
+      new_date_of_execution: parseDateForBackend(secondDateOfImplementation) ?? undefined,
       recommendation: values?.recommendation || '',
       revision_id: revisionId,
-      status: values.status || '',
+      status: values.status?.id || '',
       documents: values.documents || '',
       reasons_for_non_executing: values.reasons_for_non_executing || '',
       user_profile_id: values?.user_profile_id?.id || null,
@@ -119,9 +120,12 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
         ),
         date_of_reject: revisionTipsDetails.item.date_of_reject,
         date_of_execution: revisionTipsDetails.item.date_of_execution,
+        new_date_of_execution: revisionTipsDetails.item.new_date_of_execution,
         recommendation: revisionTipsDetails.item.recommendation,
         revision_id: revisionTipsDetails.item.revision_id,
-        status: revisionTipsDetails.item.status,
+        status: revisionStatusOptions.find(
+          (revisionStatusOptions: any) => revisionStatusOptions.id === revisionTipsDetails.item.status,
+        ),
         documents: revisionTipsDetails.item.documents,
         reasons_for_non_executing: revisionTipsDetails.item.reasons_for_non_executing,
         new_due_date: revisionDeadlineOptions.find(
@@ -227,7 +231,7 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
             </Row>
             <FormGroupFullWidth>
               <Input
-                {...register('dateOfImplementation')}
+                {...register('date_of_execution')}
                 label="DATUM SPROVOĐENJA PREPORUKE:"
                 value={dateOfImplementation && parseDate(dateOfImplementation)}
                 disabled
@@ -249,7 +253,19 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
                 <ModalSectionTitle content="SPROVOĐENJE REVIZIJE:" variant="bodyMedium" />
                 <Row>
                   <FormGroup>
-                    <Input {...register('status')} label="STATUS SPROVOĐENJA:" placeholder="Unesite status" />
+                    <Controller
+                      control={control}
+                      name="status"
+                      render={({field: {name, value, onChange}}) => (
+                        <Dropdown
+                          name={name}
+                          value={value as any}
+                          onChange={onChange}
+                          options={revisionStatusOptions}
+                          label="STATUS SPROVOĐENJA:"
+                        />
+                      )}
+                    />
                   </FormGroup>
                   <FormGroup>
                     <Input {...register('documents')} label="REF. DOKUMENTA:" />
@@ -292,7 +308,7 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
                   <Input {...register('reasons_for_non_executing')} label="RAZLOZI NESPROVOĐENJA:" />
                   <FormGroup>
                     <Input
-                      {...register('date_of_execution')}
+                      {...register('new_date_of_execution')}
                       label="NOVI DATUM:"
                       value={secondDateOfImplementation && parseDate(secondDateOfImplementation)}
                       disabled

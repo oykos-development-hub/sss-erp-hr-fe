@@ -4,13 +4,13 @@ import {SettingsDropdown, SettingsDropdownOverviewParams} from '../../../types/g
 import {DropdownDataNumber} from '../../../types/dropdownData';
 
 const useSettingsDropdownOverview = ({entity, page, size, id}: SettingsDropdownOverviewParams) => {
-  const [data, setData] = useState<SettingsDropdown[]>();
+  const [data, setData] = useState<SettingsDropdown[]>([]);
   const [options, setOptions] = useState<DropdownDataNumber[]>([]);
   const [loading, setLoading] = useState(true);
 
   const getSettingsDropdownOverview = async () => {
     const response = await GraphQL.settingsDropdownOverview({entity: entity, page: page, size: size, id: id});
-
+    console.log(response, 'response');
     //Ask filip if we need array of items here
     const data = response?.items || null;
 

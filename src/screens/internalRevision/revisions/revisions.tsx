@@ -11,6 +11,7 @@ import {FilterContainer, Filters, MainTitle, RevisionListContainer, TableHeader}
 import {RevisionTableHeads} from './constants';
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
+import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 
 interface RevisionProps {
   context: MicroserviceProps;
@@ -23,16 +24,18 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
   const planIdNumber = parseInt(planId);
   const [unitID, setUnitID] = useState(0);
   const [revisorId, setRevisorId] = useState<number>(0);
+  const [revisonTypeId, setRevisonTypeId] = useState<number>(0);
 
   const [editId, setEditId] = useState(0);
   const {data, loading, refetch} = useRevisionOverview({
-    page: 1000,
+    page: 1,
     size: 1000,
     plan_id: planIdNumber,
     internal_revision_subject_id: unitID,
-    revision_type_id: 0,
+    revision_type_id: revisonTypeId,
     revisor_id: revisorId,
   });
+
   const {mutate} = useRevisionDelete();
   const {organizationUnits} = useOrganizationUnits();
 
@@ -64,6 +67,8 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
     toogleRevisionModal(id);
   };
 
+  const {data: revisionTypes} = useSettingsDropdownOverview({entity: 'revision_types'});
+
   const organizationUnitsList: DropdownDataNumber[] = useMemo(() => {
     return organizationUnits
       ? [
@@ -78,7 +83,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
   }, [organizationUnits]);
 
   const revisorsList: DropdownDataNumber[] = useMemo(() => {
-    return data
+    return data.revisors
       ? [
           {id: 0, title: 'Sve '},
           ...data.revisors.map((unit: DropdownDataNumber) => {
@@ -88,10 +93,24 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
       : [];
   }, [data]);
 
+  const revisonTypeListOptions: DropdownDataNumber[] = useMemo(() => {
+    return revisionTypes
+      ? [
+          {id: 0, title: 'Sve '},
+          ...revisionTypes.map((unit: DropdownDataNumber) => {
+            return {id: unit.id, title: unit.title};
+          }),
+        ]
+      : [];
+  }, [data]);
+
+  console.log(revisonTypeListOptions, 'revisonTypeListOptions');
+
+  console.log(revisonTypeId, 'v');
   return (
     <ScreenWrapper>
       <RevisionListContainer>
-        <MainTitle variant="bodyMedium" content="GODIŠNJI PLAN REVIZIJA" />
+        <MainTitle variant="bodyMedium" content="REVIZIJE" />
         <Divider color={Theme?.palette?.gray200} height="1px" />
         <TableHeader>
           <Filters>
@@ -115,6 +134,16 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
                 options={revisorsList as any}
               />
             </FilterContainer>
+            <FilterContainer>
+              <Dropdown
+                label="VRSTA REVIZIJE"
+                value={revisonTypeListOptions?.find((option: any) => option?.id === revisonTypeId) as any}
+                onChange={value => {
+                  setRevisonTypeId(value.id as number);
+                }}
+                options={revisonTypeListOptions as any}
+              />
+            </FilterContainer>
           </Filters>
 
           <Button content="Dodaj reviziju" variant="secondary" onClick={() => toogleRevisionModal(0)} />
@@ -124,12 +153,16 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
           data={data?.items || []}
           style={{marginBottom: 22}}
           isLoading={loading}
-          onRowClick={row =>
+          onRowClick={row => {
             context.navigation.navigate(
               `/hr/revision-recommendations/${row?.plan_id}/revision/${row?.id}/recommendations`,
               {state: {dateOfRevision: row.date_of_revision}},
-            )
-          }
+            );
+            context.breadcrumbs.add({
+              name: `Preporuke za ${row.title}`,
+              to: `/hr/revision-recommendations/${row?.plan_id}/revision/${row?.id}/recommendations`,
+            });
+          }}
           tableActions={[
             {
               name: 'edit',

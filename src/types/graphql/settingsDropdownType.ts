@@ -22,8 +22,8 @@ export type SettingsDropdown = {
   description?: string;
   entity?: string;
   icon?: string;
-  id?: number;
-  title?: string;
+  id: number;
+  title: string;
   value?: string;
 };
 

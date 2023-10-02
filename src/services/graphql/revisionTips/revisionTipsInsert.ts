@@ -29,6 +29,7 @@ const revisionTipsInsert = async (
             updated_at
             responsible_person
             new_due_date 
+            new_date_of_execution
         }
     }
 }`;
