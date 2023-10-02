@@ -30,6 +30,11 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({jobTend
 
   const {mutate: deleteJobTenderApplication} = useJobTendersDeleteApplication();
 
+  const tableData = applications?.items.map((item: JobTenderApplication) => ({
+    ...item,
+    full_name: `${item.first_name} ${item.last_name}`,
+  }));
+
   const onPageChange = (page: number) => {
     setPage(page + 1);
   };
@@ -81,7 +86,7 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({jobTend
       </TableHeader>
       <Table
         tableHeads={applicationsTableHeads}
-        data={applications.items}
+        data={tableData || []}
         style={{marginBottom: 22}}
         isLoading={loading}
         onRowClick={() =>
