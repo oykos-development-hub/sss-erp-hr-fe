@@ -13,7 +13,7 @@ export const tableHeadsAbsence: TableHead[] = [
     width: '15%',
   },
   {
-    title: 'Vrsta prilagodbe',
+    title: 'Vrsta zahtjeva',
     accessor: 'absent_type',
     type: 'custom',
     renderContents: (item: any) => {
@@ -51,19 +51,17 @@ export const tableHeadsVacation: TableHead[] = [
     title: 'Godina',
     accessor: 'date_of_start',
     type: 'custom',
-    renderContents: (_, item: any) => {
-      return <Typography variant="bodyMedium" content={item.year ? item.year : parseDate(item.date_of_start)} />;
-    },
+    renderContents: (_, item: any) => (
+      <Typography variant="bodyMedium" content={item.year ? item.year : parseDate(item.date_of_start)} />
+    ),
     width: '15%',
   },
 
   {
-    title: 'Vrsta prilagodbe',
+    title: 'Vrsta zahtjeva',
     accessor: 'absent_type',
     type: 'custom',
-    renderContents: (item: any, row) => {
-      return <Typography variant="bodyMedium" content={item.title} />;
-    },
+    renderContents: (item: any, row) => <Typography variant="bodyMedium" content={item.title} />,
     width: '30%',
   },
 
@@ -102,7 +100,7 @@ export const tableHeadsYearVacation: TableHead[] = [
     width: '15%',
   },
   {
-    title: 'Vrsta prilagodbe',
+    title: 'Vrsta zahtjeva',
     accessor: 'resolution_type',
     type: 'custom',
     renderContents: item => {

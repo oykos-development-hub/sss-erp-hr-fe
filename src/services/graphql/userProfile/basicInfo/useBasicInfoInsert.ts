@@ -16,6 +16,8 @@ const useBasicInfoInsert = () => {
 
     if (response.status === 'success') {
       onSuccess && onSuccess(response?.item?.id || 0);
+    } else if (response.message === 'user_email_exist') {
+      onError && onError(response);
     } else {
       onError && onError(response);
     }

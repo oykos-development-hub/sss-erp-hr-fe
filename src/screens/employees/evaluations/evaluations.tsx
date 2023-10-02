@@ -11,7 +11,6 @@ import useSettingsDropdownOverview from '../../../services/graphql/settingsDropd
 import {parseDate} from '../../../utils/dateUtils';
 
 const tableHeads: TableHead[] = [
-  {title: 'Br.', accessor: 'id', type: 'text'},
   {
     title: 'Godina',
     accessor: 'date_of_evaluation',

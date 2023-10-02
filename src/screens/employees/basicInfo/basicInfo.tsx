@@ -56,6 +56,7 @@ export const BasicInfo: React.FC = () => {
     formState: {errors, isValid, dirtyFields},
     reset,
     control,
+    setError,
     watch,
     setValue,
     resetField,
@@ -109,12 +110,12 @@ export const BasicInfo: React.FC = () => {
     console.log('File(s) uploaded:', acceptedFiles);
   };
 
-  const handleSave = (values: UserProfileBasicInfoFormValues, close: boolean) => {
+  const handleSave = async (values: UserProfileBasicInfoFormValues, close: boolean) => {
     if (isValid) {
       if (!profileData?.id) {
         if (isCreating) return;
 
-        createBasicInfo(
+        await createBasicInfo(
           formatData(values),
           userId => {
             refetch();
@@ -128,7 +129,13 @@ export const BasicInfo: React.FC = () => {
 
             context.navigation.navigate(`/hr/employees/details/${userId}/basic-info`, {state: {scroll: true}});
           },
-          (res: any) => {
+
+          res => {
+            setError('email', {
+              type: 'custom',
+              message: res.message,
+            });
+
             context.alert.error('Greška. Promjene nisu sačuvane.');
           },
         );
@@ -715,7 +722,12 @@ export const BasicInfo: React.FC = () => {
           <FormRow style={{padding: 0}}>
             <FormColumn>
               <FormItem>
-                <Input {...register('email')} label="E-MAIL:" disabled={isDisabled} error={errors.email?.message} />
+                <Input
+                  {...register('email')}
+                  label="E-MAIL:"
+                  disabled={isDisabled}
+                  error={errors.email && errors.email?.message}
+                />
               </FormItem>
               <FormItem>
                 <Input

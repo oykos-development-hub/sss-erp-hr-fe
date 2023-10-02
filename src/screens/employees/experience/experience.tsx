@@ -96,9 +96,9 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
 
   const updatedTableHeads = useMemo(() => {
     return [
-      ...tableHeads.slice(0, 2),
+      ...tableHeads.slice(0, 1),
       {
-        ...tableHeads[2],
+        ...tableHeads[1],
         renderContents: (organization_unit: string, row: UserProfileExperience) => {
           return (
             <Typography

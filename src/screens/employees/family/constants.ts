@@ -2,7 +2,6 @@ import {TableHead} from 'client-library';
 import {parseDate} from '../../../utils/dateUtils';
 
 export const tableHeads: TableHead[] = [
-  {title: 'Br.', accessor: 'id', type: 'text'},
   {
     title: 'Ime',
     accessor: 'first_name',
