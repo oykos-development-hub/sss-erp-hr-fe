@@ -5,17 +5,11 @@ export interface ExperiencePageProps {
   context: MicroserviceProps;
 }
 
-export type UnitType = {
-  id: number;
-  title: string;
-};
-
 export interface ExperienceModalProps {
   alert: any;
   refetchList: () => void;
   selectedItem?: any;
   open: boolean;
   onClose: (refetch?: any, message?: any) => void;
-  units: UnitType[];
   userProfileId?: number;
 }

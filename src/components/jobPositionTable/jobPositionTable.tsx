@@ -38,11 +38,11 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   const {mutate: insertEmployee} = useOrganizationUnitEmployeeInsert();
   const {mutate: deleteEmployee} = useEmployeeInOrganizationUnitDelete();
 
-  const jobPositionsForDropdown = jobPositionData
+  const jobPositionOptions = jobPositionData
     ?.filter((item: any) => !item.is_judge)
     .map((item: any) => ({id: item.id, title: item.title}));
 
-  const employeesForDropdown = allEmployees?.map((item: any) => ({
+  const employeeOptions = allEmployees?.map((item: any) => ({
     id: item.id,
     title: `${item.first_name} ${item.last_name}`,
   }));
@@ -51,6 +51,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   const [tableDataState, setTableDataState] = useState<any[]>([]);
   const [editTableRow, setEditTableRow] = useState<null | number>(null);
   const [deleteItemId, setDeleteItemId] = useState<null | number>(null);
+
   const selectRow = (id: number) => {
     setSelectedEmployee(undefined);
     setEditTableRow(id);
@@ -162,7 +163,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
 
   const getEmployeesForDropdown = (item: any): DropdownDataNumber[] => {
     const itemIds = item.map((elem: DropdownDataNumber) => elem?.id);
-    return employeesForDropdown.filter(emp => !itemIds.includes(emp.id));
+    return employeeOptions.filter(emp => !itemIds.includes(emp.id));
   };
 
   const handleSave = () => {
@@ -204,7 +205,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
               value={item}
               name="job_position"
               onChange={handleChange}
-              options={jobPositionsForDropdown}
+              options={jobPositionOptions}
               // @TODO remove ts-ignore
               //eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore

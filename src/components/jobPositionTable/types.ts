@@ -1,16 +1,16 @@
-import {JobPosition, SystematizationJobPositions} from '../../types/graphql/jobPositions';
-import {ActiveEmployees} from '../../types/graphql/systematizationsGetDetailsTypes';
+import {JobPosition} from '../../types/graphql/jobPositions';
+import {ActiveEmployee, SectorJobPosition} from '../../types/graphql/systematizationsTypes';
 import {UserProfile} from '../../types/graphql/userProfiles';
 
 export interface JobPositionTableProps {
-  data: SystematizationJobPositions[];
+  data: SectorJobPosition[];
   sectorID: number;
   systematizationID: number;
   refetch?: (availableSlotsChanged?: boolean) => void;
   alert: any;
   jobPositionData: JobPosition[];
   allEmployees: UserProfile[];
-  activeEmployees: ActiveEmployees[];
+  activeEmployees: ActiveEmployee[];
   cancel?: () => void;
   isInactive: boolean;
 }

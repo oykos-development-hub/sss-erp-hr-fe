@@ -121,7 +121,7 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navi
 
   const title = (
     <TableTitle>
-      <TableTitleTypography variant="bodySmall" content="Funkcionalna znanja" />
+      <TableTitleTypography variant="bodyLarge" content="Funkcionalna znanja" />
       <AddIcon onClick={handleAdd}>
         <PlusIcon width={'18px'} />
       </AddIcon>
@@ -142,7 +142,8 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navi
             icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
           },
         ]}
-        titleElement={title}></TableContainer>
+        titleElement={title}
+      />
 
       <FunctionalAcknowledgmentModal
         open={showModal}

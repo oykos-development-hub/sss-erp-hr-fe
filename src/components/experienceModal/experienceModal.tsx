@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import {yesOrNoOptionsString} from '../../constants';
 import {ExperienceModalProps} from '../../screens/employees/experience/types';
 import {formatData} from '../../screens/employees/experience/utils';
-import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
+import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useExperienceInsert from '../../services/graphql/userProfile/experience/useExperienceInsert';
 import {DropdownDataString} from '../../types/dropdownData';
 import {calculateExperience, parseToDate} from '../../utils/dateUtils';
@@ -52,7 +52,6 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
   selectedItem,
   open,
   onClose,
-  units,
   userProfileId,
   alert,
 }) => {
@@ -67,17 +66,16 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
   } = useForm({resolver: yupResolver(experienceSchema), defaultValues: {user_profile_id: userProfileId}});
 
   const {mutate, loading: isSaving} = useExperienceInsert();
-  const {organizationUnitsList} = useOrganizationUnits();
+  const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
   const {relevant, date_of_start, date_of_end, organization_unit, organization_unit_id} = watch();
-  console.log(selectedItem);
 
   useEffect(() => {
     if (selectedItem) {
       reset({
         ...selectedItem,
         relevant: {id: selectedItem?.relevant ? 'Da' : 'Ne', title: selectedItem?.relevant ? 'Da' : 'Ne'},
-        organization_unit_id: organizationUnitsList.find(orgUnit => orgUnit.id === selectedItem?.organization_unit_id),
+        organization_unit_id: organizationUnits.find(orgUnit => orgUnit.id === selectedItem?.organization_unit_id),
         date_of_start: parseToDate(selectedItem?.date_of_start),
         date_of_end: parseToDate(selectedItem?.date_of_end),
         user_profile_id: userProfileId,
@@ -179,7 +177,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
                     value={value as any}
                     name={name}
                     label="JEDINICA:"
-                    options={units}
+                    options={organizationUnits}
                     isDisabled={!isOrgUnitDisabled}
                     error={errors.organization_unit_id?.message}
                   />

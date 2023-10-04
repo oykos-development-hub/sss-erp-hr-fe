@@ -98,7 +98,7 @@ export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({alert, naviga
 
   const title = (
     <TableTitle>
-      <TableTitleTypography variant="bodySmall" content="Poznavanje jezika" />
+      <TableTitleTypography variant="bodyLarge" content="Poznavanje jezika" />
       <AddIcon onClick={handleAdd}>
         <PlusIcon width={'18px'} />
       </AddIcon>

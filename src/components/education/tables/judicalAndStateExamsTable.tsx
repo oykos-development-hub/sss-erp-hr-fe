@@ -105,7 +105,7 @@ export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert, navigati
 
   const title = (
     <TableTitle>
-      <TableTitleTypography variant="bodySmall" content="Pravosudni i državni ispit" />
+      <TableTitleTypography variant="bodyLarge" content="Pravosudni i državni ispit" />
       <AddIcon onClick={handleAdd}>
         <PlusIcon width={'18px'} />
       </AddIcon>

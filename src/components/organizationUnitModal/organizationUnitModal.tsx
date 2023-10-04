@@ -3,8 +3,8 @@ import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {FormGroup, ModalContentWrapper} from './styles';
 import {OrganizationUnitModalProps} from './types';
-import {OrganizationUnit} from '../../types/graphql/organizationUnitsTypes';
-import useOrganizationUnitInsert from '../../services/graphql/organizationUnits/useOrganizationUnitInsert';
+import {OrganizationUnit} from '../../types/graphql/organizationUnits';
+import useOrganizationUnitInsert from '../../services/graphql/organizationUnits/useInsertOrganizatonUnit';
 
 const initialValues: OrganizationUnit = {
   id: 0,
@@ -73,7 +73,7 @@ export const OrganizationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
         () => {
           alert.success('Uspješno sačuvano.');
           refetch();
-          onClose(true);
+          onClose();
           reset(initialValues);
         },
         () => {
@@ -89,7 +89,7 @@ export const OrganizationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
     <Modal
       open={open}
       onClose={() => {
-        onClose(false);
+        onClose();
         reset(item);
       }}
       leftButtonText="Otkaži"

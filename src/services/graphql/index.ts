@@ -21,19 +21,16 @@ import judgeResolutionDelete from './judges/judgeResolutionDelete';
 import judgeResolutionInsert from './judges/judgeResolutionInsert';
 import judgeResolutionOverview from './judges/judgeResolutionOverview';
 import organizationUintCalculateEmployeeStats from './judges/organizationUintCalculateEmployeeStats';
-import organizationUnitDelete from './organizationUnits/organizationUnitDelete';
-import organizationUnitInsert from './organizationUnits/organizationUnitInsert';
-import organizationUnits from './organizationUnits/organizationUnitOverview';
 import employeeInOrganizationUnitDelete from './organizationUnitsEmployees/employeeInOrganizationUnitDelete';
 import employeeInOrganizationUnitInsert from './organizationUnitsEmployees/employeeInOrganizationUnitInsert';
 import jobPositionInOrganizationUnitDelete from './organizationUnitsJobPositions/jobPositionInOrganizationUnitDelete';
 import jobPositionInOrganizationUnitInsert from './organizationUnitsJobPositions/jobPositionInOrganizationUnitInsert';
 import settingsDropdownOverview from './settingsDropdown/settingsDropdownOverview';
 import getSuppliersOverview from './suppliers/getSuppliers';
-import systematizationDetails from './systematization/systematizationDetails';
-import systematizationOverview from './systematization/systematizationOverview';
-import systematizationDelete from './systematization/systematizationsDelete';
-import systematizationInsert from './systematization/systematizationsInsert';
+import systematizationDelete from './systematization/deleteSystematization';
+import systematizationDetails from './systematization/getSystematizationDetails';
+import getSystematizations from './systematization/getSystematizations';
+import insertSystematization from './systematization/insertSystematization';
 import absentDelete from './userProfile/absents/deleteAbsence';
 import absentOverview from './userProfile/absents/getAbsence';
 import absentTypesOverview from './userProfile/absents/getAbsenceTypes';
@@ -91,7 +88,6 @@ export const GraphQL = {
       .then(response => response.json())
       .catch(error => console.error(error));
   },
-  organizationUnits: organizationUnits,
   basicInfoUpdate: basicInfoUpdate,
   basicInfoGet: basicInfoGet,
   basicInfoInsert: basicInfoInsert,
@@ -117,10 +113,10 @@ export const GraphQL = {
   getForeignerPermits: getForeignerPermits,
   deleteForeignerPermit: deleteForeignerPermit,
   insertForeignerPermit: insertForeignerPermit,
-  systematizationOverview: systematizationOverview,
-  systematizationInsert: systematizationInsert,
-  systematizationDetails: systematizationDetails,
-  systematizationDelete: systematizationDelete,
+  getSystematizations: getSystematizations,
+  insertSystematization: insertSystematization,
+  getSystematizationDetails: systematizationDetails,
+  deleteSystematization: systematizationDelete,
   salaryParamsInsert: salaryParamsInsert,
   salaryParamsOverview: salaryParamsOverview,
   jobPositionsGet: jobPositionsGet,
@@ -131,8 +127,10 @@ export const GraphQL = {
   evaluationOverview: evaluationOverview,
   evaluationInsert: evaluationInsert,
   evaluationDelete: evaluationDelete,
-  organizationUnitInsert: organizationUnitInsert,
-  organizationUnitDelete: organizationUnitDelete,
+  revisionOverview: revisionOverview,
+  revisionDetails: revisionDetails,
+  revisionDelete: revisionDelete,
+  revisionInsert: revisionInsert,
   jobPositionInOrganizationUnitInsert: jobPositionInOrganizationUnitInsert,
   jobPositionInOrganizationUnitDelete: jobPositionInOrganizationUnitDelete,
   jobPositionsAvailableOrganizationUnit: jobPositionsAvailableOrganizationUnit,
@@ -157,10 +155,6 @@ export const GraphQL = {
   revisionPlanInsert: revisionPlanInsert,
   revisionPlanDelete: revisionPlanDelete,
   revisionPlanDetails: revisionPlanDetails,
-  revisionOverview: revisionOverview,
-  revisionInsert: revisionInsert,
-  revisionDelete: revisionDelete,
-  revisionDetails: revisionDetails,
   revisionTipsOverview: revisionTipsOverview,
   revisionTipsDetails: revisionTipsDetails,
   revisionTipsInsert: revisionTipsInsert,

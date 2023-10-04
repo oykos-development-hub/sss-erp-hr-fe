@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 
-export const Wrapper = styled.form`
+export const FiltersContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 50%;
+
+  & > * {
+    min-width: 200px;
+  }
 `;

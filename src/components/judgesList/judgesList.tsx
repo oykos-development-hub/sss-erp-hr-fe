@@ -49,7 +49,7 @@ const JudgesList: React.FC<JudgesListProps> = ({
         <Filters>
           <FilterDropdown
             label="ORGANIZACIONA JEDINICA:"
-            options={organizationUnitsList as any}
+            options={organizationUnitsList}
             value={filters.organization_unit as any}
             name="organization_unit_id"
             onChange={value => onFilterChange(value, 'organization_unit')}

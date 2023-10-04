@@ -15,3 +15,9 @@ export type DeleteResponse = {
   status: string;
   message: string;
 };
+
+export type DetailsResponse<T> = {
+  status: string;
+  message: string;
+  item: T;
+};

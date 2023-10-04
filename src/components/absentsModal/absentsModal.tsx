@@ -1,10 +1,10 @@
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {AbsenceTypeModalProps} from '../../screens/employees/absents/types';
-import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
+import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useInsertAbsence from '../../services/graphql/userProfile/absents/useInsertAbsence';
-import {AbsenceType, AbsenceParams} from '../../types/graphql/absents';
+import {AbsenceParams, AbsenceType} from '../../types/graphql/absents';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {dropdownOptions} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
@@ -48,15 +48,7 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
     }
   };
 
-  const {organizationUnits} = useOrganizationUnits();
-
-  const organizationUnitsList = useMemo(() => {
-    return organizationUnits
-      .filter(i => !i.parent_id)
-      .map(unit => {
-        return {id: unit.id, title: unit.title};
-      });
-  }, [organizationUnits]);
+  const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
   const {mutate, loading: isSaving} = useInsertAbsence();
 
@@ -183,7 +175,7 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
                   <Dropdown
                     label="DRŽAVNI ORGAN:"
                     name={name}
-                    options={organizationUnitsList as any}
+                    options={organizationUnits}
                     value={value as any}
                     onChange={onChange}
                     error={errors.target_organization_unit?.message}

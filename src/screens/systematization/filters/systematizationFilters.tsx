@@ -1,66 +1,46 @@
-import React, {useEffect, useMemo} from 'react';
-import {Controller, useForm} from 'react-hook-form';
 import {Dropdown, Input, SearchIcon, Theme} from 'client-library';
-import {Wrapper} from './style';
+import React from 'react';
+import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import {yearsForDropdownFilter} from '../../../utils/constants';
-import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
 import {SystematizationFiltersProps} from '../types';
+import {FiltersContainer} from './style';
 
-const initialValues = {
-  systematization_number: null,
-  organization_unit_id: null,
-  year: null,
-};
+export const SystematizationFilters: React.FC<SystematizationFiltersProps> = ({setFilters, filters}: any) => {
+  const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
+  const yearOptions = yearsForDropdownFilter();
 
-export const SystematizationFilters: React.FC<SystematizationFiltersProps> = ({setFilters, data, context}: any) => {
-  const {register, control, watch} = useForm({defaultValues: data || initialValues});
-  const years = yearsForDropdownFilter();
-
-  const {organizationUnitsList} = useOrganizationUnits(context, true);
-  const unit = watch('organization_unit_id');
-  const search = watch('systematization_number');
-  const year = watch('year');
-
-  useEffect(() => {
-    if (unit !== 0) {
-      setFilters({organization_unit_id: unit?.id, search: null, year: null});
+  const onFilterChange = (name: string, value: any) => {
+    if (name === 'search') {
+      console.log(value);
+      setFilters('search', value.target.value);
+    } else {
+      setFilters(name, value.id);
     }
-    setFilters({search: search, year: year?.id});
-  }, [unit, year, search]);
+  };
 
   return (
-    <Wrapper>
+    <FiltersContainer>
       <Input
-        {...register('systematization_number')}
+        value={filters.search}
+        name="search"
+        onChange={value => onFilterChange('search', value)}
         label="BROJ SISTEMATIZACIJE:"
-        rightContent={<SearchIcon style={{marginLeft: 10, marginRight: 10}} stroke={Theme.palette.gray300} />}
+        rightContent={<SearchIcon style={{marginInline: 10}} stroke={Theme.palette.gray300} />}
       />
-      <Controller
+      <Dropdown
+        value={yearOptions.find(year => year.id === filters.year)}
         name="year"
-        control={control}
-        render={({field: {onChange, name, value}}) => {
-          return (
-            <Dropdown onChange={onChange} value={value as any} name={name} label="GODINA:" options={years as any} />
-          );
-        }}
+        onChange={value => onFilterChange('year', value)}
+        label="GODINA:"
+        options={yearOptions}
       />
-
-      <Controller
+      <Dropdown
+        value={organizationUnits.find(orgUnit => orgUnit.id === filters.organization_unit_id)}
         name="organization_unit_id"
-        control={control}
-        render={({field: {onChange, name, value}}) => {
-          return (
-            <Dropdown
-              onChange={onChange}
-              value={value as any}
-              name={name}
-              label="ORG. JEDINICA:"
-              options={organizationUnitsList as any}
-              placeholder={value}
-            />
-          );
-        }}
+        onChange={value => onFilterChange('organization_unit_id', value)}
+        label="ORG. JEDINICA:"
+        options={organizationUnits}
       />
-    </Wrapper>
+    </FiltersContainer>
   );
 };

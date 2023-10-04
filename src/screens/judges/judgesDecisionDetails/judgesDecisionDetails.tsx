@@ -6,12 +6,12 @@ import {OverviewBox} from '../../../components/employeesList/styles';
 import useJudgeResolutionsInsert from '../../../services/graphql/judges/useJudgeResolutionInsert';
 import useJudgeResolutionsOverview from '../../../services/graphql/judges/useJudgeResolutionOverview';
 import useOrganizationUintCalculateEmployeeStats from '../../../services/graphql/judges/useOrganizationUintCalculateEmployeeStats';
-import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
+import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import {MainTitle} from '../../../shared/mainTitle';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
-import {DropdownDataString} from '../../../types/dropdownData';
+import {DropdownDataNumber, DropdownDataString} from '../../../types/dropdownData';
 import {JudgeResolutionItem, JudgeResolutionOverview} from '../../../types/graphql/judges';
-import {OrganizationUnit} from '../../../types/graphql/organizationUnitsTypes';
+import {OrganizationUnit} from '../../../types/graphql/organizationUnits';
 import {ScreenProps} from '../../../types/screen-props';
 import {judgeResolutionTableHeads} from '../judgeNorms/constants';
 import {Controls, CustomTable, Filters, FormFooter} from './styles';
@@ -41,7 +41,7 @@ const initialValues = {
 export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({context, isNew}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(isNew ? false : true);
   const [judgeInputs, setJudgeInputs] = useState<{[key: string]: string}>({});
-  const {organizationUnits} = useOrganizationUnits();
+  const {organizationUnits} = useGetOrganizationUnits();
   const {organizationUintCalculateEmployee} = useOrganizationUintCalculateEmployeeStats();
 
   const id = context.navigation.location.pathname.split('/')[4];
@@ -52,19 +52,17 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
 
   const item = data?.find((i: JudgeResolutionOverview) => i.id === Number(id));
 
-  // constructing initial values for the form, serial number, year and dynamic number of fields for judge number based on org units
-  const getInitialValues = useMemo(() => {
+  const getInitialValues = () => {
     const values: any = {};
 
-    organizationUnits
-      ?.filter(orgItem => !!orgItem.id && !orgItem.parent_id)
-      .forEach((unit: OrganizationUnit) => {
-        values[unit.id] = item
-          ? item?.items?.find((i: JudgeResolutionItem) => {
-              return i.organization_unit.id === unit.id;
-            })?.available_slots_judges
-          : '';
-      });
+    // Creating inputs for each of the organization units in the table
+    organizationUnits.forEach((unit: OrganizationUnit) => {
+      values[unit.id] = item
+        ? item?.items?.find((i: JudgeResolutionItem) => {
+            return i.organization_unit.id === unit.id;
+          })?.available_slots_judges
+        : '';
+    });
 
     return {
       id: item?.id ?? 0,
@@ -72,7 +70,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       serial_number: item?.serial_number ?? '',
       items: values,
     };
-  }, [organizationUnits, item]);
+  };
 
   const list = useMemo(() => {
     return organizationUnits
@@ -108,7 +106,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
     formState: {errors},
     control,
     reset,
-  } = useForm<DecisionForm>({defaultValues: getInitialValues});
+  } = useForm<DecisionForm>({defaultValues: getInitialValues()});
 
   const judgeNumberTableHead: TableHead = {
     title: 'Odluka o broju sudija',
@@ -161,7 +159,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
 
   useEffect(() => {
     if (getInitialValues) {
-      reset(getInitialValues);
+      reset(getInitialValues());
     }
   }, [getInitialValues]);
 

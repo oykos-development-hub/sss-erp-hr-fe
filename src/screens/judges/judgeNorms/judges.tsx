@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {ScreenProps} from '../../../types/screen-props';
 import useJudgesOverview from '../../../services/graphql/judges/useJudgeOverview';
-import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
+import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {JudgeOverview, Norms} from '../../../types/graphql/judges';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
@@ -27,26 +27,13 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
   const [selectedItemId, setSelectedItemId] = useState(0);
   const [selectedNormItemId, setSelectedNormItemId] = useState(0);
   const [normsList, setNormsList] = useState<Norms[]>([]);
-  const {organizationUnits} = useOrganizationUnits(context);
+  const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
   const [filters, setFilters] = useState<JudgesListFilters>(initialValues);
 
   const {data, total, refetch, loading} = useJudgesOverview({page, size: 10, ...filters});
   const {judgesUnitsList} = useJudgesOverview({page, size: 1000, ...initialValues});
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  const organizationUnitsList = useMemo(() => {
-    return organizationUnits
-      ? [
-          {id: 0, title: 'Sve organizacione jedinice'},
-          ...organizationUnits
-            .filter(i => !i.parent_id)
-            .map(unit => {
-              return {id: unit.id, title: unit.title};
-            }),
-        ]
-      : [];
-  }, [organizationUnits]);
 
   const selectedNormItem = useMemo(() => {
     return normsList?.find((item: Norms) => item.id === selectedNormItemId);
@@ -116,7 +103,7 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
         onPageChange={onPageChange}
         data={data || []}
         usersUnitsList={judgesUnitsList}
-        organizationUnitsList={organizationUnitsList || []}
+        organizationUnitsList={organizationUnits}
         filters={filters}
         onFilterChange={onFilterChange}
         total={total}

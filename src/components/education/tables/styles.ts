@@ -35,7 +35,6 @@ export const AddIcon = styled.div`
 `;
 
 export const TableTitleTypography = styled(Typography)`
-  font-size: 14px;
   color: ${Theme?.palette?.gray600};
   font-weight: 600;
 `;

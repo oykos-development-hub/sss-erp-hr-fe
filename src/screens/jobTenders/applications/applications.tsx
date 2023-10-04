@@ -8,7 +8,7 @@ import SectionBox from '../../../shared/sectionBox';
 import {ApplicationScreenFilters, JobTenderApplication} from '../../../types/graphql/jobTenders';
 import {ScreenProps} from '../../../types/screen-props';
 import {applicationsTableHeads} from '../constants';
-import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
+import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useJobTendersTypesSearch from '../../../services/graphql/jobPositions/useJobTendersTypesSearch';
 import {useDebounce} from '../../../utils/useDebounce';
 import {FilterDropdown, FilterInput, FilterWrapper} from './style';
@@ -25,17 +25,12 @@ const ApplicationsScreen = (props: ScreenProps) => {
   const debouncedSearch = useDebounce(search, 500);
   const {data: applications, loading} = useJobTenderApplications({page, size: 10, ...filters, search: debouncedSearch});
   const {typesUnitsList} = useJobTendersTypesSearch('');
-  const {organizationUnits} = useOrganizationUnits();
+  const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
   const tableData = applications?.items?.map((item: JobTenderApplication) => ({
     ...item,
     full_name: `${item.first_name} ${item.last_name}` || '',
   }));
-
-  const organizationUnitsList = [
-    {id: 0, title: 'Sve organizacione jedinice'},
-    ...organizationUnits.map(unit => ({id: unit.id, title: unit.title})),
-  ];
 
   const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -77,7 +72,7 @@ const ApplicationsScreen = (props: ScreenProps) => {
             name="organization_unit_id"
             onChange={(value: any) => onFilterChange(value, 'organization_unit_id')}
             value={filters.organization_unit_id}
-            options={organizationUnitsList}
+            options={organizationUnits}
             placeholder="Odaberite organizacionu jedinicu"
           />
 

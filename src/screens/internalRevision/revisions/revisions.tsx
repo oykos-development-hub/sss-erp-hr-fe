@@ -2,7 +2,6 @@ import React from 'react';
 import {Button, Divider, Dropdown, EditIconTwo, Table, Theme, TrashIconTwo} from 'client-library';
 import {useMemo, useState} from 'react';
 import {RevisionModal} from '../../../components/revisionModal/revisionModal';
-import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
 import useRevisionDelete from '../../../services/graphql/revision/useRevisionDelete';
 import useRevisionOverview from '../../../services/graphql/revision/useRevisionOverview';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
@@ -12,6 +11,7 @@ import {RevisionTableHeads} from './constants';
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 
 interface RevisionProps {
   context: MicroserviceProps;
@@ -37,7 +37,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
   });
 
   const {mutate} = useRevisionDelete();
-  const {organizationUnits} = useOrganizationUnits();
+  const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
   const toogleRevisionModal = (id: number) => {
     setEditId(id);
@@ -68,19 +68,6 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
   };
 
   const {data: revisionTypes} = useSettingsDropdownOverview({entity: 'revision_types'});
-
-  const organizationUnitsList: DropdownDataNumber[] = useMemo(() => {
-    return organizationUnits
-      ? [
-          {id: 0, title: 'Sve '},
-          ...organizationUnits
-            .filter(i => !i.parent_id)
-            .map(unit => {
-              return {id: unit.id, title: unit.title};
-            }),
-        ]
-      : [];
-  }, [organizationUnits]);
 
   const revisorsList: DropdownDataNumber[] = useMemo(() => {
     return data.revisors
@@ -117,11 +104,11 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
             <FilterContainer>
               <Dropdown
                 label="SUBJEKT REVIZIJE(interna)"
-                value={organizationUnitsList?.find((option: any) => option?.id == unitID) as any}
+                value={organizationUnits?.find((option: any) => option?.id == unitID) as any}
                 onChange={value => {
                   setUnitID(value.id as number);
                 }}
-                options={organizationUnitsList as any}
+                options={organizationUnits as any}
               />
             </FilterContainer>
             <FilterContainer>

@@ -41,11 +41,6 @@ export const EmployeesScreen: React.FC<ScreenProps> = () => {
 
   const {userProfiles, total, loading} = useUserProfiles({page, size: 10, ...filters, name: debouncedSearch});
 
-  const isNewEmployeeRoute = (): boolean => {
-    const paths = navigation.location.pathname.split('/');
-    return !!Number(paths[paths.length - 1]);
-  };
-
   const onFilterChange = (value: any, name: string) => {
     setFilters({...filters, [name]: value});
   };

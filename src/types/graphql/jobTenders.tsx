@@ -1,7 +1,7 @@
 import {ModalProps} from '../../screens/employees/education/types';
 import {DropdownDataNumber} from '../dropdownData';
 import {MicroserviceProps} from '../micro-service-props';
-import {OrganizationUnit} from './organizationUnitsTypes';
+import {OrganizationUnit} from './organizationUnits';
 
 import {JobTenderType} from './useJobTendersTypes';
 

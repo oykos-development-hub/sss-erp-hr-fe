@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {appContext} from './hrModuleContext';
+import {appContext} from './appContext';
 
 const useAppContext = () => {
   return useContext(appContext);

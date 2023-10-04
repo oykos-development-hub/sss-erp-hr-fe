@@ -10,7 +10,7 @@ import {
   yesOrNoOptionsString,
 } from '../../../constants';
 import useJobPositionsAvailableOrganizationUnit from '../../../services/graphql/jobPositions/useJobPositionsAvailableOrganizationUnit';
-import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
+import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 import useBasicInfoGet from '../../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
 import useBasicInfoInsert from '../../../services/graphql/userProfile/basicInfo/useBasicInfoInsert';
@@ -29,7 +29,7 @@ import {
   FormWrapper,
   TextWrapper,
 } from './styles';
-import {booleanToYesOrNo, formatData, getSchema, validateDateOfBirth} from './utils';
+import {booleanToYesOrNo, formatData, getSchema} from './utils';
 import {parseToDate} from '../../../utils/dateUtils';
 import {Switch} from '@oykos-development/devkit-react-ts-styled-components';
 import {yupResolver} from '@hookform/resolvers/yup';
@@ -45,7 +45,7 @@ export const BasicInfo: React.FC = () => {
   const isPresident = profileData?.is_president;
   const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
 
-  const {organizationUnits} = useOrganizationUnits();
+  const {organizationUnits, departments} = useGetOrganizationUnits(undefined, {allOption: true});
   const {options: contractTypes} = useSettingsDropdownOverview({entity: 'contract_types'});
   const {mutate: createBasicInfo, loading: isCreating} = useBasicInfoInsert();
   const {mutate: updateBasicInfo, loading: isUpdating} = useBasicInfoUpdate();
@@ -63,14 +63,6 @@ export const BasicInfo: React.FC = () => {
   } = useForm({
     resolver: yupResolver(getSchema(isNew)),
   });
-
-  const organizationUnitsList = useMemo(() => {
-    return organizationUnits
-      .filter(i => !i.parent_id)
-      .map(unit => {
-        return {id: unit.id, title: unit.title};
-      });
-  }, [organizationUnits]);
 
   const countryOptions = useMemo(() => {
     return context.countries?.map((country: any) => {
@@ -96,13 +88,13 @@ export const BasicInfo: React.FC = () => {
     },
   );
 
-  const departmentOptions: DropdownDataNumber = useMemo(() => {
+  const departmentOptions = useMemo(() => {
     if (!contract?.organization_unit_id) return [];
 
-    if (contract?.organization_unit_id && organizationUnits && organizationUnits.length) {
-      return organizationUnits.find((orgUnit: any) => orgUnit.id === contract.organization_unit_id?.id)!.children;
+    if (contract?.organization_unit_id && departments && departments.length) {
+      return departments.filter((dep: any) => dep.parentId === contract.organization_unit_id?.id);
     } else {
-      return organizationUnits;
+      return departments;
     }
   }, [contract?.organization_unit_id, organizationUnits]);
 
@@ -491,7 +483,7 @@ export const BasicInfo: React.FC = () => {
                     name={name}
                     label="SAMOHRANI RODITELJ:"
                     value={value as any}
-                    options={yesOrNoOptionsString as any}
+                    options={yesOrNoOptionsString}
                     isDisabled={isDisabled}
                     error={errors.single_parent?.message}
                     onChange={onChange}
@@ -508,7 +500,7 @@ export const BasicInfo: React.FC = () => {
                     name={name}
                     label="RIJEŠENO STAMBENO PITANJE:"
                     value={value as any}
-                    options={yesOrNoOptionsString as any}
+                    options={yesOrNoOptionsString}
                     isDisabled={isDisabled}
                     onChange={onChange}
                     error={errors.housing_done?.message}
@@ -539,7 +531,7 @@ export const BasicInfo: React.FC = () => {
                     label="ORGANIZACIONA JEDINICA:"
                     isDisabled={isDisabled}
                     value={value as any}
-                    options={organizationUnitsList as any}
+                    options={organizationUnits}
                     error={errors.contract?.organization_unit_id?.message}
                   />
                 )}
@@ -556,7 +548,7 @@ export const BasicInfo: React.FC = () => {
                     value={value as any}
                     onChange={onChange}
                     noOptionsText="Prazno"
-                    options={departmentOptions as any}
+                    options={departmentOptions}
                     isDisabled={isDisabled || !contract?.organization_unit_id || is_judge}
                     error={errors.contract?.department_id?.message}
                   />
@@ -574,7 +566,7 @@ export const BasicInfo: React.FC = () => {
                     label="RADNO MJESTO:"
                     value={value as any}
                     noOptionsText="Prazno"
-                    options={positions as any}
+                    options={positions}
                     isDisabled={isJobPositionInputDisabled}
                     error={errors.contract?.job_position_in_organization_unit_id?.message}
                   />

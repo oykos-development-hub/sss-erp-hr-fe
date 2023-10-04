@@ -1,19 +1,19 @@
+import {Button, EditIconTwo, Table, Theme, TrashIcon, Typography} from 'client-library';
 import React, {useMemo, useState} from 'react';
-import {Typography, Button, Table, TableHead, EditIconTwo, TrashIcon, Theme} from 'client-library';
-import {ExperiencePageProps, UnitType} from './types';
 import {ExperienceModal} from '../../../components/experienceModal/experienceModal';
-import {Container} from './styles';
-import useOrganizationUnits from '../../../services/graphql/organizationUnits/useOrganizationUnits';
+import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
+import useExperienceDelete from '../../../services/graphql/userProfile/experience/useExperienceDelete';
+import useExperience from '../../../services/graphql/userProfile/experience/useExperienceOverview';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
 import {UserProfileExperience} from '../../../types/graphql/userProfileGetExperienceTypes';
-import useExperience from '../../../services/graphql/userProfile/experience/useExperienceOverview';
-import useExperienceDelete from '../../../services/graphql/userProfile/experience/useExperienceDelete';
 import {tableHeads} from './constants';
+import {Container} from './styles';
+import {ExperiencePageProps} from './types';
 
 export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {experienceData, refetchData, loading} = useExperience(userProfileID);
-  const {organizationUnits} = useOrganizationUnits(context);
+  const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
   const tableData = useMemo(() => {
     let totalInsuredExperience = 0;
@@ -86,14 +86,6 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
     setSelectedItemId(0);
   };
 
-  const organizationUnitsList = useMemo(() => {
-    return organizationUnits
-      .filter(i => !i.parent_id)
-      .map(unit => {
-        return {id: unit.id, title: unit.title};
-      });
-  }, [organizationUnits]);
-
   const updatedTableHeads = useMemo(() => {
     return [
       ...tableHeads.slice(0, 1),
@@ -153,7 +145,6 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
           open={showModal}
           onClose={closeModal}
           selectedItem={selectedItem}
-          units={organizationUnitsList as UnitType[]}
           userProfileId={userProfileID}
         />
       )}

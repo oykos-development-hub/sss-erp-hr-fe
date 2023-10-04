@@ -3,11 +3,11 @@ import {Controls, FilterDropdown, FilterInput, Filters, Header, MainTitle, Overv
 import {tableHeads} from '../../screens/employees/constants';
 import {Button, Pagination, Table, Divider, Theme, SearchIcon} from 'client-library';
 import {UserProfile} from '../../types/graphql/userProfiles';
-import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
 import {EmployeeListFilters} from '../../screens/employees';
 import {statusOptions} from '../../constants';
 import useJobPositions from '../../services/graphql/jobPositions/useJobPositionOverview';
 import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
+import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 
 export interface EmployeesListProps {
   navigation?: any;
@@ -40,19 +40,8 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   const state = navigation.location.state;
   const isDetails = navigation.location.pathname.split('/').length === 6;
 
-  const {organizationUnits} = useOrganizationUnits(undefined, true);
+  const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
   const {data: jobPositions} = useJobPositions('');
-
-  const organizationUnitsList = useMemo(() => {
-    return organizationUnits
-      ? [
-          {id: 0, title: 'Sve organizacione jedinice'},
-          ...organizationUnits.map(unit => {
-            return {id: unit.id, title: unit.title};
-          }),
-        ]
-      : [];
-  }, [organizationUnits]);
 
   const userProfileList = data.items
     ? data?.items?.map((item: UserProfile) => ({
@@ -83,7 +72,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
         <Filters>
           <FilterDropdown
             label="FILTER ORGANIZACIONIH JEDINICA:"
-            options={organizationUnitsList}
+            options={organizationUnits}
             onChange={value => onFilterChange(value, 'organization_unit_id')}
             value={filters.organization_unit_id}
             name="organization_unit_id"

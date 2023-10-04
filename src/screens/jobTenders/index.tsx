@@ -4,7 +4,7 @@ import JobTendersList from '../../components/jobTendersList/jobTendersList';
 import useJobTendersTypesSearch from '../../services/graphql/jobPositions/useJobTendersTypesSearch';
 import useJobTendersDelete from '../../services/graphql/jobTenders/useJobTenderDelete';
 import useJobTendersOverview from '../../services/graphql/jobTenders/useJobTenderOverview';
-import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
+import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
 import {DropdownDataNumber} from '../../types/dropdownData';
 import {JobTender} from '../../types/graphql/jobTenders';
@@ -29,7 +29,7 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
   const [page, setPage] = useState(1);
   const [selectedItemId, setSelectedItemId] = useState(0);
   const {types, typesUnitsList} = useJobTendersTypesSearch('');
-  const {organizationUnits} = useOrganizationUnits(context);
+  const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
   const [filters, setFilters] = useState<any>(initialValues);
 
@@ -78,19 +78,6 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
     setSelectedItemId(0);
   };
 
-  const organizationUnitsList: any[] = useMemo(() => {
-    return organizationUnits
-      ? [
-          {id: 0, title: 'Sve organizacione jedinice'},
-          ...organizationUnits
-            .filter(i => !i.parent_id)
-            .map(unit => {
-              return {id: unit.id, title: unit.title};
-            }),
-        ]
-      : [];
-  }, [organizationUnits]);
-
   return (
     <ScreenWrapper>
       <JobTendersList
@@ -99,7 +86,7 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
         onPageChange={onPageChange}
         data={data}
         dropdownJobTenderType={typesUnitsList || []}
-        organizationUnitsList={organizationUnitsList || []}
+        organizationUnitsList={organizationUnits}
         filters={filters}
         onFilterChange={onFilterChange}
         deleteJobTender={deleteJobTenders}
@@ -112,7 +99,7 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
           onClose={handleCloseModal}
           selectedItem={selectedItem}
           jobTenderTypeOptions={types?.items || []}
-          organizationUnitsList={organizationUnitsList || []}
+          organizationUnitsList={organizationUnits}
           refetch={refetch}
           alert={alert}
         />

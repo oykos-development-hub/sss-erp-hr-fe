@@ -1,11 +1,10 @@
 import React from 'react';
 import HR from './screens/landing';
 import {EmployeesScreen} from './screens/employees';
-import {SystematizationScreen} from './screens/systematization';
+import Systematizations from './screens/systematization';
 import {MicroserviceProps} from './types/micro-service-props';
 import {NotFound404} from './screens/404';
-import {OrganizationUnitsScreen} from './screens/organization-units';
-import {SystematizationDetails} from './screens/systematization/systematizationDetails/systematizationDetails';
+import {SystematizationDetails} from './screens/systematization/systematizationDetails/index.tsx';
 import JudgeNorms from './screens/judges/judgeNorms/judges';
 import JudgesNumberDecisions from './screens/judges/judgesNumberDecisions/judgesNumberDecision';
 import {JobTendersScreen} from './screens/jobTenders';
@@ -38,19 +37,17 @@ export const Router: React.FC<MicroserviceProps> = props => {
 
   const renderScreen = () => {
     if (pathname === '/hr') return <HR />;
-    if (pathname === '/hr/organization-units') return <OrganizationUnitsScreen context={context} />;
     if (employeesRegex.test(pathname)) return <EmployeesScreen context={context} />;
-    if (pathname === '/hr/systematization') return <SystematizationScreen context={context} />;
+    if (pathname === '/hr/systematization') return <Systematizations />;
     if (pathname === '/hr/revision-recommendations') return <RevisionPlansList context={context} />;
     if (recommendationsRegex.test(pathname)) return <RevisionTips context={context} />;
     if (revisionsRegex.test(pathname)) return <RevisionList context={context} />;
-
     // if (pathname === '/hr/job-positions') return <LandingScreen context={context} />;
     if (JobTendersRegex.test(pathname)) return <JobTendersScreen context={context} />;
     if (JobTendersDetailsRegex.test(pathname)) return <JobTenderDetailsScreen context={context} />;
     if (ApplicationsRegex.test(pathname)) return <ApplicationsScreen context={context} />;
     if (ApplicationsDetailsRegex.test(pathname)) return <ApplicationDetailsScreen context={context} />;
-    if (systematizationDetailsRegex.test(pathname)) return <SystematizationDetails context={context} />;
+    if (systematizationDetailsRegex.test(pathname)) return <SystematizationDetails />;
     if (pathname === '/hr/judges') return <Judges />;
     // if (pathname === '/hr/judges') return context.navigation.navigate('judges/number-decision');
     if (pathname === '/hr/judges/number-decision') return <JudgesNumberDecisions context={context} />;

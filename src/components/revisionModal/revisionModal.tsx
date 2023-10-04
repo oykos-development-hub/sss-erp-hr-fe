@@ -2,7 +2,6 @@ import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {quarterOptions, revisionPriorityOptions} from '../../constants';
-import useOrganizationUnits from '../../services/graphql/organizationUnits/useOrganizationUnits';
 import useRevisionDetails from '../../services/graphql/revision/useRevisionDetails';
 import useRevisionInsert from '../../services/graphql/revision/useRevisionInsert';
 import useRevisionOverview from '../../services/graphql/revision/useRevisionOverview';
@@ -10,6 +9,7 @@ import useSettingsDropdownOverview from '../../services/graphql/settingsDropdown
 import useSuppliersOverview from '../../services/graphql/suppliers/useGetSuppliersOverview';
 import {revisionInsertItem} from '../../types/graphql/revisionInsert';
 import {FileUploadWrapper, FormGroup, ModalForm, ModalSection, Row} from './styles';
+import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 
 interface revisionProps {
   open: boolean;
@@ -38,7 +38,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
   const {revisionDetails} = useRevisionDetails(id);
   const {mutate, loading: isSaving} = useRevisionInsert();
   const {suppliers} = useSuppliersOverview();
-  const {organizationUnits} = useOrganizationUnits();
+  const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
   const {data} = useRevisionOverview({
     page: 1000,
     size: 1000,
@@ -121,14 +121,6 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
     );
   };
 
-  const organizationUnitsList = useMemo(() => {
-    return organizationUnits
-      .filter(i => !i.parent_id)
-      .map(unit => {
-        return {id: unit.id, title: unit.title};
-      });
-  }, [organizationUnits]);
-
   const internalSubject = watch('internal_revision_subject_id');
   const externalSubject = watch('external_revision_subject_id');
 
@@ -158,7 +150,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
         revision_quartal: quarterOptions.find(
           (quarterOptions: any) => quarterOptions.id === revisionDetails.item.revision_quartal,
         ),
-        internal_revision_subject_id: organizationUnitsList.find(
+        internal_revision_subject_id: organizationUnits.find(
           (organizationUnitsList: any) =>
             organizationUnitsList.id === revisionDetails.item.internal_revision_subject.id,
         ),
@@ -265,7 +257,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
                       name={name}
                       value={value as any}
                       onChange={onChange}
-                      options={organizationUnitsList as any}
+                      options={organizationUnits}
                       error={errors.internal_revision_subject_id?.message as string}
                       placeholder="Izaberite subjekt"
                       label="SUBJEKT REVIZIJE (interna):"
