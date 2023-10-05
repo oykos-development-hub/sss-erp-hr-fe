@@ -92,7 +92,7 @@ export const BasicInfo: React.FC = () => {
     if (!contract?.organization_unit_id) return [];
 
     if (contract?.organization_unit_id && departments && departments.length) {
-      return departments.filter((dep: any) => dep.parentId === contract.organization_unit_id?.id);
+      return departments.filter((dep: any) => dep.parent_id === contract.organization_unit_id?.id);
     } else {
       return departments;
     }
