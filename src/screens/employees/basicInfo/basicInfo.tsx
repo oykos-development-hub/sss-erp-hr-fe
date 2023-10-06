@@ -22,7 +22,7 @@ import useBasicInfoUpdate from '../../../services/graphql/userProfile/basicInfo/
 import {DropdownDataString} from '../../../types/dropdownData';
 import {UserProfileBasicInfoFormValues} from '../../../types/graphql/userProfiles';
 import {parseToDate} from '../../../utils/dateUtils';
-import {contractPositions, initialValues} from './constants';
+import {backendErrors, contractPositions, initialValues} from './constants';
 import {
   Controls,
   FormColumn,
@@ -132,19 +132,10 @@ export const BasicInfo: React.FC = () => {
             const emailErr = res.message === 'user_email_exists';
             const jmbgErr = res.message === 'user_jmbg_exists';
 
-            if (emailErr) {
-              setError('email', {
-                type: 'custom',
-                message: res.message,
-              });
-            }
-
-            if (jmbgErr) {
-              setError('official_personal_id', {
-                type: 'custom',
-                message: res.message,
-              });
-            }
+            setError('email', {
+              type: 'custom',
+              message: backendErrors[res.message],
+            });
 
             context.alert.error(
               `Greška. Promjene nisu sačuvane. ${emailErr ? 'Postojeći Email ' : ''} ${

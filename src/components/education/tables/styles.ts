@@ -23,7 +23,7 @@ export const TableTitle = styled.div`
 `;
 
 export const AddIcon = styled.div`
-  border: 1px solid;
+  border: 1px solid ${Theme?.palette?.primary500};
   border-radius: 8px;
   height: 48px;
   width: 48px;
@@ -32,6 +32,17 @@ export const AddIcon = styled.div`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  background-color: ${Theme?.palette?.white};
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: ${Theme?.palette?.primary500};
+
+    > svg path {
+      transition: stroke 0.2s ease-in-out;
+      stroke: ${Theme?.palette?.white};
+    }
+  }
 `;
 
 export const TableTitleTypography = styled(Typography)`

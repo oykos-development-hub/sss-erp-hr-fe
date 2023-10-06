@@ -1,4 +1,4 @@
-import {TableHead} from 'client-library';
+import {TableHead, Typography} from 'client-library';
 import {parseDate} from '../../utils/dateUtils';
 
 export const tableHeads: TableHead[] = [
@@ -7,19 +7,19 @@ export const tableHeads: TableHead[] = [
     title: 'Datum rođenja',
     accessor: 'date_of_birth',
     type: 'custom',
-    renderContents: value => parseDate(value),
+    renderContents: value => <Typography content={parseDate(value)} variant="bodyMedium" />,
   },
   {
     title: 'Organizaciona jedinica',
     accessor: 'organization_unit',
     type: 'custom',
-    renderContents: organization_unit => organization_unit?.title,
+    renderContents: organization_unit => <Typography content={organization_unit?.title} variant="bodyMedium" />,
   },
   {
     title: 'Radno mjesto',
     accessor: 'job_position',
     type: 'custom',
-    renderContents: job_position => job_position?.title,
+    renderContents: job_position => <Typography content={job_position?.title} variant="bodyMedium" />,
   },
   {title: 'Status', accessor: 'active', type: 'badge'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},

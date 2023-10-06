@@ -98,13 +98,12 @@ export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({alert, naviga
 
   const title = (
     <TableTitle>
-      <TableTitleTypography variant="bodyLarge" content="Poznavanje jezika" />
+      <TableTitleTypography variant="bodyLarge" content="Akademsko obrazovanje" />
       <AddIcon onClick={handleAdd}>
-        <PlusIcon width={'18px'} />
+        <PlusIcon width={'18px'} stroke={Theme?.palette?.primary500} />
       </AddIcon>
     </TableTitle>
   );
-
   return (
     <div>
       <TableContainer
