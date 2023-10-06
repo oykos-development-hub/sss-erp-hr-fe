@@ -92,7 +92,16 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 
   const {data: userData} = useBasicInfoGet(selectedUserId);
 
-  const {userProfiles} = useUserProfiles({page: 1, size: 1000});
+  const {userProfiles} = useUserProfiles({
+    page: 1,
+    size: 1000,
+    id: 0,
+    is_active: null,
+    job_position_id: {id: 0, title: ''},
+    organization_unit_id: {id: 0, title: ''},
+    type: {id: 0, title: ''},
+    name: '',
+  });
 
   const citizenshipArray = useMemo(() => {
     return countries?.map(country => {
@@ -166,13 +175,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
     }
   };
 
-  const userOptions = useMemo(
-    () =>
-      userProfiles && userProfiles
-        ? [...userProfiles.map(item => ({...item, title: `${item.first_name} ${item.last_name}`}))]
-        : [],
-    [userProfiles],
-  );
+  const userOptions = [...userProfiles.map(item => ({...item, title: `${item.first_name} ${item.last_name}`}))];
 
   const toggleConfirmModal = () => {
     setConfirmationModal(prev => !prev);
