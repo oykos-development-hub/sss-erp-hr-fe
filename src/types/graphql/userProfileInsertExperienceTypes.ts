@@ -1,4 +1,3 @@
-import {ForeignerPermit} from './foreignerPermits';
 import {UserProfileExperience} from './userProfileGetExperienceTypes';
 
 export interface UserProfileInsertExperienceResponse {

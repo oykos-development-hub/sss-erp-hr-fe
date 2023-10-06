@@ -1,13 +1,13 @@
-import React, {ChangeEvent, RefObject, useEffect, useMemo, useRef} from 'react';
-import {Controls, FilterDropdown, FilterInput, Filters, Header, MainTitle, OverviewBox} from './styles';
-import {tableHeads} from '../../screens/employees/constants';
-import {Button, Pagination, Table, Divider, Theme, SearchIcon} from 'client-library';
-import {UserProfile} from '../../types/graphql/userProfiles';
-import {EmployeeListFilters} from '../../screens/employees';
+import {Button, Divider, Pagination, SearchIcon, Table, Theme} from 'client-library';
+import React, {ChangeEvent, RefObject, useEffect, useRef} from 'react';
 import {statusOptions} from '../../constants';
+import {EmployeeListFilters} from '../../screens/employees';
+import {tableHeads} from '../../screens/employees/constants';
 import useJobPositions from '../../services/graphql/jobPositions/useJobPositionOverview';
-import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
 import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
+import {UserProfile} from '../../types/graphql/userProfiles';
+import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
+import {Controls, FilterDropdown, FilterInput, Filters, Header, MainTitle, OverviewBox} from './styles';
 
 export interface EmployeesListProps {
   navigation?: any;

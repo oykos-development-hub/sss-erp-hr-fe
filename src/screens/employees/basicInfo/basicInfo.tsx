@@ -1,3 +1,5 @@
+import {yupResolver} from '@hookform/resolvers/yup';
+import {Switch} from '@oykos-development/devkit-react-ts-styled-components';
 import {Button, Datepicker, Dropdown, Input, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
@@ -9,14 +11,17 @@ import {
   nationalMinorities,
   yesOrNoOptionsString,
 } from '../../../constants';
+import useAppContext from '../../../context/useAppContext';
 import useJobPositionsAvailableOrganizationUnit from '../../../services/graphql/jobPositions/useJobPositionsAvailableOrganizationUnit';
+import useJudgesAvailable from '../../../services/graphql/judges/useJudgesAvailable';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 import useBasicInfoGet from '../../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
 import useBasicInfoInsert from '../../../services/graphql/userProfile/basicInfo/useBasicInfoInsert';
 import useBasicInfoUpdate from '../../../services/graphql/userProfile/basicInfo/useBasicInfoUpdate';
-import {DropdownDataNumber, DropdownDataString} from '../../../types/dropdownData';
+import {DropdownDataString} from '../../../types/dropdownData';
 import {UserProfileBasicInfoFormValues} from '../../../types/graphql/userProfiles';
+import {parseToDate} from '../../../utils/dateUtils';
 import {contractPositions, initialValues} from './constants';
 import {
   Controls,
@@ -30,11 +35,6 @@ import {
   TextWrapper,
 } from './styles';
 import {booleanToYesOrNo, formatData, getSchema} from './utils';
-import {parseToDate} from '../../../utils/dateUtils';
-import {Switch} from '@oykos-development/devkit-react-ts-styled-components';
-import {yupResolver} from '@hookform/resolvers/yup';
-import useAppContext from '../../../context/useAppContext';
-import useJudgesAvailable from '../../../services/graphql/judges/useJudgesAvailable';
 
 export const BasicInfo: React.FC = () => {
   const context = useAppContext();

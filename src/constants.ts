@@ -1,4 +1,3 @@
-import {EditIconTwo, Theme, TrashIconTwo} from '@oykos-development/devkit-react-ts-styled-components';
 import {DropdownDataNumber, DropdownDataString} from './types/dropdownData';
 
 export const cityData: DropdownDataString[] = [

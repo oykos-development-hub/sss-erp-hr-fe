@@ -5,7 +5,7 @@ import {ScreenProps} from '../../../types/screen-props';
 import {BasicInfo} from '../basicInfo/basicInfo';
 import {Divider} from 'client-library';
 
-export const AddNewEmployee: React.FC<ScreenProps> = ({context}: {context: any}) => {
+export const AddNewEmployee: React.FC<ScreenProps> = () => {
   return (
     <ScreenWrapper>
       <OverviewBox>

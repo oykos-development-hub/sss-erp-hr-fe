@@ -1,6 +1,10 @@
+import {ReactElement} from 'react';
+
 export interface DeleteModalProps {
   open: boolean;
   onClose: (action?: any) => void;
   handleDelete: (action?: any) => void;
-  customContent?: any;
+  customContent?: string | ReactElement;
+  message?: string;
+  question?: string;
 }

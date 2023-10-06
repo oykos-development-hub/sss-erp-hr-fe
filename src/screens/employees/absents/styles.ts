@@ -1,5 +1,5 @@
+import {Theme, Typography} from 'client-library';
 import styled from 'styled-components';
-import {Typography, Theme, Table} from 'client-library';
 
 export const Container = styled.div`
   display: flex;

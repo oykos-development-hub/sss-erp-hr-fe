@@ -9,7 +9,7 @@ import {DropdownDataNumber} from '../../types/dropdownData';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
 import useSettingsDropdownOverview from '../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
-import {educationTypes, resolutionTypes} from '../education/modals/constants';
+import {resolutionTypes} from '../education/modals/constants';
 
 const confirmationSchema = yup.object().shape({
   resolution_purpose: yup.string(),

@@ -88,7 +88,8 @@ export const SystematizationDetails: React.FC = () => {
       (item: SystematizationType) => {
         const {id, serial_number} = item;
 
-        const route = id > 0 ? `/hr/systematization/systematization-details/${id}` : '/hr/systematization';
+        const route =
+          id > 0 && !systematizationId ? `/hr/systematization/systematization-details/${id}` : '/hr/systematization';
         navigate(route, {replace: true});
 
         // Reset breadcrumbs

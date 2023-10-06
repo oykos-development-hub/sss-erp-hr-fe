@@ -1,12 +1,12 @@
+import {Button, Divider, EditIconTwo, Pagination, Table, Theme, TrashIcon} from 'client-library';
 import React, {useMemo, useState} from 'react';
-import {Controls, FilterDropdown, Filters, Header, MainTitle, OverviewBox} from '../judgesList/styles';
-import {JudgeResolutionOverview} from '../../types/graphql/judges';
-import {DropdownDataString} from '../../types/dropdownData';
-import {JudgesNumberListFilters} from '../../screens/judges/judgesNumberDecisions/judgesNumberDecision';
 import {judgesNumberResolutionTableHeads} from '../../screens/judges/judgeNorms/constants';
-import {EditIconTwo, Theme, TrashIcon, Button, Divider, Pagination, Table} from 'client-library';
-import {DeleteModal} from '../../shared/deleteModal/deleteModal';
+import {JudgesNumberListFilters} from '../../screens/judges/judgesNumberDecisions/judgesNumberDecision';
 import useJudgeResolutionsDelete from '../../services/graphql/judges/useJudgeResolutionDelete';
+import {DeleteModal} from '../../shared/deleteModal/deleteModal';
+import {DropdownDataString} from '../../types/dropdownData';
+import {JudgeResolutionOverview} from '../../types/graphql/judges';
+import {Controls, Filters, Header, MainTitle, OverviewBox} from '../judgesList/styles';
 
 export interface JudgesNumbersListProps {
   data: JudgeResolutionOverview[];
@@ -24,9 +24,6 @@ export interface JudgesNumbersListProps {
 const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
   data,
   total,
-  years,
-  filters,
-  onFilterChange,
   onPageChange,
   navigate,
   alert,

@@ -1,11 +1,11 @@
-import {CheckIcon, Dropdown, Input, Modal, Theme} from 'client-library';
+import {Dropdown, Input, Modal} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import useAppContext from '../../context/useAppContext';
+import useOrganizationUnitInsert from '../../services/graphql/organizationUnits/useInsertOrganizatonUnit';
+import {OrganizationUnit} from '../../types/graphql/organizationUnits';
 import {FormGroup, ModalContentWrapper} from './styles';
 import {OrganizationUnitModalProps} from './types';
-import {OrganizationUnit} from '../../types/graphql/organizationUnits';
-import useOrganizationUnitInsert from '../../services/graphql/organizationUnits/useInsertOrganizatonUnit';
-import useAppContext from '../../context/useAppContext';
 
 const initialValues: OrganizationUnit = {
   id: 0,

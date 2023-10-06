@@ -1,12 +1,12 @@
-import {CheckIcon, Dropdown, FileUpload, Input, Modal, Theme, Typography} from 'client-library';
+import {Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
+import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
 import {UserProfileEducationFormValues} from '../../../types/graphql/userProfileGetEducation';
 import {academicTitles, educationTypes, initialValues} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
-import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
-import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 
 export const AcademicEducationModal: React.FC<ModalProps> = ({
   selectedItem,

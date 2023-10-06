@@ -1,14 +1,14 @@
+import {yupResolver} from '@hookform/resolvers/yup';
 import {Dropdown, Input, Modal} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import * as yup from 'yup';
 import {ModalProps} from '../../screens/employees/education/types';
 import {topicOptions} from '../../screens/judges/constants';
 import useJudgeNormsInsert from '../../services/graphql/judges/useJudgeNormInsert';
-import {JudgeNormForm, Norms} from '../../types/graphql/judges';
-import {ModalContentWrapper, Row} from '../education/modals/styles';
+import {JudgeNormForm} from '../../types/graphql/judges';
 import {parseDateForBackend} from '../../utils/dateUtils';
-import * as yup from 'yup';
-import {yupResolver} from '@hookform/resolvers/yup';
+import {ModalContentWrapper, Row} from '../education/modals/styles';
 
 const initialValues: JudgeNormForm = {
   id: 0,

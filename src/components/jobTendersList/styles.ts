@@ -1,7 +1,6 @@
-import {Typography, Dropdown, Breadcrumbs, Tabs, Theme} from 'client-library';
+import {Breadcrumbs, Dropdown, Input, Tabs, Typography} from 'client-library';
 import styled from 'styled-components';
 import SectionBox from '../../shared/sectionBox';
-import {Input} from 'client-library';
 
 export const Header = styled.div`
   display: flex;

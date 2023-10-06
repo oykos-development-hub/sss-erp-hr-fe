@@ -3,7 +3,17 @@ import React from 'react';
 import {DeleteModalContent, DeleteModalControlButtons, TriangleIcon} from './styles';
 import {DeleteModalProps} from './types';
 
-export const DeleteModal: React.FC<DeleteModalProps> = ({open, onClose, handleDelete, customContent}) => {
+const defaultMessage = 'Ovaj fajl ce biti trajno izbrisan iz sistema.';
+const defaultQuestion = 'Da li ste sigurni ?';
+
+export const DeleteModal: React.FC<DeleteModalProps> = ({
+  open,
+  onClose,
+  handleDelete,
+  customContent,
+  message = defaultMessage,
+  question = defaultQuestion,
+}) => {
   const buttonControls = (
     <DeleteModalControlButtons>
       <Button content={'Obriši'} onClick={handleDelete} variant="primary" />
@@ -14,8 +24,8 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({open, onClose, handleDe
   const defaultContent = (
     <DeleteModalContent>
       <TriangleIcon />
-      <Typography content="Da li ste sigurni ?" variant="bodyLarge" style={{fontWeight: 600}} />
-      <Typography content="Ovaj fajl ce biti trajno izbrisan iz sistema" variant="bodySmall" />
+      <Typography content={question} variant="bodyLarge" style={{fontWeight: 600, marginBottom: 20}} />
+      <Typography content={message} variant="bodyLarge" />
     </DeleteModalContent>
   );
 

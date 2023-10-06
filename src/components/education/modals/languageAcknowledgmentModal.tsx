@@ -1,11 +1,11 @@
-import {CheckIcon, Dropdown, FileUpload, Modal, Theme} from 'client-library';
+import {Dropdown, FileUpload, Modal} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
+import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
 import {educationTypes, initialValues, languageAcknowledgmentLevels} from './constants';
 import {ModalContentWrapper, Row} from './styles';
-import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
-import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 
 export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
   selectedItem,
