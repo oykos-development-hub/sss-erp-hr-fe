@@ -49,7 +49,7 @@ export type JobPositionEmployee = {
   user_profile_id: number;
 };
 
-export interface SystematizationJobPositions {
+export interface SystematizationJobPosition {
   available_slots: number;
   description: string;
   employees: DropdownDataNumber[];

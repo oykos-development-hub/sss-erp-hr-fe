@@ -4,58 +4,69 @@ import {
   EditIconTwo,
   Input,
   MinusCircleIcon,
-  PlusCircleIcon,
   TableHead,
   Theme,
   TrashIcon,
+  Typography,
   XIcon,
 } from 'client-library';
-import React, {useEffect, useState} from 'react';
-import useEmployeeInOrganizationUnitDelete from '../../services/graphql/organizationUnitsEmployees/useOrganizationUnitEmployeeDelete';
-import useOrganizationUnitEmployeeInsert from '../../services/graphql/organizationUnitsEmployees/useOrganizationUnitEmployeeInsert';
+import React, {useEffect, useMemo, useState} from 'react';
+import {Controller, useForm} from 'react-hook-form';
 import useOrganizationUnitDeleteJobPosition from '../../services/graphql/organizationUnitsJobPositions/useOrganizationUnitDeleteJobPosition';
 import useOrganizationUnitInsertJobPosition from '../../services/graphql/organizationUnitsJobPositions/useOrganizationUnitInsertJobPosition';
 import {DeleteModal} from '../../shared/deleteModal/deleteModal';
 import {DropdownDataNumber} from '../../types/dropdownData';
-import {EmployeeDropdownWrapper, StyledTable} from './styles';
+import {JobPosition} from '../../types/graphql/jobPositions';
+import {ActiveEmployee, SectorJobPosition} from '../../types/graphql/systematizationsTypes';
+import {jobPositionTableHeads} from './constants';
+import {EmployeeDropdownWrapper, EmployeeItem, EmployeeList, StyledTable} from './styles';
 import {JobPositionTableProps} from './types';
+import {UserProfile} from '../../types/graphql/userProfiles';
+import {requiredError} from '../../constants';
+import useAppContext from '../../context/useAppContext';
+
+// !!! You will see that one prop inside of jobPositions is names job_positions instead of job_position, that is a typo in the backend
 
 export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   data,
   sectorID,
   systematizationID,
-  refetch,
-  alert,
-  jobPositionData,
-  allEmployees,
-  activeEmployees,
+  refetchDetails,
+  jobPositionData = [],
+  allEmployees = [],
+  activeEmployees = [],
   cancel,
   isInactive,
 }) => {
   const {mutate: insertJobPosition} = useOrganizationUnitInsertJobPosition();
   const {mutate: deleteJobPosition} = useOrganizationUnitDeleteJobPosition();
 
-  const {mutate: insertEmployee} = useOrganizationUnitEmployeeInsert();
-  const {mutate: deleteEmployee} = useEmployeeInOrganizationUnitDelete();
+  const {
+    register,
+    formState: {errors, isValid},
+    control,
+    reset,
+    watch,
+    setValue,
+    clearErrors,
+    trigger,
+  } = useForm();
+
+  const {jobPositions} = watch();
+
+  const {alert} = useAppContext();
 
   const jobPositionOptions = jobPositionData
-    ?.filter((item: any) => !item.is_judge)
-    .map((item: any) => ({id: item.id, title: item.title}));
+    ?.filter((item: JobPosition) => !item.is_judge)
+    .map((item: JobPosition) => ({id: item.id, title: item.title}));
 
-  const employeeOptions = allEmployees?.map((item: any) => ({
-    id: item.id,
-    title: `${item.first_name} ${item.last_name}`,
-  }));
-
-  const [selectedEmployee, setSelectedEmployee] = useState<DropdownDataNumber>();
-  const [tableDataState, setTableDataState] = useState<any[]>([]);
   const [editTableRow, setEditTableRow] = useState<null | number>(null);
   const [deleteItemId, setDeleteItemId] = useState<null | number>(null);
 
   const selectRow = (id: number) => {
-    setSelectedEmployee(undefined);
     setEditTableRow(id);
   };
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const deleteIconClick = (id: number) => {
@@ -63,95 +74,22 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
     setDeleteItemId(id);
   };
 
-  const handleChange = (value: any, name: string) => {
-    if (name === 'employees') {
-      const index = activeEmployees.findIndex(item => item.id === value.id);
-      const position = tableDataState?.find(item => item.id === editTableRow);
-      const is_judge_president = jobPositionData.find(
-        item => item.id === position?.job_position?.id,
-      )?.is_judge_president;
+  const onRemoveEmployee = (id: number) => {
+    if (!editTableRow) return;
 
-      if (index > -1 && !is_judge_president) {
-        alert.error(
-          `Zaposleni ${activeEmployees[index].full_name} već pokriva radno mjesto ${activeEmployees[index]?.job_position?.title} u odjeljenju ${activeEmployees[index]?.sector}!`,
-        );
-        setSelectedEmployee(undefined);
-      } else {
-        setSelectedEmployee(value);
-      }
-    } else {
-      const updatedTableData = tableDataState.map((item: any) => {
-        const jobPosition = jobPositionData?.find((i: any) => i.id === value?.id);
-        if (item.id !== editTableRow) return item;
-        if (name === 'available_slots') {
-          return {
-            ...item,
-            [name]: {...item[name], value: value},
-          };
-        } else if (name === 'requirements' || name === 'description') {
-          return {
-            ...item,
-            [name]: value,
-          };
-        } else {
-          return {
-            ...item,
-            description: jobPosition?.description,
-            requirements: jobPosition?.requirements,
-            is_judge_president: jobPosition?.is_judge_president,
-            available_slots: jobPosition?.is_judge_president ? {value: 1} : item.available_slots,
-            job_position: {id: jobPosition?.id, title: jobPosition?.title},
-          };
-        }
-      });
-      setTableDataState(updatedTableData);
-    }
-  };
-
-  const handleEditEmployees = (id?: number) => {
-    //if id is passed, we are deleting employee from table otherwise we are adding
-    const updatedTableData = tableDataState.map((item: any) => {
-      if (item.id !== editTableRow) return item;
-      if (item.id === editTableRow) {
-        if (editTableRow !== 0) {
-          if (id) {
-            deleteEmployee(id, () => {
-              refetch && refetch();
-            });
-          } else {
-            insertEmployee(
-              {
-                id: 0,
-                user_profile_id: selectedEmployee?.id || 0,
-                position_in_organization_unit_id: item?.id,
-                active: true,
-              },
-              () => {
-                refetch && refetch();
-              },
-            );
-          }
-        }
-        return {
-          ...item,
-          employees: id
-            ? item.employees.filter((i: any) => i.id !== id)
-            : [...item.employees, {...selectedEmployee, row_id: editTableRow}],
-        };
-      }
-    });
-    setTableDataState(updatedTableData);
-    setSelectedEmployee(undefined);
+    setValue(
+      `jobPositions[${editTableRow}].employees`,
+      jobPositions[editTableRow].employees.filter((i: ActiveEmployee) => i.id !== id),
+    );
   };
 
   const handleDelete = () => {
     deleteJobPosition(
       Number(deleteItemId),
       () => {
-        refetch && refetch(true);
+        refetchDetails();
         setShowDeleteModal(false);
         setDeleteItemId(null);
-        setTableDataState(tableDataState.filter((item: any) => item.id !== deleteItemId));
 
         alert.success('Uspješno obrisano.');
       },
@@ -161,192 +99,188 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
     );
   };
 
-  const getEmployeesForDropdown = (item: any): DropdownDataNumber[] => {
-    const itemIds = item.map((elem: DropdownDataNumber) => elem?.id);
-    return employeeOptions.filter(emp => !itemIds.includes(emp.id));
+  const handleSave = async (data: SectorJobPosition) => {
+    trigger(`jobPositions[${data.id}]`);
+
+    if (isValid || Object.keys(errors).length === 0) {
+      const payload = {
+        id: data.id ? data.id : 0,
+        systematization_id: systematizationID,
+        parent_organization_unit_id: sectorID,
+        job_position_id: data?.job_positions?.id,
+        available_slots: +data?.available_slots,
+        employees: data.employees?.map((item: any) => item.id),
+        description: data.description,
+        requirements: data.requirements,
+      };
+
+      insertJobPosition(
+        payload,
+        () => {
+          refetchDetails();
+          alert.success('Radna pozicija uspješno sačuvana.');
+          clearErrors();
+        },
+        () => {
+          alert.error('Greška. Promjene nisu sačuvane.');
+        },
+      );
+
+      setEditTableRow(null);
+    }
   };
-
-  const handleSave = () => {
-    const selectedItem = tableDataState.find((item: any) => item.id === editTableRow);
-
-    const payload = {
-      id: selectedItem.id ? selectedItem.id : 0,
-      systematization_id: systematizationID,
-      parent_organization_unit_id: sectorID,
-      job_position_id: selectedItem?.job_position?.id,
-      available_slots: Number(selectedItem?.available_slots.value),
-      employees: selectedItem?.employees?.map((item: any) => item.id),
-      description: selectedItem.description,
-      requirements: selectedItem.requirements,
-    };
-
-    insertJobPosition(
-      payload,
-      () => {
-        refetch && refetch();
-      },
-      () => {
-        alert.error('Greška. Promjene nisu sačuvane.');
-      },
-    );
-    setEditTableRow(null);
-  };
-
-  const tableHeads: TableHead[] = [
-    {
-      title: 'Naziv radnog mjesta',
-      accessor: 'job_position',
-      type: 'custom',
-      renderContents: (item: any, row) => {
-        const isDisabled = row?.id !== editTableRow || Number(row.id) > 0;
-        return (
-          <div key={`item-job-position-${item.id}`}>
-            <Dropdown
-              value={item}
-              name="job_position"
-              onChange={handleChange}
-              options={jobPositionOptions}
-              // @TODO remove ts-ignore
-              //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              //@ts-ignore
-              maxMenuHeight={200}
-              style={{width: '235px'}}
-              isDisabled={isDisabled}
-            />
-          </div>
-        );
-      },
-    },
-    {
-      title: 'Uslovi',
-      accessor: 'requirements',
-      type: 'custom',
-      renderContents: (item: any, row) => {
-        return (
-          <Input
-            textarea
-            value={item}
-            name="requirements"
-            disabled={row?.id !== editTableRow}
-            onChange={ev => handleChange(ev.target.value, 'requirements')}
-          />
-        );
-      },
-    },
-    {
-      title: 'Broj izvršilaca',
-      accessor: 'available_slots',
-      type: 'custom',
-      renderContents: (item: any, row) => {
-        return (
-          <Input
-            value={item.value}
-            name="available_slots"
-            disabled={item?.row_id !== editTableRow || isInactive || row.is_judge_president}
-            onChange={ev => handleChange(ev.target.value, 'available_slots')}
-          />
-        );
-      },
-    },
-    {
-      title: 'Opis poslova',
-      accessor: 'description',
-      type: 'custom',
-      renderContents: (item: any, row) => {
-        return (
-          <Input
-            textarea
-            value={item}
-            name="description"
-            disabled={row?.id !== editTableRow}
-            onChange={ev => handleChange(ev.target.value, 'description')}
-          />
-        );
-      },
-    },
-    {
-      title: 'Zaposleni',
-      accessor: 'employees',
-      type: 'custom',
-      renderContents: (item: any, row) => {
-        const selectedItem = tableDataState.find((i: any) => i.id === editTableRow);
-
-        return (
-          <div>
-            {row?.id === editTableRow && item.length < selectedItem?.available_slots?.value && (
-              <EmployeeDropdownWrapper>
-                <Dropdown
-                  value={selectedEmployee}
-                  name="employees"
-                  options={getEmployeesForDropdown(item)}
-                  onChange={handleChange}
-                  // @TODO remove ts-ignore
-                  //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  //@ts-ignore
-                  maxMenuHeight={200}
-                  style={{width: '235px'}}
-                  isSearchable
-                />
-                {selectedEmployee && item.length < selectedItem?.available_slots?.value && (
-                  <PlusCircleIcon
-                    stroke={Theme?.palette?.gray500}
-                    height="17px"
-                    width="17px"
-                    onClick={() => handleEditEmployees()}
-                  />
-                )}
-              </EmployeeDropdownWrapper>
-            )}
-            {Array.isArray(item) &&
-              item?.map((employee: any) => {
-                return (
-                  <div key={`employee-${employee?.id}`}>
-                    <Input
-                      value={employee.title}
-                      rightContent={
-                        <MinusCircleIcon
-                          stroke={Theme?.palette?.gray500}
-                          onClick={() => handleEditEmployees(employee?.id)}
-                        />
-                      }
-                      style={{width: '235px'}}
-                      disabled={employee?.row_id !== editTableRow}
-                    />
-                  </div>
-                );
-              })}
-          </div>
-        );
-      },
-    },
-    {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
-  ];
 
   useEffect(() => {
-    const transformedData = data?.map((item: any) => {
+    const initialData: {[key: string]: SectorJobPosition} = {};
+
+    data?.forEach((item: SectorJobPosition) => {
       if (item.id === 0) setEditTableRow(0);
-      return {
-        ...item,
+
+      initialData[item.id] = {
+        id: item.id,
         description: item?.description,
         requirements: item?.requirements,
-        serial_number: item?.serial_number || 0,
-        job_position: {...item.job_positions},
-        employees: item?.employees?.map((employee: any) => ({
-          ...employee,
-          row_id: item?.id,
-        })),
-        available_slots: {value: item?.available_slots, row_id: item?.id},
+        serial_number: item?.serial_number || '',
+        job_positions: item?.job_positions,
+        employees: item?.employees,
+        available_slots: item?.available_slots,
       };
     });
 
-    setTableDataState(transformedData);
+    reset({jobPositions: initialData});
   }, [data, jobPositionData]);
+
+  const onChangeEmployees = (value: DropdownDataNumber, position: SectorJobPosition) => {
+    const index = activeEmployees.findIndex(item => item.id === value.id);
+    const is_judge_president = jobPositionData.find(item => item.id === position?.id)?.is_judge_president;
+
+    if (index > -1 && !is_judge_president) {
+      alert.error(
+        `Zaposleni ${activeEmployees[index].full_name} već pokriva radno mjesto ${activeEmployees[index]?.job_position?.title} u odjeljenju ${activeEmployees[index]?.sector}!`,
+      );
+    } else {
+      setValue(`jobPositions[${position?.id}].employees`, [value, ...position.employees]);
+    }
+  };
+
+  // adding renderContents method to each of the tableHeads to render the corresponding input field
+  const updatedTableHeads = useMemo(() => {
+    const tableHeads = jobPositionTableHeads;
+
+    const activeEmployeeIds = activeEmployees.map((employee: ActiveEmployee) => employee?.id);
+
+    const employeeOptions = allEmployees?.map((item: UserProfile) => ({
+      id: item.id,
+      title: `${item.first_name} ${item.last_name}`,
+    }));
+
+    const options = employeeOptions.filter(employee => !activeEmployeeIds.includes(employee.id));
+
+    const positionErrors = errors.jobPositions as any;
+
+    tableHeads.forEach((head: TableHead) => {
+      switch (head.accessor) {
+        case 'job_position':
+          head.renderContents = (_, position: JobPosition) => {
+            const isDisabled = position?.id !== editTableRow || Number(position.id) > 0;
+            return (
+              <div key={`item-job-position-${position.id}`}>
+                <Controller
+                  control={control}
+                  rules={{required: requiredError, min: 1}}
+                  name={`jobPositions[${position.id}].job_positions`}
+                  render={({field: {name, value, onChange}}) => (
+                    <Dropdown
+                      value={value}
+                      name={name}
+                      onChange={onChange}
+                      options={jobPositionOptions}
+                      style={{width: '235px'}}
+                      isDisabled={isDisabled}
+                      error={positionErrors?.[`${position.id}`]?.job_positions?.message}
+                    />
+                  )}
+                />
+              </div>
+            );
+          };
+          break;
+        case 'requirements':
+          head.renderContents = (_, position: JobPosition) => (
+            <Input
+              {...register(`jobPositions[${position.id}].requirements`, {required: requiredError})}
+              textarea
+              disabled={position?.id !== editTableRow}
+              error={positionErrors?.[`${position.id}`]?.requirements?.message}
+            />
+          );
+          break;
+        case 'available_slots':
+          head.renderContents = (_, position: JobPosition) => (
+            <Input
+              {...register(`jobPositions[${position.id}].available_slots`, {required: requiredError})}
+              disabled={position?.id !== editTableRow || isInactive || position.is_judge_president}
+              error={positionErrors?.[`${position.id}`]?.available_slots?.message}
+            />
+          );
+          break;
+        case 'description':
+          head.renderContents = (_, position: JobPosition) => (
+            <Input
+              {...register(`jobPositions[${position.id}].description`, {required: requiredError})}
+              textarea
+              disabled={position?.id !== editTableRow}
+              error={positionErrors?.[`${position.id}`]?.description?.message}
+            />
+          );
+          break;
+        case 'employees':
+          head.renderContents = (value: DropdownDataNumber[], position: SectorJobPosition) => (
+            <div>
+              {position?.id === editTableRow && value.length < position?.available_slots && (
+                <EmployeeDropdownWrapper>
+                  <Controller
+                    control={control}
+                    name={`jobPositions[${position?.id}].employees`}
+                    render={({field: {value}}) => (
+                      <Dropdown
+                        value={value}
+                        options={options}
+                        onChange={(value: any) => onChangeEmployees(value, position) as any}
+                        isSearchable
+                      />
+                    )}
+                  />
+                </EmployeeDropdownWrapper>
+              )}
+              {Array.isArray(value) && (
+                <EmployeeList>
+                  {value?.map((employee: DropdownDataNumber) => {
+                    return (
+                      <EmployeeItem key={`employee-${employee?.id}`}>
+                        <Typography variant="bodyMedium" content={employee.title} />
+                        <MinusCircleIcon
+                          stroke={Theme?.palette?.gray500}
+                          onClick={() => onRemoveEmployee(employee?.id)}
+                        />
+                      </EmployeeItem>
+                    );
+                  })}
+                </EmployeeList>
+              )}
+            </div>
+          );
+      }
+    });
+
+    return tableHeads;
+  }, [jobPositionOptions, allEmployees, activeEmployees, errors]);
 
   return (
     <>
       <StyledTable
-        tableHeads={tableHeads}
-        data={tableDataState}
+        tableHeads={updatedTableHeads}
+        data={jobPositions ? Object.values(jobPositions) : []}
         tableActions={[
           {
             name: 'edit',
@@ -358,7 +292,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
           {
             name: 'delete',
             onClick: item => deleteIconClick(item.id),
-            icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+            icon: <TrashIcon stroke={Theme?.palette?.gray800} style={{height: 18}} />,
             shouldRender: item => editTableRow !== item.id && !isInactive,
           },
           {

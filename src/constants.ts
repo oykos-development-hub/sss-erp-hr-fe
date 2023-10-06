@@ -142,3 +142,5 @@ export const revisionTypeOptions: DropdownDataNumber[] = [
   {id: 2, title: 'Ad Hoc'},
   {id: 3, title: 'Sporazum'},
 ];
+
+export const requiredError = 'Ovo polje je obavezno';

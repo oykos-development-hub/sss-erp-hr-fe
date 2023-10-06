@@ -8,6 +8,11 @@ export const StyledTable = styled(Table)`
     tr {
       background-color: ${Theme?.palette?.white} !important;
       height: 270px;
+      cursor: default;
+
+      svg {
+        cursor: pointer;
+      }
     }
 
     td input {
@@ -39,4 +44,24 @@ export const EmployeeDropdownWrapper = styled.div`
   & svg {
     margin-left: 8px;
   }
+`;
+
+export const EmployeeItem = styled.div<{disabled?: boolean}>`
+  padding: 0.625em 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid ${({disabled}) => (disabled ? Theme.palette.gray300 : Theme.palette.gray400)};
+  border-radius: 8px;
+
+  & > p {
+    color: ${({disabled}) => (disabled ? Theme.palette.gray300 : Theme.palette.gray400)};
+  }
+`;
+
+export const EmployeeList = styled.div`
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 `;

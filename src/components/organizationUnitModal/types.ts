@@ -7,6 +7,5 @@ export interface OrganizationUnitModalProps {
   dropdownData?: any;
   action?: string;
   organizationUnit?: DropdownDataNumber;
-  alert: any;
   refetch: () => void;
 }

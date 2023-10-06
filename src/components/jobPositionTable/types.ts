@@ -6,8 +6,7 @@ export interface JobPositionTableProps {
   data: SectorJobPosition[];
   sectorID: number;
   systematizationID: number;
-  refetch?: (availableSlotsChanged?: boolean) => void;
-  alert: any;
+  refetchDetails: () => void;
   jobPositionData: JobPosition[];
   allEmployees: UserProfile[];
   activeEmployees: ActiveEmployee[];

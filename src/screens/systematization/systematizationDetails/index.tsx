@@ -7,6 +7,9 @@ import {OverviewBox} from '../../../components/employeesList/styles';
 import {OrganizationalUnitModal} from '../../../components/organizationUnitModal/organizationUnitModal';
 import useAppContext from '../../../context/useAppContext';
 import useJobPositions from '../../../services/graphql/jobPositions/useJobPositionOverview';
+import useDeleteOrganizationUnit from '../../../services/graphql/organizationUnits/useDeleteOrganizationUnit';
+import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
+import useGetSystematizationDetails from '../../../services/graphql/systematization/useGetSystematizationDetails';
 import useSystematizationInsert from '../../../services/graphql/systematization/useInsertSystematization';
 import useUserProfiles from '../../../services/graphql/userProfile/useUserProfiles';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
@@ -22,9 +25,6 @@ import Departments from './departments/departments';
 import {Footer} from './footer/footer';
 import {PrintPage} from './printPage/printPage';
 import {FileUploadWrapper, MainWrapper, Row, TitleWrapper, UploadWrapper} from './styles';
-import useDeleteOrganizationUnit from '../../../services/graphql/organizationUnits/useDeleteOrganizationUnit';
-import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
-import useGetSystematizationDetails from '../../../services/graphql/systematization/useGetSystematizationDetails';
 
 const initialValues: any = {
   organization_unit: null,
@@ -44,7 +44,6 @@ export const SystematizationDetails: React.FC = () => {
       location: {pathname},
     },
     breadcrumbs,
-    alert,
     contextMain,
   } = useAppContext();
 
@@ -54,7 +53,9 @@ export const SystematizationDetails: React.FC = () => {
   const [showEditSectorModal, setShowEditSectorModal] = useState(false);
   const [sectorId, setSectorId] = useState<number>(0);
 
-  const {systematizationDetails, refetch} = useGetSystematizationDetails(systematizationId);
+  const {alert} = useAppContext();
+
+  const {systematizationDetails, refetch} = useGetSystematizationDetails(+systematizationId);
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
   const {data: jobPositionData} = useJobPositions('');
   const {userProfiles, refetch: refetchEmployees} = useUserProfiles({
@@ -80,7 +81,6 @@ export const SystematizationDetails: React.FC = () => {
   });
 
   const handleSave = (data: InsertSystematizationParams) => {
-    console.log(data);
     const payload = formatSystematization(data);
 
     mutate(
@@ -117,7 +117,16 @@ export const SystematizationDetails: React.FC = () => {
   };
 
   const handleDeleteSector = (id: number) => {
-    deleteSector(id);
+    deleteSector(
+      id,
+      () => {
+        refetch();
+        alert.success('Uspješno obrisano.');
+      },
+      () => {
+        alert.error('Greška. Promjene nisu sačuvane.');
+      },
+    );
   };
 
   const editSector = (id: number) => {
@@ -127,55 +136,6 @@ export const SystematizationDetails: React.FC = () => {
 
   const onTabChange = (tab: Tab) => {
     setActiveTab(tab.id as number);
-  };
-
-  const setSerialNumbers = (data: any) => {
-    let start = 1;
-    // const counter = 0;
-    const updatedData = {...data};
-
-    // const totalJobPositions = updatedData.sectors.reduce(
-    //   (sum: number, sector: any) => sum + sector.job_positions.length,
-    //   0,
-    // );
-
-    updatedData.sectors.forEach((sector: SectorType) => {
-      sector.job_positions_organization_units.forEach(jobPosition => {
-        const available_slots = jobPosition.available_slots;
-        const end = start + available_slots - 1;
-        const serial_number = `${start}-${end}`;
-        start = end + 1;
-        const payload = {
-          id: jobPosition.id || 0,
-          available_slots: Number(jobPosition?.available_slots) || 1,
-          parent_job_position_id: 0,
-          job_position_id: jobPosition?.job_positions?.id,
-          system_permission_id: 0,
-          description: jobPosition?.description,
-          requirements: jobPosition?.requirements,
-          icon: '',
-          systematization_id: updatedData?.id,
-          parent_organization_unit_id: sector?.id,
-          serial_number: serial_number,
-        };
-        //TODO Check if this is bff problem
-
-        // insertJobPosition(payload, () => {
-        //   counter++;
-        //   if (counter === totalJobPositions) {
-        //     refreshData();
-        //   }
-        // });
-      });
-    });
-  };
-
-  const refetchDataOnSectorChanged = (availableSlotsChanged?: boolean) => {
-    refetch((res: any) => {
-      if (availableSlotsChanged) {
-        setSerialNumbers(res);
-      }
-    });
   };
 
   useEffect(() => {
@@ -275,7 +235,7 @@ export const SystematizationDetails: React.FC = () => {
                 sectors={systematizationDetails?.sectors ?? []}
                 handleDeleteSector={id => handleDeleteSector(id)}
                 systematizationId={systematizationId}
-                refreshData={availableSlotsChanged => refetchDataOnSectorChanged(availableSlotsChanged)}
+                refetchDetails={refetch}
                 handleEditSector={(id: number) => editSector(id)}
                 jobPositionData={jobPositionData?.items}
                 allEmployees={userProfiles}
@@ -303,13 +263,12 @@ export const SystematizationDetails: React.FC = () => {
           <Footer
             activeTab={activeTab}
             handleSaveButton={methods?.handleSubmit(handleSave)}
-            active={systematizationDetails?.active ?? 0}
+            active={systematizationDetails?.active}
             id={+systematizationId}
           />
         </FormProvider>
         {showEditSectorModal && (
           <OrganizationalUnitModal
-            alert={alert}
             refetch={refetch}
             open={showEditSectorModal}
             onClose={handleCloseModal}

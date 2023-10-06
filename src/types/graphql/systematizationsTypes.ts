@@ -16,7 +16,7 @@ export type SystematizationType = {
 export type SectorJobPosition = {
   available_slots: number;
   description: string;
-  employees: any[];
+  employees: DropdownDataNumber[];
   id: number;
   job_positions: DropdownDataNumber;
   requirements: string;

@@ -8,7 +8,7 @@ export interface DepartmentsProps {
   handleDeleteSector: (id: number) => void;
   handleEditSector: (id: number) => void;
   systematizationId: number;
-  refreshData?: (availableSlotsChanged?: boolean) => void;
+  refetchDetails: () => void;
   context?: MicroserviceProps;
   jobPositionData: JobPosition[];
   allEmployees: UserProfile[];
@@ -34,7 +34,7 @@ export interface PrintPageProps {
 export interface FooterProps {
   activeTab: number;
   handleSaveButton: () => void;
-  active: number;
+  active?: number;
   id: number;
 }
 
@@ -42,3 +42,9 @@ export interface SectorModalProps {
   open: boolean;
   onClose: () => void;
 }
+
+export const systematizationStatuses = {
+  draft: 0,
+  inactive: 1,
+  active: 2,
+};

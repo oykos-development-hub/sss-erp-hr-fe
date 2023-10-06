@@ -5,6 +5,7 @@ import {FormGroup, ModalContentWrapper} from './styles';
 import {OrganizationUnitModalProps} from './types';
 import {OrganizationUnit} from '../../types/graphql/organizationUnits';
 import useOrganizationUnitInsert from '../../services/graphql/organizationUnits/useInsertOrganizatonUnit';
+import useAppContext from '../../context/useAppContext';
 
 const initialValues: OrganizationUnit = {
   id: 0,
@@ -25,7 +26,6 @@ export const OrganizationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
   dropdownData,
   organizationUnit,
   selectedItem,
-  alert,
   refetch,
 }) => {
   const item = useMemo(() => {
@@ -47,6 +47,8 @@ export const OrganizationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
     formState: {errors},
     reset,
   } = useForm({defaultValues: item || initialValues});
+
+  const {alert} = useAppContext();
 
   const {mutate, loading: isSaving} = useOrganizationUnitInsert();
 

@@ -19,7 +19,7 @@ const Departments: React.FC<DepartmentsProps> = ({
   sectors,
   handleDeleteSector,
   systematizationId,
-  refreshData,
+  refetchDetails,
   handleEditSector,
   context,
   jobPositionData,
@@ -31,7 +31,6 @@ const Departments: React.FC<DepartmentsProps> = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState(0);
   const [selectedItemId, setSelectedItemId] = useState(0);
-  // const [addJob, setAddJob] = useState(false);
 
   const [jobPositions, setJobPositions] = useState<SectorJobPosition[]>([]);
 
@@ -86,18 +85,17 @@ const Departments: React.FC<DepartmentsProps> = ({
   return (
     <SectorsContainer>
       {sectors?.map((sector: SectorType) => {
+        const isCollapsed = selectedItemId === sector?.id;
+
         return (
-          <AccordionWrapper
-            isOpen={selectedItemId === sector?.id}
-            key={`sector-${sector?.id}`}
-            style={{position: 'relative'}}>
+          <AccordionWrapper isOpen={isCollapsed} key={`sector-${sector?.id}`} style={{position: 'relative'}}>
             <Accordion
               style={{border: 0, padding: 0, marginBottom: 15, display: 'block'}}
-              isOpen={selectedItemId === sector?.id}
+              isOpen={isCollapsed}
               customHeader={
                 <AccordionHeader color={sector?.color}>
                   <Typography variant="bodyMedium" content={sector?.title} style={{fontWeight: 600}} />
-                  <AccordionIconsWrapper isOpen={selectedItemId === sector?.id}>
+                  <AccordionIconsWrapper isOpen={isCollapsed}>
                     <ChevronDownIcon
                       width="15px"
                       height="8px"
@@ -144,20 +142,23 @@ const Departments: React.FC<DepartmentsProps> = ({
                 </AccordionHeader>
               }
               customContent={
-                <JobPositionTableWrapper>
-                  <JobPositionTable
-                    data={jobPositions || []}
-                    sectorID={sector?.id}
-                    systematizationID={systematizationId}
-                    refetch={availableSlotsChanged => refreshData && refreshData(availableSlotsChanged)}
-                    alert={context?.alert}
-                    jobPositionData={jobPositionData}
-                    allEmployees={allEmployees}
-                    activeEmployees={activeEmployees}
-                    cancel={cancelJobPosition}
-                    isInactive={isInactive}
-                  />
-                </JobPositionTableWrapper>
+                isCollapsed ? (
+                  <JobPositionTableWrapper>
+                    <JobPositionTable
+                      data={jobPositions || []}
+                      sectorID={sector?.id}
+                      systematizationID={systematizationId}
+                      refetchDetails={refetchDetails}
+                      jobPositionData={jobPositionData}
+                      allEmployees={allEmployees}
+                      activeEmployees={activeEmployees}
+                      cancel={cancelJobPosition}
+                      isInactive={isInactive}
+                    />
+                  </JobPositionTableWrapper>
+                ) : (
+                  <></>
+                )
               }
             />
           </AccordionWrapper>

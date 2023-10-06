@@ -12,12 +12,15 @@ const useOrganizationUnitJobPositionInsert = () => {
     onError?: () => void,
   ) => {
     setLoading(true);
+
     const response = await GraphQL.jobPositionInOrganizationUnitInsert(data);
+
     if (response.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess(response.item);
-    } else if (response.status === REQUEST_STATUSES.error) {
+    } else {
       onError && onError();
     }
+
     setLoading(false);
   };
 

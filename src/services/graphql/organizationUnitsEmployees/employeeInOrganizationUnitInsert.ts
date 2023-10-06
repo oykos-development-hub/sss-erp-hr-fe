@@ -24,7 +24,7 @@ const employeeInOrganizationUnitInsert = async (
         active
         created_at
         updated_at
-        }
+      }
   }
 }`);
 
