@@ -25,14 +25,14 @@ const useUserProfiles = ({
     const response: UserProfileResponse = await fetch(GraphQL.userProfileOverview, {
       page,
       size,
-      id: id ?? 0,
+      id: id ?? null,
       is_active: is_active ? is_active.id : true,
-      job_position_id: job_position_id ? job_position_id.id : 0,
-      organization_unit_id: organization_unit_id ? organization_unit_id.id : 0,
+      job_position_id: job_position_id ? job_position_id.id : null,
+      organization_unit_id: organization_unit_id ? organization_unit_id.id : null,
       name: name ?? '',
     });
 
-    if (response.userProfiles_Overview) {
+    if (response.userProfiles_Overview?.items) {
       setUserProfile(response.userProfiles_Overview.items);
       setTotal(response.userProfiles_Overview.total);
     }
