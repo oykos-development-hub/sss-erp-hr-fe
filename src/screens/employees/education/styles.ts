@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {Theme, Table} from 'client-library';
+import {Table} from 'client-library';
 
 export const EducationContainer = styled.div`
   padding: 20px 30px 0px 30px;

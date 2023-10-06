@@ -21,7 +21,6 @@ const Departments: React.FC<DepartmentsProps> = ({
   systematizationId,
   refetchDetails,
   handleEditSector,
-  context,
   jobPositionData,
   allEmployees,
   activeEmployees,

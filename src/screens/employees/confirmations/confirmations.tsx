@@ -1,5 +1,5 @@
 import {Button, Dropdown, EditIconTwo, Table, TableHead, Theme, TrashIcon, Typography} from 'client-library';
-import React, {ReactNode, useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {ConfirmationsModal} from '../../../components/confirmationsModal/confirmationsModal';
 import useResolutionDelete from '../../../services/graphql/userProfile/resolution/useResolutionDelete';
 import useResolutionOverview from '../../../services/graphql/userProfile/resolution/useResolutionOverview';

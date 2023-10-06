@@ -3,7 +3,7 @@ import JudgesNumbersList from '../../../components/judgesNumbersList/judgesNumbe
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {DropdownDataString} from '../../../types/dropdownData';
 import {ScreenProps} from '../../../types/screen-props';
-import {yearsForDropdown, yearsForDropdownFilter} from '../../../utils/constants';
+import {yearsForDropdownFilter} from '../../../utils/constants';
 import useJudgesResolutionsOverview from '../../../services/graphql/judges/useJudgeResolutionOverview';
 
 export interface JudgesNumberListFilters {

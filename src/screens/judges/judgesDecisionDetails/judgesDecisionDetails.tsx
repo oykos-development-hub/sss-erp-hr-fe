@@ -9,7 +9,7 @@ import useOrganizationUintCalculateEmployeeStats from '../../../services/graphql
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import {MainTitle} from '../../../shared/mainTitle';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
-import {DropdownDataNumber, DropdownDataString} from '../../../types/dropdownData';
+import {DropdownDataString} from '../../../types/dropdownData';
 import {JudgeResolutionItem, JudgeResolutionOverview} from '../../../types/graphql/judges';
 import {OrganizationUnit} from '../../../types/graphql/organizationUnits';
 import {ScreenProps} from '../../../types/screen-props';
@@ -52,26 +52,6 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
 
   const item = data?.find((i: JudgeResolutionOverview) => i.id === Number(id));
 
-  const getInitialValues = () => {
-    const values: any = {};
-
-    // Creating inputs for each of the organization units in the table
-    organizationUnits.forEach((unit: OrganizationUnit) => {
-      values[unit.id] = item
-        ? item?.items?.find((i: JudgeResolutionItem) => {
-            return i.organization_unit.id === unit.id;
-          })?.available_slots_judges
-        : '';
-    });
-
-    return {
-      id: item?.id ?? 0,
-      user_profile_id: 1,
-      serial_number: item?.serial_number ?? '',
-      items: values,
-    };
-  };
-
   const list = useMemo(() => {
     return organizationUnits
       .filter(unit => !unit.parent_id && unit.id && unit?.title.indexOf('Sudski savjet') == -1)
@@ -104,9 +84,8 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
     register,
     handleSubmit,
     formState: {errors},
-    control,
     reset,
-  } = useForm<DecisionForm>({defaultValues: getInitialValues()});
+  } = useForm<DecisionForm>();
 
   const judgeNumberTableHead: TableHead = {
     title: 'Odluka o broju sudija',
@@ -158,10 +137,28 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
   };
 
   useEffect(() => {
-    if (getInitialValues) {
-      reset(getInitialValues());
+    const items: any = {};
+
+    // Creating inputs for each of the organization units in the table
+    organizationUnits.forEach((unit: OrganizationUnit) => {
+      items[unit.id] = item
+        ? item?.items?.find((i: JudgeResolutionItem) => {
+            return i.organization_unit.id === unit.id;
+          })?.available_slots_judges
+        : '';
+    });
+
+    const initialValues = {
+      id: item?.id ?? 0,
+      user_profile_id: 1,
+      serial_number: item?.serial_number ?? '',
+      items,
+    };
+
+    if (initialValues) {
+      reset(initialValues);
     }
-  }, [getInitialValues]);
+  }, [initialValues]);
 
   const handleInputChange = (event: any, id: any) => {
     const value = event.target.value;

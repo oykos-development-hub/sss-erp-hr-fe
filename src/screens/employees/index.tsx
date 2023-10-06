@@ -1,8 +1,6 @@
-import {ValueType} from 'client-library/dist/components/dropdown/types';
 import React, {useRef, useState} from 'react';
 import EmployeeDetails from '../../components/employeeDetails/employeeDetails';
 import EmployeesList from '../../components/employeesList/employeesList';
-import NewEmployeeSearch from '../../components/newEmployeeSearch/newEmployeeSearch';
 import useAppContext from '../../context/useAppContext';
 import useUserProfiles from '../../services/graphql/userProfile/useUserProfiles';
 import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
