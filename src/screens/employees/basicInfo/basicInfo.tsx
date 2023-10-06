@@ -74,7 +74,13 @@ export const BasicInfo: React.FC = () => {
   }, [context.countries]);
 
   const gender = watch('gender')?.id;
-  const [contract, is_judge, is_president] = watch(['contract', 'is_judge', 'is_president']);
+  const [contract, is_judge, is_president, official_personal_id, email] = watch([
+    'contract',
+    'is_judge',
+    'is_president',
+    'official_personal_id',
+    'email',
+  ]);
 
   const maritalOptions = gender === 'M' ? maleMaritalStatusOptions : femaleMaritalStatusOptions;
 
@@ -123,12 +129,28 @@ export const BasicInfo: React.FC = () => {
           },
 
           res => {
-            setError('email', {
-              type: 'custom',
-              message: res.message,
-            });
+            const emailErr = res.message === 'user_email_exists';
+            const jmbgErr = res.message === 'user_jmbg_exists';
 
-            context.alert.error('Greška. Promjene nisu sačuvane.');
+            if (emailErr) {
+              setError('email', {
+                type: 'custom',
+                message: res.message,
+              });
+            }
+
+            if (jmbgErr) {
+              setError('official_personal_id', {
+                type: 'custom',
+                message: res.message,
+              });
+            }
+
+            context.alert.error(
+              `Greška. Promjene nisu sačuvane. ${emailErr ? 'Postojeći Email ' : ''} ${
+                jmbgErr ? 'Postojeći JMBG ' : ''
+              }`,
+            );
           },
         );
       } else {
