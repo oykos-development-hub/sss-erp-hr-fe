@@ -1,6 +1,7 @@
 import {yesOrNoOptionsString} from '../../../constants';
 import * as yup from 'yup';
 import {dropdownNumberSchema, dropdownStringSchema, requiredError} from './constants';
+import {parseDateForBackend} from '../../../utils/dateUtils';
 
 export const formatData = (data: any) => {
   const isNew = !data?.id;
@@ -18,7 +19,7 @@ export const formatData = (data: any) => {
     official_personal_document_number: data?.official_personal_document_number,
     housing_description: data?.housing_description,
     middle_name: data?.middle_name,
-    date_of_birth: data?.date_of_birth,
+    date_of_birth: parseDateForBackend(data?.date_of_birth),
     country_of_birth: data?.country_of_birth?.id,
     city_of_birth: data?.city_of_birth,
     nationality: data?.nationality?.id,
@@ -37,11 +38,11 @@ export const formatData = (data: any) => {
       organization_unit_department_id: data?.contract.department_id?.id || null,
       job_position_in_organization_unit_id: data?.contract?.job_position_in_organization_unit_id?.id || null,
       contract_type_id: data?.contract?.contract_type_id?.id || null,
-      date_of_end: data?.contract?.date_of_end ? data?.contract?.date_of_end : null,
-      date_of_start: data?.contract?.date_of_start,
+      date_of_end: data?.contract?.date_of_end ? parseDateForBackend(data?.contract?.date_of_end) : null,
+      date_of_start: parseDateForBackend(data?.contract?.date_of_start),
       user_profile_id: data?.id,
       active: data?.contract?.active === false ? false : true,
-      date_of_eligibility: data?.contract.date_of_eligibility,
+      date_of_eligibility: parseDateForBackend(data?.contract.date_of_eligibility),
     },
   };
 

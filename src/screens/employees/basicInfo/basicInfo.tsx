@@ -228,14 +228,14 @@ export const BasicInfo: React.FC = () => {
     }
   }, [is_president]);
 
-  const disabledJudge = (): boolean => {
+  const isJudgeSwitchDisabled = (): boolean => {
     if (contract?.organization_unit_id?.title && contract.organization_unit_id.title?.indexOf('Sudski savjet') > -1)
       return true;
     if (isJudge) return false;
     if (checkAvailable?.judge) return false;
     return true;
   };
-  const disabledPresident = (): boolean => {
+  const isPresidentSwitchDisabled = (): boolean => {
     if (contract?.organization_unit_id?.title && contract.organization_unit_id.title?.indexOf('Sudski savjet') > -1)
       return true;
     if (isPresident) return false;
@@ -583,7 +583,7 @@ export const BasicInfo: React.FC = () => {
                     checked={value}
                     onChange={onChange}
                     content={<Typography variant="bodyMedium" content="SUDIJA:" style={{marginLeft: 10}} />}
-                    disabled={disabledJudge()}
+                    disabled={isDisabled || isJudgeSwitchDisabled()}
                   />
                 )}
               />
@@ -598,7 +598,7 @@ export const BasicInfo: React.FC = () => {
                     checked={value}
                     onChange={onChange}
                     content={<Typography variant="bodyMedium" content="PREDSJEDNIK SUDA:" style={{marginLeft: 10}} />}
-                    disabled={disabledPresident()}
+                    disabled={isDisabled || isPresidentSwitchDisabled()}
                   />
                 )}
               />
@@ -691,7 +691,7 @@ export const BasicInfo: React.FC = () => {
               <Button
                 size="lg"
                 content={<Typography variant="bodyMedium" content="Prekid radnog odnosa" />}
-                disabled={!contract}
+                disabled={!contract || isDisabled}
               />
             </FormItem>
           </FormColumn>
