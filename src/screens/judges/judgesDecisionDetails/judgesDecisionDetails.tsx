@@ -80,6 +80,14 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       });
   }, [organizationUnits, item, organizationUintCalculateEmployee]);
 
+  const handleInputChange = (event: any, id: any) => {
+    const value = event.target.value;
+    setJudgeInputs(prevState => ({
+      ...prevState,
+      [id]: value,
+    }));
+  };
+
   const {
     register,
     handleSubmit,
@@ -159,14 +167,6 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       reset(initialValues);
     }
   }, [initialValues]);
-
-  const handleInputChange = (event: any, id: any) => {
-    const value = event.target.value;
-    setJudgeInputs(prevState => ({
-      ...prevState,
-      [id]: value,
-    }));
-  };
 
   return (
     <ScreenWrapper>

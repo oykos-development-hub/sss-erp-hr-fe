@@ -24,7 +24,7 @@ export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({open, onClose, a
   const {data: planDetails} = useRevisionPlanDetails(id);
   const {mutate, loading: isSaving} = useRevisionPlanInsert();
 
-  const yearOptions = useMemo(() => yearsForDropdown(1).map(year => ({id: year.id, title: year.title})), []);
+  const yearOptions = yearsForDropdown(1).map(year => ({id: year.id, title: year.title}));
 
   const {
     register,
@@ -91,7 +91,7 @@ export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({open, onClose, a
                     name={name}
                     value={value}
                     onChange={onChange}
-                    options={yearOptions}
+                    options={yearOptions || []}
                     error={errors.year?.message as string}
                     placeholder="Izaberite godinu"
                     label="GODINA"

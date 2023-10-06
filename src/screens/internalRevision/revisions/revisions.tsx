@@ -69,31 +69,20 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
 
   const {data: revisionTypes} = useSettingsDropdownOverview({entity: 'revision_types'});
 
-  const revisorsList: DropdownDataNumber[] = useMemo(() => {
-    return data.revisors
-      ? [
-          {id: 0, title: 'Sve '},
-          ...data.revisors.map((unit: DropdownDataNumber) => {
-            return {id: unit.id, title: unit.title};
-          }),
-        ]
-      : [];
-  }, [data]);
+  const revisorsList = [
+    {id: 0, title: 'Sve '},
+    ...data.revisors.map((unit: DropdownDataNumber) => {
+      return {id: unit.id, title: unit.title};
+    }),
+  ];
 
-  const revisonTypeListOptions: DropdownDataNumber[] = useMemo(() => {
-    return revisionTypes
-      ? [
-          {id: 0, title: 'Sve '},
-          ...revisionTypes.map((unit: DropdownDataNumber) => {
-            return {id: unit.id, title: unit.title};
-          }),
-        ]
-      : [];
-  }, [data]);
+  const revisonTypeListOptions = [
+    {id: 0, title: 'Sve '},
+    ...revisionTypes.map((unit: DropdownDataNumber) => {
+      return {id: unit.id, title: unit.title};
+    }),
+  ];
 
-  console.log(revisonTypeListOptions, 'revisonTypeListOptions');
-
-  console.log(revisonTypeId, 'v');
   return (
     <ScreenWrapper>
       <RevisionListContainer>
@@ -116,9 +105,10 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
                 label="REVIZOR"
                 value={revisorsList?.find((option: any) => option?.id == revisorId) as any}
                 onChange={value => {
+                  console.log(value.id, 'value.id');
                   setRevisorId(value.id as number);
                 }}
-                options={revisorsList as any}
+                options={revisorsList || []}
               />
             </FilterContainer>
             <FilterContainer>
@@ -128,7 +118,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
                 onChange={value => {
                   setRevisonTypeId(value.id as number);
                 }}
-                options={revisonTypeListOptions as any}
+                options={revisonTypeListOptions || []}
               />
             </FilterContainer>
           </Filters>

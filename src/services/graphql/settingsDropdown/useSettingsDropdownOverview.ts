@@ -10,7 +10,6 @@ const useSettingsDropdownOverview = ({entity, page, size, id}: SettingsDropdownO
 
   const getSettingsDropdownOverview = async () => {
     const response = await GraphQL.settingsDropdownOverview({entity: entity, page: page, size: size, id: id});
-    console.log(response, 'response');
     //Ask filip if we need array of items here
     const data = response?.items || null;
 

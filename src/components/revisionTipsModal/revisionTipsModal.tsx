@@ -59,17 +59,12 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
   const implementationMonthSpan = watch('due_date');
   const secondMonthSpan = watch('new_due_date');
 
-  const revisorsList = useMemo(
-    () =>
-      data &&
-      data?.revisors?.map((unit: any) => {
-        return {
-          id: unit.id,
-          title: unit.title,
-        };
-      }),
-    [data],
-  );
+  const revisorsList = data?.revisors?.map((unit: any) => {
+    return {
+      id: unit.id,
+      title: unit.title,
+    };
+  });
 
   const onSubmit = (values: any) => {
     if (isSaving) return;
@@ -281,7 +276,7 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
                           name={name}
                           value={value as any}
                           onChange={onChange}
-                          options={revisorsList as any}
+                          options={revisorsList || []}
                           placeholder="Izaberite revizora"
                           label="IMPLEMENTACIJU PREPORUKE POTVRDIO:"
                         />

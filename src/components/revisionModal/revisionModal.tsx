@@ -50,29 +50,19 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
 
   const {data: revisionTypes} = useSettingsDropdownOverview({entity: 'revision_types'});
 
-  const revisionsList = useMemo(
-    () =>
-      revisionTypes &&
-      revisionTypes?.map(unit => {
-        return {
-          id: unit.id,
-          title: unit.title,
-        };
-      }),
-    [revisionTypes],
-  );
+  const revisionsList = revisionTypes?.map(unit => {
+    return {
+      id: unit.id,
+      title: unit.title,
+    };
+  });
 
-  const revisorsList = useMemo(
-    () =>
-      data &&
-      data?.revisors?.map((unit: any) => {
-        return {
-          id: unit.id,
-          title: unit.title,
-        };
-      }),
-    [data],
-  );
+  const revisorsList = data?.revisors?.map((unit: any) => {
+    return {
+      id: unit.id,
+      title: unit.title,
+    };
+  });
 
   const {
     register,
@@ -157,7 +147,9 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
         external_revision_subject_id: suppliers.find(
           (suppliers: any) => suppliers.id === revisionDetails.item.external_revision_subject.id,
         ),
-        revisor_id: revisorsList.find((revisorsList: any) => revisorsList.title === revisionDetails.item.revisor.title),
+        revisor_id: revisorsList?.find(
+          (revisorsList: any) => revisorsList.title === revisionDetails.item.revisor.title,
+        ),
         revision_type_id: revisionsList?.find(
           (revisionsList: any) => revisionsList.title === revisionDetails.item.revision_type.title,
         ),
@@ -293,7 +285,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
                       name={name}
                       value={value as any}
                       onChange={onChange}
-                      options={revisorsList as any}
+                      options={revisorsList || []}
                       error={errors.revisor_id?.message as string}
                       placeholder="Izaberite revizora"
                       label="REVIZOR"
@@ -310,7 +302,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
                       name={name}
                       value={value as any}
                       onChange={onChange}
-                      options={revisionsList ? revisionsList : ([] as any)}
+                      options={revisionsList || []}
                       error={errors.revision_type_id?.message as string}
                       placeholder="Izaberite vrstu revizije"
                       label="VRSTA REVIZIJE"
