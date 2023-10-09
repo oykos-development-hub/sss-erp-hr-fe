@@ -71,11 +71,7 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({jobTend
     handleEdit(id || 0);
   };
 
-  const editItem = useMemo(
-    () => applications?.items?.find((item: JobTenderApplication) => item.id === editItemId),
-    [applications, editItemId],
-  );
-
+  const editItem = applications?.items?.find((item: JobTenderApplication) => item.id === editItemId);
   return (
     <>
       <TableHeader>

@@ -84,7 +84,6 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   refetchList,
   countries,
   jobTenderId,
-  alert,
   context,
 }) => {
   const [selectedUserId, setSelectedIdUser] = useState<number>(0);
@@ -95,22 +94,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   const {userProfiles} = useUserProfiles({
     page: 1,
     size: 1000,
-    id: 0,
-    is_active: null,
-    job_position_id: {id: 0, title: ''},
-    organization_unit_id: {id: 0, title: ''},
-    type: {id: 0, title: ''},
-    name: '',
   });
-
-  const citizenshipArray = useMemo(() => {
-    return countries?.map(country => {
-      return {
-        id: country.alpha3,
-        title: country.name,
-      };
-    });
-  }, [countries]);
 
   const {
     register,
@@ -198,7 +182,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
         last_name: userData.last_name,
         official_personal_id: userData.official_personal_id,
         date_of_birth: parseToDate(userData.date_of_birth) ?? undefined,
-        citizenship: citizenshipArray?.find(c => (c.id = userData.citizenship)) || undefined,
+        citizenship: countryOptions?.find(c => (c.title = userData.citizenship)) || undefined,
         user_profile: {id: userData.id, title: `${userData.first_name} ${userData.last_name}`},
       });
     }
@@ -218,7 +202,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
           ? evaluationTypeOptions.find(st => st.id === selectedItem?.evaluation)
           : undefined,
         citizenship: selectedItem?.citizenship
-          ? citizenshipArray?.find(st => st.id === selectedItem.citizenship)
+          ? countryOptions?.find(st => st.id === selectedItem.citizenship)
           : undefined,
       });
     }

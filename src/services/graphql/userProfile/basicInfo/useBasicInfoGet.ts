@@ -15,7 +15,9 @@ const useBasicInfoGet = (id: number) => {
   };
 
   useEffect(() => {
-    fetchUserBasicInfo();
+    if (id) {
+      fetchUserBasicInfo();
+    }
   }, [id]);
 
   return {data: userBasicInfo, loading, refetch: fetchUserBasicInfo};

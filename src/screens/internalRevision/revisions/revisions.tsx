@@ -105,7 +105,6 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
                 label="REVIZOR"
                 value={revisorsList?.find((option: any) => option?.id == revisorId) as any}
                 onChange={value => {
-                  console.log(value.id, 'value.id');
                   setRevisorId(value.id as number);
                 }}
                 options={revisorsList || []}
