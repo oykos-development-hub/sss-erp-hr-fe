@@ -121,7 +121,7 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navi
 
   const title = (
     <TableTitle>
-      <TableTitleTypography variant="bodyLarge" content="Akademsko obrazovanje" />
+      <TableTitleTypography variant="bodyLarge" content="Funkcionalna znanja" />
       <AddIcon onClick={handleAdd}>
         <PlusIcon width={'18px'} stroke={Theme?.palette?.primary500} />
       </AddIcon>
