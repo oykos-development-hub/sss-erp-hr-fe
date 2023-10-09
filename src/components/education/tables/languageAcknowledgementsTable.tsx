@@ -12,11 +12,6 @@ import {educationTypes} from '../modals/constants';
 
 const tableHeads: TableHead[] = [
   {
-    title: 'Broj',
-    accessor: 'id',
-    type: 'text',
-  },
-  {
     title: 'Jezik',
     accessor: 'type',
     sortable: true,
