@@ -132,10 +132,18 @@ export const BasicInfo: React.FC = () => {
             const emailErr = res.message === 'user_email_exists';
             const jmbgErr = res.message === 'user_jmbg_exists';
 
-            setError('email', {
-              type: 'custom',
-              message: backendErrors[res.message],
-            });
+            if (emailErr) {
+              setError('email', {
+                type: 'custom',
+                message: backendErrors[res.message],
+              });
+            }
+            if (jmbgErr) {
+              setError('official_personal_id', {
+                type: 'custom',
+                message: backendErrors[res.message],
+              });
+            }
 
             context.alert.error(
               `Greška. Promjene nisu sačuvane. ${emailErr ? 'Postojeći Email ' : ''} ${
