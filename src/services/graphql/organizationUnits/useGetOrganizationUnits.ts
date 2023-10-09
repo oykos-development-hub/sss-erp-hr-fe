@@ -30,13 +30,21 @@ const useGetOrganizationUnits = (data?: GetOrganizationUnitsParams, options?: Ge
     setLoading(false);
   };
 
-  const organizationUnits = useMemo(() => items.filter(unit => !unit.parent_id), [items]);
-  const departments = useMemo(() => items.filter(unit => unit.parent_id), [items]);
+  const organizationUnits = useMemo(() => {
+    const units = items.filter(unit => !unit.parent_id);
+    if (options?.allOption) {
+      units.unshift({id: 0, title: 'Sve organizacione jedinice'} as OrganizationUnit);
+    }
+    return units;
+  }, [items]);
 
-  if (options?.allOption) {
-    departments.unshift({id: 0, title: 'Sva odjeljenja'} as OrganizationUnit);
-    organizationUnits.unshift({id: 0, title: 'Sve organizacione jedinice'} as OrganizationUnit);
-  }
+  const departments = useMemo(() => {
+    const departments = items.filter(unit => unit.parent_id);
+    if (options?.allOption) {
+      departments.unshift({id: 0, title: 'Sva odjeljenja'} as OrganizationUnit);
+    }
+    return departments;
+  }, [items]);
 
   useEffect(() => {
     fetchOrganizationUnits();
