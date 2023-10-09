@@ -1,6 +1,6 @@
 import {Button, Divider, Input, TableHead, Typography} from 'client-library';
 import {nanoid} from 'nanoid';
-import React, {ChangeEvent, useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {OverviewBox} from '../../../components/employeesList/styles';
 import useJudgeResolutionsInsert from '../../../services/graphql/judges/useJudgeResolutionInsert';
@@ -9,7 +9,6 @@ import useOrganizationUintCalculateEmployeeStats from '../../../services/graphql
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import {MainTitle} from '../../../shared/mainTitle';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
-import {DropdownDataNumber, DropdownDataString} from '../../../types/dropdownData';
 import {JudgeResolutionItem, JudgeResolutionOverview} from '../../../types/graphql/judges';
 import {ScreenProps} from '../../../types/screen-props';
 import {judgeResolutionTableHeads} from '../judgeNorms/constants';
@@ -91,12 +90,6 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
 
     let orgUnits: any[] = [];
 
-    // if (isNew) {
-    //   orgUnits = organizationUnits;
-    // } else {
-    //   orgUnits = resolutionItem?.items.map(i => i.organization_unit) ?? [];
-    // }
-
     orgUnits = organizationUnits.filter(ou => ou.title.indexOf('Sudski savjet') === -1);
 
     return orgUnits.map((orgItem: any) => {
@@ -158,7 +151,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       switch (head.accessor) {
         case 'total':
           head.renderContents = (_, resolution: JudgeResolutionItem) => {
-            const judgeDecision = watch(`resolutions[${resolution?.organization_unit?.id}].available_slots_judges`);
+            const judgeDecision = watch(`resolutions[${resolution?.organization_unit?.id}].available_slots_judges`) + 1;
             return <Typography content={judgeDecision} />;
           };
           break;
