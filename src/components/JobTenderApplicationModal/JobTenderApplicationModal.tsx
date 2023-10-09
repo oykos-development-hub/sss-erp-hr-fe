@@ -182,7 +182,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
         last_name: userData.last_name,
         official_personal_id: userData.official_personal_id,
         date_of_birth: parseToDate(userData.date_of_birth) ?? undefined,
-        citizenship: countryOptions?.find(c => (c.title = userData.citizenship)) || undefined,
+        citizenship: countryOptions?.find(c => c.id === userData.citizenship) || undefined,
         user_profile: {id: userData.id, title: `${userData.first_name} ${userData.last_name}`},
       });
     }

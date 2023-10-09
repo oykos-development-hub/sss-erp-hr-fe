@@ -32,7 +32,7 @@ const ApplicationDetailsScreen = (props: ScreenProps) => {
           <InfoPreview label="Prezime:" value={application?.last_name} />
           <InfoPreview label="Broj lične karte:" value={application?.official_personal_id} />
           <InfoPreview label="Datum rođenja:" value={parseDate(application?.date_of_birth)} />
-          <InfoPreview label="Državljanstvo:" value={application?.nationality} />
+          <InfoPreview label="Državljanstvo:" value={application?.citizenship} />
         </Details>
 
         {/* <TableHeader>
