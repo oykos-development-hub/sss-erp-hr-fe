@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import useAppContext from '../../../context/useAppContext';
 import {
   GetOrganizationUnitsOptions,
@@ -30,8 +30,8 @@ const useGetOrganizationUnits = (data?: GetOrganizationUnitsParams, options?: Ge
     setLoading(false);
   };
 
-  const organizationUnits = items.filter(unit => !unit.parent_id);
-  const departments = items.filter(unit => unit.parent_id);
+  const organizationUnits = useMemo(() => items.filter(unit => !unit.parent_id), [items]);
+  const departments = useMemo(() => items.filter(unit => unit.parent_id), [items]);
 
   if (options?.allOption) {
     departments.unshift({id: 0, title: 'Sva odjeljenja'} as OrganizationUnit);

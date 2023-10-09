@@ -1,6 +1,6 @@
-import {Button, Divider, Input, TableHead} from 'client-library';
+import {Button, Divider, Input, TableHead, Typography} from 'client-library';
 import {nanoid} from 'nanoid';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {ChangeEvent, useEffect, useMemo, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {OverviewBox} from '../../../components/employeesList/styles';
 import useJudgeResolutionsInsert from '../../../services/graphql/judges/useJudgeResolutionInsert';
@@ -9,9 +9,8 @@ import useOrganizationUintCalculateEmployeeStats from '../../../services/graphql
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import {MainTitle} from '../../../shared/mainTitle';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
-import {DropdownDataString} from '../../../types/dropdownData';
+import {DropdownDataNumber, DropdownDataString} from '../../../types/dropdownData';
 import {JudgeResolutionItem, JudgeResolutionOverview} from '../../../types/graphql/judges';
-import {OrganizationUnit} from '../../../types/graphql/organizationUnits';
 import {ScreenProps} from '../../../types/screen-props';
 import {judgeResolutionTableHeads} from '../judgeNorms/constants';
 import {Controls, CustomTable, Filters, FormFooter} from './styles';
@@ -20,15 +19,7 @@ export interface JudgesNumbersDetailsListProps extends ScreenProps {
   isNew?: boolean;
 }
 
-interface DecisionForm {
-  id: number;
-  user_profile_id: number;
-  serial_number: string;
-  year: DropdownDataString | null;
-  items: {[key: string]: number};
-}
-
-const initialValues = {
+const defaultValues = {
   available_slots_presidents: 1,
   available_slots_judges: 0,
   number_of_judges: 0,
@@ -40,103 +31,54 @@ const initialValues = {
 
 export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({context, isNew}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(isNew ? false : true);
-  const [judgeInputs, setJudgeInputs] = useState<{[key: string]: string}>({});
   const {organizationUnits} = useGetOrganizationUnits();
-  const {organizationUintCalculateEmployee} = useOrganizationUintCalculateEmployeeStats();
+  const {judgesData: realJudgeNumberData} = useOrganizationUintCalculateEmployeeStats();
+  const {data, refetch} = useJudgeResolutionsOverview({page: 1, size: 1000});
+  const {mutate} = useJudgeResolutionsInsert();
 
   const id = context.navigation.location.pathname.split('/')[4];
 
-  const {data, refetch} = useJudgeResolutionsOverview({page: 1, size: 1000});
-
-  const {mutate} = useJudgeResolutionsInsert();
-
-  const item = data?.find((i: JudgeResolutionOverview) => i.id === Number(id));
-
-  const list = useMemo(() => {
-    return organizationUnits
-      .filter(unit => !unit.parent_id && unit.id && unit?.title.indexOf('Sudski savjet') == -1)
-      .map((orgItem: OrganizationUnit) => {
-        let dataValue;
-
-        if (
-          id === 'new-decision' &&
-          Array.isArray(organizationUintCalculateEmployee) &&
-          organizationUintCalculateEmployee?.length > 0
-        )
-          dataValue = organizationUintCalculateEmployee?.find(
-            (itemEmployeeStats: JudgeResolutionItem) => itemEmployeeStats?.organization_unit?.id === orgItem.id,
-          );
-        const itemFromList = item?.items?.find((i: JudgeResolutionItem) => i.organization_unit.id === orgItem.id) ?? {
-          ...initialValues,
-          number_of_judges: dataValue?.number_of_judges,
-          number_of_presidents: dataValue?.number_of_presidents,
-          id: nanoid(),
-        };
-
-        return {
-          ...itemFromList,
-          organization_unit: {id: orgItem.id, title: orgItem.title},
-        };
-      });
-  }, [organizationUnits, item, organizationUintCalculateEmployee]);
-
-  const handleInputChange = (event: any, id: any) => {
-    const value = event.target.value;
-    setJudgeInputs(prevState => ({
-      ...prevState,
-      [id]: value,
-    }));
-  };
+  const resolutionItem = useMemo(
+    () => data.find((resolution: JudgeResolutionOverview) => resolution.id === +id),
+    [data, id],
+  );
 
   const {
     register,
     handleSubmit,
     formState: {errors},
     reset,
-  } = useForm<DecisionForm>();
+    watch,
+  } = useForm();
 
-  const judgeNumberTableHead: TableHead = {
-    title: 'Odluka o broju sudija',
-    accessor: 'available_slots_judges',
-    type: 'custom',
-    renderContents: (_, item) => (
-      <Input
-        {...register(`items.${item.organization_unit.id}`, {required: 'Ovo polje je obavezno'})}
-        disabled={isDisabled}
-        onChange={e => handleInputChange(e, item.organization_unit.id)}
-        value={judgeInputs[item.organization_unit.id]}
-      />
-    ),
-  };
+  const resolutions = watch('resolutions');
 
-  const handleSave = (values: DecisionForm, close: boolean) => {
-    setIsDisabled(true);
+  const handleSave = (values: any) => {
+    // setIsDisabled(true);
 
     const data = {
       id: values.id,
       serial_number: values.serial_number,
       year: values.year?.id ?? '',
       active: true,
-      items: Object.keys(values.items).map(key => ({
-        organization_unit_id: Number(key),
-        number_of_judges: Number(values.items[key]),
+      items: Object.keys(values.resolutions).map(key => ({
+        organization_unit_id: +key,
+        number_of_judges: +values.resolutions[key].available_slots_judges,
         number_of_presidents: 1,
-        id: item?.items.find(i => i.organization_unit.id === Number(key))?.id ?? 0,
+        id: resolutionItem?.items.find(i => i.organization_unit.id === +key)?.id ?? 0,
       })),
     };
 
+    console.log(data);
+
     mutate(
       data,
-      id => {
+      () => {
         setIsDisabled(true);
-        context.alert.success('Uspješno sačuvano.');
-        if (close) {
-          context.navigation.navigate('/hr/judges/number-decision');
-          context.breadcrumbs.remove();
-        } else {
-          refetch();
-          context.navigation.navigate(`/hr/judges/number-decision/${id}`);
-        }
+        context.alert.success('Odluka uspješno sačuvana.');
+
+        context.navigation.navigate('/hr/judges/number-decision');
+        context.breadcrumbs.remove();
       },
       () => {
         context.alert.error('Greška. Promjene nisu sačuvane.');
@@ -144,67 +86,130 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
     );
   };
 
-  useEffect(() => {
-    const items: any = {};
+  const list = useMemo(() => {
+    // Mapping through the organizationUnits and adding the corresponding data from the real, current, judge number data (if editing)
 
+    let orgUnits: any[] = [];
+
+    // if (isNew) {
+    //   orgUnits = organizationUnits;
+    // } else {
+    //   orgUnits = resolutionItem?.items.map(i => i.organization_unit) ?? [];
+    // }
+
+    orgUnits = organizationUnits.filter(ou => ou.title.indexOf('Sudski savjet') === -1);
+
+    return orgUnits.map((orgItem: any) => {
+      let realJudgeStats;
+
+      if (isNew) {
+        realJudgeStats = realJudgeNumberData?.find(
+          (resolutionItem: JudgeResolutionItem) => resolutionItem?.organization_unit?.id === orgItem.id,
+        );
+      }
+
+      const currResolutionItem = resolutionItem?.items?.find(
+        (i: JudgeResolutionItem) => i.organization_unit.id === orgItem.id,
+      ) ?? {
+        ...defaultValues,
+        number_of_judges: realJudgeStats?.number_of_judges,
+        number_of_presidents: realJudgeStats?.number_of_presidents,
+        id: nanoid(),
+      };
+
+      return {
+        ...currResolutionItem,
+        organization_unit: {id: orgItem.id, title: orgItem.title},
+      };
+    });
+  }, [realJudgeNumberData, organizationUnits, resolutionItem]);
+
+  useEffect(() => {
+    const resolutions: any = {};
+    console.log(resolutionItem);
     // Creating inputs for each of the organization units in the table
-    organizationUnits.forEach((unit: OrganizationUnit) => {
-      items[unit.id] = item
-        ? item?.items?.find((i: JudgeResolutionItem) => {
-            return i.organization_unit.id === unit.id;
-          })?.available_slots_judges
-        : '';
+    list.forEach((listItem: any) => {
+      resolutions[listItem.organization_unit.id] = {
+        ...(!isNew
+          ? resolutionItem?.items?.find((resolution: JudgeResolutionItem) => {
+              return resolution.organization_unit.id === listItem.organization_unit.id;
+            })
+          : defaultValues),
+        organization_unit: listItem.organization_unit,
+        id: nanoid(),
+      };
     });
 
     const initialValues = {
-      id: item?.id ?? 0,
+      id: resolutionItem?.id ?? 0,
       user_profile_id: 1,
-      serial_number: item?.serial_number ?? '',
-      items,
+      serial_number: resolutionItem?.serial_number ?? '',
+      resolutions,
     };
 
-    if (initialValues) {
-      reset(initialValues);
-    }
-  }, [initialValues]);
+    reset(initialValues);
+  }, [resolutionItem, list]);
+
+  const updatedTableHeads = useMemo(() => {
+    // Going throught tableHeads and adding a renderContents method to the table heads that need a dynamic input
+    const tableHeads = judgeResolutionTableHeads;
+
+    tableHeads.forEach((head: TableHead) => {
+      switch (head.accessor) {
+        case 'total':
+          head.renderContents = (_, resolution: JudgeResolutionItem) => {
+            const judgeDecision = watch(`resolutions[${resolution?.organization_unit?.id}].available_slots_judges`);
+            return <Typography content={judgeDecision} />;
+          };
+          break;
+        case 'available_slots_judges':
+          head.renderContents = (_, resolution: JudgeResolutionItem) => (
+            <Input
+              {...register(`resolutions[${resolution?.organization_unit?.id}].available_slots_judges`, {
+                required: 'Ovo polje je obavezno',
+                min: {value: 0, message: 'Broj sudija ne može biti manji od 0'},
+              })}
+              disabled={isDisabled}
+              type="number"
+            />
+          );
+          break;
+        default:
+          return;
+      }
+    });
+
+    return tableHeads;
+  }, [isDisabled, resolutionItem, list]);
 
   return (
     <ScreenWrapper>
       <OverviewBox>
         <MainTitle variant="bodyMedium" content="DETALJI ODLUKE" />
-        {/*TODO: theme color */}
         <Divider color="#615959" height="1px" />
 
         <CustomTable
+          tableHeads={updatedTableHeads}
+          data={resolutions ? Object.values(resolutions) : []}
           titleElement={
             <Filters>
               <Input
                 {...register('serial_number', {required: 'Redni broj je obavezan'})}
                 label="REDNI BROJ:"
                 style={{width: 300}}
-                error={errors.serial_number?.message}
+                error={errors.serial_number?.message as string}
                 placeholder="Unesite redni broj"
                 disabled={isDisabled}
               />
             </Filters>
           }
-          tableHeads={[
-            ...judgeResolutionTableHeads(judgeInputs).slice(0, 2),
-            judgeNumberTableHead,
-            ...judgeResolutionTableHeads(judgeInputs).slice(3),
-          ]}
-          data={(list as any) || []}
         />
         <FormFooter>
           <Controls>
             {isDisabled ? (
               <Button content="Uredi" variant="secondary" onClick={() => setIsDisabled(false)} />
             ) : (
-              <Button
-                content="Sačuvaj "
-                variant="secondary"
-                onClick={handleSubmit(values => handleSave(values, true))}
-              />
+              <Button content="Sačuvaj " variant="secondary" onClick={handleSubmit(handleSave)} />
             )}
           </Controls>
         </FormFooter>

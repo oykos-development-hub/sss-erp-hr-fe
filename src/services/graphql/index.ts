@@ -20,11 +20,23 @@ import judgeOverview from './judges/judgeOverview';
 import judgeResolutionDelete from './judges/judgeResolutionDelete';
 import judgeResolutionInsert from './judges/judgeResolutionInsert';
 import judgeResolutionOverview from './judges/judgeResolutionOverview';
-import organizationUintCalculateEmployeeStats from './judges/organizationUintCalculateEmployeeStats';
+import getOrganizationUnitRealJudgeNumberData from './judges/organizationUintCalculateEmployeeStats';
 import employeeInOrganizationUnitDelete from './organizationUnitsEmployees/employeeInOrganizationUnitDelete';
 import employeeInOrganizationUnitInsert from './organizationUnitsEmployees/employeeInOrganizationUnitInsert';
 import jobPositionInOrganizationUnitDelete from './organizationUnitsJobPositions/jobPositionInOrganizationUnitDelete';
 import jobPositionInOrganizationUnitInsert from './organizationUnitsJobPositions/jobPositionInOrganizationUnitInsert';
+import revisionDelete from './revision/revisionDelete';
+import revisionDetails from './revision/revisionDetails';
+import revisionInsert from './revision/revisionInsert';
+import revisionOverview from './revision/revisionOverview';
+import revisionTipsDelete from './revisionTips/revisionTipsDelete';
+import revisionTipsDetails from './revisionTips/revisionTipsDetails';
+import revisionTipsInsert from './revisionTips/revisionTipsInsert';
+import revisionTipsOverview from './revisionTips/revisionTipsOverview';
+import revisionPlanDelete from './revisionsPlans/revisionPlanDelete';
+import revisionPlanDetails from './revisionsPlans/revisionPlanDetails';
+import revisionPlanInsert from './revisionsPlans/revisionPlanInsert';
+import revisionPlansOverview from './revisionsPlans/revisionPlanOverview';
 import settingsDropdownOverview from './settingsDropdown/settingsDropdownOverview';
 import getSuppliersOverview from './suppliers/getSuppliers';
 import systematizationDelete from './systematization/deleteSystematization';
@@ -58,18 +70,6 @@ import salaryParamsOverview from './userProfile/salaryParams/salaryParamsOvervie
 import userProfileOverview from './userProfile/userProfileOverview';
 import GetVacation from './userProfile/vacation/vacationGet';
 import vacationInsert from './userProfile/vacation/vacationInsert';
-import revisionPlansOverview from './revisionsPlans/revisionPlanOverview';
-import revisionPlanInsert from './revisionsPlans/revisionPlanInsert';
-import revisionPlanDelete from './revisionsPlans/revisionPlanDelete';
-import revisionPlanDetails from './revisionsPlans/revisionPlanDetails';
-import revisionOverview from './revision/revisionOverview';
-import revisionInsert from './revision/revisionInsert';
-import revisionDelete from './revision/revisionDelete';
-import revisionDetails from './revision/revisionDetails';
-import revisionTipsOverview from './revisionTips/revisionTipsOverview';
-import revisionTipsDetails from './revisionTips/revisionTipsDetails';
-import revisionTipsInsert from './revisionTips/revisionTipsInsert';
-import revisionTipsDelete from './revisionTips/revisionTipsDelete';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -146,7 +146,7 @@ export const GraphQL = {
   judgeResolutionDelete: judgeResolutionDelete,
   judgeResolutionInsert: judgeResolutionInsert,
   judgeResolutionOverview: judgeResolutionOverview,
-  organizationUintCalculateEmployeeStats: organizationUintCalculateEmployeeStats,
+  getOrganizationUnitRealJudgeNumberData: getOrganizationUnitRealJudgeNumberData,
   settingsDropdownOverview: settingsDropdownOverview,
   getSuppliersOverview: getSuppliersOverview,
   getVacation: GetVacation,

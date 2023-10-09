@@ -1,7 +1,7 @@
 import {GraphQL} from '..';
 import {OrganizationUintCalculateEmployeeStatsResponse} from '../../../types/graphql/judges';
 
-const organizationUintCalculateEmployeeStats = async (): Promise<
+const getOrganizationUnitRealJudgeNumberData = async (): Promise<
   OrganizationUintCalculateEmployeeStatsResponse['data']['organizationUintCalculateEmployeeStats']
 > => {
   const response = await GraphQL.fetch(`   
@@ -30,4 +30,4 @@ const organizationUintCalculateEmployeeStats = async (): Promise<
   return response?.data?.organizationUintCalculateEmployeeStats || {};
 };
 
-export default organizationUintCalculateEmployeeStats;
+export default getOrganizationUnitRealJudgeNumberData;
