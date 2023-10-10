@@ -1,5 +1,5 @@
 import {Button, Divider, Pagination, SearchIcon, Table, Theme} from 'client-library';
-import React, {ChangeEvent, RefObject, useEffect, useRef} from 'react';
+import React, {ChangeEvent, RefObject, useEffect, useRef, useState} from 'react';
 import {statusOptions} from '../../constants';
 import {EmployeeListFilters} from '../../screens/employees';
 import {tableHeads} from '../../screens/employees/constants';
@@ -121,7 +121,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
         data={userProfileList}
         style={{marginBottom: 22}}
         isLoading={loading}
-        onRowClick={row => {
+        onRowClick={(row: any) => {
           navigation.navigate(`/hr/employees/details/${row.id}/basic-info`);
           scrollToTheNextElement(parentRef, overviewRef);
         }}

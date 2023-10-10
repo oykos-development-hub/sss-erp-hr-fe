@@ -137,9 +137,8 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       switch (head.accessor) {
         case 'total':
           head.renderContents = (_, resolution: JudgeResolutionItem) => {
-            const judgeDecision =
-              +watch(`resolutions[${resolution?.organization_unit?.id}].available_slots_judges`) + 1;
-            return <Typography content={judgeDecision} />;
+            const judgeDecision = +watch(`resolutions[${resolution?.organization_unit?.id}].available_slots_judges`);
+            return <Typography content={judgeDecision > 0 ? judgeDecision + 1 : 1} />;
           };
           break;
         case 'available_slots_judges':

@@ -1,4 +1,4 @@
-import {Typography, Dropdown, Breadcrumbs, Tabs, Input} from 'client-library';
+import {Typography, Dropdown, Breadcrumbs, Tabs, Input, Table} from 'client-library';
 import styled from 'styled-components';
 import SectionBox from '../../shared/sectionBox';
 

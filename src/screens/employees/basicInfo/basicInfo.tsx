@@ -806,13 +806,13 @@ export const BasicInfo: React.FC = () => {
                 content="Sačuvaj i zatvori"
                 variant="secondary"
                 onClick={() => handleSubmit((data: any) => handleSave(data, true))()}
-                isLoading={isCreating}
+                isLoading={isUpdating}
               />
               <Button
                 content="Sačuvaj i nastavi"
                 variant="primary"
                 onClick={() => handleSubmit((data: any) => handleSave(data, false))()}
-                isLoading={isCreating}
+                isLoading={isUpdating}
               />
             </>
           ) : (
@@ -822,7 +822,7 @@ export const BasicInfo: React.FC = () => {
               onClick={() => {
                 handleSubmit((data: any) => handleSave(data, false))();
               }}
-              isLoading={isUpdating}
+              isLoading={isCreating}
             />
           )}
         </Controls>
