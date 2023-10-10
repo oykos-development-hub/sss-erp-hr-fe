@@ -47,10 +47,10 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
     formState: {errors},
     reset,
     watch,
-  } = useForm();
+  } = useForm({mode: 'onBlur'});
 
   const resolutions = watch('resolutions');
-
+  console.log(errors);
   const handleSave = (values: any) => {
     // setIsDisabled(true);
 
@@ -130,7 +130,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
   }, [resolutionItem, list]);
 
   const updatedTableHeads = useMemo(() => {
-    // Going throught tableHeads and adding a renderContents method to the table heads that need a dynamic input
+    // Going through tableHeads and adding a renderContents method to the table heads that need a dynamic input
     const tableHeads = judgeResolutionTableHeads;
 
     tableHeads.forEach((head: TableHead) => {
@@ -143,16 +143,28 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
           };
           break;
         case 'available_slots_judges':
-          head.renderContents = (_, resolution: JudgeResolutionItem) => (
-            <Input
-              {...register(`resolutions[${resolution?.organization_unit?.id}].available_slots_judges`, {
-                required: 'Ovo polje je obavezno',
-                min: {value: 0, message: 'Broj sudija ne može biti manji od 0'},
-              })}
-              disabled={isDisabled}
-              type="number"
-            />
-          );
+          head.renderContents = (_, resolution: JudgeResolutionItem) => {
+            const numberOfJudges = +watch(`resolutions[${resolution?.organization_unit?.id}].number_of_judges`);
+            const resolutionErrors = errors?.resolutions as any;
+            return (
+              <Input
+                {...register(`resolutions[${resolution?.organization_unit?.id}].available_slots_judges`, {
+                  required: 'Ovo polje je obavezno',
+                  min: {
+                    value: numberOfJudges,
+                    message: `Broj sudija ne može biti manji od ${numberOfJudges}`,
+                  },
+                })}
+                disabled={isDisabled}
+                type="number"
+                error={
+                  resolutionErrors
+                    ? resolutionErrors[resolution?.organization_unit?.id]?.available_slots_judges?.message
+                    : ''
+                }
+              />
+            );
+          };
           break;
         default:
           return;
@@ -160,7 +172,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
     });
 
     return tableHeads;
-  }, [isDisabled, resolutionItem, list]);
+  }, [isDisabled, resolutionItem, list, errors]);
 
   return (
     <ScreenWrapper>
