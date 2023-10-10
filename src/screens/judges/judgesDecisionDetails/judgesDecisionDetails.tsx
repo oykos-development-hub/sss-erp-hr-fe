@@ -30,10 +30,12 @@ const defaultValues = {
 
 export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({context, isNew}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(isNew ? false : true);
-  const {organizationUnits} = useGetOrganizationUnits();
-  const {judgesData: realJudgeNumberData} = useOrganizationUintCalculateEmployeeStats();
-  const {data, refetch} = useJudgeResolutionsOverview({page: 1, size: 1000});
+  const {organizationUnits, loading: organizationUnitsLoading} = useGetOrganizationUnits();
+  const {judgesData: realJudgeNumberData, loading: realJudgeDataLoading} = useOrganizationUintCalculateEmployeeStats();
+  const {data, loading: judgeResolutionsLoading} = useJudgeResolutionsOverview({page: 1, size: 1000});
   const {mutate} = useJudgeResolutionsInsert();
+
+  const isLoading = organizationUnitsLoading || realJudgeDataLoading || judgeResolutionsLoading;
 
   const id = context.navigation.location.pathname.split('/')[4];
 
@@ -68,8 +70,6 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
       })),
     };
 
-    console.log(data);
-
     mutate(
       data,
       () => {
@@ -87,19 +87,14 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
 
   const list = useMemo(() => {
     // Mapping through the organizationUnits and adding the corresponding data from the real, current, judge number data (if editing)
-
     let orgUnits: any[] = [];
 
     orgUnits = organizationUnits.filter(ou => ou.title.indexOf('Sudski savjet') === -1);
 
     return orgUnits.map((orgItem: any) => {
-      let realJudgeStats;
-
-      if (isNew) {
-        realJudgeStats = realJudgeNumberData?.find(
-          (resolutionItem: JudgeResolutionItem) => resolutionItem?.organization_unit?.id === orgItem.id,
-        );
-      }
+      const realJudgeStats = realJudgeNumberData?.find(
+        (resolutionItem: JudgeResolutionItem) => resolutionItem?.organization_unit?.id === orgItem.id,
+      );
 
       const currResolutionItem = resolutionItem?.items?.find(
         (i: JudgeResolutionItem) => i.organization_unit.id === orgItem.id,
@@ -119,17 +114,11 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
 
   useEffect(() => {
     const resolutions: any = {};
-    console.log(resolutionItem);
     // Creating inputs for each of the organization units in the table
     list.forEach((listItem: any) => {
       resolutions[listItem.organization_unit.id] = {
-        ...(!isNew
-          ? resolutionItem?.items?.find((resolution: JudgeResolutionItem) => {
-              return resolution.organization_unit.id === listItem.organization_unit.id;
-            })
-          : defaultValues),
+        ...listItem,
         organization_unit: listItem.organization_unit,
-        id: nanoid(),
       };
     });
 
@@ -184,6 +173,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
 
         <CustomTable
           tableHeads={updatedTableHeads}
+          isLoading={isLoading}
           data={resolutions ? Object.values(resolutions) : []}
           titleElement={
             <Filters>

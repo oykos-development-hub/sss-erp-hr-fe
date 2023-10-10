@@ -60,6 +60,7 @@ export const BasicInfo: React.FC = () => {
     watch,
     setValue,
     resetField,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(getSchema(isNew)),
   });
@@ -265,13 +266,17 @@ export const BasicInfo: React.FC = () => {
     return true;
   };
 
+  useEffect(() => {
+    if (is_judge || is_president) clearErrors('contract.department_id');
+  }, [is_judge, is_president]);
+
   const isJobPositionInputDisabled =
     isDisabled ||
     !contract?.organization_unit_id ||
     !contract?.department_id ||
     !(contract?.contract_type_id?.title && contractPositions.indexOf(contract?.contract_type_id?.title) > -1) ||
     is_judge;
-  console.log(errors);
+
   return (
     <FormContainer>
       <FormWrapper>
