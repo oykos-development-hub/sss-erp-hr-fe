@@ -1,5 +1,7 @@
 import {TableHead, Typography} from 'client-library';
 import {parseDate} from '../../utils/dateUtils';
+import {DropdownDataNumber} from '../../types/dropdownData';
+import {UserProfile} from '../../types/graphql/userProfiles';
 
 export const tableHeads: TableHead[] = [
   {title: 'Ime i Prezime', accessor: 'full_name', sortable: true},
@@ -19,7 +21,12 @@ export const tableHeads: TableHead[] = [
     title: 'Radno mjesto',
     accessor: 'job_position',
     type: 'custom',
-    renderContents: job_position => <Typography content={job_position?.title} variant="bodyMedium" />,
+    renderContents: (job_position: DropdownDataNumber, row: UserProfile) => (
+      <Typography
+        content={row.is_judge ? 'Sudija' : row.is_judge_president ? 'Predsjednik suda' : job_position?.title}
+        variant="bodyMedium"
+      />
+    ),
   },
   {title: 'Status', accessor: 'active', type: 'badge'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
