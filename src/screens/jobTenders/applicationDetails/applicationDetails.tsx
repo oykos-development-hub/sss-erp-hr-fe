@@ -1,4 +1,3 @@
-import React from 'react';
 import {Divider, Theme} from 'client-library';
 import useJobTenderApplications from '../../../services/graphql/jobTenders/useJobTenderApplicationOverview';
 import InfoPreview from '../../../shared/infoPreview/infoPreview';
@@ -8,6 +7,7 @@ import SectionBox from '../../../shared/sectionBox';
 import {ScreenProps} from '../../../types/screen-props';
 import {parseDate} from '../../../utils/dateUtils';
 import {Details, Row} from './styles';
+import useAppContext from '../../../context/useAppContext';
 
 const ApplicationDetailsScreen = (props: ScreenProps) => {
   const {data} = useJobTenderApplications({
@@ -16,7 +16,10 @@ const ApplicationDetailsScreen = (props: ScreenProps) => {
     id: props.context.navigation.location.pathname.split('/')[4],
   });
 
+  const {countries} = useAppContext();
+
   const application = data.items[0];
+
   return (
     <ScreenWrapper>
       <SectionBox style={{marginTop: 25}}>
@@ -32,12 +35,11 @@ const ApplicationDetailsScreen = (props: ScreenProps) => {
           <InfoPreview label="Prezime:" value={application?.last_name} />
           <InfoPreview label="Broj lične karte:" value={application?.official_personal_id} />
           <InfoPreview label="Datum rođenja:" value={parseDate(application?.date_of_birth)} />
-          <InfoPreview label="Državljanstvo:" value={application?.citizenship} />
+          <InfoPreview
+            label="Državljanstvo:"
+            value={countries.find((country: any) => country.alpha3 === application?.citizenship)?.name ?? ''}
+          />
         </Details>
-
-        {/* <TableHeader>
-          <Typography variant="bodyMedium" content="APPLICATIONS" />
-        </TableHeader> */}
       </SectionBox>
     </ScreenWrapper>
   );
