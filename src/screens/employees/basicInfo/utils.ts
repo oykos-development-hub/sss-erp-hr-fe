@@ -64,10 +64,10 @@ export const booleanToYesOrNo = (value: boolean) => {
 };
 
 export const validateDateOfBirth = (jmbg: string, dateOfBirth: Date) => {
-  let year = jmbg.substring(3, 7);
+  let year = jmbg.substring(4, 7);
 
   const millennium = year.charAt(0) === '0' ? 2 : 1;
-  year = `${millennium}${year.substring(1)}`;
+  year = `${millennium}${year}`;
 
   const month = jmbg.substring(2, 4);
   const day = jmbg.substring(0, 2);

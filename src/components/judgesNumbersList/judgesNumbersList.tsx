@@ -5,11 +5,11 @@ import {JudgesNumberListFilters} from '../../screens/judges/judgesNumberDecision
 import useJudgeResolutionsDelete from '../../services/graphql/judges/useJudgeResolutionDelete';
 import {DeleteModal} from '../../shared/deleteModal/deleteModal';
 import {DropdownDataString} from '../../types/dropdownData';
-import {JudgeResolutionOverview} from '../../types/graphql/judges';
+import {JudgeResolution} from '../../types/graphql/judges';
 import {Controls, Filters, Header, MainTitle, OverviewBox} from '../judgesList/styles';
 
 export interface JudgesNumbersListProps {
-  data: JudgeResolutionOverview[];
+  data: JudgeResolution[];
   total: number;
   years: DropdownDataString[];
   filters: JudgesNumberListFilters;
@@ -35,9 +35,9 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
 
   const {mutate} = useJudgeResolutionsDelete();
 
-  const list: JudgeResolutionOverview[] = useMemo(
+  const list: JudgeResolution[] = useMemo(
     () =>
-      data?.map((item: JudgeResolutionOverview) => ({
+      data?.map((item: JudgeResolution) => ({
         ...item,
       })),
     [data],
@@ -95,6 +95,7 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
             name: 'delete',
             onClick: item => openDeleteModal(item.id),
             icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+            shouldRender: (decision: JudgeResolution) => !decision.active,
           },
         ]}
       />

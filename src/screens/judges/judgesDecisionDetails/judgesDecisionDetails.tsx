@@ -9,7 +9,7 @@ import useOrganizationUintCalculateEmployeeStats from '../../../services/graphql
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import {MainTitle} from '../../../shared/mainTitle';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
-import {JudgeResolutionItem, JudgeResolutionOverview} from '../../../types/graphql/judges';
+import {JudgeResolutionItem, JudgeResolution} from '../../../types/graphql/judges';
 import {ScreenProps} from '../../../types/screen-props';
 import {judgeResolutionTableHeads} from '../judgeNorms/constants';
 import {Controls, CustomTable, Filters, FormFooter} from './styles';
@@ -39,10 +39,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
 
   const id = context.navigation.location.pathname.split('/')[4];
 
-  const resolutionItem = useMemo(
-    () => data.find((resolution: JudgeResolutionOverview) => resolution.id === +id),
-    [data, id],
-  );
+  const resolutionItem = useMemo(() => data.find((resolution: JudgeResolution) => resolution.id === +id), [data, id]);
 
   const {
     register,
@@ -66,7 +63,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
         organization_unit_id: +key,
         number_of_judges: +values.resolutions[key].available_slots_judges,
         number_of_presidents: 1,
-        id: resolutionItem?.items.find(i => i.organization_unit.id === +key)?.id ?? 0,
+        id: resolutionItem?.items.find((i: JudgeResolutionItem) => i.organization_unit.id === +key)?.id ?? 0,
       })),
     };
 

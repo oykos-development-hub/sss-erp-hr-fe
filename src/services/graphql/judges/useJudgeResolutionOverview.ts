@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '..';
-import {JudgeResolutionOverview, JudgesResolutionsOverviewQueryParams} from '../../../types/graphql/judges';
+import {JudgeResolution, JudgesResolutionsOverviewQueryParams} from '../../../types/graphql/judges';
 
 const useJudgesResolutionOverview = ({page, size}: JudgesResolutionsOverviewQueryParams) => {
-  const [data, setData] = useState<JudgeResolutionOverview[]>([]);
+  const [data, setData] = useState<JudgeResolution[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 

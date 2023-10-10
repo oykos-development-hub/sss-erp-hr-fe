@@ -138,7 +138,7 @@ export interface JudgeResolutionItem {
   // number_of_suspended_judges: number;
 }
 
-export interface JudgeResolutionOverview {
+export interface JudgeResolution {
   id: number;
   serial_number: string;
   available_slots_judges?: number;
@@ -153,7 +153,7 @@ export interface JudgesResolutionsOverviewResponse {
       status?: string;
       message?: string;
       total?: number;
-      items?: JudgeResolutionOverview[];
+      items?: JudgeResolution[];
     };
   };
 }
@@ -181,7 +181,7 @@ export interface JudgeResolutionsResponse {
     judgeResolutions_Insert: {
       status?: string;
       message?: string;
-      item?: JudgeResolutionOverview;
+      item?: JudgeResolution;
     };
   };
 }
