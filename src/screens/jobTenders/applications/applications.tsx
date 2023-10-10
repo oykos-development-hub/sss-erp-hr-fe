@@ -47,7 +47,7 @@ const ApplicationsScreen = (props: ScreenProps) => {
   const navigateToDetails = (item: JobTenderApplication) => {
     props.context.navigation.navigate(`/hr/job-tenders/job-tender-applications/${item.id}`);
     props.context.breadcrumbs.add({
-      name: `${item.id}`,
+      name: `${item.first_name} ${item.last_name}`,
       to: `/hr/job-tenders/job-tender-applications/${item.id}`,
     });
   };

@@ -96,10 +96,10 @@ const JobTendersList: FC<JobTendersListProps> = ({
         data={data.items || []}
         style={{marginBottom: 22}}
         isLoading={loading}
-        onRowClick={item => {
+        onRowClick={(item: JobTender) => {
           navigate(`/hr/job-tenders/job-tenders-list/${item.id}`);
           context.breadcrumbs.add({
-            name: `${item.id}`,
+            name: `${item.type?.title} - ${item.serial_number}`,
             to: `/hr/job-tenders/job-tenders-list/${item.id}`,
           });
         }}
