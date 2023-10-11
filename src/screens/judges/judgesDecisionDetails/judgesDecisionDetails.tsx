@@ -141,6 +141,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({i
   const updatedTableHeads = useMemo(() => {
     // Going through tableHeads and adding a renderContents method to the table heads that need a dynamic input
     const tableHeads = judgeResolutionTableHeads;
+    const positiveIntegerRegex = /^(?:[1-9]\d*|0)?$/;
 
     tableHeads.forEach((head: TableHead) => {
       switch (head.accessor) {
@@ -163,6 +164,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({i
                     message: `Broj sudija ne može biti manji od ${numberOfJudges}`,
                   },
                 })}
+                value={watch(`resolutions[${resolution?.organization_unit?.id}].available_slots_judges`)}
                 disabled={isDisabled}
                 type="number"
                 error={

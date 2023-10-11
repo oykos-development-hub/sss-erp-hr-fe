@@ -28,6 +28,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
     control,
     formState: {errors},
     reset,
+    watch,
   } = useForm({defaultValues: item});
 
   const {mutate, loading: isSaving} = useEducationInsert();
@@ -125,6 +126,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
               leftContent={<Typography content={<div>&euro;</div>} />}
               style={{maxWidth: '300px'}}
               error={errors.price?.message as string}
+              value={watch('price')}
               type="number"
             />
           </Row>

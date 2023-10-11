@@ -7,6 +7,7 @@ const useJudgesAvailable = () => {
 
   const fetchCheckJudgeAndPresidentIsAvailable = async (organization_unit_id: number) => {
     const response = await GraphQL.judgeAndPresidentCheckIsAvailable(organization_unit_id);
+
     setData(response?.item);
   };
 

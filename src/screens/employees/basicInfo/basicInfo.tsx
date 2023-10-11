@@ -34,18 +34,18 @@ import {
   FormWrapper,
   TextWrapper,
 } from './styles';
-import {booleanToYesOrNo, formatData, getSchema} from './utils';
+import {basicInfoSchema, booleanToYesOrNo, formatData} from './utils';
 
 export const BasicInfo: React.FC = () => {
   const context = useAppContext();
 
   const {data: profileData, refetch} = useBasicInfoGet(Number(context?.navigation.location.pathname.split('/')[4]));
   const isNew = !profileData?.id;
-  const isJudge = profileData?.is_judge;
+  // const isJudge = profileData?.is_judge;
   const isPresident = profileData?.is_president;
   const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
 
-  const {organizationUnits, departments} = useGetOrganizationUnits(undefined, {allOption: true});
+  const {organizationUnits, departments} = useGetOrganizationUnits(undefined);
   const {options: contractTypes} = useSettingsDropdownOverview({entity: 'contract_types'});
   const {mutate: createBasicInfo, loading: isCreating} = useBasicInfoInsert();
   const {mutate: updateBasicInfo, loading: isUpdating} = useBasicInfoUpdate();
@@ -59,10 +59,13 @@ export const BasicInfo: React.FC = () => {
     setError,
     watch,
     setValue,
-    resetField,
     clearErrors,
   } = useForm({
-    resolver: yupResolver(getSchema(isNew)),
+    resolver: yupResolver(basicInfoSchema),
+    defaultValues: {
+      is_judge: false,
+      is_president: false,
+    },
   });
 
   const countryOptions = useMemo(() => {
@@ -75,35 +78,24 @@ export const BasicInfo: React.FC = () => {
   }, [context.countries]);
 
   const gender = watch('gender')?.id;
-  const [contract, is_judge, is_president, official_personal_id, email] = watch([
-    'contract',
-    'is_judge',
-    'is_president',
-    'official_personal_id',
-    'email',
-  ]);
+
+  const {organization_unit_id, department_id, contract_type_id, is_judge, is_president} = watch();
 
   const maritalOptions = gender === 'M' ? maleMaritalStatusOptions : femaleMaritalStatusOptions;
 
   const {checkAvailable, refetch: refetchCheckAvailable} = useJudgesAvailable();
 
-  const {positions} = useJobPositionsAvailableOrganizationUnit(
-    contract?.organization_unit_id?.id,
-    contract?.department_id?.id,
-    () => {
-      resetField('contract.job_position_in_organization_unit_id');
-    },
-  );
+  const {positions} = useJobPositionsAvailableOrganizationUnit(organization_unit_id?.id, department_id?.id);
 
   const departmentOptions = useMemo(() => {
-    if (!contract?.organization_unit_id) return [];
+    if (!organization_unit_id) return [];
 
-    if (contract?.organization_unit_id && departments && departments.length) {
-      return departments.filter((dep: any) => dep.parent_id === contract.organization_unit_id?.id);
+    if (organization_unit_id && departments && departments.length) {
+      return departments.filter((dep: any) => dep.parent_id === organization_unit_id?.id);
     } else {
       return departments;
     }
-  }, [contract?.organization_unit_id, organizationUnits]);
+  }, [organization_unit_id, organizationUnits]);
 
   const onFileUpload = (acceptedFiles: FileList) => {
     console.log('File(s) uploaded:', acceptedFiles);
@@ -206,17 +198,15 @@ export const BasicInfo: React.FC = () => {
           (opt: DropdownDataString) => opt.id === profileData?.official_personal_document_issuer,
         ),
         personal_id: profileData?.personal_id ?? '',
-        contract: {
-          organization_unit_id: profileData?.contract?.organization_unit ?? undefined,
-          department_id: profileData?.contract?.department ?? undefined,
-          job_position_in_organization_unit_id: profileData?.contract?.job_position_in_organization_unit ?? undefined,
-          contract_type_id: profileData?.contract?.contract_type ?? undefined,
-          date_of_end: parseToDate(profileData?.contract?.date_of_end),
-          date_of_start: parseToDate(profileData?.contract?.date_of_start),
-          date_of_eligibility: parseToDate(profileData?.contract?.date_of_eligibility),
-          user_profile_id: profileData?.id,
-          active: profileData?.contract?.active,
-        },
+        organization_unit_id: profileData?.contract?.organization_unit ?? undefined,
+        department_id: profileData?.contract?.department ?? undefined,
+        job_position_in_organization_unit_id: profileData?.contract?.job_position_in_organization_unit ?? undefined,
+        contract_type_id: profileData?.contract?.contract_type ?? undefined,
+        date_of_end: parseToDate(profileData?.contract?.date_of_end),
+        date_of_start: parseToDate(profileData?.contract?.date_of_start),
+        date_of_eligibility: parseToDate(profileData?.contract?.date_of_eligibility),
+        user_profile_id: profileData?.id,
+        active: profileData?.contract?.active,
       });
     }
   }, [profileData]);
@@ -232,17 +222,20 @@ export const BasicInfo: React.FC = () => {
   }, [context.navigation.location.state]);
 
   useEffect(() => {
-    if (contract?.organization_unit_id) {
-      resetField('contract.department_id');
+    if (organization_unit_id) {
       if (
-        contract?.organization_unit_id &&
-        contract?.organization_unit_id?.id &&
-        contract.organization_unit_id.title?.indexOf('Sudski savjet') == -1
+        organization_unit_id &&
+        organization_unit_id?.id &&
+        organization_unit_id.title?.indexOf('Sudski savjet') == -1
       ) {
-        refetchCheckAvailable(contract?.organization_unit_id?.id);
+        refetchCheckAvailable(organization_unit_id?.id);
+      }
+
+      if (dirtyFields.organization_unit_id) {
+        setValue('department_id', null);
       }
     }
-  }, [contract?.organization_unit_id]);
+  }, [organization_unit_id]);
 
   useEffect(() => {
     if (dirtyFields.is_president) {
@@ -251,15 +244,13 @@ export const BasicInfo: React.FC = () => {
   }, [is_president]);
 
   const isJudgeSwitchDisabled = (): boolean => {
-    if (contract?.organization_unit_id?.title && contract.organization_unit_id.title?.indexOf('Sudski savjet') > -1)
-      return true;
-    if (isJudge) return false;
+    if (organization_unit_id?.title && organization_unit_id.title?.indexOf('Sudski savjet') > -1) return true;
+    if (is_judge) return false;
     if (checkAvailable?.judge) return false;
     return true;
   };
   const isPresidentSwitchDisabled = (): boolean => {
-    if (contract?.organization_unit_id?.title && contract.organization_unit_id.title?.indexOf('Sudski savjet') > -1)
-      return true;
+    if (organization_unit_id?.title && organization_unit_id.title?.indexOf('Sudski savjet') > -1) return true;
     if (isPresident) return false;
     if (checkAvailable?.president) return false;
 
@@ -267,14 +258,18 @@ export const BasicInfo: React.FC = () => {
   };
 
   useEffect(() => {
-    if (is_judge || is_president) clearErrors('contract.department_id');
+    if (is_judge || is_president) {
+      clearErrors('department_id');
+      setValue('department_id', null);
+      setValue('job_position_in_organization_unit_id', null);
+    }
   }, [is_judge, is_president]);
 
   const isJobPositionInputDisabled =
     isDisabled ||
-    !contract?.organization_unit_id ||
-    !contract?.department_id ||
-    !(contract?.contract_type_id?.title && contractPositions.indexOf(contract?.contract_type_id?.title) > -1) ||
+    !organization_unit_id ||
+    !department_id ||
+    !(contract_type_id?.title && contractPositions.indexOf(contract_type_id?.title) > -1) ||
     is_judge;
 
   return (
@@ -548,7 +543,7 @@ export const BasicInfo: React.FC = () => {
           <FormColumn>
             <FormItem>
               <Controller
-                name="contract.organization_unit_id"
+                name="organization_unit_id"
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -558,14 +553,14 @@ export const BasicInfo: React.FC = () => {
                     isDisabled={isDisabled}
                     value={value as any}
                     options={organizationUnits}
-                    error={errors.contract?.organization_unit_id?.message}
+                    error={errors.organization_unit_id?.message}
                   />
                 )}
               />
             </FormItem>
             <FormItem>
               <Controller
-                name="contract.department_id"
+                name="department_id"
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -575,15 +570,15 @@ export const BasicInfo: React.FC = () => {
                     onChange={onChange}
                     noOptionsText="Prazno"
                     options={departmentOptions}
-                    isDisabled={isDisabled || !contract?.organization_unit_id || is_judge}
-                    error={errors.contract?.department_id?.message}
+                    isDisabled={isDisabled || !organization_unit_id || is_judge}
+                    error={errors.department_id?.message}
                   />
                 )}
               />
             </FormItem>
             <FormItem>
               <Controller
-                name="contract.job_position_in_organization_unit_id"
+                name="job_position_in_organization_unit_id"
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -594,7 +589,7 @@ export const BasicInfo: React.FC = () => {
                     noOptionsText="Prazno"
                     options={positions}
                     isDisabled={isJobPositionInputDisabled}
-                    error={errors.contract?.job_position_in_organization_unit_id?.message}
+                    error={errors.job_position_in_organization_unit_id?.message}
                   />
                 )}
               />
@@ -634,7 +629,7 @@ export const BasicInfo: React.FC = () => {
           <FormColumn>
             <FormItem>
               <Controller
-                name="contract.contract_type_id"
+                name="contract_type_id"
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -645,14 +640,14 @@ export const BasicInfo: React.FC = () => {
                     noOptionsText="Prazno"
                     options={contractTypes}
                     isDisabled={isDisabled}
-                    error={errors.contract?.contract_type_id?.message}
+                    error={errors.contract_type_id?.message}
                   />
                 )}
               />
             </FormItem>
             <FormItem>
               <Controller
-                name="contract.date_of_eligibility"
+                name="date_of_eligibility"
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Datepicker
@@ -661,7 +656,7 @@ export const BasicInfo: React.FC = () => {
                     onChange={onChange}
                     label="DATUM IZBORA:"
                     disabled={isDisabled}
-                    error={errors.contract?.date_of_eligibility?.message}
+                    error={errors.date_of_eligibility?.message}
                   />
                 )}
               />
@@ -682,7 +677,7 @@ export const BasicInfo: React.FC = () => {
           <FormColumn>
             <FormItem>
               <Controller
-                name="contract.date_of_start"
+                name="date_of_start"
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Datepicker
@@ -691,7 +686,7 @@ export const BasicInfo: React.FC = () => {
                     selected={value ? new Date(value) : ''}
                     onChange={onChange}
                     disabled={isDisabled}
-                    error={errors.contract?.date_of_start?.message}
+                    error={errors.date_of_start?.message}
                   />
                 )}
               />
@@ -699,7 +694,7 @@ export const BasicInfo: React.FC = () => {
 
             <FormItem>
               <Controller
-                name="contract.date_of_end"
+                name="date_of_end"
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Datepicker
@@ -708,7 +703,7 @@ export const BasicInfo: React.FC = () => {
                     selected={value ? new Date(value) : ''}
                     onChange={onChange}
                     disabled={isDisabled}
-                    error={errors.contract?.date_of_end?.message}
+                    error={errors.date_of_end?.message}
                   />
                 )}
               />
@@ -717,7 +712,7 @@ export const BasicInfo: React.FC = () => {
               <Button
                 size="lg"
                 content={<Typography variant="bodyMedium" content="Prekid radnog odnosa" />}
-                disabled={!contract || isDisabled}
+                disabled={isDisabled}
               />
             </FormItem>
           </FormColumn>
