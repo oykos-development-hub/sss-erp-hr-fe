@@ -169,10 +169,12 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
 
     const activeEmployeeIds = activeEmployees.map((employee: ActiveEmployee) => employee?.id);
 
-    const employeeOptions = allEmployees?.map((item: UserProfile) => ({
-      id: item.id,
-      title: `${item.first_name} ${item.last_name}`,
-    }));
+    const employeeOptions = allEmployees
+      ?.filter(emp => !emp.is_judge && !emp.is_judge_president)
+      .map((item: UserProfile) => ({
+        id: item.id,
+        title: `${item.first_name} ${item.last_name}`,
+      }));
 
     const options = employeeOptions.filter(employee => !activeEmployeeIds.includes(employee.id));
 
