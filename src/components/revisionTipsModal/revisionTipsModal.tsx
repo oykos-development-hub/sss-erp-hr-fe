@@ -159,6 +159,8 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
       title={'PREPORUKE'}
       rightButtonOnClick={handleSubmit(onSubmit)}
       buttonLoading={isSaving}
+      leftButtonText="Otkaži"
+      rightButtonText="Sačuvaj"
       content={
         <ModalForm>
           <ModalSection>

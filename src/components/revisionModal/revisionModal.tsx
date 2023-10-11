@@ -86,7 +86,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
       revision_priority: values?.revision_priority.id || null,
       revision_quartal: values?.revision_quartal.id || null,
       internal_revision_subject_id: values?.internal_revision_subject_id?.id
-        ? values?.internal_revision_subject_id?.id
+        ? [values?.internal_revision_subject_id?.id]
         : null,
       external_revision_subject_id: values?.external_revision_subject_id?.id || null,
       revisor_id: values?.revisor_id.id || null,
@@ -161,9 +161,11 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
     <Modal
       onClose={() => onClose()}
       open={open}
-      title={'DODAJ PLAN'}
+      title={'DODAJ REVIZIJU'}
       rightButtonOnClick={handleSubmit(onSubmit)}
       buttonLoading={isSaving}
+      leftButtonText="Otkaži"
+      rightButtonText="Sačuvaj"
       content={
         <ModalForm>
           <ModalSection>

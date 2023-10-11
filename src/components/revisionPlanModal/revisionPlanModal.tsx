@@ -78,6 +78,8 @@ export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({open, onClose, a
       title={'DODAJ PLAN'}
       rightButtonOnClick={handleSubmit(onSubmit)}
       buttonLoading={isSaving}
+      leftButtonText="Otkaži"
+      rightButtonText="Sačuvaj"
       content={
         <ModalForm>
           <ModalSection>
