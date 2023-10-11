@@ -36,6 +36,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   parentRef,
   loading,
 }) => {
+  const [selectedRowId, setSelectedRowId] = useState(0);
   const overviewRef = useRef<HTMLDivElement>(null);
   const state = navigation.location.state;
   const isDetails = navigation.location.pathname.split('/').length === 6;
@@ -121,9 +122,11 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
         data={userProfileList}
         style={{marginBottom: 22}}
         isLoading={loading}
-        onRowClick={(row: any) => {
+        selectedRowId={selectedRowId}
+        onRowClick={(row: UserProfile) => {
           navigation.navigate(`/hr/employees/details/${row.id}/basic-info`);
           scrollToTheNextElement(parentRef, overviewRef);
+          setSelectedRowId(row.id);
         }}
       />
       <Pagination

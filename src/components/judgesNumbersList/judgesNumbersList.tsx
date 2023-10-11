@@ -1,4 +1,4 @@
-import {Button, Divider, EditIconTwo, Pagination, Table, Theme, TrashIcon} from 'client-library';
+import {Button, Divider, EditIconTwo, Pagination, Table, Theme, TrashIcon, EyeIcon} from 'client-library';
 import React, {useMemo, useState} from 'react';
 import {judgesNumberResolutionTableHeads} from '../../screens/judges/judgeNorms/constants';
 import {JudgesNumberListFilters} from '../../screens/judges/judgesNumberDecisions/judgesNumberDecision';
@@ -90,6 +90,13 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
             name: 'edit',
             onClick: row => navigate(`/hr/judges/number-decision/${row.id}`),
             icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+            shouldRender: (decision: JudgeResolution) => !!decision.active,
+          },
+          {
+            name: 'edit',
+            onClick: row => navigate(`/hr/judges/number-decision/${row.id}`),
+            icon: <EyeIcon stroke={Theme?.palette?.gray800} />,
+            shouldRender: (decision: JudgeResolution) => !decision.active,
           },
           {
             name: 'delete',

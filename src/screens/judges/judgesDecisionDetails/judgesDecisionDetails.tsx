@@ -10,11 +10,11 @@ import useGetOrganizationUnits from '../../../services/graphql/organizationUnits
 import {MainTitle} from '../../../shared/mainTitle';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {JudgeResolutionItem, JudgeResolution} from '../../../types/graphql/judges';
-import {ScreenProps} from '../../../types/screen-props';
 import {judgeResolutionTableHeads} from '../judgeNorms/constants';
 import {Controls, CustomTable, Filters, FormFooter} from './styles';
+import useAppContext from '../../../context/useAppContext';
 
-export interface JudgesNumbersDetailsListProps extends ScreenProps {
+export interface JudgesNumbersDetailsListProps {
   isNew?: boolean;
 }
 
@@ -28,18 +28,30 @@ const defaultValues = {
   number_of_suspended_judges: 0,
 };
 
-export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({context, isNew}) => {
+export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({isNew}) => {
+  const context = useAppContext();
   const [isDisabled, setIsDisabled] = useState<boolean>(isNew ? false : true);
   const {organizationUnits, loading: organizationUnitsLoading} = useGetOrganizationUnits();
-  const {judgesData: realJudgeNumberData, loading: realJudgeDataLoading} = useOrganizationUintCalculateEmployeeStats();
+  const id = context.navigation.location.pathname.split('/')[4];
+  const {judgesData: realJudgeNumberData, loading: realJudgeDataLoading} = useOrganizationUintCalculateEmployeeStats({
+    resolution_id: isNew ? null : +id,
+    active: isNew ? true : false,
+  });
+
   const {data, loading: judgeResolutionsLoading} = useJudgeResolutionsOverview({page: 1, size: 1000});
+
   const {mutate} = useJudgeResolutionsInsert();
 
   const isLoading = organizationUnitsLoading || realJudgeDataLoading || judgeResolutionsLoading;
 
-  const id = context.navigation.location.pathname.split('/')[4];
-
   const resolutionItem = useMemo(() => data.find((resolution: JudgeResolution) => resolution.id === +id), [data, id]);
+
+  useEffect(() => {
+    // Setting the "isDisabled" state to true if the decision is not active. Inactive decisions cannot be edited.
+    if (resolutionItem) {
+      setIsDisabled(!resolutionItem?.active);
+    }
+  }, [resolutionItem]);
 
   const {
     register,
@@ -50,9 +62,9 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
   } = useForm({mode: 'onBlur'});
 
   const resolutions = watch('resolutions');
-  console.log(errors);
+
   const handleSave = (values: any) => {
-    // setIsDisabled(true);
+    setIsDisabled(true);
 
     const data = {
       id: values.id,
@@ -93,18 +105,15 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
         (resolutionItem: JudgeResolutionItem) => resolutionItem?.organization_unit?.id === orgItem.id,
       );
 
-      const currResolutionItem = resolutionItem?.items?.find(
-        (i: JudgeResolutionItem) => i.organization_unit.id === orgItem.id,
-      ) ?? {
-        ...defaultValues,
-        number_of_judges: realJudgeStats?.number_of_judges,
-        number_of_presidents: realJudgeStats?.number_of_presidents,
-        id: nanoid(),
-      };
+      const currResolutionItem =
+        resolutionItem?.items?.find((i: JudgeResolutionItem) => i.organization_unit.id === orgItem.id) ?? defaultValues;
 
       return {
         ...currResolutionItem,
         organization_unit: {id: orgItem.id, title: orgItem.title},
+        number_of_judges: realJudgeStats?.number_of_judges,
+        number_of_presidents: realJudgeStats?.number_of_presidents,
+        id: nanoid(),
       };
     });
   }, [realJudgeNumberData, organizationUnits, resolutionItem]);
@@ -197,13 +206,15 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({c
           }
         />
         <FormFooter>
-          <Controls>
-            {isDisabled ? (
-              <Button content="Uredi" variant="secondary" onClick={() => setIsDisabled(false)} />
-            ) : (
-              <Button content="Sačuvaj " variant="secondary" onClick={handleSubmit(handleSave)} />
-            )}
-          </Controls>
+          {(resolutionItem?.active || isNew) && (
+            <Controls>
+              {isDisabled ? (
+                <Button content="Uredi" variant="secondary" onClick={() => setIsDisabled(false)} />
+              ) : (
+                <Button content="Sačuvaj " variant="secondary" onClick={handleSubmit(handleSave)} />
+              )}
+            </Controls>
+          )}
         </FormFooter>
       </OverviewBox>
     </ScreenWrapper>

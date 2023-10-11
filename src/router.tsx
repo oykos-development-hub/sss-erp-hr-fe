@@ -51,9 +51,8 @@ export const Router: React.FC<MicroserviceProps> = props => {
     if (pathname === '/hr/judges') return <Judges />;
     // if (pathname === '/hr/judges') return context.navigation.navigate('judges/number-decision');
     if (pathname === '/hr/judges/number-decision') return <JudgesNumberDecisions context={context} />;
-    if (pathname === '/hr/judges/number-decision/new-decision')
-      return <JudgesNumbersDetails context={context} isNew={true} />;
-    if (judgesNumberDetailsRegex.test(pathname)) return <JudgesNumbersDetails context={context} />;
+    if (pathname === '/hr/judges/number-decision/new-decision') return <JudgesNumbersDetails isNew={true} />;
+    if (judgesNumberDetailsRegex.test(pathname)) return <JudgesNumbersDetails />;
     if (pathname === '/hr/judges/overview-judges-presidents') return <JudgeNorms context={context} />;
     if (pathname === '/hr/job-tenders') return <JobTenders />;
     // if (pathname === '/hr/job-tenders') return context.navigation.navigate('job-tenders/job-tenders-list');
