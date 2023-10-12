@@ -167,7 +167,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               label="BROJ PREDMETA:"
               error={errors.number_of_items?.message as string}
               type="number"
-              value={watch('number_of_items').toString()}
+              value={watch('number_of_items')?.toString()}
             />
           </Row>
           <Row>
@@ -177,7 +177,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               label="RIJEŠENO PREDMETA:"
               error={errors.number_of_items_solved?.message as string}
               type="number"
-              value={watch('number_of_items_solved').toString()}
+              value={watch('number_of_items_solved')?.toString()}
             />
           </Row>
         </ModalContentWrapper>
