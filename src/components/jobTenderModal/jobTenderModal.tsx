@@ -191,6 +191,7 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
               {...register('number_of_vacant_seats')}
               label="BROJ UPRAŽNJENIH MJESTA:"
               type="number"
+              value={watch('number_of_vacant_seats')?.toString()}
               disabled={isNumOfVacantSeatsDisabled}
             />
           </Row>

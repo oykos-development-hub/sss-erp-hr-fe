@@ -67,6 +67,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
     control,
     formState: {errors},
     reset,
+    watch,
   } = useForm({resolver: yupResolver(schema)});
 
   const {mutate, loading: isSaving} = useJudgeNormsInsert();
@@ -143,6 +144,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               label="UMANJENJE NORME %:"
               error={errors.number_of_norm_decrease?.message as string}
               type="number"
+              value={watch('number_of_norm_decrease')?.toString()}
             />
           </Row>
           <Row>
@@ -165,6 +167,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               label="BROJ PREDMETA:"
               error={errors.number_of_items?.message as string}
               type="number"
+              value={watch('number_of_items').toString()}
             />
           </Row>
           <Row>
@@ -174,6 +177,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               label="RIJEŠENO PREDMETA:"
               error={errors.number_of_items_solved?.message as string}
               type="number"
+              value={watch('number_of_items_solved').toString()}
             />
           </Row>
         </ModalContentWrapper>

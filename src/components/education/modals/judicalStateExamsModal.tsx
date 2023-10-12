@@ -40,6 +40,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
     formState: {errors},
     reset,
     register,
+    watch,
   } = useForm({defaultValues: initialValues});
 
   const {mutate, loading: isSaving} = useEducationInsert();
@@ -119,7 +120,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
             />
           </FormGroup>
           <FormGroup>
-            <Input {...register('score')} label="BROJ BODOVA:" type="number" />
+            <Input {...register('score')} label="BROJ BODOVA:" type="number" value={watch('score')} />
           </FormGroup>
           <FormGroup>
             <Controller
