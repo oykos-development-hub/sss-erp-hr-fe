@@ -12,7 +12,7 @@ import useJobTenderApplicationsInsert from '../../services/graphql/jobTenders/us
 import useBasicInfoGet from '../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
 import useUserProfiles from '../../services/graphql/userProfile/useUserProfiles';
 import {DropdownDataString} from '../../types/dropdownData';
-import {JobTenderApplication, JobTenderApplicationInsertParams} from '../../types/graphql/jobTenders';
+import {JobTender, JobTenderApplication, JobTenderApplicationInsertParams} from '../../types/graphql/jobTenders';
 import {MicroserviceProps} from '../../types/micro-service-props';
 import {ScreenProps} from '../../types/screen-props';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
@@ -72,9 +72,10 @@ export interface JobTenderApplicationModalModalProps extends ScreenProps {
   onClose: () => void;
   refetchList: () => void;
   countries?: any[];
-  jobTenderId: number;
   alert: any;
   context: MicroserviceProps;
+  jobTender?: JobTender;
+  applicationIds: number[];
 }
 
 export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalProps> = ({
@@ -83,8 +84,9 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   onClose,
   refetchList,
   countries,
-  jobTenderId,
   context,
+  jobTender,
+  applicationIds,
 }) => {
   const [selectedUserId, setSelectedIdUser] = useState<number>(0);
   const [confirmationModal, setConfirmationModal] = useState<boolean>(false);
@@ -120,7 +122,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
       type: values.type.id,
       date_of_application: parseDateForBackend(values?.date_of_application) ?? '',
       status: values?.status?.title,
-      job_tender_id: jobTenderId,
+      job_tender_id: jobTender?.id ?? 0,
       active: true,
     };
 
@@ -137,39 +139,67 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
     }
 
     try {
-      mutate(
-        data,
-        () => {
-          context.alert.success('Uspješno sačuvano.');
-          refetchList();
-          onClose();
-          reset();
-          if (data.status === 'Izabran' && data.type === 'external') {
-            navigateToUserCreation();
-          }
-        },
-        () => {
-          context.alert.error('Greška. Promjene nisu sačuvane.');
-          onClose();
-          reset();
-        },
-      );
+      if (data.status === 'Izabran' && data.type === 'external') {
+        navigateToUserCreation(data);
+      } else {
+        mutate(
+          data,
+          () => {
+            context.alert.success('Uspješno sačuvano.');
+            refetchList();
+            onClose();
+            reset();
+          },
+          () => {
+            context.alert.error('Greška. Promjene nisu sačuvane.');
+            onClose();
+            reset();
+          },
+        );
+      }
     } catch (e) {
       console.log(e);
     }
   };
 
-  const userOptions = [...userProfiles.map(item => ({...item, title: `${item.first_name} ${item.last_name}`}))];
+  const userOptions = useMemo(() => {
+    console.log(applicationIds);
+
+    let availableEmployees = userProfiles
+      ?.filter(item => !applicationIds.includes(item.id))
+      .map(item => ({...item, title: `${item.first_name} ${item.last_name}`}));
+
+    if (jobTender?.type?.title !== 'Javni oglas za izbor kandidata za sudije') {
+      availableEmployees = availableEmployees.filter((item: any) => item.is_judge);
+    } else {
+      availableEmployees = availableEmployees.filter((item: any) => !item.is_judge);
+    }
+
+    return availableEmployees || [];
+  }, [userProfiles, applicationIds, jobTender]);
 
   const toggleConfirmModal = () => {
     setConfirmationModal(prev => !prev);
   };
 
-  const navigateToUserCreation = () => {
+  const navigateToUserCreation = (applicantData: JobTenderApplicationInsertParams) => {
     const {first_name, last_name, date_of_birth, evaluation, citizenship, official_personal_id} = watch();
 
     context.navigation.navigate('/hr/employees/add-new', {
-      state: {user: {first_name, last_name, date_of_birth, evaluation, citizenship, official_personal_id}},
+      state: {
+        user: {
+          first_name,
+          last_name,
+          date_of_birth,
+          evaluation,
+          citizenship,
+          official_personal_id,
+          is_judge: true,
+          is_president: type?.title === 'Javni oglas za predsjednika suda',
+          organization_unit_id: jobTender?.organization_unit?.id,
+        },
+        application: applicantData,
+      },
     });
   };
 
@@ -239,6 +269,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
       };
     });
   }, [countries]);
+
   return (
     <>
       <Modal

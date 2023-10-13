@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '..';
 import {DropdownDataNumber} from '../../../types/dropdownData';
+import {QueryOptions} from '../../../types/queryOptions';
 const initialState = {items: [], total: 0, message: '', status: ''};
 
 interface UseJobTenderApplicationsParams {
@@ -13,15 +14,10 @@ interface UseJobTenderApplicationsParams {
   job_tender_id?: number;
 }
 
-const useJobTenderApplicationOverview = ({
-  page,
-  size,
-  id,
-  organization_unit_id,
-  type_id,
-  search,
-  job_tender_id,
-}: UseJobTenderApplicationsParams) => {
+const useJobTenderApplicationOverview = (
+  {page, size, id, organization_unit_id, type_id, search, job_tender_id}: UseJobTenderApplicationsParams,
+  options?: QueryOptions,
+) => {
   const [data, setData] = useState<any>(initialState);
   const [loading, setLoading] = useState(true);
 
@@ -40,7 +36,9 @@ const useJobTenderApplicationOverview = ({
   };
 
   useEffect(() => {
-    fetchJobTenderApplications();
+    if (!options?.skip) {
+      fetchJobTenderApplications();
+    }
   }, [page, size, id, organization_unit_id, type_id, search, job_tender_id]);
 
   return {data, loading, refreshData: fetchJobTenderApplications};

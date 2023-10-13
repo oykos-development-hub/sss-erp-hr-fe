@@ -34,6 +34,7 @@ import {
   FormWrapper,
   TextWrapper,
 } from './styles';
+import useJobTenderApplicationsInsert from '../../../services/graphql/jobTenders/useJobTenderApplicationInsert';
 import {basicInfoSchema, booleanToYesOrNo, formatData} from './utils';
 import {ContractEndModal} from '../../../components/contractEndModal/contractEndModal';
 
@@ -41,7 +42,9 @@ export const BasicInfo: React.FC = () => {
   const context = useAppContext();
   const profileId = Number(context?.navigation.location.pathname.split('/')[4]);
   const {data: profileData, refetch} = useBasicInfoGet(profileId);
-  const isNew = !profileData?.id;
+
+  const [creatingChosenJobApplicant, setCreatingChosenJobApplicant] = useState<boolean>(false);
+  const isNew = !profileId;
   // const isJudge = profileData?.is_judge;
   const isPresident = profileData?.is_president;
   const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
@@ -51,6 +54,8 @@ export const BasicInfo: React.FC = () => {
   const {options: contractTypes} = useSettingsDropdownOverview({entity: 'contract_types'});
   const {mutate: createBasicInfo, loading: isCreating} = useBasicInfoInsert();
   const {mutate: updateBasicInfo, loading: isUpdating} = useBasicInfoUpdate();
+  const {mutate: updateJobApplication, loading: isUpdatingApplication} = useJobTenderApplicationsInsert();
+
   const {
     register,
     handleSubmit,
@@ -110,6 +115,10 @@ export const BasicInfo: React.FC = () => {
         await createBasicInfo(
           formatData(values),
           userId => {
+            if (creatingChosenJobApplicant) {
+              updateJobTenderApplication();
+            }
+
             refetch();
             context.alert.success('Uspješno sačuvano.');
             setIsDisabled(true);
@@ -121,7 +130,6 @@ export const BasicInfo: React.FC = () => {
 
             context.navigation.navigate(`/hr/employees/details/${userId}/basic-info`, {state: {scroll: true}});
           },
-
           res => {
             const emailErr = res.message === 'user_email_exists';
             const jmbgErr = res.message === 'user_jmbg_exists';
@@ -169,6 +177,13 @@ export const BasicInfo: React.FC = () => {
     }
   };
 
+  const updateJobTenderApplication = async () => {
+    await updateJobApplication(context.navigation.location.state.application, () => {
+      context.alert.success('Uspješno izabran kandidat.');
+      context.navigation.navigate('/hr/job-tenders-list');
+    });
+  };
+
   useEffect(() => {
     refetch();
     // If new employee, enable the form immediately
@@ -214,13 +229,17 @@ export const BasicInfo: React.FC = () => {
 
   // When coming from the job tender applications, when changing an external candidates status to accepted, it leads here to create it in the system, basically becoming an internal candidate in order to be accepted
   useEffect(() => {
-    if (!context.navigation.location.state) return;
+    if (!context.navigation.location.state || !organizationUnits) return;
+
+    const {user} = context.navigation.location.state;
+    setCreatingChosenJobApplicant(true);
 
     reset({
       ...initialValues,
-      ...context.navigation.location.state.user,
+      ...user,
+      organization_unit_id: organizationUnits.find((opt: any) => opt.id === user.organization_unit_id),
     });
-  }, [context.navigation.location.state]);
+  }, [context.navigation.location.state, organizationUnits]);
 
   useEffect(() => {
     if (organization_unit_id) {
@@ -245,6 +264,7 @@ export const BasicInfo: React.FC = () => {
   }, [is_president]);
 
   const isJudgeSwitchDisabled = (): boolean => {
+    if (creatingChosenJobApplicant) return true;
     if (organization_unit_id?.title && organization_unit_id.title?.indexOf('Sudski savjet') > -1) return true;
     if (is_judge) return false;
     if (checkAvailable?.judge) return false;
@@ -252,6 +272,7 @@ export const BasicInfo: React.FC = () => {
   };
 
   const isPresidentSwitchDisabled = (): boolean => {
+    if (creatingChosenJobApplicant) return true;
     if (organization_unit_id?.title && organization_unit_id.title?.indexOf('Sudski savjet') > -1) return true;
     if (isPresident) return false;
     if (checkAvailable?.president) return false;
@@ -556,7 +577,7 @@ export const BasicInfo: React.FC = () => {
                     name={name}
                     onChange={onChange}
                     label="ORGANIZACIONA JEDINICA:"
-                    isDisabled={isDisabled}
+                    isDisabled={isDisabled || creatingChosenJobApplicant}
                     value={value as any}
                     options={organizationUnits}
                     error={errors.organization_unit_id?.message}
@@ -576,7 +597,7 @@ export const BasicInfo: React.FC = () => {
                     onChange={onChange}
                     noOptionsText="Prazno"
                     options={departmentOptions}
-                    isDisabled={isDisabled || !organization_unit_id || is_judge}
+                    isDisabled={isDisabled || !organization_unit_id || is_judge || creatingChosenJobApplicant}
                     error={errors.department_id?.message}
                   />
                 )}
@@ -594,7 +615,7 @@ export const BasicInfo: React.FC = () => {
                     value={value as any}
                     noOptionsText="Prazno"
                     options={positions}
-                    isDisabled={isJobPositionInputDisabled}
+                    isDisabled={isJobPositionInputDisabled || creatingChosenJobApplicant}
                     error={errors.job_position_in_organization_unit_id?.message}
                   />
                 )}
@@ -808,13 +829,13 @@ export const BasicInfo: React.FC = () => {
                 content="Sačuvaj i zatvori"
                 variant="secondary"
                 onClick={() => handleSubmit((data: any) => handleSave(data, true))()}
-                isLoading={isUpdating}
+                isLoading={isUpdating || isUpdatingApplication}
               />
               <Button
                 content="Sačuvaj i nastavi"
                 variant="primary"
                 onClick={() => handleSubmit((data: any) => handleSave(data, false))()}
-                isLoading={isUpdating}
+                isLoading={isUpdating || isUpdatingApplication}
               />
             </>
           ) : (

@@ -25,7 +25,7 @@ export const tableHeads: TableHead[] = [
     renderContents: (date_of_start: string) => <Typography content={date_of_start ? parseDate(date_of_start) : ''} />,
   },
   {title: 'Dokumenta', accessor: 'file_id'},
-  {title: 'Status', accessor: 'active', type: 'badge'},
+  {title: 'Status', accessor: 'active', type: 'badge', width: 150},
   {
     title: '',
     accessor: 'TABLE_ACTIONS',
@@ -115,5 +115,9 @@ export const applicationStatusOptions: DropdownDataString[] = [
   {
     id: 'accepted',
     title: 'Izabran',
+  },
+  {
+    id: 'denied',
+    title: 'Odbijen',
   },
 ];
