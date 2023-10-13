@@ -20,7 +20,7 @@ const salaryParamsOverview = async (id: number): Promise<UserProfileGetSalaryPar
             without_raise
             insurance_basis
             salary_rank
-            daily_work_hours
+            obligation_reduction
             weekly_work_hours
             education_rank
             education_naming

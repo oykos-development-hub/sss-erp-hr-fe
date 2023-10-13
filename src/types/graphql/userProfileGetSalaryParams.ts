@@ -8,10 +8,10 @@ export interface UserProfileGetSalaryParams {
   without_raise: boolean;
   insurance_basis: string;
   salary_rank: string;
-  daily_work_hours: string;
   weekly_work_hours: string;
   education_rank: string;
   education_naming: string;
+  obligation_reduction: string;
   resolution?: SalaryParamsResolution;
 }
 

@@ -31,7 +31,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
         benefited_track: data.benefited_track ? {id: 'Da', title: 'Da'} : {id: 'Ne', title: 'Ne'},
         without_raise: data.without_raise ? {id: 'Da', title: 'Da'} : {id: 'Ne', title: 'Ne'},
         insurance_basis: {id: data.insurance_basis, title: data.insurance_basis},
-        daily_work_hours: {id: data.daily_work_hours, title: data.daily_work_hours},
+        obligation_reduction: {id: data.obligation_reduction, title: data.obligation_reduction},
         weekly_work_hours: {id: data.weekly_work_hours, title: data.weekly_work_hours},
         salary_rank: {id: data.salary_rank, title: data.salary_rank},
         created_at: parseToDate(data.created_at),
@@ -239,7 +239,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
           <FormColumn>
             <FormItem>
               <Controller
-                name="daily_work_hours"
+                name="weekly_work_hours"
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
@@ -247,11 +247,11 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                     onChange={onChange}
                     label="RADNO VRIJEME:"
                     isDisabled={isDisabled}
-                    value={value as any}
+                    value={value}
                     options={[
-                      {id: '8', title: '8'},
-                      {id: '4', title: '4'},
-                      {id: '2', title: '2'},
+                      {id: '10', title: '10'},
+                      {id: '20', title: '20'},
+                      {id: '40', title: '40'},
                     ]}
                   />
                 )}
@@ -259,19 +259,19 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
             </FormItem>
             <FormItem>
               <Controller
-                name="weekly_work_hours"
+                name="obligation_reduction"
                 control={control}
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
+                    label="UMANJENJE RADNE OBAVEZE:"
+                    isDisabled={isDisabled}
                     name={name}
                     onChange={onChange}
-                    label="SEDMIČNA OBAVEZA:"
-                    isDisabled={isDisabled}
                     value={value}
                     options={[
-                      {id: '10', title: '10'},
-                      {id: '20', title: '20'},
-                      {id: '40', title: '40'},
+                      {id: '25%', title: '25%'},
+                      {id: '50%', title: '50%'},
+                      {id: '75%', title: '75%'},
                     ]}
                   />
                 )}
