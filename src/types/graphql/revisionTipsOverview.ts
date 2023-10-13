@@ -15,6 +15,8 @@ export type RevisionTipsItem = {
   file_id: number;
   created_at: string;
   updated_at: string;
+  revision_priority: string;
+  end_date: string;
 };
 
 export type RevisionTipsParams = {

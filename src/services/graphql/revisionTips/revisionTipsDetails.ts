@@ -21,6 +21,8 @@ const revisionTipsDetails = async (id: number): Promise<RevisionTipsResponse['da
                 id
                 title
             }
+            revision_priority
+            end_date
             file_id
             created_at
             updated_at

@@ -40,3 +40,20 @@ export const CheckboxContainer = styled.div`
 export const CheckboxLabel = styled(Typography)`
   margin-left: 5px;
 `;
+
+export const FileUploadWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  > div > div {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    & div > p > p {
+      font-weight: 600;
+      line-height: 20px;
+    }
+  }
+`;

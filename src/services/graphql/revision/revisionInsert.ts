@@ -13,7 +13,6 @@ const revisionInsert = async (data: revisionInsertItem): Promise<revisionInsertR
                 plan_id
                 serial_number
                 date_of_revision
-                revision_priority
                 revision_quartal
                 internal_revision_subject {
                     id

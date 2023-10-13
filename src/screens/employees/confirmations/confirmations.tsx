@@ -26,6 +26,12 @@ const tableHeads: TableHead[] = [
     renderContents: (date_of_start: string) => <Typography content={date_of_start ? parseDate(date_of_start) : ''} />,
   },
   {title: 'Svrha', accessor: 'resolution_purpose', type: 'text'},
+  {
+    title: 'Pravosnažnost',
+    accessor: 'is_affect',
+    type: 'custom',
+    renderContents: is_affect => <Typography content={is_affect ? 'Da' : 'Ne'} />,
+  },
   {title: 'Datoteka', accessor: 'file_id', type: 'text'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];

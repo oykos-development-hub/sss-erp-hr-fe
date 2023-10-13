@@ -7,7 +7,6 @@ export type RevisionItem = {
   plan_id: number;
   serial_number: string;
   date_of_revision: string;
-  revision_priority: string;
   revision_quartal: string;
   internal_revision_subject: DropdownDataNumber | null;
   external_revision_subject: DropdownDataNumber | null;

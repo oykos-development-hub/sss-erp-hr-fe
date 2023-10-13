@@ -1,3 +1,5 @@
+import {DropdownDataBoolean, DropdownDataNumber} from '../dropdownData';
+
 export type UserProfileResolutionItem = {
   id: number;
   user_profile_id?: number;
@@ -8,6 +10,7 @@ export type UserProfileResolutionItem = {
   updated_at?: string;
   file_id: number;
   resolution_type: ResolutionType | null;
+  is_affect: DropdownDataBoolean;
 };
 
 export type UserProfileResolutionForm = {
@@ -28,6 +31,7 @@ export type UserProfileResolutionParams = {
   date_of_end?: string;
   file_id: number;
   resolution_type_id: number;
+  is_affect: DropdownDataBoolean;
 };
 
 export type ResolutionType = {

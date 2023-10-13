@@ -16,6 +16,7 @@ const resolutionInsert = async (
                 id
                 title
             }
+            is_affect
             resolution_purpose
             date_of_start
             date_of_end

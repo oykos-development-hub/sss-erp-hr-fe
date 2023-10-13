@@ -1,14 +1,23 @@
-import {Datepicker, Dropdown, Input} from 'client-library';
-import React, {useEffect, useMemo, useState} from 'react';
+import {Datepicker, Dropdown, Input, FileUpload, Typography} from 'client-library';
+import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {revisionDeadlineOptions, revisionStatusOptions} from '../../constants';
+import {revisionDeadlineOptions, revisionPriorityOptions, revisionStatusOptions} from '../../constants';
 import useRevisionTipsDetails from '../../services/graphql/revisionTips/useRevisionTipsDetails';
 import useRevisionTipsInsert from '../../services/graphql/revisionTips/useRevisionTipsInsert';
 import useRevisionTipsOverview from '../../services/graphql/revisionTips/useRevisionTipsOverview';
 import {DropdownDataString} from '../../types/dropdownData';
 import {MicroserviceProps} from '../../types/micro-service-props';
 import {parseDate, parseDateForBackend} from '../../utils/dateUtils';
-import {FormGroup, FormGroupFullWidth, ModalForm, ModalSection, ModalSectionTitle, RevisionModal, Row} from './styles';
+import {
+  FileUploadWrapper,
+  FormGroup,
+  FormGroupFullWidth,
+  ModalForm,
+  ModalSection,
+  ModalSectionTitle,
+  RevisionModal,
+  Row,
+} from './styles';
 
 interface revisionPlanProps {
   open: boolean;
@@ -27,6 +36,7 @@ const InitialValues = {
   date_of_reject: '',
   date_of_execution: '',
   recommendation: '',
+  revision_priority: '',
 };
 
 export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
@@ -84,6 +94,8 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
       reasons_for_non_executing: values.reasons_for_non_executing || '',
       user_profile_id: values?.user_profile_id?.id || null,
       new_due_date: values?.new_due_date?.id,
+      revision_priority: values?.revision_priority.id || null,
+      end_date: parseDateForBackend(values?.end_date) ?? undefined,
     };
 
     mutate(
@@ -129,6 +141,10 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
         user_profile_id: revisorsList.find(
           (revisorsList: any) => revisorsList.id === revisionTipsDetails.item.user_profile.id,
         ),
+        revision_priority: revisionPriorityOptions.find(
+          (revisionPriorityOptions: any) => revisionPriorityOptions.id === revisionTipsDetails.item.revision_priority,
+        ),
+        end_date: revisionTipsDetails.item.end_date,
       });
     }
   }, [revisionTipsDetails]);
@@ -226,14 +242,35 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
                 />
               </FormGroup>
             </Row>
-            <FormGroupFullWidth>
-              <Input
-                {...register('date_of_execution')}
-                label="DATUM SPROVOĐENJA PREPORUKE:"
-                value={dateOfImplementation && parseDate(dateOfImplementation)}
-                disabled
-              />
-            </FormGroupFullWidth>
+            <Row>
+              <FormGroup>
+                <Controller
+                  control={control}
+                  name="revision_priority"
+                  rules={{required: 'Ovo polje je obavezno'}}
+                  render={({field: {name, value, onChange}}) => (
+                    <Dropdown
+                      name={name}
+                      value={value as any}
+                      onChange={onChange}
+                      options={revisionPriorityOptions}
+                      error={errors.revision_priority?.message as string}
+                      placeholder="Izaberite prioritet revizije"
+                      label="PRIORITET REVIZIJE:"
+                    />
+                  )}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Input
+                  {...register('date_of_execution')}
+                  label="DATUM SPROVOĐENJA PREPORUKE:"
+                  value={dateOfImplementation && parseDate(dateOfImplementation)}
+                  disabled
+                />
+              </FormGroup>
+            </Row>
+
             <FormGroupFullWidth>
               <Input
                 {...register('recommendation', {
@@ -245,6 +282,17 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
                 error={errors.recommendation?.message as string}
               />
             </FormGroupFullWidth>
+
+            <FileUploadWrapper>
+              <FileUpload
+                icon={<></>}
+                style={{width: '100%'}}
+                variant="secondary"
+                onUpload={(item: any) => console.log(item)}
+                note={<Typography variant="bodySmall" content="Upload dokumenta" />}
+                buttonText="Učitaj"
+              />
+            </FileUploadWrapper>
             {id > 0 && (
               <ModalSection>
                 <ModalSectionTitle content="SPROVOĐENJE REVIZIJE:" variant="bodyMedium" />
@@ -301,8 +349,8 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
                     />
                   </FormGroup>
                 </Row>
+
                 <Row>
-                  <Input {...register('reasons_for_non_executing')} label="RAZLOZI NESPROVOĐENJA:" />
                   <FormGroup>
                     <Input
                       {...register('new_date_of_execution')}
@@ -311,7 +359,24 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
                       disabled
                     />
                   </FormGroup>
+                  <FormGroup>
+                    <Controller
+                      name="end_date"
+                      control={control}
+                      render={({field: {onChange, name, value}}) => (
+                        <Datepicker
+                          onChange={onChange}
+                          label="PREPORUKA SPROVEDENA:"
+                          name={name}
+                          selected={value ? new Date(value) : ''}
+                        />
+                      )}
+                    />
+                  </FormGroup>
                 </Row>
+                <FormGroupFullWidth>
+                  <Input {...register('reasons_for_non_executing')} label="RAZLOZI NESPROVOĐENJA:" />
+                </FormGroupFullWidth>
               </ModalSection>
             )}
           </ModalSection>

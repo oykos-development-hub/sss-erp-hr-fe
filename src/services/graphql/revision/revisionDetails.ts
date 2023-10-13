@@ -16,7 +16,6 @@ const revisionDetails = async (id: number): Promise<RevisionResponse['data']['re
                 plan_id
                 serial_number
                 date_of_revision
-                revision_priority
                 revision_quartal
                 internal_revision_subject {
                     id

@@ -1,7 +1,7 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
-import {Controller, useForm} from 'react-hook-form';
+import {Controller, Form, useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {ConfirmationsModalProps} from '../../screens/employees/confirmations/types';
 import useResolutionInsert from '../../services/graphql/userProfile/resolution/useResolutionInsert';
@@ -10,11 +10,13 @@ import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
 import useSettingsDropdownOverview from '../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 import {resolutionTypes} from '../education/modals/constants';
+import {yesOrNoOptionsString} from '../../constants';
 
 const confirmationSchema = yup.object().shape({
   resolution_purpose: yup.string(),
   date_of_start: yup.date().required('Ovo polje je obavezno'),
   resolution_type: yup.object().required('Ovo polje je obavezno'),
+  is_affect: yup.object().default(undefined).shape({id: yup.string(), title: yup.string()}),
 });
 
 export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
@@ -61,6 +63,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
       file_id: value?.file_id || 0,
       resolution_purpose: value?.resolution_purpose || '',
       resolution_type_id: value?.resolution_type.id || null,
+      is_affect: value?.is_affect?.id === 'Da' ? true : false,
     };
 
     delete payload.created_at;
@@ -87,6 +90,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
         ...selectedItem,
         date_of_end: parseToDate(selectedItem?.date_of_end),
         date_of_start: parseToDate(selectedItem?.date_of_start),
+        is_affect: {id: selectedItem?.is_affect ? 'Da' : 'Ne', title: selectedItem?.is_affect ? 'Da' : 'Ne'},
       });
     }
   }, [selectedItem]);
@@ -123,7 +127,25 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
               />
             )}
           </FormGroup>
-
+          <FormGroup>
+            <Controller
+              name="is_affect"
+              control={control}
+              render={({field: {onChange, name, value}}) => {
+                return (
+                  <Dropdown
+                    onChange={onChange}
+                    value={value as any}
+                    name={name}
+                    label="PRAVOSNAŽNOST:"
+                    options={yesOrNoOptionsString}
+                    error={errors.is_affect?.message}
+                    placeholder="Izaberite pravosnažnost:"
+                  />
+                );
+              }}
+            />
+          </FormGroup>
           <FormGroup>
             <Controller
               name="date_of_start"

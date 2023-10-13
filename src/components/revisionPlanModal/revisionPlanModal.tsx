@@ -1,11 +1,10 @@
-import React from 'react';
 import {Dropdown, Input} from 'client-library';
+import React, {useEffect} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import useRevisionPlanDetails from '../../services/graphql/revisionsPlans/useRevisionPlanDetails';
 import useRevisionPlanInsert from '../../services/graphql/revisionsPlans/useRevisionPlanInsert';
 import {yearsForDropdown} from '../../utils/constants';
 import {FormGroup, ModalForm, ModalSection, RevisionModal} from './styles';
-import useRevisionPlanDetails from '../../services/graphql/revisionsPlans/useRevisionPlanDetails';
-import {useEffect, useMemo} from 'react';
 
 interface RevisionPlanProps {
   open: boolean;

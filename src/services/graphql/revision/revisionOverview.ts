@@ -23,7 +23,6 @@ const revisionOverview = async (
             plan_id
             serial_number
             date_of_revision
-            revision_priority
             revision_quartal
             internal_revision_subject {
                 id

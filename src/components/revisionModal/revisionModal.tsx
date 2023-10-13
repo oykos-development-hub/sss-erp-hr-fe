@@ -1,7 +1,8 @@
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {quarterOptions, revisionPriorityOptions} from '../../constants';
+import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useRevisionDetails from '../../services/graphql/revision/useRevisionDetails';
 import useRevisionInsert from '../../services/graphql/revision/useRevisionInsert';
 import useRevisionOverview from '../../services/graphql/revision/useRevisionOverview';
@@ -9,7 +10,7 @@ import useSettingsDropdownOverview from '../../services/graphql/settingsDropdown
 import useSuppliersOverview from '../../services/graphql/suppliers/useGetSuppliersOverview';
 import {revisionInsertItem} from '../../types/graphql/revisionInsert';
 import {FileUploadWrapper, FormGroup, ModalForm, ModalSection, Row} from './styles';
-import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
+import {FormGroupFullWidth} from '../revisionTipsModal/styles';
 
 interface revisionProps {
   open: boolean;
@@ -83,7 +84,6 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
       plan_id: planId,
       serial_number: values?.serial_number || null,
       date_of_revision: values?.date_of_revision || null,
-      revision_priority: values?.revision_priority.id || null,
       revision_quartal: values?.revision_quartal.id || null,
       internal_revision_subject_id: values?.internal_revision_subject_id?.id
         ? [values?.internal_revision_subject_id?.id]
@@ -134,9 +134,6 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
         plan_id: revisionDetails.item.plan_id,
         serial_number: revisionDetails.item.serial_number,
         date_of_revision: revisionDetails.item.date_of_revision,
-        revision_priority: revisionPriorityOptions.find(
-          (revisionPriorityOptions: any) => revisionPriorityOptions.id === revisionDetails.item.revision_priority,
-        ),
         revision_quartal: quarterOptions.find(
           (quarterOptions: any) => quarterOptions.id === revisionDetails.item.revision_quartal,
         ),
@@ -187,60 +184,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
                 />
               </FormGroup>
             </Row>
-            <Row>
-              <FormGroup>
-                <Controller
-                  name="date_of_revision"
-                  control={control}
-                  rules={{required: 'Ovo polje je obavezno'}}
-                  render={({field: {onChange, name, value}}) => (
-                    <Datepicker
-                      onChange={onChange}
-                      label="DATUM REVIZIJE:"
-                      name={name}
-                      selected={value ? new Date(value) : ''}
-                      error={errors.date_of_revision?.message as string}
-                    />
-                  )}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Controller
-                  control={control}
-                  name="revision_priority"
-                  rules={{required: 'Ovo polje je obavezno'}}
-                  render={({field: {name, value, onChange}}) => (
-                    <Dropdown
-                      name={name}
-                      value={value as any}
-                      onChange={onChange}
-                      options={revisionPriorityOptions}
-                      error={errors.revision_priority?.message as string}
-                      placeholder="Izaberite prioritet revizije"
-                      label="PRIORITET REVIZIJE:"
-                    />
-                  )}
-                />
-              </FormGroup>
-            </Row>
-            <Row>
-              <Controller
-                control={control}
-                name="revision_quartal"
-                rules={{required: 'Ovo polje je obavezno'}}
-                render={({field: {name, value, onChange}}) => (
-                  <Dropdown
-                    name={name}
-                    value={value as any}
-                    onChange={onChange}
-                    options={quarterOptions}
-                    error={errors.revision_quartal?.message as string}
-                    placeholder="Izaberite kvartal"
-                    label="KVARTAL ZA SPROVOĐENJE REVIZIJE:"
-                  />
-                )}
-              />
-            </Row>
+
             <Row>
               <FormGroup>
                 <Controller
@@ -312,6 +256,42 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
                   )}
                 />
               </FormGroup>
+            </Row>
+            <Row>
+              <FormGroup>
+                <Controller
+                  name="date_of_revision"
+                  control={control}
+                  rules={{required: 'Ovo polje je obavezno'}}
+                  render={({field: {onChange, name, value}}) => (
+                    <Datepicker
+                      onChange={onChange}
+                      label="DATUM REVIZIJE:"
+                      name={name}
+                      selected={value ? new Date(value) : ''}
+                      error={errors.date_of_revision?.message as string}
+                    />
+                  )}
+                />
+              </FormGroup>
+              <FormGroupFullWidth>
+                <Controller
+                  control={control}
+                  name="revision_quartal"
+                  rules={{required: 'Ovo polje je obavezno'}}
+                  render={({field: {name, value, onChange}}) => (
+                    <Dropdown
+                      name={name}
+                      value={value as any}
+                      onChange={onChange}
+                      options={quarterOptions}
+                      error={errors.revision_quartal?.message as string}
+                      placeholder="Izaberite kvartal"
+                      label="KVARTAL ZA SPROVOĐENJE REVIZIJE:"
+                    />
+                  )}
+                />
+              </FormGroupFullWidth>
             </Row>
           </ModalSection>
           <FileUploadWrapper>

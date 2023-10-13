@@ -5,6 +5,8 @@ export type revisionTipsInsertItem = {
   date_of_accept: string;
   due_date: number;
   recommendation: string;
+  revision_priority: string;
+  end_date: string;
 };
 
 export type revisionTipsInsertResponse = {

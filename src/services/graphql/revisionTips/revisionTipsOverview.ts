@@ -24,6 +24,8 @@ const revisionTipsOverview = async (
             status
             documents
             reasons_for_non_executing
+            revision_priority
+            end_date
             user_profile {
                 id
                 title
