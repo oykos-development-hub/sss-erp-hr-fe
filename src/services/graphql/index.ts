@@ -43,6 +43,7 @@ import systematizationDelete from './systematization/deleteSystematization';
 import systematizationDetails from './systematization/getSystematizationDetails';
 import getSystematizations from './systematization/getSystematizations';
 import insertSystematization from './systematization/insertSystematization';
+import terminateEmployment from './terminateEmployment/terminateEmployment';
 import absentDelete from './userProfile/absents/deleteAbsence';
 import absentOverview from './userProfile/absents/getAbsence';
 import absentTypesOverview from './userProfile/absents/getAbsenceTypes';
@@ -159,4 +160,5 @@ export const GraphQL = {
   revisionTipsDetails: revisionTipsDetails,
   revisionTipsInsert: revisionTipsInsert,
   revisionTipsDelete: revisionTipsDelete,
+  terminateEmployment: terminateEmployment,
 };

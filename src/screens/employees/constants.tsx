@@ -1,7 +1,16 @@
-import {TableHead, Typography} from 'client-library';
+import {TableHead, Typography, Badge} from 'client-library';
 import {parseDate} from '../../utils/dateUtils';
 import {DropdownDataNumber} from '../../types/dropdownData';
 import {UserProfile} from '../../types/graphql/userProfiles';
+
+const resolveVariant = (id: number) => {
+  switch (id) {
+    case 0:
+      return 'success';
+    case 1:
+      return 'warning';
+  }
+};
 
 export const tableHeads: TableHead[] = [
   {title: 'Ime i Prezime', accessor: 'full_name', sortable: true},
@@ -28,7 +37,17 @@ export const tableHeads: TableHead[] = [
       />
     ),
   },
-  {title: 'Status', accessor: 'active', type: 'badge'},
+  {
+    title: 'Status',
+    accessor: 'active',
+    type: 'custom',
+    renderContents: (active, row) =>
+      row.active === 'Aktivan' ? (
+        <Badge style={{maxWidth: 150}} content={<Typography content="Aktivan" />} variant="success" />
+      ) : (
+        <Badge style={{maxWidth: 150}} content={<Typography content="Neaktivan" />} variant="warning" />
+      ),
+  },
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];
 

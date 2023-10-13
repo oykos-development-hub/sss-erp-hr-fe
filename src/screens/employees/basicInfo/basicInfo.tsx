@@ -35,21 +35,22 @@ import {
   TextWrapper,
 } from './styles';
 import {basicInfoSchema, booleanToYesOrNo, formatData} from './utils';
+import {ContractEndModal} from '../../../components/contractEndModal/contractEndModal';
 
 export const BasicInfo: React.FC = () => {
   const context = useAppContext();
-
-  const {data: profileData, refetch} = useBasicInfoGet(Number(context?.navigation.location.pathname.split('/')[4]));
+  const profileId = Number(context?.navigation.location.pathname.split('/')[4]);
+  const {data: profileData, refetch} = useBasicInfoGet(profileId);
   const isNew = !profileData?.id;
   // const isJudge = profileData?.is_judge;
   const isPresident = profileData?.is_president;
   const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
+  const [openContractEndModal, setOpenCotractEndModal] = useState<boolean>(false);
 
   const {organizationUnits, departments} = useGetOrganizationUnits(undefined);
   const {options: contractTypes} = useSettingsDropdownOverview({entity: 'contract_types'});
   const {mutate: createBasicInfo, loading: isCreating} = useBasicInfoInsert();
   const {mutate: updateBasicInfo, loading: isUpdating} = useBasicInfoUpdate();
-
   const {
     register,
     handleSubmit,
@@ -249,6 +250,7 @@ export const BasicInfo: React.FC = () => {
     if (checkAvailable?.judge) return false;
     return true;
   };
+
   const isPresidentSwitchDisabled = (): boolean => {
     if (organization_unit_id?.title && organization_unit_id.title?.indexOf('Sudski savjet') > -1) return true;
     if (isPresident) return false;
@@ -271,6 +273,10 @@ export const BasicInfo: React.FC = () => {
     !department_id ||
     !(contract_type_id?.title && contractPositions.indexOf(contract_type_id?.title) > -1) ||
     is_judge;
+
+  const toggleContractEndModal = () => {
+    setOpenCotractEndModal(!openContractEndModal);
+  };
 
   return (
     <FormContainer>
@@ -713,6 +719,7 @@ export const BasicInfo: React.FC = () => {
                 size="lg"
                 content={<Typography variant="bodyMedium" content="Prekid radnog odnosa" />}
                 disabled={isDisabled}
+                onClick={() => setOpenCotractEndModal(true)}
               />
             </FormItem>
           </FormColumn>
@@ -822,6 +829,14 @@ export const BasicInfo: React.FC = () => {
           )}
         </Controls>
       </FormFooter>
+      {openContractEndModal && (
+        <ContractEndModal
+          open={true}
+          onClose={() => toggleContractEndModal()}
+          profileId={profileId}
+          context={context}
+        />
+      )}
     </FormContainer>
   );
 };
