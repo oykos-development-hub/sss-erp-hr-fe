@@ -182,6 +182,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
     setConfirmationModal(prev => !prev);
   };
 
+  const nationality = watch('citizenship');
   const navigateToUserCreation = (applicantData: JobTenderApplicationInsertParams) => {
     const {first_name, last_name, date_of_birth, evaluation, citizenship, official_personal_id} = watch();
 
@@ -192,7 +193,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
           last_name,
           date_of_birth,
           evaluation,
-          citizenship,
+          nationality,
           official_personal_id,
           is_judge: true,
           is_president: type?.title === 'Javni oglas za predsjednika suda',
@@ -366,7 +367,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                       value={value as any}
                       name={name}
                       style={{width: '100%'}}
-                      label="DRŽAVLJANSTVO:"
+                      label="NACIONALNOST:"
                       options={countryOptions || []}
                       error={errors.citizenship?.message as string}
                       isDisabled={type?.id === 'internal'}
