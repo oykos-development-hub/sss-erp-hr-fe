@@ -11,7 +11,6 @@ export const RevisionTableHeads: TableHead[] = [
     type: 'custom',
     renderContents: item => <Typography variant="bodyMedium" content={parseDate(item)} />,
   },
-  {title: 'Prioritet revizije', accessor: 'revision_priority'},
   {title: 'Kvartal', accessor: 'revision_quartal'},
   {
     title: 'Subjekt revizije',
