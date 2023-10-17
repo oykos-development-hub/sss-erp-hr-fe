@@ -9,8 +9,9 @@ import useRevisionOverview from '../../services/graphql/revision/useRevisionOver
 import useSettingsDropdownOverview from '../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 import useSuppliersOverview from '../../services/graphql/suppliers/useGetSuppliersOverview';
 import {revisionInsertItem} from '../../types/graphql/revisionInsert';
-import {FileUploadWrapper, FormGroup, ModalForm, ModalSection, Row} from './styles';
+import {Column, FileUploadWrapper, FormGroup, ModalForm, ModalSection, Row} from './styles';
 import {FormGroupFullWidth} from '../revisionTipsModal/styles';
+import {DropdownDataNumber} from '../../types/dropdownData';
 
 interface revisionProps {
   open: boolean;
@@ -29,7 +30,7 @@ const InitialValues = {
   date_of_revision: '',
   revision_priority: '',
   revision_quartal: '',
-  internal_revision_subject_id: null,
+  internal_revision_subject_id: [],
   external_revision_subject_id: null,
   revisor_id: null,
   revision_type_id: null,
@@ -39,7 +40,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
   const {revisionDetails} = useRevisionDetails(id);
   const {mutate, loading: isSaving} = useRevisionInsert();
   const {suppliers} = useSuppliersOverview();
-  const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
+  const {organizationUnits} = useGetOrganizationUnits(undefined);
   const {data} = useRevisionOverview({
     page: 1000,
     size: 1000,
@@ -85,11 +86,9 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
       serial_number: values?.serial_number || null,
       date_of_revision: values?.date_of_revision || null,
       revision_quartal: values?.revision_quartal.id || null,
-      internal_revision_subject_id: values?.internal_revision_subject_id?.id
-        ? [values?.internal_revision_subject_id?.id]
-        : null,
+      internal_revision_subject_id: values?.internal_revision_subject_id?.map((item: any) => item.value),
       external_revision_subject_id: values?.external_revision_subject_id?.id || null,
-      revisor_id: values?.revisor_id.id || null,
+      revisor_id: values?.revisor_id?.map((item: any) => item.value),
       revision_type_id: values?.revision_type_id.id || null,
     };
 
@@ -137,16 +136,17 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
         revision_quartal: quarterOptions.find(
           (quarterOptions: any) => quarterOptions.id === revisionDetails.item.revision_quartal,
         ),
-        internal_revision_subject_id: organizationUnits.find(
-          (organizationUnitsList: any) =>
-            organizationUnitsList.id === revisionDetails.item.internal_revision_subject.id,
-        ),
+        internal_revision_subject_id: revisionDetails.item.internal_revision_subject.map((item: any) => ({
+          value: item.id,
+          label: item.title,
+        })),
         external_revision_subject_id: suppliers.find(
           (suppliers: any) => suppliers.id === revisionDetails.item.external_revision_subject.id,
         ),
-        revisor_id: revisorsList?.find(
-          (revisorsList: any) => revisorsList.title === revisionDetails.item.revisor.title,
-        ),
+        revisor_id: revisionDetails.item.revisor.map((item: any) => ({
+          value: item.id,
+          label: item.title,
+        })),
         revision_type_id: revisionsList?.find(
           (revisionsList: any) => revisionsList.title === revisionDetails.item.revision_type.title,
         ),
@@ -163,6 +163,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
       buttonLoading={isSaving}
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
+      width={650}
       content={
         <ModalForm>
           <ModalSection>
@@ -185,7 +186,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
               </FormGroup>
             </Row>
 
-            <Row>
+            <Column>
               <FormGroup>
                 <Controller
                   control={control}
@@ -199,6 +200,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
                       error={errors.internal_revision_subject_id?.message as string}
                       placeholder="Izaberite subjekt"
                       label="SUBJEKT REVIZIJE (interna):"
+                      isMulti
                     />
                   )}
                 />
@@ -220,7 +222,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
                   )}
                 />
               </FormGroup>
-            </Row>
+            </Column>
             <Row>
               <FormGroup>
                 <Controller
@@ -235,6 +237,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
                       error={errors.revisor_id?.message as string}
                       placeholder="Izaberite revizora"
                       label="REVIZOR"
+                      isMulti
                     />
                   )}
                 />

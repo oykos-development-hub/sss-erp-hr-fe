@@ -1,6 +1,7 @@
 import React from 'react';
 import {TableHead, Typography} from 'client-library';
 import {parseDate} from '../../../utils/dateUtils';
+import {DropdownDataNumber} from '../../../types/dropdownData';
 
 export const RevisionTableHeads: TableHead[] = [
   {title: 'Naziv revizije', accessor: 'title'},
@@ -17,14 +18,21 @@ export const RevisionTableHeads: TableHead[] = [
     accessor: '',
     type: 'custom',
     renderContents: (_, row) => {
-      return (
-        <Typography
-          variant="bodyMedium"
-          content={
-            row.internal_revision_subject.id ? row.internal_revision_subject.title : row.external_revision_subject.title
-          }
-        />
-      );
+      let subject;
+
+      if (row.internal_revision_subject) {
+        subject = (
+          <div>
+            {row.internal_revision_subject.map((org: DropdownDataNumber) => (
+              <Typography variant="bodyMedium" key={org.id} content={org.title} />
+            ))}
+          </div>
+        );
+      } else {
+        subject = <Typography variant="bodyMedium" content={row.external_revision_subject.title} />;
+      }
+
+      return subject;
     },
   },
   {

@@ -181,6 +181,7 @@ export const BasicInfo: React.FC = () => {
     await updateJobApplication(context.navigation.location.state.application, () => {
       context.alert.success('Uspješno izabran kandidat.');
       context.navigation.navigate('/hr/job-tenders-list');
+      context.navigation.location.state = {};
     });
   };
 

@@ -24,6 +24,13 @@ export const Row = styled.div`
   }
 `;
 
+export const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  gap: 20px;
+`;
+
 export const CheckboxContainer = styled.div`
   display: flex;
   align-items: center;
