@@ -33,9 +33,7 @@ export const tableHeadsAbsence: TableHead[] = [
 
       for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
         const dayOfWeek = d.getDay();
-        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-          numberOfDays += 1;
-        }
+        numberOfDays += 1;
       }
 
       return <Typography variant="bodyMedium" content={numberOfDays} />;
