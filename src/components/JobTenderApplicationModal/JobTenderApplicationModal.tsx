@@ -163,8 +163,6 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   };
 
   const userOptions = useMemo(() => {
-    console.log(applicationIds);
-
     let availableEmployees = userProfiles
       ?.filter(item => !applicationIds.includes(item.id))
       .map(item => ({...item, title: `${item.first_name} ${item.last_name}`}));

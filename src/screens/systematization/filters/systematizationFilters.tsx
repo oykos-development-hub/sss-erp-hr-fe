@@ -11,7 +11,6 @@ export const SystematizationFilters: React.FC<SystematizationFiltersProps> = ({s
 
   const onFilterChange = (name: string, value: any) => {
     if (name === 'search') {
-      console.log(value);
       setFilters('search', value.target.value);
     } else {
       setFilters(name, value.id);

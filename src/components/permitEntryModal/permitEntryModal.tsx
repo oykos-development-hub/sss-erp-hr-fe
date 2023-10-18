@@ -78,8 +78,6 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
 
   const indefinite = watch('residence_permit_indefinite_length');
 
-  console.log(errors);
-
   const {mutate, loading: isSaving} = useInsertForeignerPermits();
 
   useEffect(() => {
