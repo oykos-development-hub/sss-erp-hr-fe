@@ -12,7 +12,7 @@ import {
   yesOrNoOptionsString,
 } from '../../../constants';
 import useAppContext from '../../../context/useAppContext';
-import useJobPositionsAvailableOrganizationUnit from '../../../services/graphql/jobPositions/useJobPositionsAvailableOrganizationUnit';
+import useGetAvailableJobPositions from '../../../services/graphql/jobPositions/useGetAvailableJobPositions';
 import useJudgesAvailable from '../../../services/graphql/judges/useJudgesAvailable';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
@@ -91,7 +91,7 @@ export const BasicInfo: React.FC = () => {
 
   const {checkAvailable, refetch: refetchCheckAvailable} = useJudgesAvailable();
 
-  const {positions} = useJobPositionsAvailableOrganizationUnit(organization_unit_id?.id, department_id?.id);
+  const {availableJobPositions} = useGetAvailableJobPositions(organization_unit_id?.id, department_id?.id);
 
   const departmentOptions = useMemo(() => {
     if (!organization_unit_id) return [];
@@ -615,7 +615,7 @@ export const BasicInfo: React.FC = () => {
                     label="RADNO MJESTO:"
                     value={value as any}
                     noOptionsText="Prazno"
-                    options={positions}
+                    options={availableJobPositions}
                     isDisabled={isJobPositionInputDisabled || creatingChosenJobApplicant}
                     error={errors.job_position_in_organization_unit_id?.message}
                   />

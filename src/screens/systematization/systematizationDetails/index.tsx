@@ -6,7 +6,6 @@ import {StyledTabs} from '../../../components/employeeDetails/styles';
 import {OverviewBox} from '../../../components/employeesList/styles';
 import {OrganizationalUnitModal} from '../../../components/organizationUnitModal/organizationUnitModal';
 import useAppContext from '../../../context/useAppContext';
-import useJobPositions from '../../../services/graphql/jobPositions/useJobPositionOverview';
 import useDeleteOrganizationUnit from '../../../services/graphql/organizationUnits/useDeleteOrganizationUnit';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useGetSystematizationDetails from '../../../services/graphql/systematization/useGetSystematizationDetails';
@@ -25,6 +24,7 @@ import Departments from './departments/departments';
 import {Footer} from './footer/footer';
 import {PrintPage} from './printPage/printPage';
 import {FileUploadWrapper, MainWrapper, Row, TitleWrapper, UploadWrapper} from './styles';
+import useGetJobPositions from '../../../services/graphql/jobPositions/useGetJobPositions';
 
 const initialValues: any = {
   organization_unit: null,
@@ -57,7 +57,7 @@ export const SystematizationDetails: React.FC = () => {
 
   const {systematizationDetails, refetch} = useGetSystematizationDetails(+systematizationId);
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
-  const {data: jobPositionData} = useJobPositions('');
+  const {jobPositions} = useGetJobPositions('');
   const {userProfiles, refetch: refetchEmployees} = useUserProfiles({
     page: 1,
     size: 100,
@@ -238,7 +238,7 @@ export const SystematizationDetails: React.FC = () => {
                 systematizationId={systematizationId}
                 refetchDetails={refetch}
                 handleEditSector={(id: number) => editSector(id)}
-                jobPositionData={jobPositionData?.items}
+                jobPositionData={jobPositions}
                 allEmployees={userProfiles}
                 activeEmployees={systematizationDetails?.active_employees ?? []}
                 isInactive={isSystematizationInactive}

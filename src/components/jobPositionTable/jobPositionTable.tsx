@@ -12,8 +12,6 @@ import {
 } from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import useOrganizationUnitDeleteJobPosition from '../../services/graphql/organizationUnitsJobPositions/useOrganizationUnitDeleteJobPosition';
-import useOrganizationUnitInsertJobPosition from '../../services/graphql/organizationUnitsJobPositions/useOrganizationUnitInsertJobPosition';
 import {DeleteModal} from '../../shared/deleteModal/deleteModal';
 import {DropdownDataNumber} from '../../types/dropdownData';
 import {JobPosition} from '../../types/graphql/jobPositions';
@@ -24,6 +22,8 @@ import {JobPositionTableProps} from './types';
 import {UserProfile} from '../../types/graphql/userProfiles';
 import {requiredError} from '../../constants';
 import useAppContext from '../../context/useAppContext';
+import useInsertJobPositionInOrgUnit from '../../services/graphql/jobPositionsInOrgUnit/useOrganizationUnitInsertJobPosition';
+import useDeleteJobPositionInOrgUnit from '../../services/graphql/jobPositionsInOrgUnit/useDeleteJobPositionInOrgUnit';
 
 // !!! You will see that one prop inside of jobPositions is names job_positions instead of job_position, that is a typo in the backend
 
@@ -38,8 +38,8 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   cancel,
   isInactive,
 }) => {
-  const {mutate: insertJobPosition} = useOrganizationUnitInsertJobPosition();
-  const {mutate: deleteJobPosition} = useOrganizationUnitDeleteJobPosition();
+  const {mutate: insertJobPosition} = useInsertJobPositionInOrgUnit();
+  const {mutate: deleteJobPosition} = useDeleteJobPositionInOrgUnit();
 
   const {
     register,

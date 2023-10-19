@@ -3,7 +3,7 @@ import React, {ChangeEvent, RefObject, useEffect, useRef, useState} from 'react'
 import {statusOptions} from '../../constants';
 import {EmployeeListFilters} from '../../screens/employees';
 import {tableHeads} from '../../screens/employees/constants';
-import useJobPositions from '../../services/graphql/jobPositions/useJobPositionOverview';
+import useGetJobPositions from '../../services/graphql/jobPositions/useGetJobPositions';
 import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import {UserProfile} from '../../types/graphql/userProfiles';
 import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
@@ -42,7 +42,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
   const isDetails = navigation.location.pathname.split('/').length === 6;
 
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
-  const {data: jobPositions} = useJobPositions('');
+  const {jobPositions} = useGetJobPositions('');
 
   const userProfileList = data.items
     ? data?.items?.map((item: UserProfile) => ({
@@ -54,9 +54,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
 
   const jobPositionOptions = [
     {id: 0, title: 'Sva radna mjesta'},
-    ...(jobPositions?.items
-      ? jobPositions.items.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title}))
-      : []),
+    ...(jobPositions ? jobPositions.map((jobPosition: any) => ({id: jobPosition.id, title: jobPosition.title})) : []),
   ];
 
   useEffect(() => {

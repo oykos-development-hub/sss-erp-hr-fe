@@ -1,4 +1,34 @@
 import {DropdownDataNumber} from '../dropdownData';
+import {DeleteResponse, GetResponse, InsertResponse} from './response';
+
+export type JobPositionResponse = {
+  get: {
+    jobPositions: GetResponse<JobPosition>;
+  };
+  getAvailable: {
+    jobPositionsAvailableInOrganizationUnit: GetResponse<JobPosition>;
+  };
+};
+
+export type JobPositionsInOrgUnitResponse = {
+  get: {
+    jobPositionsOrganizationUnit: GetResponse<DropdownDataNumber>;
+  };
+  insert: {
+    jobPositionInOrganizationUnit_Insert: InsertResponse<JobPositionInOrgUnitParams>;
+  };
+  delete: {
+    jobPositionInOrganizationUnit_Delete: DeleteResponse;
+  };
+};
+
+export type JobPositionInOrgUnitParams = {
+  id?: number;
+  systematization_id: number;
+  parent_organization_unit_id: number;
+  job_position_id: number;
+  available_slots: number;
+};
 
 export interface JobPosition {
   id: number;

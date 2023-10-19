@@ -1,7 +1,7 @@
 import React, {useMemo, useState} from 'react';
 import {JobTenderModal} from '../../components/jobTenderModal/jobTenderModal';
 import JobTendersList from '../../components/jobTendersList/jobTendersList';
-import useJobTendersTypesSearch from '../../services/graphql/jobPositions/useJobTendersTypesSearch';
+import useJobTendersTypesSearch from '../../services/graphql/jobTenderTypes/useJobTendersTypesSearch';
 import useJobTendersDelete from '../../services/graphql/jobTenders/useJobTenderDelete';
 import useJobTendersOverview from '../../services/graphql/jobTenders/useJobTenderOverview';
 import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';

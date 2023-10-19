@@ -9,7 +9,7 @@ import {ApplicationScreenFilters, JobTenderApplication} from '../../../types/gra
 import {ScreenProps} from '../../../types/screen-props';
 import {applicationsTableHeads} from '../constants';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
-import useJobTendersTypesSearch from '../../../services/graphql/jobPositions/useJobTendersTypesSearch';
+import useJobTendersTypesSearch from '../../../services/graphql/jobTenderTypes/useJobTendersTypesSearch';
 import {useDebounce} from '../../../utils/useDebounce';
 import {FilterDropdown, FilterInput, FilterWrapper} from './style';
 

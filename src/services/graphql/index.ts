@@ -2,10 +2,14 @@ import {getEnvironment} from '../get-environment';
 import deleteForeignerPermit from './foreignerPermits/deleteForeignerPermit';
 import getForeignerPermits from './foreignerPermits/getForeignerPermits';
 import insertForeignerPermit from './foreignerPermits/insertForeignerPermit';
-import jobPositionsGet from './jobPositions/jobPositionOverview';
-import jobPositionsAvailableOrganizationUnit from './jobPositions/jobPositionsAvailableOrganizationUnit';
-import jobPositionsOrganizationUnit from './jobPositions/jobPositionsOrganizationUnit';
-import jobPositionSearch from './jobPositions/jobPositionsSearch';
+import {
+  default as getAvailableJobPositions,
+  default as jobPositionsAvailableOrganizationUnit,
+} from './jobPositions/getAvailableJobPositions';
+import getJobPositions from './jobPositions/getJobPositions';
+import deleteJobPositionInOrgUnit from './jobPositionsInOrgUnit/deleteJobPositionInOrgUnit';
+import getJobPositionsInOrgUnit from './jobPositionsInOrgUnit/getJobPositionsInOrgUnit';
+import insertJobPositionInOrgUnit from './jobPositionsInOrgUnit/insertJobPositionInOrgUnit';
 import jobTenderTypesSearch from './jobTenderTypes/jobTenderTypesSearch';
 import jobTenderApplicationDelete from './jobTenders/jobTenderApplicationDelete';
 import jobTenderApplicationInsert from './jobTenders/jobTenderApplicationInsert';
@@ -23,8 +27,6 @@ import judgeResolutionOverview from './judges/judgeResolutionOverview';
 import getOrganizationUnitRealJudgeNumberData from './judges/organizationUintCalculateEmployeeStats';
 import employeeInOrganizationUnitDelete from './organizationUnitsEmployees/employeeInOrganizationUnitDelete';
 import employeeInOrganizationUnitInsert from './organizationUnitsEmployees/employeeInOrganizationUnitInsert';
-import jobPositionInOrganizationUnitDelete from './organizationUnitsJobPositions/jobPositionInOrganizationUnitDelete';
-import jobPositionInOrganizationUnitInsert from './organizationUnitsJobPositions/jobPositionInOrganizationUnitInsert';
 import revisionDelete from './revision/revisionDelete';
 import revisionDetails from './revision/revisionDetails';
 import revisionInsert from './revision/revisionInsert';
@@ -100,7 +102,6 @@ export const GraphQL = {
   jobTenderDelete: jobTenderDelete,
   jobTenderApplicationDelete: jobTenderApplicationDelete,
   jobTenderInsert: jobTenderInsert,
-  jobPositionSearch: jobPositionSearch,
   jobTenderTypesSearch: jobTenderTypesSearch,
   jobTenderApplicationOverview: jobTenderApplicationOverview,
   jobTenderApplicationInsert: jobTenderApplicationInsert,
@@ -120,8 +121,6 @@ export const GraphQL = {
   deleteSystematization: systematizationDelete,
   salaryParamsInsert: salaryParamsInsert,
   salaryParamsOverview: salaryParamsOverview,
-  jobPositionsGet: jobPositionsGet,
-  jobPositionsOrganizationUnit: jobPositionsOrganizationUnit,
   resolutionOverview: resolutionOverview,
   resolutionInsert: resolutionInsert,
   resolutionDelete: resolutionDelete,
@@ -132,8 +131,8 @@ export const GraphQL = {
   revisionDetails: revisionDetails,
   revisionDelete: revisionDelete,
   revisionInsert: revisionInsert,
-  jobPositionInOrganizationUnitInsert: jobPositionInOrganizationUnitInsert,
-  jobPositionInOrganizationUnitDelete: jobPositionInOrganizationUnitDelete,
+  insertJobPositionInOrgUnit: insertJobPositionInOrgUnit,
+  deleteJobPositionInOrgUnit: deleteJobPositionInOrgUnit,
   jobPositionsAvailableOrganizationUnit: jobPositionsAvailableOrganizationUnit,
   employeeInOrganizationUnitInsert: employeeInOrganizationUnitInsert,
   employeeInOrganizationUnitDelete: employeeInOrganizationUnitDelete,
@@ -161,4 +160,7 @@ export const GraphQL = {
   revisionTipsInsert: revisionTipsInsert,
   revisionTipsDelete: revisionTipsDelete,
   terminateEmployment: terminateEmployment,
+  getJobPositions: getJobPositions,
+  getAvailableJobPositions: getAvailableJobPositions,
+  getJobPositionsInOrgUnit: getJobPositionsInOrgUnit,
 };
