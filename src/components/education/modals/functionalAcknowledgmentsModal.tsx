@@ -73,7 +73,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
         },
       );
     } catch (e) {
-      console.log(e);
+      console.log(e, 'error');
     } finally {
       reset(initialValues);
     }
