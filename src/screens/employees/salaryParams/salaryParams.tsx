@@ -225,7 +225,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                 control={control}
                 render={({field: {name}}) => (
                   <Datepicker
-                    onChange={() => console.log('')}
+                    onChange={() => console.log('change')}
                     name={name}
                     selected={parseToDate(profileData?.contract?.date_of_start || null)}
                     label="POČETAK RADNOG ODNOSA:"
