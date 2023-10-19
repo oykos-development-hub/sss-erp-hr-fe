@@ -9,6 +9,7 @@ export const Header = styled.div`
   flex-wrap: wrap;
   row-gap: 30px;
   column-gap: 10px;
+  background-color: #fff;
 `;
 
 export const Controls = styled.div`

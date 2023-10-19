@@ -4667,6 +4667,7 @@ attempted value: ${nr}
   flex-wrap: wrap;
   row-gap: 30px;
   column-gap: 10px;
+  background-color: #fff;
 `,Controls$3=styled.div`
   display: flex;
 `,Filters$4=styled.div`
