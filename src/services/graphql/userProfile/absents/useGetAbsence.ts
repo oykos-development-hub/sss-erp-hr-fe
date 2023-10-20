@@ -12,7 +12,6 @@ const useGetAbsence = (user_profile_id: number) => {
 
   const fetchAbsence = async () => {
     const response: AbsentResponse['get'] = await fetch(GraphQL.getAbsence, {user_profile_id});
-    console.log(response);
 
     const absents = response?.userProfile_Absent.items;
     const summary = response?.userProfile_Absent.summary;
