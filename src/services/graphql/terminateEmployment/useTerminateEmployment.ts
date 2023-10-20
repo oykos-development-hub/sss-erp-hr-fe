@@ -10,7 +10,6 @@ const useTerminateEmployment = (user_profile_id: number) => {
 
   const fetchTerminateEmployment = async () => {
     const response = await fetch(GraphQL.terminateEmployment, {user_profile_id});
-    console.log(response);
     setTerminateEmployment(response);
 
     setLoading(false);
