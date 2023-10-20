@@ -6,7 +6,7 @@ import {Router} from './router';
 import AppContextProvider from './context/appContext';
 
 const renderMicroService = (App: React.FC) => {
-  const root = ReactDOM.createRoot(document.getElementById('hr-root') as HTMLElement);
+  const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
   let container: Root | null = null;
   const renderSlug = 'render' + MICRO_SERVICE_SLUG;
   const unmountSlug = 'unmount' + MICRO_SERVICE_SLUG;
