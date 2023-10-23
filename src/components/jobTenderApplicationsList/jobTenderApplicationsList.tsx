@@ -1,14 +1,15 @@
 import {EditIconTwo, Pagination, Table, Theme, Typography, PlusIcon, TrashIcon} from 'client-library';
-import React, {useMemo, useState} from 'react';
+import React, {useState} from 'react';
 import {DeleteModal} from '../../shared/deleteModal/deleteModal';
 import {PlusButton, TableHeader} from './styles';
 import {applicationsTableHeads} from '../../screens/jobTenders/constants';
-import {JobTender, JobTenderApplication} from '../../types/graphql/jobTenders';
-import useJobTenderApplications from '../../services/graphql/jobTenders/useJobTenderApplicationOverview';
-import useJobTendersDeleteApplication from '../../services/graphql/jobTenders/useJobTenderApplicationDelete';
+import {JobTender} from '../../types/graphql/jobTenders';
+import useJobTenderApplications from '../../services/graphql/jobTenderApplications/useGetJobTenderApplications';
+import useDeleteJobTenderApplication from '../../services/graphql/jobTenderApplications/useDeleteJobTenderApplication';
 import {ScreenProps} from '../../types/screen-props';
 import {JobTenderApplicationModal} from '../JobTenderApplicationModal/JobTenderApplicationModal';
 import {MicroserviceProps} from '../../types/micro-service-props';
+import {JobTenderApplication} from '../../types/graphql/jobTenderApplications';
 
 export interface JobTenderDetailsListProps extends ScreenProps {
   alert: any;
@@ -22,15 +23,14 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
   const [page, setPage] = useState(1);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteItemID, setDeleteItemID] = useState(0);
-  const {
-    data: applications,
-    refreshData,
-    loading,
-  } = useJobTenderApplications({page, size: 10, job_tender_id: jobTender?.id}, {skip: !jobTender?.id});
+  const {jobTenderApplications, refetch, loading, total} = useJobTenderApplications(
+    {page, size: 10, job_tender_id: jobTender?.id},
+    {skip: !jobTender?.id},
+  );
 
-  const {mutate: deleteJobTenderApplication} = useJobTendersDeleteApplication();
+  const {deleteJobTenderApplication} = useDeleteJobTenderApplication();
 
-  const tableData = applications?.items.map((item: JobTenderApplication) => ({
+  const tableData = jobTenderApplications.map((item: JobTenderApplication) => ({
     ...item,
     full_name: `${item.first_name} ${item.last_name}`,
   }));
@@ -48,7 +48,7 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
     deleteJobTenderApplication(
       deleteItemID,
       () => {
-        refreshData();
+        refetch();
         context.alert.success('Uspješno obrisano.');
       },
       () => {
@@ -71,7 +71,7 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
     handleEdit(id || 0);
   };
 
-  const editItem = applications?.items?.find((item: JobTenderApplication) => item.id === editItemId);
+  const editItem = jobTenderApplications.find((item: JobTenderApplication) => item.id === editItemId);
 
   const canAddNewApplicants =
     jobTender?.number_of_vacant_seats &&
@@ -94,7 +94,7 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
         style={{marginBottom: 22}}
         isLoading={loading}
         onRowClick={() =>
-          applications.items.find((item: any) => item.status === 'Na čekanju' && toggleApplicationModal(item.id))
+          jobTenderApplications.find((item: any) => item.status === 'Na čekanju' && toggleApplicationModal(item.id))
         }
         tableActions={[
           {
@@ -115,7 +115,7 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
         ]}
       />
       <Pagination
-        pageCount={applications.total / 10}
+        pageCount={total / 10}
         onChange={onPageChange}
         variant="filled"
         itemsPerPage={2}
@@ -138,9 +138,9 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
           open={showModal}
           onClose={() => setShowModal(false)}
           alert={alert}
-          refetchList={refreshData}
+          refetchList={refetch}
           jobTender={jobTender}
-          applicationIds={applications.items.map((item: JobTenderApplication) => item.id)}
+          applicationIds={jobTenderApplications.map((item: JobTenderApplication) => item.id)}
           {...props}
         />
       )}

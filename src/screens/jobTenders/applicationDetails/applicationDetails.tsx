@@ -1,5 +1,6 @@
 import {Divider, Theme} from 'client-library';
-import useJobTenderApplications from '../../../services/graphql/jobTenders/useJobTenderApplicationOverview';
+import useAppContext from '../../../context/useAppContext';
+import useGetJobTenderApplications from '../../../services/graphql/jobTenderApplications/useGetJobTenderApplications';
 import InfoPreview from '../../../shared/infoPreview/infoPreview';
 import {MainTitle} from '../../../shared/mainTitle';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
@@ -7,10 +8,9 @@ import SectionBox from '../../../shared/sectionBox';
 import {ScreenProps} from '../../../types/screen-props';
 import {parseDate} from '../../../utils/dateUtils';
 import {Details, Row} from './styles';
-import useAppContext from '../../../context/useAppContext';
 
 const ApplicationDetailsScreen = (props: ScreenProps) => {
-  const {data} = useJobTenderApplications({
+  const {jobTenderApplications} = useGetJobTenderApplications({
     page: 1,
     size: 10,
     id: props.context.navigation.location.pathname.split('/')[4],
@@ -18,7 +18,7 @@ const ApplicationDetailsScreen = (props: ScreenProps) => {
 
   const {countries} = useAppContext();
 
-  const application = data.items[0];
+  const application = jobTenderApplications[0];
 
   return (
     <ScreenWrapper>

@@ -1,26 +1,26 @@
-import React from 'react';
 import {Button, Divider, EditIconTwo, Pagination, Table, Theme, TrashIcon} from 'client-library';
 import {FC, useState} from 'react';
+import {statusOptions} from '../../constants';
+import useAppContext from '../../context/useAppContext';
 import {JobTendersListFilters} from '../../screens/jobTenders';
 import {tableHeads} from '../../screens/jobTenders/constants';
+import useDeleteJobTender from '../../services/graphql/jobTenders/useDeleteJobTender';
 import {DeleteModal} from '../../shared/deleteModal/deleteModal';
-import {JobTender, JobTendersResponse} from '../../types/graphql/jobTenders';
-import {MicroserviceProps} from '../../types/micro-service-props';
+import {JobTender} from '../../types/graphql/jobTenders';
 import {Controls, FilterDropdown, Filters, Header, MainTitle, OverviewBox} from './styles';
-import {statusOptions} from '../../constants';
 
 export interface JobTendersListProps {
   navigate: (path: string) => void;
   toggleJobTenderImportModal: (item?: JobTender) => void;
   onPageChange: (page: number) => void;
-  data: JobTendersResponse['data']['jobTenders_Overview'];
+  data: JobTender[];
   dropdownJobTenderType: any[];
   organizationUnitsList: any[];
   onFilterChange: (value: any, name: string) => void;
   filters: JobTendersListFilters;
-  deleteJobTender: (id: number) => void;
-  context: MicroserviceProps;
   loading: boolean;
+  refetch: () => void;
+  total: number;
 }
 
 const JobTendersList: FC<JobTendersListProps> = ({
@@ -32,12 +32,16 @@ const JobTendersList: FC<JobTendersListProps> = ({
   organizationUnitsList,
   onFilterChange,
   filters,
-  deleteJobTender,
-  context,
   loading,
+  refetch,
+  total,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteItemID, setDeleteItemID] = useState(0);
+
+  const {deleteJobTender} = useDeleteJobTender();
+
+  const {alert, breadcrumbs} = useAppContext();
 
   const handleCloseDeleteModal = () => {
     setDeleteItemID(0);
@@ -45,9 +49,18 @@ const JobTendersList: FC<JobTendersListProps> = ({
   };
 
   const handleDelete = () => {
-    deleteJobTender(deleteItemID);
-    setDeleteItemID(0);
-    setShowDeleteModal(false);
+    deleteJobTender(
+      deleteItemID,
+      () => {
+        refetch();
+        alert.success('Uspješno obrisano.');
+        setDeleteItemID(0);
+        setShowDeleteModal(false);
+      },
+      () => {
+        alert.error('Greška. Brisanje nije moguće.');
+      },
+    );
   };
 
   return (
@@ -93,12 +106,12 @@ const JobTendersList: FC<JobTendersListProps> = ({
       </Header>
       <Table
         tableHeads={tableHeads}
-        data={data.items || []}
+        data={data || []}
         style={{marginBottom: 22}}
         isLoading={loading}
         onRowClick={(item: JobTender) => {
           navigate(`/hr/job-tenders/job-tenders-list/${item.id}`);
-          context.breadcrumbs.add({
+          breadcrumbs.add({
             name: `${item.type?.title} - ${item.serial_number}`,
             to: `/hr/job-tenders/job-tenders-list/${item.id}`,
           });
@@ -120,7 +133,7 @@ const JobTendersList: FC<JobTendersListProps> = ({
         ]}
       />
       <Pagination
-        pageCount={data.total / 10}
+        pageCount={total / 10}
         onChange={onPageChange}
         variant="filled"
         itemsPerPage={2}

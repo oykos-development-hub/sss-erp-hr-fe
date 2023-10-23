@@ -11,12 +11,12 @@ import deleteJobPositionInOrgUnit from './jobPositionsInOrgUnit/deleteJobPositio
 import getJobPositionsInOrgUnit from './jobPositionsInOrgUnit/getJobPositionsInOrgUnit';
 import insertJobPositionInOrgUnit from './jobPositionsInOrgUnit/insertJobPositionInOrgUnit';
 import jobTenderTypesSearch from './jobTenderTypes/jobTenderTypesSearch';
-import jobTenderApplicationDelete from './jobTenders/jobTenderApplicationDelete';
-import jobTenderApplicationInsert from './jobTenders/jobTenderApplicationInsert';
-import jobTenderApplicationOverview from './jobTenders/jobTenderApplicationOverview';
-import jobTenderDelete from './jobTenders/jobTenderDelete';
-import jobTenderInsert from './jobTenders/jobTenderInsert';
-import jobTenderOverview from './jobTenders/jobTenderOverview';
+import deleteJobTender from './jobTenders/deleteJobTender';
+import deleteJobTenderApplication from './jobTenderApplications/deleteJobTenderApplication';
+import getJobTenderApplications from './jobTenderApplications/getJobTenderApplications';
+import getJobTenders from './jobTenders/getJobTenders';
+import insertJobTender from './jobTenders/insertJobTender';
+import insertJobTenderApplication from './jobTenderApplications/insertJobTenderApplication';
 import judgeAndPresidentCheckIsAvailable from './judges/judgeAndPresidentCheckIsAvailable';
 import judgeNormDelete from './judges/judgeNormDelete';
 import judgeNormInsert from './judges/judgeNormInsert';
@@ -98,13 +98,7 @@ export const GraphQL = {
   experienceInsert: experienceInsert,
   experienceDelete: experienceDelete,
   userProfileOverview: userProfileOverview,
-  jobTenderOverview: jobTenderOverview,
-  jobTenderDelete: jobTenderDelete,
-  jobTenderApplicationDelete: jobTenderApplicationDelete,
-  jobTenderInsert: jobTenderInsert,
   jobTenderTypesSearch: jobTenderTypesSearch,
-  jobTenderApplicationOverview: jobTenderApplicationOverview,
-  jobTenderApplicationInsert: jobTenderApplicationInsert,
   judgeAndPresidentCheckIsAvailable: judgeAndPresidentCheckIsAvailable,
   educationOverview: educationOverview,
   educationInsert: educationInsert,
@@ -163,4 +157,10 @@ export const GraphQL = {
   getJobPositions: getJobPositions,
   getAvailableJobPositions: getAvailableJobPositions,
   getJobPositionsInOrgUnit: getJobPositionsInOrgUnit,
+  getJobTenders: getJobTenders,
+  insertJobTender: insertJobTender,
+  deleteJobTender: deleteJobTender,
+  getJobTenderApplications: getJobTenderApplications,
+  deleteJobTenderApplication: deleteJobTenderApplication,
+  insertJobTenderApplication: insertJobTenderApplication,
 };

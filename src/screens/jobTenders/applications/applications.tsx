@@ -1,17 +1,18 @@
 import React from 'react';
 import {Divider, Pagination, Table, Theme, SearchIcon} from 'client-library';
 import {useState} from 'react';
-import useJobTenderApplications from '../../../services/graphql/jobTenders/useJobTenderApplicationOverview';
+import useGetJobTenderApplications from '../../../services/graphql/jobTenderApplications/useGetJobTenderApplications';
 import {MainTitle} from '../../../shared/mainTitle';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import SectionBox from '../../../shared/sectionBox';
-import {ApplicationScreenFilters, JobTenderApplication} from '../../../types/graphql/jobTenders';
+import {ApplicationScreenFilters} from '../../../types/graphql/jobTenders';
 import {ScreenProps} from '../../../types/screen-props';
 import {applicationsTableHeads} from '../constants';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useJobTendersTypesSearch from '../../../services/graphql/jobTenderTypes/useJobTendersTypesSearch';
 import {useDebounce} from '../../../utils/useDebounce';
 import {FilterDropdown, FilterInput, FilterWrapper} from './style';
+import {JobTenderApplication} from '../../../types/graphql/jobTenderApplications';
 
 const initialValues: ApplicationScreenFilters = {
   organization_unit_id: undefined,
@@ -23,11 +24,16 @@ const ApplicationsScreen = (props: ScreenProps) => {
   const [filters, setFilters] = useState<any>(initialValues);
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 500);
-  const {data: applications, loading} = useJobTenderApplications({page, size: 10, ...filters, search: debouncedSearch});
+  const {jobTenderApplications, total, loading} = useGetJobTenderApplications({
+    page,
+    size: 10,
+    ...filters,
+    search: debouncedSearch,
+  });
   const {typesUnitsList} = useJobTendersTypesSearch('');
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
-  const tableData = applications?.items?.map((item: JobTenderApplication) => ({
+  const tableData = jobTenderApplications.map((item: JobTenderApplication) => ({
     ...item,
     full_name: `${item.first_name} ${item.last_name}` || '',
   }));
@@ -93,7 +99,7 @@ const ApplicationsScreen = (props: ScreenProps) => {
           isLoading={loading}
         />
         <Pagination
-          pageCount={applications.total / 10}
+          pageCount={total / 10}
           onChange={onPageChange}
           variant="filled"
           itemsPerPage={2}

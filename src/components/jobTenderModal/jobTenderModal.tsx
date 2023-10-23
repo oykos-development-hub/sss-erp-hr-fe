@@ -1,7 +1,7 @@
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import useJobTenderInsert from '../../services/graphql/jobTenders/useJobTenderInsert';
+import useInsertJobTender from '../../services/graphql/jobTenders/useInsertJobTender';
 import {JobTendersModalProps} from '../../types/graphql/jobTenders';
 import {FileUploadWrapper, ModalContentWrapper, Row} from '../education/modals/styles';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
@@ -60,7 +60,7 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
     setValue,
   } = useForm({resolver: yupResolver(jobTenderSchema)});
 
-  const {mutate, loading: isSaving} = useJobTenderInsert();
+  const {insertJobTender, loading: isSaving} = useInsertJobTender();
 
   useEffect(() => {
     if (selectedItem) {
@@ -87,7 +87,7 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
     if (isSaving) return;
 
     try {
-      mutate(
+      insertJobTender(
         {
           id: values.id,
           organization_unit_id: values?.organization_unit_id?.id,

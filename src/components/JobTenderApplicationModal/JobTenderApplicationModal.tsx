@@ -8,11 +8,11 @@ import {
   applicationTypeOptions,
   evaluationTypeOptions,
 } from '../../screens/jobTenders/constants';
-import useJobTenderApplicationsInsert from '../../services/graphql/jobTenders/useJobTenderApplicationInsert';
+import useInsertJobTenderApplication from '../../services/graphql/jobTenderApplications/useInsertJobTenderApplication';
 import useBasicInfoGet from '../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
 import useUserProfiles from '../../services/graphql/userProfile/useUserProfiles';
 import {DropdownDataString} from '../../types/dropdownData';
-import {JobTender, JobTenderApplication, JobTenderApplicationInsertParams} from '../../types/graphql/jobTenders';
+import {JobTender} from '../../types/graphql/jobTenders';
 import {MicroserviceProps} from '../../types/micro-service-props';
 import {ScreenProps} from '../../types/screen-props';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
@@ -23,6 +23,7 @@ import {
   RowFullWidth,
   TriangleIcon,
 } from '../JobTenderApplicationModal/styles';
+import {JobTenderApplication, JobTenderApplicationInsertParams} from '../../types/graphql/jobTenderApplications';
 
 const tenderApplicationSchema = yup.object().shape({
   type: yup
@@ -113,7 +114,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 
   const {status, type, user_profile} = watch();
 
-  const {mutate, loading: isSaving} = useJobTenderApplicationsInsert();
+  const {insertJobTenderApplication, loading: isSaving} = useInsertJobTenderApplication();
 
   const onSubmit = (values: any) => {
     if (isSaving) return;
@@ -142,7 +143,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
       if (data.status === 'Izabran' && data.type === 'external') {
         navigateToUserCreation(data);
       } else {
-        mutate(
+        insertJobTenderApplication(
           data,
           () => {
             context.alert.success('Uspješno sačuvano.');

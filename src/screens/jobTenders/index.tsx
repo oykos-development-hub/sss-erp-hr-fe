@@ -2,8 +2,7 @@ import React, {useMemo, useState} from 'react';
 import {JobTenderModal} from '../../components/jobTenderModal/jobTenderModal';
 import JobTendersList from '../../components/jobTendersList/jobTendersList';
 import useJobTendersTypesSearch from '../../services/graphql/jobTenderTypes/useJobTendersTypesSearch';
-import useJobTendersDelete from '../../services/graphql/jobTenders/useJobTenderDelete';
-import useJobTendersOverview from '../../services/graphql/jobTenders/useJobTenderOverview';
+import useGetJobTenders from '../../services/graphql/jobTenders/useGetJobTenders';
 import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
 import {DropdownDataNumber} from '../../types/dropdownData';
@@ -33,10 +32,10 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
 
   const [filters, setFilters] = useState<any>(initialValues);
 
-  const {data, refetch, loading} = useJobTendersOverview({page, size: 10, ...filters});
+  const {jobTenders, refetch, loading, total} = useGetJobTenders({page, size: 10, ...filters});
 
   const selectedItem = useMemo(() => {
-    return data?.items?.find((item: JobTender) => item.id === selectedItemId);
+    return jobTenders.find((item: JobTender) => item.id === selectedItemId);
   }, [selectedItemId]);
 
   const {alert} = context;
@@ -45,16 +44,6 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
     setSelectedItemId(item?.id ? item.id : 0);
     setShowModal(true);
   };
-
-  const {mutate: deleteJobTenders} = useJobTendersDelete(
-    () => {
-      refetch();
-      alert.success('Uspješno obrisano.');
-    },
-    () => {
-      alert.error('Greška. Brisanje nije moguće.');
-    },
-  );
 
   const {
     navigation: {navigate},
@@ -84,14 +73,14 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
         navigate={navigate}
         toggleJobTenderImportModal={toggleEmployeeImportModal}
         onPageChange={onPageChange}
-        data={data}
+        data={jobTenders}
         dropdownJobTenderType={typesUnitsList || []}
         organizationUnitsList={organizationUnits}
         filters={filters}
         onFilterChange={onFilterChange}
-        deleteJobTender={deleteJobTenders}
-        context={context}
         loading={loading}
+        refetch={refetch}
+        total={total}
       />
       {showModal && (
         <JobTenderModal

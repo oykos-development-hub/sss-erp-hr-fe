@@ -34,7 +34,7 @@ import {
   FormWrapper,
   TextWrapper,
 } from './styles';
-import useJobTenderApplicationsInsert from '../../../services/graphql/jobTenders/useJobTenderApplicationInsert';
+import useInsertJobTenderApplication from '../../../services/graphql/jobTenderApplications/useInsertJobTenderApplication';
 import {basicInfoSchema, booleanToYesOrNo, formatData} from './utils';
 import {ContractEndModal} from '../../../components/contractEndModal/contractEndModal';
 
@@ -54,7 +54,7 @@ export const BasicInfo: React.FC = () => {
   const {options: contractTypes} = useSettingsDropdownOverview({entity: 'contract_types'});
   const {mutate: createBasicInfo, loading: isCreating} = useBasicInfoInsert();
   const {mutate: updateBasicInfo, loading: isUpdating} = useBasicInfoUpdate();
-  const {mutate: updateJobApplication, loading: isUpdatingApplication} = useJobTenderApplicationsInsert();
+  const {insertJobTenderApplication, loading: isUpdatingApplication} = useInsertJobTenderApplication();
 
   const {
     register,
@@ -178,7 +178,7 @@ export const BasicInfo: React.FC = () => {
   };
 
   const updateJobTenderApplication = async () => {
-    await updateJobApplication(context.navigation.location.state.application, () => {
+    await insertJobTenderApplication(context.navigation.location.state.application, () => {
       context.alert.success('Uspješno izabran kandidat.');
       context.navigation.navigate('/hr/job-tenders-list');
       context.navigation.location.state = {};

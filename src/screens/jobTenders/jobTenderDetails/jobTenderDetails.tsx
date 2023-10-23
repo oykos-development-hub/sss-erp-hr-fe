@@ -3,7 +3,7 @@ import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {ScreenProps} from '../../../types/screen-props';
 import JobTenderInfo from '../../../components/jobTenderInfo/jobTenderInfo';
 import SectionBox from '../../../shared/sectionBox';
-import useJobTendersOverview from '../../../services/graphql/jobTenders/useJobTenderOverview';
+import useJobTendersOverview from '../../../services/graphql/jobTenders/useGetJobTenders';
 import JobTenderApplicationsList from '../../../components/jobTenderApplicationsList/jobTenderApplicationsList';
 import {JobTender} from '../../../types/graphql/jobTenders';
 
@@ -13,11 +13,11 @@ export const JobTenderDetailsScreen: React.FC<ScreenProps> = ({context}) => {
 
   const {alert} = context.alert;
 
-  const {data} = useJobTendersOverview({page: 1, size: 10, id: jobTenderId});
+  const {jobTenders} = useJobTendersOverview({page: 1, size: 10, id: jobTenderId});
 
   useEffect(() => {
-    if (data?.items?.length > 0) setJobTender(data.items[0]);
-  }, [data]);
+    if (jobTenders.length > 0) setJobTender(jobTenders[0]);
+  }, [jobTenders]);
 
   return (
     <ScreenWrapper>
