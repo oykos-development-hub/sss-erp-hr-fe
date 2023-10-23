@@ -10,7 +10,7 @@ import getJobPositions from './jobPositions/getJobPositions';
 import deleteJobPositionInOrgUnit from './jobPositionsInOrgUnit/deleteJobPositionInOrgUnit';
 import getJobPositionsInOrgUnit from './jobPositionsInOrgUnit/getJobPositionsInOrgUnit';
 import insertJobPositionInOrgUnit from './jobPositionsInOrgUnit/insertJobPositionInOrgUnit';
-import jobTenderTypesSearch from './jobTenderTypes/jobTenderTypesSearch';
+import jobTenderTypesSearch from './jobTenderTypes/getJobTenderTypes';
 import deleteJobTender from './jobTenders/deleteJobTender';
 import deleteJobTenderApplication from './jobTenderApplications/deleteJobTenderApplication';
 import getJobTenderApplications from './jobTenderApplications/getJobTenderApplications';
@@ -73,6 +73,7 @@ import salaryParamsOverview from './userProfile/salaryParams/salaryParamsOvervie
 import userProfileOverview from './userProfile/userProfileOverview';
 import GetVacation from './userProfile/vacation/vacationGet';
 import vacationInsert from './userProfile/vacation/vacationInsert';
+import getJobTenderTypes from './jobTenderTypes/getJobTenderTypes';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -98,7 +99,7 @@ export const GraphQL = {
   experienceInsert: experienceInsert,
   experienceDelete: experienceDelete,
   userProfileOverview: userProfileOverview,
-  jobTenderTypesSearch: jobTenderTypesSearch,
+  getJobTenderTypes: getJobTenderTypes,
   judgeAndPresidentCheckIsAvailable: judgeAndPresidentCheckIsAvailable,
   educationOverview: educationOverview,
   educationInsert: educationInsert,

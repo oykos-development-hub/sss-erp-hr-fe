@@ -1,3 +1,5 @@
+import {GetResponse} from './response';
+
 export interface JobTenderType {
   id: number;
   title: string;
@@ -11,8 +13,5 @@ export interface JobTenderType {
 }
 
 export interface JobTenderTypeResponse {
-  items: JobTenderType[];
-  message: string;
-  status: string;
-  total: number;
+  jobTenderTypes: GetResponse<JobTenderType>;
 }

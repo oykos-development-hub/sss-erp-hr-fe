@@ -9,7 +9,7 @@ import {ApplicationScreenFilters} from '../../../types/graphql/jobTenders';
 import {ScreenProps} from '../../../types/screen-props';
 import {applicationsTableHeads} from '../constants';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
-import useJobTendersTypesSearch from '../../../services/graphql/jobTenderTypes/useJobTendersTypesSearch';
+import useGetJobTenderTypes from '../../../services/graphql/jobTenderTypes/useGetJobTenderTypes';
 import {useDebounce} from '../../../utils/useDebounce';
 import {FilterDropdown, FilterInput, FilterWrapper} from './style';
 import {JobTenderApplication} from '../../../types/graphql/jobTenderApplications';
@@ -30,7 +30,7 @@ const ApplicationsScreen = (props: ScreenProps) => {
     ...filters,
     search: debouncedSearch,
   });
-  const {typesUnitsList} = useJobTendersTypesSearch('');
+  const {options} = useGetJobTenderTypes('');
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
   const tableData = jobTenderApplications.map((item: JobTenderApplication) => ({
@@ -70,7 +70,7 @@ const ApplicationsScreen = (props: ScreenProps) => {
             name="type_id"
             onChange={(value: any) => onFilterChange(value, 'type_id')}
             value={filters.type_id}
-            options={typesUnitsList}
+            options={options}
             placeholder="Tip oglasa:"
           />
           <FilterDropdown

@@ -1,7 +1,7 @@
 import React, {useMemo, useState} from 'react';
 import {JobTenderModal} from '../../components/jobTenderModal/jobTenderModal';
 import JobTendersList from '../../components/jobTendersList/jobTendersList';
-import useJobTendersTypesSearch from '../../services/graphql/jobTenderTypes/useJobTendersTypesSearch';
+import useGetJobTenderTypes from '../../services/graphql/jobTenderTypes/useGetJobTenderTypes';
 import useGetJobTenders from '../../services/graphql/jobTenders/useGetJobTenders';
 import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
@@ -27,7 +27,7 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
   const [showModal, setShowModal] = useState(false);
   const [page, setPage] = useState(1);
   const [selectedItemId, setSelectedItemId] = useState(0);
-  const {types, typesUnitsList} = useJobTendersTypesSearch('');
+  const {jobTenderTypes, options} = useGetJobTenderTypes('');
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
   const [filters, setFilters] = useState<any>(initialValues);
@@ -74,7 +74,7 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
         toggleJobTenderImportModal={toggleEmployeeImportModal}
         onPageChange={onPageChange}
         data={jobTenders}
-        dropdownJobTenderType={typesUnitsList || []}
+        dropdownJobTenderType={options || []}
         organizationUnitsList={organizationUnits}
         filters={filters}
         onFilterChange={onFilterChange}
@@ -87,7 +87,7 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
           open={showModal}
           onClose={handleCloseModal}
           selectedItem={selectedItem}
-          jobTenderTypeOptions={types?.items || []}
+          jobTenderTypeOptions={jobTenderTypes || []}
           organizationUnitsList={organizationUnits}
           refetch={refetch}
           alert={alert}
