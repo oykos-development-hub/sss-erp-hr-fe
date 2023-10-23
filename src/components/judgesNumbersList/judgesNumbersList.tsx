@@ -2,11 +2,11 @@ import {Button, Divider, EditIconTwo, Pagination, Table, Theme, TrashIcon, EyeIc
 import React, {useMemo, useState} from 'react';
 import {judgesNumberResolutionTableHeads} from '../../screens/judges/judgeNorms/constants';
 import {JudgesNumberListFilters} from '../../screens/judges/judgesNumberDecisions/judgesNumberDecision';
-import useJudgeResolutionsDelete from '../../services/graphql/judges/useJudgeResolutionDelete';
+import useDeleteJudgeResolution from '../../services/graphql/judges/resolutions/useDeleteJudgeResolution';
 import {DeleteModal} from '../../shared/deleteModal/deleteModal';
 import {DropdownDataString} from '../../types/dropdownData';
-import {JudgeResolution} from '../../types/graphql/judges';
 import {Controls, Filters, Header, MainTitle, OverviewBox} from '../judgesList/styles';
+import {JudgeResolution} from '../../types/graphql/judgeResolutions';
 
 export interface JudgesNumbersListProps {
   data: JudgeResolution[];
@@ -33,7 +33,7 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
   const [deleteId, setDeleteId] = useState(0);
   const [deleteModal, setDeleteModal] = useState(false);
 
-  const {mutate} = useJudgeResolutionsDelete();
+  const {deleteJudgeResolution} = useDeleteJudgeResolution();
 
   const list: JudgeResolution[] = useMemo(
     () =>
@@ -50,7 +50,7 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
 
   const handleDelete = () => {
     if (deleteId) {
-      mutate(
+      deleteJudgeResolution(
         deleteId,
         () => {
           refetch();

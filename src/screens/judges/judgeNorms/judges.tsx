@@ -1,15 +1,16 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {ScreenProps} from '../../../types/screen-props';
-import useJudgesOverview from '../../../services/graphql/judges/useJudgeOverview';
-import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
-import {DropdownDataNumber} from '../../../types/dropdownData';
-import {JudgeOverview, Norms} from '../../../types/graphql/judges';
-import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import JudgeNormModal from '../../../components/judgeNormModal/judgeNormModal';
-import NormsList from '../../../components/normsList/normsList';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
 import JudgesList from '../../../components/judgesList/judgesList';
-import useJudgeNormsDelete from '../../../services/graphql/judges/useJudgeNormDelete';
+import NormsList from '../../../components/normsList/normsList';
+import useDeleteJudgeNorm from '../../../services/graphql/judges/norms/useDeleteJudgeNorm';
+import useGetJudges from '../../../services/graphql/judges/useGetJudges';
+import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
+import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
+import {DropdownDataNumber} from '../../../types/dropdownData';
+import {JudgeNorm} from '../../../types/graphql/judgeNorms';
+import {Judge} from '../../../types/graphql/judges';
+import {ScreenProps} from '../../../types/screen-props';
 
 export interface JudgesListFilters {
   organization_unit: DropdownDataNumber | null;
@@ -26,21 +27,21 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
   const [page, setPage] = useState(1);
   const [selectedItemId, setSelectedItemId] = useState(0);
   const [selectedNormItemId, setSelectedNormItemId] = useState(0);
-  const [normsList, setNormsList] = useState<Norms[]>([]);
+  const [normsList, setNormsList] = useState<JudgeNorm[]>([]);
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
   const [filters, setFilters] = useState<JudgesListFilters>(initialValues);
 
-  const {data, total, refetch, loading} = useJudgesOverview({page, size: 10, ...filters});
-  const {judgesUnitsList} = useJudgesOverview({page, size: 1000, ...initialValues});
+  const {judges, total, refetch, loading} = useGetJudges({page, size: 10, ...filters});
+  const {judgeOptions} = useGetJudges({page, size: 1000, ...initialValues});
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const selectedNormItem = useMemo(() => {
-    return normsList?.find((item: Norms) => item.id === selectedNormItemId);
+    return normsList?.find((item: JudgeNorm) => item.id === selectedNormItemId);
   }, [selectedNormItemId]);
 
   const normsListSet = () => {
-    const item = data?.find((item: JudgeOverview) => item.id === selectedItemId);
+    const item = judges?.find((item: Judge) => item.id === selectedItemId);
     setNormsList([
       ...(item?.norms || []).map(norm => ({
         ...norm,
@@ -51,24 +52,16 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
 
   useEffect(() => {
     normsListSet();
-  }, [data, selectedItemId]);
+  }, [judges, selectedItemId]);
 
-  const {mutate: deleteJudgeNorm} = useJudgeNormsDelete(
-    () => {
-      refetch();
-      context.success('Uspješno obrisano');
-    },
-    () => {
-      context.error('Brisanje nije uspješno');
-    },
-  );
+  const {deleteJudgeNorm} = useDeleteJudgeNorm();
 
-  const openNormModal = (item?: Norms) => {
+  const openNormModal = (item?: JudgeNorm) => {
     setShowModal(true);
     setSelectedNormItemId(item?.id || 0);
   };
 
-  const toggleJudgesNorms = (item?: JudgeOverview) => {
+  const toggleJudgesNorms = (item?: Judge) => {
     setSelectedItemId(item?.id || 0);
   };
 
@@ -86,7 +79,16 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
   };
 
   const handleDelete = () => {
-    deleteJudgeNorm(selectedNormItemId);
+    deleteJudgeNorm(
+      selectedNormItemId,
+      () => {
+        refetch();
+        context.success('Uspješno obrisano');
+      },
+      () => {
+        context.error('Brisanje nije uspješno');
+      },
+    );
     setShowDeleteModal(false);
     setSelectedNormItemId(0);
   };
@@ -101,8 +103,8 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
       <JudgesList
         toggleJudgesNorms={toggleJudgesNorms}
         onPageChange={onPageChange}
-        data={data || []}
-        usersUnitsList={judgesUnitsList}
+        data={judges || []}
+        usersUnitsList={judgeOptions}
         organizationUnitsList={organizationUnits}
         filters={filters}
         onFilterChange={onFilterChange}
@@ -125,7 +127,7 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
         open={showModal}
         onClose={handleCloseModal}
         selectedItem={selectedNormItem}
-        dropdownData={judgesUnitsList}
+        dropdownData={judgeOptions}
       />
       <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />
     </ScreenWrapper>

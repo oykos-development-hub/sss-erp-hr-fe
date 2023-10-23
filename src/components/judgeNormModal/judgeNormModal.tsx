@@ -5,10 +5,10 @@ import {Controller, useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {ModalProps} from '../../screens/employees/education/types';
 import {topicOptions} from '../../screens/judges/constants';
-import useJudgeNormsInsert from '../../services/graphql/judges/useJudgeNormInsert';
-import {JudgeNormForm} from '../../types/graphql/judges';
+import useInsertJudgeNorm from '../../services/graphql/judges/norms/useInsertJudgeNorm';
 import {parseDateForBackend} from '../../utils/dateUtils';
 import {ModalContentWrapper, Row} from '../education/modals/styles';
+import {JudgeNormForm} from '../../types/graphql/judgeNorms';
 
 const initialValues: JudgeNormForm = {
   id: 0,
@@ -70,7 +70,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
     watch,
   } = useForm({resolver: yupResolver(schema)});
 
-  const {mutate, loading: isSaving} = useJudgeNormsInsert();
+  const {insertJudgeNorm, loading: isSaving} = useInsertJudgeNorm();
 
   useEffect(() => {
     if (item) {
@@ -82,7 +82,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
     if (isSaving) return;
 
     try {
-      await mutate(
+      await insertJudgeNorm(
         {
           id: values?.id,
           title: values?.title,

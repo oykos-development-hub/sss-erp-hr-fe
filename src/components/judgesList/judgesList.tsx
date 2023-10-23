@@ -1,14 +1,14 @@
 import React, {useMemo} from 'react';
 import {Button, Divider, Pagination, Table} from 'client-library';
 import {JudgesListFilters} from '../../screens/judges/judgeNorms/judges';
-import {JudgeOverview} from '../../types/graphql/judges';
 import {Controls, FilterDropdown, Filters, Header, MainTitle, OverviewBox} from './styles';
 import {judgeTableHeads} from '../../screens/judges/judgeNorms/constants';
+import {Judge} from '../../types/graphql/judges';
 
 export interface JudgesListProps {
-  toggleJudgesNorms: (item?: JudgeOverview) => void;
+  toggleJudgesNorms: (item?: Judge) => void;
   onPageChange: (page: number) => void;
-  data: JudgeOverview[];
+  data: Judge[];
   organizationUnitsList: any[];
   usersUnitsList: any[];
   total: number;
@@ -30,9 +30,9 @@ const JudgesList: React.FC<JudgesListProps> = ({
   addNorm,
   loading,
 }) => {
-  const list: JudgeOverview[] = useMemo(
+  const list: Judge[] = useMemo(
     () =>
-      data?.map((item: JudgeOverview) => ({
+      data?.map((item: Judge) => ({
         ...item,
         evaluation_title: item?.norms[0]?.evaluation?.score ? item?.norms[0]?.evaluation?.score : '',
         relocation_title: item?.norms[0]?.relocation?.location ? item?.norms[0]?.relocation?.location : '',

@@ -1,14 +1,14 @@
 import {EditIconTwo, Table, Theme, TrashIcon} from 'client-library';
 import React, {useMemo, useState} from 'react';
-import {Norms} from '../../types/graphql/judges';
 import {FilterDropdown, Filters, Header, OverviewBox} from '../judgesList/styles';
 import {DropdownDataString} from '../../types/dropdownData';
 import {judgeNormsTableHeads} from '../../screens/judges/judgeNorms/constants';
 import {topicOptions} from '../../screens/judges/constants';
+import {JudgeNorm} from '../../types/graphql/judgeNorms';
 
 interface NormsListProps {
-  data: Norms[];
-  toggleNormsModal: (item: Norms) => void;
+  data: JudgeNorm[];
+  toggleNormsModal: (item: JudgeNorm) => void;
   handleDeleteIconClick: (id: number) => void;
   loading: boolean;
 }

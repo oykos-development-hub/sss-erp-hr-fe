@@ -3,16 +3,16 @@ import {nanoid} from 'nanoid';
 import React, {useEffect, useMemo, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {OverviewBox} from '../../../components/employeesList/styles';
-import useJudgeResolutionsInsert from '../../../services/graphql/judges/useJudgeResolutionInsert';
-import useJudgeResolutionsOverview from '../../../services/graphql/judges/useJudgeResolutionOverview';
-import useOrganizationUintCalculateEmployeeStats from '../../../services/graphql/judges/useOrganizationUintCalculateEmployeeStats';
+import useAppContext from '../../../context/useAppContext';
+import useOrganizationUintCalculateEmployeeStats from '../../../services/graphql/judges/resolutions/useGetCurrentResolutionNumbers';
+import useGetJudgeResolutions from '../../../services/graphql/judges/resolutions/useGetJudgeResolutions';
+import useJudgeResolutionsInsert from '../../../services/graphql/judges/resolutions/useInsertJudgeResolution';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import {MainTitle} from '../../../shared/mainTitle';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
-import {JudgeResolutionItem, JudgeResolution} from '../../../types/graphql/judges';
 import {judgeResolutionTableHeads} from '../judgeNorms/constants';
 import {Controls, CustomTable, Filters, FormFooter} from './styles';
-import useAppContext from '../../../context/useAppContext';
+import {JudgeResolution, JudgeResolutionItem} from '../../../types/graphql/judgeResolutions';
 
 export interface JudgesNumbersDetailsListProps {
   isNew?: boolean;
@@ -38,13 +38,16 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({i
     active: isNew ? true : false,
   });
 
-  const {data, loading: judgeResolutionsLoading} = useJudgeResolutionsOverview({page: 1, size: 1000});
+  const {judgeResolutions, loading: judgeResolutionsLoading} = useGetJudgeResolutions({page: 1, size: 1000});
 
-  const {mutate} = useJudgeResolutionsInsert();
+  const {insertJudgeResolution} = useJudgeResolutionsInsert();
 
   const isLoading = organizationUnitsLoading || realJudgeDataLoading || judgeResolutionsLoading;
 
-  const resolutionItem = useMemo(() => data.find((resolution: JudgeResolution) => resolution.id === +id), [data, id]);
+  const resolutionItem = useMemo(
+    () => judgeResolutions.find((resolution: JudgeResolution) => resolution.id === +id),
+    [judgeResolutions, id],
+  );
 
   useEffect(() => {
     // Setting the "isDisabled" state to true if the decision is not active. Inactive decisions cannot be edited.
@@ -79,7 +82,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({i
       })),
     };
 
-    mutate(
+    insertJudgeResolution(
       data,
       () => {
         setIsDisabled(true);

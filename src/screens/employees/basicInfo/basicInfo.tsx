@@ -13,7 +13,7 @@ import {
 } from '../../../constants';
 import useAppContext from '../../../context/useAppContext';
 import useGetAvailableJobPositions from '../../../services/graphql/jobPositions/useGetAvailableJobPositions';
-import useJudgesAvailable from '../../../services/graphql/judges/useJudgesAvailable';
+import useGetAvailableJudges from '../../../services/graphql/judges/useGetJudgeAvailability';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 import useGetBasicInfo from '../../../services/graphql/userProfile/basicInfo/useGetBasicInfo';
@@ -89,7 +89,7 @@ export const BasicInfo: React.FC = () => {
 
   const maritalOptions = gender === 'M' ? maleMaritalStatusOptions : femaleMaritalStatusOptions;
 
-  const {checkAvailable, refetch: refetchCheckAvailable} = useJudgesAvailable();
+  const {judgeAvailablity, refetch: refetchJudgeAvailablity} = useGetAvailableJudges();
 
   const {availableJobPositions} = useGetAvailableJobPositions(organization_unit_id?.id, department_id?.id);
 
@@ -250,7 +250,7 @@ export const BasicInfo: React.FC = () => {
         organization_unit_id?.id &&
         organization_unit_id.title?.indexOf('Sudski savjet') == -1
       ) {
-        refetchCheckAvailable(organization_unit_id?.id);
+        refetchJudgeAvailablity(organization_unit_id?.id);
       }
 
       if (dirtyFields.organization_unit_id) {
@@ -269,7 +269,7 @@ export const BasicInfo: React.FC = () => {
     if (creatingChosenJobApplicant) return true;
     if (organization_unit_id?.title && organization_unit_id.title?.indexOf('Sudski savjet') > -1) return true;
     if (is_judge) return false;
-    if (checkAvailable?.judge) return false;
+    if (judgeAvailablity?.judge) return false;
     return true;
   };
 
@@ -277,7 +277,7 @@ export const BasicInfo: React.FC = () => {
     if (creatingChosenJobApplicant) return true;
     if (organization_unit_id?.title && organization_unit_id.title?.indexOf('Sudski savjet') > -1) return true;
     if (isPresident) return false;
-    if (checkAvailable?.president) return false;
+    if (judgeAvailablity?.president) return false;
 
     return true;
   };

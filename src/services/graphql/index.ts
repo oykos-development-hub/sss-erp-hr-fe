@@ -17,14 +17,14 @@ import getJobTenderTypes from './jobTenderTypes/getJobTenderTypes';
 import deleteJobTender from './jobTenders/deleteJobTender';
 import getJobTenders from './jobTenders/getJobTenders';
 import insertJobTender from './jobTenders/insertJobTender';
-import judgeAndPresidentCheckIsAvailable from './judges/judgeAndPresidentCheckIsAvailable';
-import judgeNormDelete from './judges/judgeNormDelete';
-import judgeNormInsert from './judges/judgeNormInsert';
-import judgeOverview from './judges/judgeOverview';
-import judgeResolutionDelete from './judges/judgeResolutionDelete';
-import judgeResolutionInsert from './judges/judgeResolutionInsert';
-import judgeResolutionOverview from './judges/judgeResolutionOverview';
-import getOrganizationUnitRealJudgeNumberData from './judges/organizationUintCalculateEmployeeStats';
+import getJudgeAvailability from './judges/getJudgeAvailability';
+import getJudges from './judges/getJudges';
+import deleteJudgeNorm from './judges/norms/deleteJudgeNorm';
+import insertJudgeNorm from './judges/norms/insertJudgeNorm';
+import deleteJudgeResolution from './judges/resolutions/deleteJudgeResolution';
+import getCurrentResolutionNumbers from './judges/resolutions/getCurrentResolutionNumbers';
+import getJudgeResolutions from './judges/resolutions/getJudgeResolutions';
+import insertJudgeResolution from './judges/resolutions/insertJudgeResolution';
 import employeeInOrganizationUnitDelete from './organizationUnitsEmployees/employeeInOrganizationUnitDelete';
 import employeeInOrganizationUnitInsert from './organizationUnitsEmployees/employeeInOrganizationUnitInsert';
 import revisionDelete from './revision/revisionDelete';
@@ -99,7 +99,6 @@ export const GraphQL = {
   experienceDelete: experienceDelete,
   userProfileOverview: userProfileOverview,
   getJobTenderTypes: getJobTenderTypes,
-  judgeAndPresidentCheckIsAvailable: judgeAndPresidentCheckIsAvailable,
   educationOverview: educationOverview,
   educationInsert: educationInsert,
   educationDelete: educationDelete,
@@ -134,13 +133,14 @@ export const GraphQL = {
   getAbsenceTypes: absentTypesOverview,
   insertAbsence: insertAbsence,
   deleteAbsence: absentDelete,
-  judgeOverview: judgeOverview,
-  judgeNormDelete: judgeNormDelete,
-  judgeNormInsert: judgeNormInsert,
-  judgeResolutionDelete: judgeResolutionDelete,
-  judgeResolutionInsert: judgeResolutionInsert,
-  judgeResolutionOverview: judgeResolutionOverview,
-  getOrganizationUnitRealJudgeNumberData: getOrganizationUnitRealJudgeNumberData,
+  getJudges: getJudges,
+  deleteJudgeNorm: deleteJudgeNorm,
+  insertJudgeNorm: insertJudgeNorm,
+  deleteJudgeResolution: deleteJudgeResolution,
+  insertJudgeResolution: insertJudgeResolution,
+  getJudgeResolutions: getJudgeResolutions,
+  getCurrentResolutionNumbers: getCurrentResolutionNumbers,
+  getJudgeAvailability: getJudgeAvailability,
   settingsDropdownOverview: settingsDropdownOverview,
   getSuppliersOverview: getSuppliersOverview,
   getVacation: GetVacation,

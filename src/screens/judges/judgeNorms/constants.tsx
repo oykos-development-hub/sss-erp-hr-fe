@@ -1,7 +1,7 @@
 import React from 'react';
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {TableHead, Typography} from 'client-library';
-import {JudgeResolutionItem} from '../../../types/graphql/judges';
+import {JudgeResolutionItem} from '../../../types/graphql/judgeResolutions';
 
 export const judgeResolutionTableHeads: TableHead[] = [
   {

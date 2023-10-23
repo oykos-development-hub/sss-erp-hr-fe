@@ -4,7 +4,7 @@ import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {DropdownDataString} from '../../../types/dropdownData';
 import {ScreenProps} from '../../../types/screen-props';
 import {yearsForDropdownFilter} from '../../../utils/constants';
-import useJudgesResolutionsOverview from '../../../services/graphql/judges/useJudgeResolutionOverview';
+import useGetJudgeResolutions from '../../../services/graphql/judges/resolutions/useGetJudgeResolutions';
 
 export interface JudgesNumberListFilters {
   year: DropdownDataString | null;
@@ -17,7 +17,7 @@ const initialValues: JudgesNumberListFilters = {
 const JudgesNumberDecisions: React.FC<ScreenProps> = ({context}) => {
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState<JudgesNumberListFilters>(initialValues);
-  const {data: judgesResolutions, total, refetch, loading} = useJudgesResolutionsOverview({page, size: 10});
+  const {judgeResolutions, total, refetch, loading} = useGetJudgeResolutions({page, size: 10});
 
   const onPageChange = (page: number) => {
     setPage(page + 1);
@@ -36,7 +36,7 @@ const JudgesNumberDecisions: React.FC<ScreenProps> = ({context}) => {
     <ScreenWrapper>
       <JudgesNumbersList
         years={yearOptions}
-        data={judgesResolutions || []}
+        data={judgeResolutions || []}
         total={total}
         filters={filters}
         onFilterChange={onFilterChange}
