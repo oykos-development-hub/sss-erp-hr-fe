@@ -10,13 +10,13 @@ import getJobPositions from './jobPositions/getJobPositions';
 import deleteJobPositionInOrgUnit from './jobPositionsInOrgUnit/deleteJobPositionInOrgUnit';
 import getJobPositionsInOrgUnit from './jobPositionsInOrgUnit/getJobPositionsInOrgUnit';
 import insertJobPositionInOrgUnit from './jobPositionsInOrgUnit/insertJobPositionInOrgUnit';
-import jobTenderTypesSearch from './jobTenderTypes/getJobTenderTypes';
-import deleteJobTender from './jobTenders/deleteJobTender';
 import deleteJobTenderApplication from './jobTenderApplications/deleteJobTenderApplication';
 import getJobTenderApplications from './jobTenderApplications/getJobTenderApplications';
+import insertJobTenderApplication from './jobTenderApplications/insertJobTenderApplication';
+import getJobTenderTypes from './jobTenderTypes/getJobTenderTypes';
+import deleteJobTender from './jobTenders/deleteJobTender';
 import getJobTenders from './jobTenders/getJobTenders';
 import insertJobTender from './jobTenders/insertJobTender';
-import insertJobTenderApplication from './jobTenderApplications/insertJobTenderApplication';
 import judgeAndPresidentCheckIsAvailable from './judges/judgeAndPresidentCheckIsAvailable';
 import judgeNormDelete from './judges/judgeNormDelete';
 import judgeNormInsert from './judges/judgeNormInsert';
@@ -50,9 +50,9 @@ import absentDelete from './userProfile/absents/deleteAbsence';
 import absentOverview from './userProfile/absents/getAbsence';
 import absentTypesOverview from './userProfile/absents/getAbsenceTypes';
 import insertAbsence from './userProfile/absents/insertAbsence';
-import basicInfoGet from './userProfile/basicInfo/basicInfoGet';
-import basicInfoInsert from './userProfile/basicInfo/basicInfoInsert';
-import basicInfoUpdate from './userProfile/basicInfo/basicInfoUpdate';
+import getBasicInfo from './userProfile/basicInfo/getBasicInfo';
+import insertBasicInfo from './userProfile/basicInfo/insertBasicInfo';
+import updateBasicInfo from './userProfile/basicInfo/updateBasicInfo';
 import educationDelete from './userProfile/education/educationDelete';
 import educationInsert from './userProfile/education/educationInsert';
 import educationOverview from './userProfile/education/educationOverview';
@@ -73,7 +73,6 @@ import salaryParamsOverview from './userProfile/salaryParams/salaryParamsOvervie
 import userProfileOverview from './userProfile/userProfileOverview';
 import GetVacation from './userProfile/vacation/vacationGet';
 import vacationInsert from './userProfile/vacation/vacationInsert';
-import getJobTenderTypes from './jobTenderTypes/getJobTenderTypes';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -92,9 +91,9 @@ export const GraphQL = {
       .then(response => response.json())
       .catch(error => console.error(error));
   },
-  basicInfoUpdate: basicInfoUpdate,
-  basicInfoGet: basicInfoGet,
-  basicInfoInsert: basicInfoInsert,
+  updateBasicInfo: updateBasicInfo,
+  getBasicInfo: getBasicInfo,
+  insertBasicInfo: insertBasicInfo,
   experienceOverview: experienceOverview,
   experienceInsert: experienceInsert,
   experienceDelete: experienceDelete,

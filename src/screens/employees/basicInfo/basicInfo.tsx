@@ -16,11 +16,10 @@ import useGetAvailableJobPositions from '../../../services/graphql/jobPositions/
 import useJudgesAvailable from '../../../services/graphql/judges/useJudgesAvailable';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
-import useBasicInfoGet from '../../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
-import useBasicInfoInsert from '../../../services/graphql/userProfile/basicInfo/useBasicInfoInsert';
-import useBasicInfoUpdate from '../../../services/graphql/userProfile/basicInfo/useBasicInfoUpdate';
+import useGetBasicInfo from '../../../services/graphql/userProfile/basicInfo/useGetBasicInfo';
+import useInsertBasicInfo from '../../../services/graphql/userProfile/basicInfo/useInsertBasicInfo';
+import useUpdateBasicInfo from '../../../services/graphql/userProfile/basicInfo/useUpdateBasicInfo';
 import {DropdownDataString} from '../../../types/dropdownData';
-import {UserProfileBasicInfoFormValues} from '../../../types/graphql/userProfiles';
 import {parseToDate} from '../../../utils/dateUtils';
 import {backendErrors, contractPositions, initialValues} from './constants';
 import {
@@ -37,23 +36,24 @@ import {
 import useInsertJobTenderApplication from '../../../services/graphql/jobTenderApplications/useInsertJobTenderApplication';
 import {basicInfoSchema, booleanToYesOrNo, formatData} from './utils';
 import {ContractEndModal} from '../../../components/contractEndModal/contractEndModal';
+import {UserProfileBasicInfoFormValues} from '../../../types/graphql/userProfileBasicInfo';
 
 export const BasicInfo: React.FC = () => {
   const context = useAppContext();
   const profileId = Number(context?.navigation.location.pathname.split('/')[4]);
-  const {data: profileData, refetch} = useBasicInfoGet(profileId);
+  const {userBasicInfo, refetch} = useGetBasicInfo(profileId, {skip: !profileId});
 
   const [creatingChosenJobApplicant, setCreatingChosenJobApplicant] = useState<boolean>(false);
   const isNew = !profileId;
-  // const isJudge = profileData?.is_judge;
-  const isPresident = profileData?.is_president;
+  // const isJudge = userBasicInfo?.is_judge;
+  const isPresident = userBasicInfo?.is_president;
   const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
   const [openContractEndModal, setOpenCotractEndModal] = useState<boolean>(false);
 
   const {organizationUnits, departments} = useGetOrganizationUnits(undefined);
   const {options: contractTypes} = useSettingsDropdownOverview({entity: 'contract_types'});
-  const {mutate: createBasicInfo, loading: isCreating} = useBasicInfoInsert();
-  const {mutate: updateBasicInfo, loading: isUpdating} = useBasicInfoUpdate();
+  const {insertBasicInfo, loading: isCreating} = useInsertBasicInfo();
+  const {updateBasicInfo, loading: isUpdating} = useUpdateBasicInfo();
   const {insertJobTenderApplication, loading: isUpdatingApplication} = useInsertJobTenderApplication();
 
   const {
@@ -109,10 +109,10 @@ export const BasicInfo: React.FC = () => {
 
   const handleSave = async (values: UserProfileBasicInfoFormValues, close: boolean) => {
     if (isValid) {
-      if (!profileData?.id) {
+      if (!userBasicInfo?.id) {
         if (isCreating) return;
 
-        await createBasicInfo(
+        await insertBasicInfo(
           formatData(values),
           userId => {
             if (creatingChosenJobApplicant) {
@@ -194,39 +194,39 @@ export const BasicInfo: React.FC = () => {
   }, [context.navigation.location]);
 
   useEffect(() => {
-    if (profileData) {
+    if (userBasicInfo) {
       reset({
-        ...profileData,
-        nationality: countryOptions.find((opt: DropdownDataString) => opt.id === profileData.nationality),
-        citizenship: countryOptions.find((opt: DropdownDataString) => opt.id === profileData.citizenship),
-        date_of_birth: parseToDate(profileData?.date_of_birth),
-        date_of_becoming_judge: parseToDate(profileData?.date_of_becoming_judge),
-        marital_status: maritalOptions.find(opt => opt.id === profileData?.marital_status),
-        country_of_birth: countryOptions.find((opt: DropdownDataString) => opt.id === profileData?.country_of_birth),
-        city_of_birth: profileData?.city_of_birth,
-        housing_done: booleanToYesOrNo(profileData?.housing_done),
-        single_parent: booleanToYesOrNo(profileData?.single_parent),
-        gender: genderOptions.find((opt: DropdownDataString) => opt.id === profileData?.gender),
-        is_president: profileData?.is_president,
+        ...userBasicInfo,
+        nationality: countryOptions.find((opt: DropdownDataString) => opt.id === userBasicInfo.nationality),
+        citizenship: countryOptions.find((opt: DropdownDataString) => opt.id === userBasicInfo.citizenship),
+        date_of_birth: parseToDate(userBasicInfo?.date_of_birth),
+        date_of_becoming_judge: parseToDate(userBasicInfo?.date_of_becoming_judge),
+        marital_status: maritalOptions.find(opt => opt.id === userBasicInfo?.marital_status),
+        country_of_birth: countryOptions.find((opt: DropdownDataString) => opt.id === userBasicInfo?.country_of_birth),
+        city_of_birth: userBasicInfo?.city_of_birth,
+        housing_done: booleanToYesOrNo(userBasicInfo?.housing_done),
+        single_parent: booleanToYesOrNo(userBasicInfo?.single_parent),
+        gender: genderOptions.find((opt: DropdownDataString) => opt.id === userBasicInfo?.gender),
+        is_president: userBasicInfo?.is_president,
         national_minority: nationalMinorities.find(
-          (opt: DropdownDataString) => opt.id === profileData?.national_minority,
+          (opt: DropdownDataString) => opt.id === userBasicInfo?.national_minority,
         ),
         official_personal_document_issuer: cityData.find(
-          (opt: DropdownDataString) => opt.id === profileData?.official_personal_document_issuer,
+          (opt: DropdownDataString) => opt.id === userBasicInfo?.official_personal_document_issuer,
         ),
-        personal_id: profileData?.personal_id ?? '',
-        organization_unit_id: profileData?.contract?.organization_unit ?? undefined,
-        department_id: profileData?.contract?.department ?? undefined,
-        job_position_in_organization_unit_id: profileData?.contract?.job_position_in_organization_unit ?? undefined,
-        contract_type_id: profileData?.contract?.contract_type ?? undefined,
-        date_of_end: parseToDate(profileData?.contract?.date_of_end),
-        date_of_start: parseToDate(profileData?.contract?.date_of_start),
-        date_of_eligibility: parseToDate(profileData?.contract?.date_of_eligibility),
-        user_profile_id: profileData?.id,
-        active: profileData?.contract?.active,
+        personal_id: userBasicInfo?.personal_id ?? '',
+        organization_unit_id: userBasicInfo?.contract?.organization_unit ?? undefined,
+        department_id: userBasicInfo?.contract?.department ?? undefined,
+        job_position_in_organization_unit_id: userBasicInfo?.contract?.job_position_in_organization_unit ?? undefined,
+        contract_type_id: userBasicInfo?.contract?.contract_type ?? undefined,
+        date_of_end: parseToDate(userBasicInfo?.contract?.date_of_end),
+        date_of_start: parseToDate(userBasicInfo?.contract?.date_of_start),
+        date_of_eligibility: parseToDate(userBasicInfo?.contract?.date_of_eligibility),
+        user_profile_id: userBasicInfo?.id,
+        active: userBasicInfo?.contract?.active,
       });
     }
-  }, [profileData]);
+  }, [userBasicInfo]);
 
   // When coming from the job tender applications, when changing an external candidates status to accepted, it leads here to create it in the system, basically becoming an internal candidate in order to be accepted
   useEffect(() => {
@@ -238,7 +238,7 @@ export const BasicInfo: React.FC = () => {
     reset({
       ...initialValues,
       ...user,
-      organization_unit_id: organizationUnits.find((opt: any) => opt.id === user.organization_unit_id),
+      organization_unit_id: organizationUnits.find((opt: any) => opt.id === user?.organization_unit_id),
     });
   }, [context.navigation.location.state, organizationUnits]);
 

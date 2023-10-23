@@ -10,7 +10,7 @@ import {Controls, FormColumn, FormContainer, FormFooter, FormItem, FormRow, Form
 import {SalaryParamsPageProps} from './types';
 import {formatData, initialValues} from './utils';
 import {parseToDate} from '../../../utils/dateUtils';
-import useBasicInfoGet from '../../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
+import useBasicInfoGet from '../../../services/graphql/userProfile/basicInfo/useGetBasicInfo';
 import useEducationOverview from '../../../services/graphql/userProfile/education/useEducationOverview';
 import {educationTypes} from '../../../components/education/modals/constants';
 
@@ -18,7 +18,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const userProfileID = Number(context.navigation.location.pathname.split('/')[4]);
   const {data, refetch} = useSalaryParamsOverview(userProfileID);
-  const {data: profileData} = useBasicInfoGet(Number(context.navigation.location.pathname.split('/')[4]));
+  const {userBasicInfo} = useBasicInfoGet(userProfileID, {skip: !userProfileID});
   const {employeeEducationData: educationData} = useEducationOverview(
     Number(context.navigation.location.pathname.split('/')[4]),
     educationTypes.education_academic_types,
@@ -71,7 +71,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
     const payload = formatData({
       ...values,
       user_profile_id: userProfileID,
-      organization_unit_id: profileData?.contract.organization_unit?.id,
+      organization_unit_id: userBasicInfo?.contract.organization_unit?.id,
     });
 
     if (!item) {
@@ -117,8 +117,8 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                     name={name}
                     label="RADNO MJESTO:"
                     isDisabled
-                    value={profileData?.job_position}
-                    options={profileData?.job_position ? new Array(profileData.job_position) : []}
+                    value={userBasicInfo?.job_position}
+                    options={userBasicInfo?.job_position ? new Array(userBasicInfo.job_position) : []}
                   />
                 )}
               />
@@ -132,9 +132,11 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                     name={name}
                     label="ORGANIZACIONA JEDINICA:"
                     isDisabled
-                    value={profileData?.contract.organization_unit}
+                    value={userBasicInfo?.contract.organization_unit}
                     options={
-                      profileData?.contract.organization_unit ? new Array(profileData?.contract.organization_unit) : []
+                      userBasicInfo?.contract.organization_unit
+                        ? new Array(userBasicInfo?.contract.organization_unit)
+                        : []
                     }
                   />
                 )}
@@ -213,8 +215,10 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                     name={name}
                     label="VRSTA UGOVORA:"
                     isDisabled
-                    value={profileData?.contract.contract_type}
-                    options={profileData?.contract?.contract_type ? new Array(profileData.contract.contract_type) : []}
+                    value={userBasicInfo?.contract.contract_type}
+                    options={
+                      userBasicInfo?.contract?.contract_type ? new Array(userBasicInfo.contract.contract_type) : []
+                    }
                   />
                 )}
               />
@@ -227,7 +231,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                   <Datepicker
                     onChange={() => console.log('change')}
                     name={name}
-                    selected={parseToDate(profileData?.contract?.date_of_start || null)}
+                    selected={parseToDate(userBasicInfo?.contract?.date_of_start || null)}
                     label="POČETAK RADNOG ODNOSA:"
                     disabled
                   />

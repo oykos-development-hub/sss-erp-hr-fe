@@ -9,7 +9,7 @@ import {
   evaluationTypeOptions,
 } from '../../screens/jobTenders/constants';
 import useInsertJobTenderApplication from '../../services/graphql/jobTenderApplications/useInsertJobTenderApplication';
-import useBasicInfoGet from '../../services/graphql/userProfile/basicInfo/useBasicInfoGet';
+import useBasicInfoGet from '../../services/graphql/userProfile/basicInfo/useGetBasicInfo';
 import useUserProfiles from '../../services/graphql/userProfile/useUserProfiles';
 import {DropdownDataString} from '../../types/dropdownData';
 import {JobTender} from '../../types/graphql/jobTenders';
@@ -92,7 +92,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   const [selectedUserId, setSelectedIdUser] = useState<number>(0);
   const [confirmationModal, setConfirmationModal] = useState<boolean>(false);
 
-  const {data: userData} = useBasicInfoGet(selectedUserId);
+  const {userBasicInfo} = useBasicInfoGet(selectedUserId, {skip: !selectedUserId});
 
   const {userProfiles} = useUserProfiles({
     page: 1,
@@ -205,18 +205,18 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 
   // Choosing an internal user to populate the corresponding fields.
   useEffect(() => {
-    if (userData) {
+    if (userBasicInfo) {
       reset({
         ...watch(),
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        official_personal_id: userData.official_personal_id,
-        date_of_birth: parseToDate(userData.date_of_birth) ?? undefined,
-        citizenship: countryOptions?.find(c => c.id === userData.citizenship) || undefined,
-        user_profile: {id: userData.id, title: `${userData.first_name} ${userData.last_name}`},
+        first_name: userBasicInfo.first_name,
+        last_name: userBasicInfo.last_name,
+        official_personal_id: userBasicInfo.official_personal_id,
+        date_of_birth: parseToDate(userBasicInfo.date_of_birth) ?? undefined,
+        citizenship: countryOptions?.find(c => c.id === userBasicInfo.citizenship) || undefined,
+        user_profile: {id: userBasicInfo.id, title: `${userBasicInfo.first_name} ${userBasicInfo.last_name}`},
       });
     }
-  }, [userData]);
+  }, [userBasicInfo]);
 
   useEffect(() => {
     if (selectedItem) {
