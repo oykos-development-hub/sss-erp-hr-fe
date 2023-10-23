@@ -36,6 +36,7 @@ export interface UserProfileBasicInfo {
   contract: UserContract;
   national_minority: string;
   personal_id: string;
+  number_of_conference: number;
 }
 
 export interface UserProfileBasicInfoFormValues {
@@ -73,6 +74,7 @@ export interface UserProfileBasicInfoFormValues {
   role_id: number;
   contract: BasicInfoUserContractValues;
   personal_id: string;
+  number_of_conference: number;
 }
 
 export interface UserContract {
@@ -94,6 +96,7 @@ export interface UserContract {
   date_of_start: string;
   date_of_end: string;
   file_id: number;
+  number_of_conference: number;
 }
 
 export interface BasicInfoUserContractValues {

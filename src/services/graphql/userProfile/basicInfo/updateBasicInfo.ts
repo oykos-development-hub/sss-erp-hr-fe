@@ -66,6 +66,7 @@ const updateBasicInfo = `mutation($data: UserProfileUpdateMutation!) {
                     id
                     title
                 }
+                number_of_conference
                 abbreviation
                 description
                 active

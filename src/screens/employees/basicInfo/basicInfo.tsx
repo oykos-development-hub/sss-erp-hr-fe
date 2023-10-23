@@ -224,6 +224,7 @@ export const BasicInfo: React.FC = () => {
         date_of_eligibility: parseToDate(userBasicInfo?.contract?.date_of_eligibility),
         user_profile_id: userBasicInfo?.id,
         active: userBasicInfo?.contract?.active,
+        number_of_conference: userBasicInfo?.contract.number_of_conference,
       });
     }
   }, [userBasicInfo]);
@@ -690,6 +691,9 @@ export const BasicInfo: React.FC = () => {
               />
             </FormItem>
             <FormItem>
+              <Input {...register('number_of_conference')} label="BROJ SJEDNICE:" disabled={isDisabled} />
+            </FormItem>
+            <FormItem>
               <FormFileUpload
                 onUpload={onFileUpload}
                 variant="secondary"
@@ -738,7 +742,7 @@ export const BasicInfo: React.FC = () => {
             </FormItem>
             <FormItem>
               <Button
-                size="lg"
+                size="xl"
                 content={<Typography variant="bodyMedium" content="Prekid radnog odnosa" />}
                 disabled={isDisabled}
                 onClick={() => setOpenCotractEndModal(true)}

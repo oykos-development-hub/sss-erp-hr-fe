@@ -64,6 +64,7 @@ const getBasicInfo = `query UserProfileOverview($user_profile_id: Int!){
                     id
                     title
                 }
+                number_of_conference
                 abbreviation
                 description
                 active
