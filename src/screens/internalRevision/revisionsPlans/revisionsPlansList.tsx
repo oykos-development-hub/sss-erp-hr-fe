@@ -12,12 +12,12 @@ import {
 } from 'client-library';
 import {useMemo, useState} from 'react';
 import {RevisionPlanModal} from '../../../components/revisionPlanModal/revisionPlanModal';
-import useRevisionPlanDelete from '../../../services/graphql/revisionsPlans/useRevisionPlanDelete';
-import useRevisionPlanOverview from '../../../services/graphql/revisionsPlans/useRevisionPlanOverview';
+import useGetRevisionPlans from '../../../services/graphql/revisionsPlans/useRevisionPlanOverview';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
 import {yearsForDropdownFilter} from '../../../utils/constants';
 import {RevisionListContainer, MainTitle, TableHeader, FilterContainer} from '../styles';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
+import useDeleteRevisionPlan from '../../../services/graphql/revisionsPlans/useRevisionPlanDelete';
 
 interface RevisionPlanListProps {
   context: MicroserviceProps;
@@ -35,8 +35,8 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
   const [editId, setEditId] = useState(0);
   const [form, setForm] = useState<any>();
 
-  const {mutate} = useRevisionPlanDelete();
-  const {data, loading, refetch} = useRevisionPlanOverview({page: 1000, size: 1000});
+  const {deleteRevisionPlan} = useDeleteRevisionPlan();
+  const {revisionPlans, loading, refetch} = useGetRevisionPlans({page: 1, size: 1000});
 
   const toggleDeleteModal = (id: number) => {
     setDeleteModal(id);
@@ -52,7 +52,7 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
   };
 
   const handleDelete = () => {
-    mutate(
+    deleteRevisionPlan(
       deleteModal,
       () => {
         toggleDeleteModal(0);
@@ -75,10 +75,10 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
 
   const filteredTableData = useMemo(() => {
     if (form?.year?.id) {
-      return data?.filter((item: any) => item.year.includes(form.year.id));
+      return revisionPlans?.filter((item: any) => item.year.includes(form.year.id));
     }
-    return data;
-  }, [data, form?.year?.id]);
+    return revisionPlans;
+  }, [revisionPlans, form?.year?.id]);
 
   return (
     <ScreenWrapper>

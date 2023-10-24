@@ -1,13 +1,13 @@
 import {Button, Divider, EditIconTwo, Table, Theme, TrashIconTwo} from 'client-library';
 import React, {useState} from 'react';
 import {RevisionTipsModal} from '../../../components/revisionTipsModal/revisionTipsModal';
-import useRevisionTipsDelete from '../../../services/graphql/revisionTips/useRevisionTipsDelete';
-import useRevisionTipsOverview from '../../../services/graphql/revisionTips/useRevisionTipsOverview';
+import useGetRevisionTips from '../../../services/graphql/revisionTips/useRevisionTipsOverview';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import {MainTitle, RevisionListContainer, TableHeader} from '../styles';
 import {RevisionTipsTableHeads} from './constants';
-import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
+import useDeleteRevisionTip from '../../../services/graphql/revisionTips/useRevisionTipsDelete';
 
 interface RevisionTipsListProps {
   context: MicroserviceProps;
@@ -23,9 +23,9 @@ const RevisionTips: React.FC<RevisionTipsListProps> = ({context}) => {
     setDeleteModal(id);
   };
 
-  const {mutate} = useRevisionTipsDelete();
+  const {deleteRevisionTip} = useDeleteRevisionTip();
 
-  const {data, loading, refetch} = useRevisionTipsOverview({page: 1000, size: 1000, revision_id: revisionId});
+  const {revisionTips, loading, refetch} = useGetRevisionTips({page: 1, size: 1000, revision_id: revisionId});
 
   const toogleRevisionTipsModal = (id: number) => {
     setEditId(id);
@@ -37,7 +37,7 @@ const RevisionTips: React.FC<RevisionTipsListProps> = ({context}) => {
   };
 
   const handleDelete = () => {
-    mutate(
+    deleteRevisionTip(
       deleteModal,
       () => {
         toggleDeleteModal(0);
@@ -61,7 +61,7 @@ const RevisionTips: React.FC<RevisionTipsListProps> = ({context}) => {
         </TableHeader>
         <Table
           tableHeads={RevisionTipsTableHeads}
-          data={data.items || []}
+          data={revisionTips.items || []}
           style={{marginBottom: 22}}
           isLoading={loading}
           tableActions={[

@@ -1,8 +1,9 @@
 import {Dropdown, Input} from 'client-library';
 import React, {useEffect} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import useRevisionPlanDetails from '../../services/graphql/revisionsPlans/useRevisionPlanDetails';
-import useRevisionPlanInsert from '../../services/graphql/revisionsPlans/useRevisionPlanInsert';
+import useGetRevisionPlanDetails from '../../services/graphql/revisionsPlans/useRevisionPlanDetails';
+import useInsertRevisionPlan from '../../services/graphql/revisionsPlans/useRevisionPlanInsert';
+import {RevisionPlanForm} from '../../types/graphql/revisionPlans';
 import {yearsForDropdown} from '../../utils/constants';
 import {FormGroup, ModalForm, ModalSection, RevisionModal} from './styles';
 
@@ -14,14 +15,15 @@ interface RevisionPlanProps {
   id: number;
 }
 
-const InitialValues = {
+const initialValues: RevisionPlanForm = {
+  id: null,
   name: '',
-  year: '',
+  year: null,
 };
 
 export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({open, onClose, alert, refetchList, id}) => {
-  const {data: planDetails} = useRevisionPlanDetails(id);
-  const {mutate, loading: isSaving} = useRevisionPlanInsert();
+  const {revisionPlanDetails} = useGetRevisionPlanDetails(id);
+  const {insertRevisionPlan, loading: isSaving} = useInsertRevisionPlan();
 
   const yearOptions = yearsForDropdown(1).map(year => ({id: year.id, title: year.title}));
 
@@ -31,7 +33,7 @@ export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({open, onClose, a
     formState: {errors},
     control,
     reset,
-  } = useForm({defaultValues: planDetails || InitialValues});
+  } = useForm({defaultValues: initialValues});
 
   const onSubmit = (values: any) => {
     if (isSaving) return;
@@ -42,17 +44,17 @@ export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({open, onClose, a
       year: values?.year.id.toString(),
     };
 
-    mutate(
+    insertRevisionPlan(
       data,
       () => {
         refetchList();
         onClose();
-        reset(InitialValues);
-        alert.success(planDetails.item.id ? 'Plan uspješno sačuvan.' : 'Plan je uspešno dodat.');
+        reset(initialValues);
+        alert.success(revisionPlanDetails.id ? 'Plan uspješno sačuvan.' : 'Plan je uspešno dodat.');
       },
       () => {
         alert.error(
-          planDetails.item.id
+          revisionPlanDetails.id
             ? 'Došlo je do greške prilikom izmjene plana.'
             : 'Došlo je do greške prilikom dodavanja plana.',
         );
@@ -61,14 +63,14 @@ export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({open, onClose, a
   };
 
   useEffect(() => {
-    if (planDetails && planDetails.item && id && planDetails.status === 'success') {
+    if (revisionPlanDetails && id) {
       reset({
-        name: planDetails.item.name,
-        id: planDetails.item.id,
-        year: yearOptions.find(yearOption => yearOption.title === planDetails?.item.year),
+        name: revisionPlanDetails.name,
+        id: revisionPlanDetails.id,
+        year: yearOptions.find(yearOption => yearOption.title === revisionPlanDetails?.year),
       });
     }
-  }, [planDetails]);
+  }, [revisionPlanDetails]);
 
   return (
     <RevisionModal

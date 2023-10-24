@@ -1,11 +1,12 @@
-import {Datepicker, Dropdown, Input, FileUpload, Typography} from 'client-library';
+import {Datepicker, Dropdown, FileUpload, Input, Typography} from 'client-library';
 import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {revisionDeadlineOptions, revisionPriorityOptions, revisionStatusOptions} from '../../constants';
-import useRevisionTipsDetails from '../../services/graphql/revisionTips/useRevisionTipsDetails';
-import useRevisionTipsInsert from '../../services/graphql/revisionTips/useRevisionTipsInsert';
-import useRevisionTipsOverview from '../../services/graphql/revisionTips/useRevisionTipsOverview';
+import useGetRevisionTipDetails from '../../services/graphql/revisionTips/useRevisionTipsDetails';
+import useInsertRevisionTip from '../../services/graphql/revisionTips/useRevisionTipsInsert';
+import useGetRevisionTips from '../../services/graphql/revisionTips/useRevisionTipsOverview';
 import {DropdownDataString} from '../../types/dropdownData';
+import {RevisionTipForm} from '../../types/graphql/revisionTips';
 import {MicroserviceProps} from '../../types/micro-service-props';
 import {parseDate, parseDateForBackend} from '../../utils/dateUtils';
 import {
@@ -19,7 +20,7 @@ import {
   Row,
 } from './styles';
 
-interface revisionPlanProps {
+interface RevisionTipModalProps {
   open: boolean;
   onClose: () => void;
   refetchList: () => void;
@@ -29,17 +30,18 @@ interface revisionPlanProps {
   context: MicroserviceProps;
 }
 
-const InitialValues = {
+const initialValues: any = {
   user_profile_id: null,
-  date_of_accept: '',
+  date_of_accept: null,
   due_date: null,
-  date_of_reject: '',
-  date_of_execution: '',
+  date_of_reject: null,
+  date_of_execution: null,
   recommendation: '',
   revision_priority: '',
+  new_due_date: null,
 };
 
-export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
+export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
   open,
   onClose,
   alert,
@@ -48,9 +50,9 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
   revisionId,
   context,
 }) => {
-  const {data: revisionTipsDetails} = useRevisionTipsDetails(id);
-  const {mutate, loading: isSaving} = useRevisionTipsInsert();
-  const {data} = useRevisionTipsOverview({page: 1000, size: 1000, revision_id: revisionId});
+  const {revisionTipDetails} = useGetRevisionTipDetails(id);
+  const {insertRevisionTip, loading: isSaving} = useInsertRevisionTip();
+  const {revisionTips} = useGetRevisionTips({page: 1, size: 1000, revision_id: revisionId});
   const [dateOfImplementation, setDateOfImplementation] = useState<any>();
   const [secondDateOfImplementation, setSecondDateOfImplementation] = useState<any>();
 
@@ -64,17 +66,10 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
     control,
     reset,
     watch,
-  } = useForm({defaultValues: revisionTipsDetails || InitialValues});
+  } = useForm({defaultValues: initialValues});
 
   const implementationMonthSpan = watch('due_date');
   const secondMonthSpan = watch('new_due_date');
-
-  const revisorsList = data?.revisors?.map((unit: any) => {
-    return {
-      id: unit.id,
-      title: unit.title,
-    };
-  });
 
   const onSubmit = (values: any) => {
     if (isSaving) return;
@@ -98,17 +93,17 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
       end_date: parseDateForBackend(values?.end_date) ?? undefined,
     };
 
-    mutate(
+    insertRevisionTip(
       data,
       () => {
         refetchList();
         onClose();
-        reset(InitialValues);
-        alert.success(revisionTipsDetails.item.id ? 'Preporuka uspješno sačuvana.' : 'Preporuka je uspešno dodata.');
+        reset(initialValues);
+        alert.success(revisionTipDetails.id ? 'Preporuka uspješno sačuvana.' : 'Preporuka je uspešno dodata.');
       },
       () => {
         alert.error(
-          revisionTipsDetails.item.id
+          revisionTipDetails.id
             ? 'Došlo je do greške prilikom izmjene preporuke.'
             : 'Došlo je do greške prilikom dodavanja preporuke.',
         );
@@ -117,37 +112,37 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
   };
 
   useEffect(() => {
-    if (revisionTipsDetails && revisionTipsDetails.item && id && revisionTipsDetails.status === 'success') {
+    if (revisionTipDetails && id) {
       reset({
         id: id,
-        responsible_person: revisionTipsDetails.item.responsible_person,
-        date_of_accept: revisionTipsDetails.item.date_of_accept,
+        responsible_person: revisionTipDetails.responsible_person,
+        date_of_accept: revisionTipDetails.date_of_accept,
         due_date: revisionDeadlineOptions.find(
-          (revisionDeadlineOptions: any) => revisionDeadlineOptions.id === revisionTipsDetails.item.due_date,
+          (revisionDeadlineOptions: any) => revisionDeadlineOptions.id === revisionTipDetails.due_date,
         ),
-        date_of_reject: revisionTipsDetails.item.date_of_reject,
-        date_of_execution: revisionTipsDetails.item.date_of_execution,
-        new_date_of_execution: revisionTipsDetails.item.new_date_of_execution,
-        recommendation: revisionTipsDetails.item.recommendation,
-        revision_id: revisionTipsDetails.item.revision_id,
+        date_of_reject: revisionTipDetails.date_of_reject,
+        date_of_execution: revisionTipDetails.date_of_execution,
+        new_date_of_execution: revisionTipDetails.new_date_of_execution,
+        recommendation: revisionTipDetails.recommendation,
+        revision_id: revisionTipDetails.revision_id,
         status: revisionStatusOptions.find(
-          (revisionStatusOptions: any) => revisionStatusOptions.id === revisionTipsDetails.item.status,
+          (revisionStatusOptions: any) => revisionStatusOptions.id === revisionTipDetails.status,
         ),
-        documents: revisionTipsDetails.item.documents,
-        reasons_for_non_executing: revisionTipsDetails.item.reasons_for_non_executing,
+        documents: revisionTipDetails.documents,
+        reasons_for_non_executing: revisionTipDetails.reasons_for_non_executing,
         new_due_date: revisionDeadlineOptions.find(
-          (revisionDeadlineOptions: any) => revisionDeadlineOptions.id === revisionTipsDetails.item.new_due_date,
+          (revisionDeadlineOptions: any) => revisionDeadlineOptions.id === revisionTipDetails.new_due_date,
         ),
-        user_profile_id: revisorsList.find(
-          (revisorsList: any) => revisorsList.id === revisionTipsDetails.item.user_profile.id,
+        user_profile_id: revisionTips.revisors.find(
+          (revisorsList: any) => revisorsList.id === revisionTipDetails.user_profile.id,
         ),
         revision_priority: revisionPriorityOptions.find(
-          (revisionPriorityOptions: any) => revisionPriorityOptions.id === revisionTipsDetails.item.revision_priority,
+          (revisionPriorityOptions: any) => revisionPriorityOptions.id === revisionTipDetails.revision_priority,
         ),
-        end_date: revisionTipsDetails.item.end_date,
+        end_date: revisionTipDetails.end_date,
       });
     }
-  }, [revisionTipsDetails]);
+  }, [revisionTipDetails]);
 
   const calculateDateOfImplementation = (revisionDate: string, monthSpan: DropdownDataString | null) => {
     const parsedDateOfRevision = new Date(revisionDate);
@@ -222,7 +217,7 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
                       error={errors.due_date?.message as string}
                       placeholder="Izaberite rok"
                       label="ROK SPROVOĐENJA PREPORUKE:"
-                      isDisabled={revisionTipsDetails?.item?.new_due_date && true}
+                      isDisabled={revisionTipDetails?.new_due_date && true}
                     />
                   )}
                 />
@@ -326,7 +321,7 @@ export const RevisionTipsModal: React.FC<revisionPlanProps> = ({
                           name={name}
                           value={value as any}
                           onChange={onChange}
-                          options={revisorsList || []}
+                          options={revisionTips.revisors || []}
                           placeholder="Izaberite revizora"
                           label="IMPLEMENTACIJU PREPORUKE POTVRDIO:"
                         />

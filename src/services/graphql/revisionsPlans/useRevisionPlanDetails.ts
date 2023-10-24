@@ -1,25 +1,40 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '..';
+import useAppContext from '../../../context/useAppContext';
+import {RevisionPlan, RevisionPlansResponse} from '../../../types/graphql/revisionPlans';
+import {REQUEST_STATUSES} from '../../constants';
 
-const useRevisionPlanDetails = (id: number) => {
-  const [data, setData] = useState<any>();
+const initialData = {
+  id: 0,
+  name: '',
+  year: '',
+};
+
+const useGetRevisionPlanDetails = (id: number) => {
+  const [revisionPlanDetails, setRevisionPlanDetails] = useState<RevisionPlan>(initialData);
   const [loading, setLoading] = useState(true);
 
+  const {fetch} = useAppContext();
+
   const fetchRevisionPlanDetails = async () => {
-    if (!id) {
-      setData({item: []});
-      return;
+    setLoading(true);
+
+    const response: RevisionPlansResponse['details'] = await fetch(GraphQL.getRevisionPlanDetails, {id});
+
+    if (response.revision_plans_Details?.status === REQUEST_STATUSES.success) {
+      setRevisionPlanDetails(response.revision_plans_Details.item);
     }
-    const revisionPlanDetails = await GraphQL.revisionPlanDetails(id);
-    setData(revisionPlanDetails);
+
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchRevisionPlanDetails();
+    if (id) {
+      fetchRevisionPlanDetails();
+    }
   }, [id]);
 
-  return {data, loading, refetch: fetchRevisionPlanDetails};
+  return {revisionPlanDetails, loading, refetch: fetchRevisionPlanDetails};
 };
 
-export default useRevisionPlanDetails;
+export default useGetRevisionPlanDetails;

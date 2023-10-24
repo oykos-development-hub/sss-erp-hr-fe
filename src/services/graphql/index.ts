@@ -27,20 +27,19 @@ import getJudgeResolutions from './judges/resolutions/getJudgeResolutions';
 import insertJudgeResolution from './judges/resolutions/insertJudgeResolution';
 import employeeInOrganizationUnitDelete from './organizationUnitsEmployees/employeeInOrganizationUnitDelete';
 import employeeInOrganizationUnitInsert from './organizationUnitsEmployees/employeeInOrganizationUnitInsert';
-import revisionDelete from './revision/revisionDelete';
-import revisionDetails from './revision/revisionDetails';
-import revisionInsert from './revision/revisionInsert';
-import revisionOverview from './revision/revisionOverview';
-import revisionTipsDelete from './revisionTips/revisionTipsDelete';
-import revisionTipsDetails from './revisionTips/revisionTipsDetails';
-import revisionTipsInsert from './revisionTips/revisionTipsInsert';
-import revisionTipsOverview from './revisionTips/revisionTipsOverview';
-import revisionPlanDelete from './revisionsPlans/revisionPlanDelete';
-import revisionPlanDetails from './revisionsPlans/revisionPlanDetails';
-import revisionPlanInsert from './revisionsPlans/revisionPlanInsert';
-import revisionPlansOverview from './revisionsPlans/revisionPlanOverview';
+import deleteRevision from './revision/deleteRevision';
+import getRevisionDetails from './revision/getRevisionDetails';
+import getRevisions from './revision/getRevisions';
+import insertRevision from './revision/insertRevision';
+import deleteRevisionTip from './revisionTips/deleteRevisionTip';
+import getRevisionTipDetails from './revisionTips/getRevisionTipDetails';
+import getRevisionTips from './revisionTips/getRevisionTips';
+import insertRevisionTip from './revisionTips/insertRevisionTip';
+import deleteRevisionPlan from './revisionsPlans/deleteRevisionPlan';
+import getRevisionPlanDetails from './revisionsPlans/getRevisionPlanDetails';
+import getRevisionPlans from './revisionsPlans/getRevisionPlans';
+import insertRevisionPlan from './revisionsPlans/insertRevisionPlan';
 import settingsDropdownOverview from './settingsDropdown/settingsDropdownOverview';
-import getSuppliersOverview from './suppliers/getSuppliers';
 import systematizationDelete from './systematization/deleteSystematization';
 import systematizationDetails from './systematization/getSystematizationDetails';
 import getSystematizations from './systematization/getSystematizations';
@@ -120,10 +119,10 @@ export const GraphQL = {
   evaluationOverview: evaluationOverview,
   evaluationInsert: evaluationInsert,
   evaluationDelete: evaluationDelete,
-  revisionOverview: revisionOverview,
-  revisionDetails: revisionDetails,
-  revisionDelete: revisionDelete,
-  revisionInsert: revisionInsert,
+  getRevisions: getRevisions,
+  getRevisionDetails: getRevisionDetails,
+  deleteRevision: deleteRevision,
+  insertRevision: insertRevision,
   insertJobPositionInOrgUnit: insertJobPositionInOrgUnit,
   deleteJobPositionInOrgUnit: deleteJobPositionInOrgUnit,
   jobPositionsAvailableOrganizationUnit: jobPositionsAvailableOrganizationUnit,
@@ -142,17 +141,16 @@ export const GraphQL = {
   getCurrentResolutionNumbers: getCurrentResolutionNumbers,
   getJudgeAvailability: getJudgeAvailability,
   settingsDropdownOverview: settingsDropdownOverview,
-  getSuppliersOverview: getSuppliersOverview,
   getVacation: GetVacation,
   vacationInsert: vacationInsert,
-  revisionPlansOverview: revisionPlansOverview,
-  revisionPlanInsert: revisionPlanInsert,
-  revisionPlanDelete: revisionPlanDelete,
-  revisionPlanDetails: revisionPlanDetails,
-  revisionTipsOverview: revisionTipsOverview,
-  revisionTipsDetails: revisionTipsDetails,
-  revisionTipsInsert: revisionTipsInsert,
-  revisionTipsDelete: revisionTipsDelete,
+  getRevisionPlans: getRevisionPlans,
+  insertRevisionPlan: insertRevisionPlan,
+  deleteRevisionPlan: deleteRevisionPlan,
+  getRevisionPlanDetails: getRevisionPlanDetails,
+  getRevisionTips: getRevisionTips,
+  getRevisionTipDetails: getRevisionTipDetails,
+  insertRevisionTip: insertRevisionTip,
+  deleteRevisionTip: deleteRevisionTip,
   terminateEmployment: terminateEmployment,
   getJobPositions: getJobPositions,
   getAvailableJobPositions: getAvailableJobPositions,

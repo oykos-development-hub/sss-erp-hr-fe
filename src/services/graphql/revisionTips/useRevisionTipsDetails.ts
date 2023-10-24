@@ -1,25 +1,32 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '..';
+import useAppContext from '../../../context/useAppContext';
+import {RevisionTipsResponse} from '../../../types/graphql/revisionTips';
+import {REQUEST_STATUSES} from '../../constants';
 
-const useRevisionTipsDetails = (id: number) => {
-  const [data, setData] = useState<any>();
+const useGetRevisionTipDetails = (id: number) => {
+  const [revisionTipDetails, setRevisionTipDetails] = useState<any>();
   const [loading, setLoading] = useState(true);
 
-  const fetchRevisionTipsDetails = async () => {
-    if (!id) {
-      setData({item: []});
-      return;
+  const {fetch} = useAppContext();
+
+  const fetchRevisionTipDetails = async () => {
+    const response: RevisionTipsResponse['details'] = await fetch(GraphQL.getRevisionTipDetails, {id});
+
+    if (response.revision_tips_Details?.status === REQUEST_STATUSES.success) {
+      setRevisionTipDetails(response.revision_tips_Details?.item);
     }
-    const revisionTipsDetails = await GraphQL.revisionTipsDetails(id);
-    setData(revisionTipsDetails);
+
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchRevisionTipsDetails();
+    if (id) {
+      fetchRevisionTipDetails();
+    }
   }, [id]);
 
-  return {data, loading, refetch: fetchRevisionTipsDetails};
+  return {revisionTipDetails, loading, refetch: fetchRevisionTipDetails};
 };
 
-export default useRevisionTipsDetails;
+export default useGetRevisionTipDetails;

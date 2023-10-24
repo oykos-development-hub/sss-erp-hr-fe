@@ -1,15 +1,25 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '..';
-import {RevisionPlanItem, RevisionPlanParams} from '../../../types/graphql/revisionPlansOverview';
+import useAppContext from '../../../context/useAppContext';
+import {RevisionPlan, RevisionPlansResponse} from '../../../types/graphql/revisionPlans';
+import {PaginationProps} from '../../../types/paginationParams';
+import {REQUEST_STATUSES} from '../../constants';
 
-const useRevisionPlanOverview = ({page, size}: RevisionPlanParams) => {
-  const [data, setData] = useState<RevisionPlanItem[]>();
+const useGetRevisionPlans = ({page, size}: PaginationProps) => {
+  const [revisionPlans, setRevisionPlans] = useState<RevisionPlan[]>();
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const fetchRevisionPlans = async () => {
-    const response = await GraphQL.revisionPlansOverview();
+  const {fetch} = useAppContext();
 
-    setData(response.items);
+  const fetchRevisionPlans = async () => {
+    const response: RevisionPlansResponse['get'] = await fetch(GraphQL.getRevisionPlans, {page, size});
+
+    if (response.revision_plans_Overview?.status === REQUEST_STATUSES.success) {
+      setRevisionPlans(response.revision_plans_Overview.items ?? []);
+      setTotal(response.revision_plans_Overview.total ?? 0);
+    }
+
     setLoading(false);
   };
 
@@ -17,7 +27,7 @@ const useRevisionPlanOverview = ({page, size}: RevisionPlanParams) => {
     fetchRevisionPlans();
   }, [page, size]);
 
-  return {data, loading, refetch: fetchRevisionPlans};
+  return {revisionPlans, total, loading, refetch: fetchRevisionPlans};
 };
 
-export default useRevisionPlanOverview;
+export default useGetRevisionPlans;

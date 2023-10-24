@@ -1,17 +1,41 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '..';
-import {RevisionTipsParams} from '../../../types/graphql/revisionTipsOverview';
+import {RevisionTip, RevisionTipsGetParams, RevisionTipsResponse} from '../../../types/graphql/revisionTips';
+import useAppContext from '../../../context/useAppContext';
+import {REQUEST_STATUSES} from '../../constants';
+import {DropdownDataNumber} from '../../../types/dropdownData';
 
-const initialState = {items: [], total: 0, message: '', revisors: [], status: ''};
+type RevisionTipsState = {
+  items: RevisionTip[];
+  revisors: DropdownDataNumber[];
+};
 
-const useRevisionTipsOverview = ({page, size, revision_id}: RevisionTipsParams) => {
-  const [data, setData] = useState<any>(initialState);
+const initialData: RevisionTipsState = {
+  items: [],
+  revisors: [],
+};
+
+const useGetRevisionTips = ({page, size, revision_id}: RevisionTipsGetParams) => {
+  const [revisionTips, setRevisionTips] = useState<RevisionTipsState>(initialData);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const fetchRevisionTips = async () => {
-    const response = await GraphQL.revisionTipsOverview(revision_id);
+  const {fetch} = useAppContext();
 
-    setData(response);
+  const fetchRevisionTips = async () => {
+    setLoading(true);
+
+    const response: RevisionTipsResponse['get'] = await fetch(GraphQL.getRevisionTips, {revision_id, page, size});
+
+    if (response.revision_tips_Overview?.status === REQUEST_STATUSES.success) {
+      setRevisionTips({
+        items: response.revision_tips_Overview.items ?? [],
+        revisors: response.revision_tips_Overview.revisors ?? [],
+      });
+
+      setTotal(response.revision_tips_Overview.total ?? 0);
+    }
+
     setLoading(false);
   };
 
@@ -19,7 +43,7 @@ const useRevisionTipsOverview = ({page, size, revision_id}: RevisionTipsParams) 
     fetchRevisionTips();
   }, [page, size]);
 
-  return {data, loading, refetch: fetchRevisionTips};
+  return {revisionTips, total, loading, refetch: fetchRevisionTips};
 };
 
-export default useRevisionTipsOverview;
+export default useGetRevisionTips;

@@ -1,22 +1,28 @@
 import {useState} from 'react';
 import {GraphQL} from '..';
-import {revisionTipsInsertItem} from '../../../types/graphql/revisionTipsInsert';
+import useAppContext from '../../../context/useAppContext';
+import {RevisionTipInsertParams, RevisionTipsResponse} from '../../../types/graphql/revisionTips';
 
-const useRevisionTipsInsert = () => {
+const useInsertRevisionTip = () => {
   const [loading, setLoading] = useState(false);
 
-  const insertRevisionTips = async (data: revisionTipsInsertItem, onSuccess?: () => void, onError?: () => void) => {
+  const {fetch} = useAppContext();
+
+  const insertRevisionTip = async (data: RevisionTipInsertParams, onSuccess?: () => void, onError?: () => void) => {
     setLoading(true);
-    const response = await GraphQL.revisionTipsInsert(data);
-    if (response.status === 'success') {
+
+    const response: RevisionTipsResponse['insert'] = await fetch(GraphQL.insertRevisionTip, {data});
+
+    if (response.revision_tips_Insert?.status === 'success') {
       onSuccess && onSuccess();
     } else {
       onError && onError();
     }
+
     setLoading(false);
   };
 
-  return {loading, mutate: insertRevisionTips};
+  return {loading, insertRevisionTip};
 };
 
-export default useRevisionTipsInsert;
+export default useInsertRevisionTip;

@@ -1,3 +1,5 @@
+import {DeleteResponse, GetResponse, InsertResponse} from './response';
+
 export interface Supplier {
   id: number;
   title: string;
@@ -12,32 +14,14 @@ export interface SupplierFormValues extends Omit<Supplier, 'id'> {
   id: number | null;
 }
 
-export interface SuppliersOverviewResponse {
-  data: {
-    suppliers_Overview: {
-      status?: string;
-      message?: string;
-      total?: number;
-      items?: Supplier[];
-    };
+export type SuppliersResponse = {
+  get: {
+    suppliers_Overview: GetResponse<Supplier>;
   };
-}
-
-export interface SuppliersOverviewInsertResponse {
-  data: {
-    suppliers_Insert: {
-      status?: string;
-      message?: string;
-      items?: Supplier;
-    };
+  insert: {
+    suppliers_Insert: InsertResponse<Supplier>;
   };
-}
-
-export interface SuppliersOverviewDeleteResponse {
-  data: {
-    suppliers_Delete: {
-      status?: string;
-      message?: string;
-    };
+  delete: {
+    suppliers_Delete: DeleteResponse;
   };
-}
+};

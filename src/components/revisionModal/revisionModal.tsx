@@ -1,19 +1,19 @@
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {quarterOptions, revisionPriorityOptions} from '../../constants';
+import {quarterOptions} from '../../constants';
 import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
-import useRevisionDetails from '../../services/graphql/revision/useRevisionDetails';
-import useRevisionInsert from '../../services/graphql/revision/useRevisionInsert';
-import useRevisionOverview from '../../services/graphql/revision/useRevisionOverview';
+import useGetRevisions from '../../services/graphql/revision/useGetRevisions';
+import useGetRevisionDetails from '../../services/graphql/revision/useGetRevisionDetails';
+import useInsertRevision from '../../services/graphql/revision/useInsertRevisions';
 import useSettingsDropdownOverview from '../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
-import useSuppliersOverview from '../../services/graphql/suppliers/useGetSuppliersOverview';
+import useSuppliersOverview from '../../services/graphql/suppliers/useGetSuppliers';
 import {revisionInsertItem} from '../../types/graphql/revisionInsert';
-import {Column, FileUploadWrapper, FormGroup, ModalForm, ModalSection, Row} from './styles';
 import {FormGroupFullWidth} from '../revisionTipsModal/styles';
-import {DropdownDataNumber} from '../../types/dropdownData';
+import {Column, FileUploadWrapper, FormGroup, ModalForm, ModalSection, Row} from './styles';
+import {RevisionFormValues} from '../../types/graphql/revisions';
 
-interface revisionProps {
+interface RevisionModalProps {
   open: boolean;
   onClose: () => void;
   refetchList: () => void;
@@ -22,27 +22,27 @@ interface revisionProps {
   planId: number;
 }
 
-const InitialValues = {
+const initialValues: RevisionFormValues = {
   id: null,
   title: '',
   plan_id: 0,
   serial_number: '',
   date_of_revision: '',
   revision_priority: '',
-  revision_quartal: '',
+  revision_quartal: null,
   internal_revision_subject_id: [],
   external_revision_subject_id: null,
-  revisor_id: null,
+  revisor_id: [],
   revision_type_id: null,
 };
 
-export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, refetchList, id, planId}) => {
-  const {revisionDetails} = useRevisionDetails(id);
-  const {mutate, loading: isSaving} = useRevisionInsert();
+export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, alert, refetchList, id, planId}) => {
+  const {revisionDetails} = useGetRevisionDetails(id);
+  const {insertRevision, loading: isSaving} = useInsertRevision();
   const {suppliers} = useSuppliersOverview();
   const {organizationUnits} = useGetOrganizationUnits(undefined);
-  const {data} = useRevisionOverview({
-    page: 1000,
+  const {revisions} = useGetRevisions({
+    page: 1,
     size: 1000,
     plan_id: planId,
     internal_revision_subject_id: 0,
@@ -59,12 +59,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
     };
   });
 
-  const revisorsList = data?.revisors?.map((unit: any) => {
-    return {
-      id: unit.id,
-      title: unit.title,
-    };
-  });
+  console.log(revisions, revisionTypes);
 
   const {
     register,
@@ -74,7 +69,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
     reset,
     watch,
     setValue,
-  } = useForm({defaultValues: revisionDetails || InitialValues});
+  } = useForm<RevisionFormValues>({defaultValues: initialValues});
 
   const onSubmit = (values: any) => {
     if (isSaving) return;
@@ -92,17 +87,17 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
       revision_type_id: values?.revision_type_id.id || null,
     };
 
-    mutate(
+    insertRevision(
       data,
       () => {
         refetchList();
         onClose();
-        reset(InitialValues);
-        alert.success(revisionDetails?.item?.id ? 'Revizija uspješno sačuvan.' : 'Revizija je uspešno dodat.');
+        reset(initialValues);
+        alert.success(revisionDetails?.id ? 'Revizija uspješno sačuvan.' : 'Revizija je uspešno dodat.');
       },
       () => {
         alert.error(
-          revisionDetails?.item.id
+          revisionDetails?.id
             ? 'Došlo je do greške prilikom izmjene revizije.'
             : 'Došlo je do greške prilikom dodavanja revizije.',
         );
@@ -121,34 +116,34 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
 
   useEffect(() => {
     if (externalSubject) {
-      setValue('internal_revision_subject_id', null);
+      setValue('internal_revision_subject_id', []);
     }
   }, [externalSubject, setValue]);
 
   useEffect(() => {
-    if (revisionDetails && revisionDetails.item && id && revisionDetails.status === 'success') {
+    if (revisionDetails && revisionDetails && id) {
       reset({
-        id: revisionDetails.item.id,
-        title: revisionDetails.item.title,
-        plan_id: revisionDetails.item.plan_id,
-        serial_number: revisionDetails.item.serial_number,
-        date_of_revision: revisionDetails.item.date_of_revision,
+        id: revisionDetails.id,
+        title: revisionDetails.title,
+        plan_id: revisionDetails.plan_id,
+        serial_number: revisionDetails.serial_number,
+        date_of_revision: revisionDetails.date_of_revision,
         revision_quartal: quarterOptions.find(
-          (quarterOptions: any) => quarterOptions.id === revisionDetails.item.revision_quartal,
+          (quarterOptions: any) => quarterOptions.id === revisionDetails.revision_quartal,
         ),
-        internal_revision_subject_id: revisionDetails.item.internal_revision_subject.map((item: any) => ({
+        internal_revision_subject_id: revisionDetails.internal_revision_subject?.map((item: any) => ({
           value: item.id,
           label: item.title,
         })),
         external_revision_subject_id: suppliers.find(
-          (suppliers: any) => suppliers.id === revisionDetails.item.external_revision_subject.id,
+          (suppliers: any) => suppliers.id === revisionDetails.external_revision_subject?.id,
         ),
-        revisor_id: revisionDetails.item.revisor.map((item: any) => ({
+        revisor_id: revisionDetails.revisor?.map((item: any) => ({
           value: item.id,
           label: item.title,
         })),
         revision_type_id: revisionsList?.find(
-          (revisionsList: any) => revisionsList.title === revisionDetails.item.revision_type.title,
+          (revisionsList: any) => revisionsList.title === revisionDetails.revision_type?.title,
         ),
       });
     }
@@ -233,7 +228,7 @@ export const RevisionModal: React.FC<revisionProps> = ({open, onClose, alert, re
                       name={name}
                       value={value as any}
                       onChange={onChange}
-                      options={revisorsList || []}
+                      options={revisions?.revisors}
                       error={errors.revisor_id?.message as string}
                       placeholder="Izaberite revizora"
                       label="REVIZOR"

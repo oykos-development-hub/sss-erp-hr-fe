@@ -2,8 +2,7 @@ import React from 'react';
 import {Button, Divider, Dropdown, EditIconTwo, Table, Theme, TrashIconTwo} from 'client-library';
 import {useMemo, useState} from 'react';
 import {RevisionModal} from '../../../components/revisionModal/revisionModal';
-import useRevisionDelete from '../../../services/graphql/revision/useRevisionDelete';
-import useRevisionOverview from '../../../services/graphql/revision/useRevisionOverview';
+import useGetRevisions from '../../../services/graphql/revision/useGetRevisions';
 import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import {FilterContainer, Filters, MainTitle, RevisionListContainer, TableHeader} from '../styles';
@@ -12,6 +11,7 @@ import {DropdownDataNumber} from '../../../types/dropdownData';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
+import useDeleteRevision from '../../../services/graphql/revision/useDeleteRevision';
 
 interface RevisionProps {
   context: MicroserviceProps;
@@ -27,7 +27,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
   const [revisonTypeId, setRevisonTypeId] = useState<number>(0);
 
   const [editId, setEditId] = useState(0);
-  const {data, loading, refetch} = useRevisionOverview({
+  const {revisions, loading, refetch} = useGetRevisions({
     page: 1,
     size: 1000,
     plan_id: planIdNumber,
@@ -36,7 +36,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
     revisor_id: revisorId,
   });
 
-  const {mutate} = useRevisionDelete();
+  const {deleteRevision} = useDeleteRevision();
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
   const toogleRevisionModal = (id: number) => {
@@ -49,7 +49,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
   };
 
   const handleDelete = () => {
-    mutate(
+    deleteRevision(
       deleteModal,
       () => {
         toggleDeleteModal(0);
@@ -71,12 +71,12 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
 
   const revisorsList = [
     {id: 0, title: 'Sve '},
-    ...data.revisors.map((unit: DropdownDataNumber) => {
+    ...revisions.revisors.map((unit: DropdownDataNumber) => {
       return {id: unit.id, title: unit.title};
     }),
   ];
 
-  const revisonTypeListOptions = [
+  const revisionTypeOptions = [
     {id: 0, title: 'Sve '},
     ...revisionTypes.map((unit: DropdownDataNumber) => {
       return {id: unit.id, title: unit.title};
@@ -113,11 +113,11 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
             <FilterContainer>
               <Dropdown
                 label="VRSTA REVIZIJE"
-                value={revisonTypeListOptions?.find((option: any) => option?.id === revisonTypeId) as any}
+                value={revisionTypeOptions?.find((option: any) => option?.id === revisonTypeId) as any}
                 onChange={value => {
                   setRevisonTypeId(value.id as number);
                 }}
-                options={revisonTypeListOptions || []}
+                options={revisionTypeOptions || []}
               />
             </FilterContainer>
           </Filters>
@@ -126,7 +126,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
         </TableHeader>
         <Table
           tableHeads={RevisionTableHeads}
-          data={data?.items || []}
+          data={revisions?.items || []}
           style={{marginBottom: 22}}
           isLoading={loading}
           onRowClick={row => {

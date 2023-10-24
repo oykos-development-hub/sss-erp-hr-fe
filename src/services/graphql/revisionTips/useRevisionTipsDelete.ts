@@ -1,22 +1,29 @@
 import {useState} from 'react';
 import {GraphQL} from '..';
+import useAppContext from '../../../context/useAppContext';
+import {RevisionTipsResponse} from '../../../types/graphql/revisionTips';
+import {REQUEST_STATUSES} from '../../constants';
 
-const useRevisionTipsDelete = () => {
+const useDeleteRevisionTip = () => {
   const [loading, setLoading] = useState(false);
 
-  const deleteRevisionTips = async (id: number, onSuccess?: () => void, onError?: () => void) => {
-    setLoading(true);
-    const response = await GraphQL.revisionTipsDelete(id);
+  const {fetch} = useAppContext();
 
-    if (response.status === 'success') {
+  const deleteRevisionTip = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    setLoading(true);
+
+    const response: RevisionTipsResponse['delete'] = await fetch(GraphQL.deleteRevisionTip, {id});
+
+    if (response.revision_tips_Delete?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();
     }
+
     setLoading(false);
   };
 
-  return {loading, mutate: deleteRevisionTips};
+  return {loading, deleteRevisionTip};
 };
 
-export default useRevisionTipsDelete;
+export default useDeleteRevisionTip;
