@@ -6,7 +6,7 @@ import {VacationModal} from '../../../components/vacationModal/VacationModal';
 import useAbsentDelete from '../../../services/graphql/userProfile/absents/useDeleteAbsence';
 import useGetAbsence from '../../../services/graphql/userProfile/absents/useGetAbsence';
 import useGetAbsenceTypes from '../../../services/graphql/userProfile/absents/useGetAbsentsType';
-import useResolutionDelete from '../../../services/graphql/userProfile/resolution/useResolutionDelete';
+import useResolutionDelete from '../../../services/graphql/userProfile/resolution/useDeleteResolution';
 import useVacationGet from '../../../services/graphql/userProfile/vacation/useVacationGet';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {Absence, AbsenceParams} from '../../../types/graphql/absents';
@@ -42,7 +42,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const {absenceTypes, loading} = useGetAbsenceTypes();
   const {mutate} = useAbsentDelete();
-  const {mutate: vacationDelete} = useResolutionDelete();
+  const {deleteResolution} = useResolutionDelete();
   const [editItem, setEditItem] = useState<Absence | undefined>();
   const [editItemVacation, setEditItemVacation] = useState<YearVacationType | undefined>();
   const [showDeleteVacationModal, setShowDeleteVacationModal] = useState<boolean>(false);
@@ -71,7 +71,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   };
 
   const handleDeleteVacation = async () => {
-    vacationDelete(
+    deleteResolution(
       selectedItemId,
       () => {
         refetchUserVacation();

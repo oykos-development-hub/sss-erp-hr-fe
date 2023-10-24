@@ -4,31 +4,24 @@ import {Typography, Button, Table, EditIcon, TrashIcon, Theme} from 'client-libr
 import {FamilyPageProps} from './types';
 import {FamilyMemberModal} from '../../../components/familyMemberModal/familyMemberModal';
 import {tableHeads} from './constants';
-import {UserProfileFamily} from '../../../types/graphql/userProfileGetFamilyTypes';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
-import useFamilyOverview from '../../../services/graphql/userProfile/family/useFamilyOverview';
-import useFamilyDelete from '../../../services/graphql/userProfile/family/useFamilyDelete';
+import useGetFamily from '../../../services/graphql/userProfile/family/useGetFamily';
+import useDeleteFamily from '../../../services/graphql/userProfile/family/useDeleteFamily';
+import {ProfileFamily} from '../../../types/graphql/family';
 
 export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[4];
-  const {familyData, refetchData, loading} = useFamilyOverview(userProfileID);
+  const {family, refetch, loading} = useGetFamily(userProfileID);
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
 
   const selectedItem = useMemo(() => {
-    return familyData?.find((item: UserProfileFamily) => item.id === selectedItemId);
+    return family?.find((item: ProfileFamily) => item.id === selectedItemId);
   }, [selectedItemId]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const {mutate, success, error} = useFamilyDelete(() => {
-    if (success) {
-      refetchData();
-      context.alert.success('Uspješno obrisano.');
-    } else if (error) {
-      context.alert.error('Greška. Brisanje nije moguće.');
-    }
-  });
+  const {deleteFamily} = useDeleteFamily();
 
   const handleEdit = (item: any) => {
     setSelectedItemId(item.id);
@@ -41,7 +34,16 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
   };
 
   const handleDelete = () => {
-    mutate(selectedItemId);
+    deleteFamily(
+      selectedItemId,
+      () => {
+        refetch();
+        context.alert.success('Uspješno obrisano.');
+      },
+      () => {
+        context.alert.error('Greška. Brisanje nije moguće.');
+      },
+    );
     setShowDeleteModal(false);
     setSelectedItemId(0);
   };
@@ -67,7 +69,7 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
       <div>
         <Table
           tableHeads={tableHeads}
-          data={familyData || []}
+          data={family || []}
           isLoading={loading}
           tableActions={[
             {
@@ -83,15 +85,18 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
           ]}
         />
       </div>
-      <FamilyMemberModal
-        open={showModal}
-        onClose={handleCloseModal}
-        selectedItem={selectedItem}
-        countries={context?.countries}
-        userProfileId={userProfileID}
-        alert={context.alert}
-        refetch={refetchData}
-      />
+      {showModal && (
+        <FamilyMemberModal
+          open={true}
+          onClose={handleCloseModal}
+          selectedItem={selectedItem}
+          countries={context?.countries}
+          userProfileId={userProfileID}
+          alert={context.alert}
+          refetch={refetch}
+        />
+      )}
+
       <ConfirmModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleConfirm={handleDelete} />
     </Container>
   );

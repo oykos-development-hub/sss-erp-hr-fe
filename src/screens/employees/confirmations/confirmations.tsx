@@ -1,14 +1,14 @@
 import {Button, Dropdown, EditIconTwo, Table, TableHead, Theme, TrashIcon, Typography} from 'client-library';
 import React, {useMemo, useState} from 'react';
 import {ConfirmationsModal} from '../../../components/confirmationsModal/confirmationsModal';
-import useResolutionDelete from '../../../services/graphql/userProfile/resolution/useResolutionDelete';
-import useResolutionOverview from '../../../services/graphql/userProfile/resolution/useResolutionOverview';
+import useDeleteResolution from '../../../services/graphql/userProfile/resolution/useDeleteResolution';
+import useGetResolutions from '../../../services/graphql/userProfile/resolution/useGetResolutions';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
-import {UserProfileResolutionItem} from '../../../types/graphql/userProfileGetResolution';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import {parseDate} from '../../../utils/dateUtils';
 import {Container, TableHeader, YearWrapper} from './styles';
 import {yearsForDropdownFilter} from '../../../utils/constants';
+import {ProfileResolution} from '../../../types/graphql/resolutions';
 
 const tableHeads: TableHead[] = [
   {
@@ -43,18 +43,18 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
   const [selectedItemId, setSelectedItemId] = useState(0);
   const [form, setForm] = useState<any>();
   const userProfileID = context.navigation.location.pathname.split('/')[4];
-  const {data, fetch, loading} = useResolutionOverview(userProfileID);
-  const tableData = data;
-  const {mutate} = useResolutionDelete();
+  const {resolutions, refetch, loading} = useGetResolutions(userProfileID);
+  const {deleteResolution} = useDeleteResolution();
+  const tableData = resolutions;
 
   const selectedItem = useMemo(
-    () => tableData?.find((item: UserProfileResolutionItem) => item.id === selectedItemId),
+    () => tableData?.find((item: ProfileResolution) => item.id === selectedItemId),
     [selectedItemId, tableData],
   );
 
   const filteredTableData = useMemo(() => {
     if (form?.year?.id) {
-      return tableData?.filter((item: UserProfileResolutionItem) => item.date_of_start.includes(form.year.id));
+      return tableData?.filter((item: ProfileResolution) => item.date_of_start.includes(form.year.id));
     }
     return tableData;
   }, [tableData, form?.year?.id]);
@@ -66,7 +66,7 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
     }));
   };
 
-  const handleEdit = (item: UserProfileResolutionItem) => {
+  const handleEdit = (item: ProfileResolution) => {
     setSelectedItemId(item.id);
     setShowModal(true);
   };
@@ -77,10 +77,10 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
   };
 
   const handleDelete = () => {
-    mutate(
+    deleteResolution(
       selectedItemId,
       () => {
-        fetch();
+        refetch();
         context.alert.success('Uspješno obrisano.');
         setShowDeleteModal(false);
         setSelectedItemId(0);
@@ -97,10 +97,10 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
     setShowModal(true);
   };
 
-  const handleCloseModal = (refetch: boolean) => {
+  const handleCloseModal = (shouldRefetch: boolean) => {
     setShowModal(false);
     setSelectedItemId(0);
-    refetch && fetch();
+    shouldRefetch && refetch();
   };
 
   return (

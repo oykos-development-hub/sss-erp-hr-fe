@@ -4,7 +4,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, Form, useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {ConfirmationsModalProps} from '../../screens/employees/confirmations/types';
-import useResolutionInsert from '../../services/graphql/userProfile/resolution/useResolutionInsert';
+import useInsertResolution from '../../services/graphql/userProfile/resolution/useInsertResolution';
 import {DropdownDataNumber} from '../../types/dropdownData';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
@@ -49,7 +49,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     setUploadedFiles(fileList);
   };
 
-  const {mutate: saveUserProfileResolution, loading: isSaving} = useResolutionInsert();
+  const {insertResolution, loading: isSaving} = useInsertResolution();
 
   const handleSave = (value: any) => {
     if (isSaving) return;
@@ -71,7 +71,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     delete payload.resolution_type;
     delete payload.user_profile;
 
-    saveUserProfileResolution(
+    insertResolution(
       payload,
       () => {
         onClose(true);

@@ -61,17 +61,20 @@ import insertEvaluation from './userProfile/evaluation/insertEvaluation';
 import experienceDelete from './userProfile/experience/experienceDelete';
 import experienceInsert from './userProfile/experience/experienceInsert';
 import experienceOverview from './userProfile/experience/experienceOverview';
-import familyDelete from './userProfile/family/familyDelete';
-import familyOverview from './userProfile/family/familyOverview';
-import familyInsert from './userProfile/family/familyinsert';
-import resolutionDelete from './userProfile/resolution/resolutionDelete';
-import resolutionInsert from './userProfile/resolution/resolutionInsert';
-import resolutionOverview from './userProfile/resolution/resolutionOverview';
+import deleteFamily from './userProfile/family/deleteFamily';
+import getFamily from './userProfile/family/getFamily';
+import insertFamily from './userProfile/family/insertFamily';
+import resolutionDelete from './userProfile/resolution/deleteResolution';
+import resolutionInsert from './userProfile/resolution/insertResolution';
+import resolutionOverview from './userProfile/resolution/getResolutions';
 import salaryParamsInsert from './userProfile/salaryParams/salarayParamsInsert';
 import salaryParamsOverview from './userProfile/salaryParams/salaryParamsOverview';
 import userProfileOverview from './userProfile/userProfileOverview';
 import GetVacation from './userProfile/vacation/vacationGet';
 import vacationInsert from './userProfile/vacation/vacationInsert';
+import getResolutions from './userProfile/resolution/getResolutions';
+import deleteResolution from './userProfile/resolution/deleteResolution';
+import insertResolution from './userProfile/resolution/insertResolution';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -101,9 +104,9 @@ export const GraphQL = {
   getEducation: getEducation,
   insertEducation: insertEducation,
   deleteEducation: deleteEducation,
-  familyOverview: familyOverview,
-  familyInsert: familyInsert,
-  familyDelete: familyDelete,
+  getFamily: getFamily,
+  insertFamily: insertFamily,
+  deleteFamily: deleteFamily,
   getForeignerPermits: getForeignerPermits,
   deleteForeignerPermit: deleteForeignerPermit,
   insertForeignerPermit: insertForeignerPermit,
@@ -113,9 +116,9 @@ export const GraphQL = {
   deleteSystematization: systematizationDelete,
   salaryParamsInsert: salaryParamsInsert,
   salaryParamsOverview: salaryParamsOverview,
-  resolutionOverview: resolutionOverview,
-  resolutionInsert: resolutionInsert,
-  resolutionDelete: resolutionDelete,
+  getResolutions: getResolutions,
+  insertResolution: insertResolution,
+  deleteResolution: deleteResolution,
   getEvaluations: getEvaluations,
   insertEvaluation: insertEvaluation,
   deleteEvaluation: deleteEvaluation,

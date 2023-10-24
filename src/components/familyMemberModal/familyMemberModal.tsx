@@ -4,13 +4,13 @@ import {Controller, useForm} from 'react-hook-form';
 import {nationalMinorities} from '../../constants';
 import {FamilyMemberModalProps} from '../../screens/employees/family/types';
 import {formatData} from '../../screens/employees/family/utils';
-import useFamilyInsert from '../../services/graphql/userProfile/family/useFamilyInsert';
-import {UserProfileFamilyParams} from '../../types/graphql/userProfileGetFamilyTypes';
+import useInsertFamily from '../../services/graphql/userProfile/family/useInsertFamily';
 import {cityData, employeeRelationshipDropdownData} from '../../utils/constants';
 import {FormWrapper, Row} from './styles';
 import {parseToDate} from '../../utils/dateUtils';
+import {ProfileFamilyParams} from '../../types/graphql/family';
 
-const initialValues: UserProfileFamilyParams = {
+const initialValues: ProfileFamilyParams = {
   id: 0,
   user_profile_id: 0,
   first_name: '',
@@ -51,7 +51,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
     resetField,
   } = useForm({defaultValues: initialValues});
 
-  const {mutate, loading: isSaving} = useFamilyInsert();
+  const {insertFamily, loading: isSaving} = useInsertFamily();
 
   const country_of_birth = watch('country_of_birth');
   const countryIsMontenegro = country_of_birth?.id === 'mne';
@@ -104,7 +104,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
     if (isSaving) return;
 
     const payload = formatData(data);
-    mutate(
+    insertFamily(
       {...payload, user_profile_id: userProfileId || 0},
       () => {
         alert.success('Uspješno sačuvano.');
