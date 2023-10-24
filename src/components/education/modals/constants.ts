@@ -1,6 +1,6 @@
-import {UserProfileEducationFormValues} from '../../../types/graphql/userProfileGetEducation';
+import {ProfileEducationFormValues} from '../../../types/graphql/userProfileEducation';
 
-export const initialValues: UserProfileEducationFormValues = {
+export const initialValues: ProfileEducationFormValues = {
   id: 0,
   title: '',
   user_profile_id: 0,

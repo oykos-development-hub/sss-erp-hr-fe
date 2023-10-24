@@ -1,15 +1,15 @@
 import {EditIconTwo, PlusIcon, TableHead, Theme, TrashIconTwo, Typography} from 'client-library';
 import React, {useMemo, useState} from 'react';
 import {TableProps} from '../../../screens/employees/education/types';
-import useEducationDelete from '../../../services/graphql/userProfile/education/useEducationDelete';
-import useEducationOverview from '../../../services/graphql/userProfile/education/useEducationOverview';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import useDeleteEducation from '../../../services/graphql/userProfile/education/useDeleteEducation';
+import useGetEducation from '../../../services/graphql/userProfile/education/useGetEducation';
+import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {DropdownDataNumber} from '../../../types/dropdownData';
-import {UserProfileEducation, UserProfileEducationItem} from '../../../types/graphql/userProfileGetEducation';
 import {parseDate} from '../../../utils/dateUtils';
 import {educationTypes} from '../modals/constants';
 import {FunctionalAcknowledgmentModal} from '../modals/functionalAcknowledgmentsModal';
 import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './styles';
+import {ProfileEducation, ProfileEducationItem} from '../../../types/graphql/userProfileEducation';
 
 const tableHeads: TableHead[] = [
   {
@@ -65,7 +65,7 @@ const tableHeads: TableHead[] = [
 ];
 
 export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navigation}) => {
-  const {employeeEducationData, refetchData, loading} = useEducationOverview(
+  const {educationData, refetch, loading} = useGetEducation(
     Number(navigation.location.pathname.split('/')[4]),
     educationTypes.education_functional_types,
   );
@@ -73,14 +73,14 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navi
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
 
-  const {mutate: deleteEducation} = useEducationDelete();
+  const {deleteEducation} = useDeleteEducation();
 
   const selectedItem = useMemo(
-    () => employeeEducationData?.find((item: UserProfileEducation) => item.id === selectedItemId),
+    () => educationData?.find((item: ProfileEducation) => item.id === selectedItemId),
     [selectedItemId],
   );
 
-  const handleEdit = (item: UserProfileEducationItem) => {
+  const handleEdit = (item: ProfileEducationItem) => {
     setSelectedItemId(item.id);
     setShowModal(true);
   };
@@ -100,7 +100,7 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navi
       selectedItemId,
       () => {
         alert.success('Uspješno obrisano.');
-        refetchData();
+        refetch();
       },
       () => {
         alert.error('Greška. Brisanje nije moguće.');
@@ -132,7 +132,7 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navi
     <div>
       <TableContainer
         tableHeads={tableHeads}
-        data={employeeEducationData || []}
+        data={educationData || []}
         isLoading={loading}
         tableActions={[
           {name: 'edit', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
@@ -149,16 +149,16 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navi
         open={showModal}
         onClose={handleCloseModal}
         selectedItem={selectedItem}
-        refetchList={refetchData}
+        refetchList={refetch}
         navigation={navigation}
         alert={alert}
       />
-      <DeleteModal
+      <ConfirmModal
         open={showDeleteModal}
         onClose={() => {
           handleCloseDeleteModal();
         }}
-        handleDelete={handleDelete}
+        handleConfirm={handleDelete}
       />
     </div>
   );

@@ -3,7 +3,7 @@ import {Button, Divider, Dropdown, EditIconTwo, Table, Theme, TrashIconTwo} from
 import {useMemo, useState} from 'react';
 import {RevisionModal} from '../../../components/revisionModal/revisionModal';
 import useGetRevisions from '../../../services/graphql/revision/useGetRevisions';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import {FilterContainer, Filters, MainTitle, RevisionListContainer, TableHeader} from '../styles';
 import {RevisionTableHeads} from './constants';
@@ -153,7 +153,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
           ]}
         />
 
-        <DeleteModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleDelete={handleDelete} />
+        <ConfirmModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleConfirm={handleDelete} />
       </RevisionListContainer>
 
       {revisionModalShow && (

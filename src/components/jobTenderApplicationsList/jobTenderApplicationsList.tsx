@@ -1,6 +1,6 @@
 import {EditIconTwo, Pagination, Table, Theme, Typography, PlusIcon, TrashIcon} from 'client-library';
 import React, {useState} from 'react';
-import {DeleteModal} from '../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../shared/confirmModal/confirmModal';
 import {PlusButton, TableHeader} from './styles';
 import {applicationsTableHeads} from '../../screens/jobTenders/constants';
 import {JobTender} from '../../types/graphql/jobTenders';
@@ -123,12 +123,12 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
         nextLabel="Next"
         pageRangeDisplayed={3}
       />
-      <DeleteModal
+      <ConfirmModal
         open={showDeleteModal}
         onClose={() => {
           handleCloseDeleteModal();
         }}
-        handleDelete={handleDelete}
+        handleConfirm={handleDelete}
       />
       {showModal && (
         <JobTenderApplicationModal

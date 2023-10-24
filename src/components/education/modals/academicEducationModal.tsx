@@ -3,8 +3,8 @@ import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
-import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
-import {UserProfileEducationFormValues} from '../../../types/graphql/userProfileGetEducation';
+import useInsertEducation from '../../../services/graphql/userProfile/education/useInsertEducation';
+import {ProfileEducationFormValues} from '../../../types/graphql/userProfileEducation';
 import {academicTitles, educationTypes, initialValues} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
 
@@ -38,13 +38,13 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
     reset,
   } = useForm({defaultValues: selectedItem});
 
-  const {mutate, loading: isSaving} = useEducationInsert();
+  const {insertEducation, loading: isSaving} = useInsertEducation();
 
   useEffect(() => {
     item && reset(item);
   }, [item]);
 
-  const onSubmit = async (values: UserProfileEducationFormValues) => {
+  const onSubmit = async (values: ProfileEducationFormValues) => {
     if (isSaving) return;
 
     const data = {
@@ -65,7 +65,7 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
     };
 
     try {
-      mutate(
+      insertEducation(
         data,
         () => {
           alert.success('Uspješno sačuvano.');

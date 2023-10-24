@@ -1,17 +1,17 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '../..';
 import useAppContext from '../../../../context/useAppContext';
-import {UserProfileBasicInfo, UserProfileBasicInfoResponse} from '../../../../types/graphql/userProfileBasicInfo';
+import {ProfileBasicInfo, ProfileBasicInfoResponse} from '../../../../types/graphql/userProfileBasicInfo';
 import {QueryOptions} from '../../../../types/queryOptions';
 
 const useGetBasicInfo = (id: number, options?: QueryOptions) => {
-  const [userBasicInfo, setUserBasicInfo] = useState<UserProfileBasicInfo>();
+  const [userBasicInfo, setUserBasicInfo] = useState<ProfileBasicInfo>();
   const [loading, setLoading] = useState(true);
 
   const {fetch} = useAppContext();
 
   const fetchUserBasicInfo = async () => {
-    const response: UserProfileBasicInfoResponse['details'] = await fetch(GraphQL.getBasicInfo, {user_profile_id: id});
+    const response: ProfileBasicInfoResponse['details'] = await fetch(GraphQL.getBasicInfo, {user_profile_id: id});
 
     const user = response?.userProfile_Basic?.item;
 

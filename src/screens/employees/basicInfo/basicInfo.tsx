@@ -36,7 +36,7 @@ import {
 import useInsertJobTenderApplication from '../../../services/graphql/jobTenderApplications/useInsertJobTenderApplication';
 import {basicInfoSchema, booleanToYesOrNo, formatData} from './utils';
 import {ContractEndModal} from '../../../components/contractEndModal/contractEndModal';
-import {UserProfileBasicInfoFormValues} from '../../../types/graphql/userProfileBasicInfo';
+import {ProfileBasicInfoFormValues} from '../../../types/graphql/userProfileBasicInfo';
 
 export const BasicInfo: React.FC = () => {
   const context = useAppContext();
@@ -107,7 +107,7 @@ export const BasicInfo: React.FC = () => {
     console.log('File(s) uploaded:', acceptedFiles);
   };
 
-  const handleSave = async (values: UserProfileBasicInfoFormValues, close: boolean) => {
+  const handleSave = async (values: ProfileBasicInfoFormValues, close: boolean) => {
     if (isValid) {
       if (!userBasicInfo?.id) {
         if (isCreating) return;

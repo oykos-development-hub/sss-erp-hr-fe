@@ -5,7 +5,7 @@ import useAppContext from '../../context/useAppContext';
 import {JobTendersListFilters} from '../../screens/jobTenders';
 import {tableHeads} from '../../screens/jobTenders/constants';
 import useDeleteJobTender from '../../services/graphql/jobTenders/useDeleteJobTender';
-import {DeleteModal} from '../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../shared/confirmModal/confirmModal';
 import {JobTender} from '../../types/graphql/jobTenders';
 import {Controls, FilterDropdown, Filters, Header, MainTitle, OverviewBox} from './styles';
 
@@ -139,12 +139,12 @@ const JobTendersList: FC<JobTendersListProps> = ({
         itemsPerPage={2}
         pageRangeDisplayed={3}
       />
-      <DeleteModal
+      <ConfirmModal
         open={showDeleteModal}
         onClose={() => {
           handleCloseDeleteModal();
         }}
-        handleDelete={handleDelete}
+        handleConfirm={handleDelete}
       />
     </OverviewBox>
   );

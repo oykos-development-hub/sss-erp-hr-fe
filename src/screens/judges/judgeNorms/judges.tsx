@@ -5,7 +5,7 @@ import NormsList from '../../../components/normsList/normsList';
 import useDeleteJudgeNorm from '../../../services/graphql/judges/norms/useDeleteJudgeNorm';
 import useGetJudges from '../../../services/graphql/judges/useGetJudges';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {JudgeNorm} from '../../../types/graphql/judgeNorms';
@@ -129,7 +129,7 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
         selectedItem={selectedNormItem}
         dropdownData={judgeOptions}
       />
-      <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />
+      <ConfirmModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleConfirm={handleDelete} />
     </ScreenWrapper>
   );
 };

@@ -2,13 +2,13 @@ import React, {useMemo, useState} from 'react';
 import {Typography, Button, Table, TableHead, TrashIcon, Theme, EditIconTwo} from 'client-library';
 import {EvaluationPageProps} from './types';
 import {Container} from './styles';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
-import {UserProfileEvaluation} from '../../../types/graphql/userProfileGetEvaluations';
+import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {EvaluationModal} from '../../../components/evaluationModal/evaluationModal';
-import useEvaluationOverview from '../../../services/graphql/userProfile/evaluation/useEvaluationOverview';
-import useEvaluationDelete from '../../../services/graphql/userProfile/evaluation/useEvaluationDelete';
+import useDeleteEvaluations from '../../../services/graphql/userProfile/evaluation/useDeleteEvaluation';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 import {parseDate} from '../../../utils/dateUtils';
+import useGetEvaluations from '../../../services/graphql/userProfile/evaluation/useGetEvaluations';
+import {ProfileEvaluation} from '../../../types/graphql/evaluations';
 
 const tableHeads: TableHead[] = [
   {
@@ -29,27 +29,19 @@ const tableHeads: TableHead[] = [
 
 export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[4];
-  const {data: userEvaluationData, refetchData} = useEvaluationOverview(userProfileID);
+  const {evaluations, refetch} = useGetEvaluations(userProfileID);
   const {data: evaluationTypes, loading} = useSettingsDropdownOverview({entity: 'evaluation_types'});
 
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
 
   const selectedItem = useMemo(() => {
-    return userEvaluationData?.find((item: UserProfileEvaluation) => item.id === selectedItemId);
+    return evaluations?.find((item: ProfileEvaluation) => item.id === selectedItemId);
   }, [selectedItemId]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const {mutate} = useEvaluationDelete(
-    () => {
-      refetchData();
-      context.alert.success('Uspješno obrisano.');
-    },
-    () => {
-      context.alert.error('Greška. Brisanje nije moguće.');
-    },
-  );
+  const {deleteEvaluation} = useDeleteEvaluations();
 
   const handleDeleteIconClick = (id: number) => {
     setShowDeleteModal(true);
@@ -59,7 +51,7 @@ export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
     setShowModal(true);
   };
 
-  const handleEdit = (item: UserProfileEvaluation) => {
+  const handleEdit = (item: ProfileEvaluation) => {
     setSelectedItemId(item.id as number);
     setShowModal(true);
   };
@@ -70,7 +62,16 @@ export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
   };
 
   const handleDelete = () => {
-    mutate(selectedItemId);
+    deleteEvaluation(
+      selectedItemId,
+      () => {
+        refetch();
+        context.alert.success('Uspješno obrisano.');
+      },
+      () => {
+        context.alert.error('Greška. Brisanje nije moguće.');
+      },
+    );
     setShowDeleteModal(false);
     setSelectedItemId(0);
   };
@@ -87,7 +88,7 @@ export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
       <div>
         <Table
           tableHeads={tableHeads}
-          data={userEvaluationData || []}
+          data={evaluations || []}
           isLoading={loading}
           tableActions={[
             {
@@ -106,7 +107,7 @@ export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
       {showModal && (
         <EvaluationModal
           alert={context.alert}
-          refetchList={refetchData}
+          refetchList={refetch}
           open={showModal}
           onClose={closeModal}
           selectedItem={selectedItem}
@@ -115,7 +116,7 @@ export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
         />
       )}
 
-      <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />
+      <ConfirmModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleConfirm={handleDelete} />
     </Container>
   );
 };

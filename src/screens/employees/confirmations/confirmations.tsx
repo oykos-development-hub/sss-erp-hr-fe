@@ -3,7 +3,7 @@ import React, {useMemo, useState} from 'react';
 import {ConfirmationsModal} from '../../../components/confirmationsModal/confirmationsModal';
 import useResolutionDelete from '../../../services/graphql/userProfile/resolution/useResolutionDelete';
 import useResolutionOverview from '../../../services/graphql/userProfile/resolution/useResolutionOverview';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {UserProfileResolutionItem} from '../../../types/graphql/userProfileGetResolution';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import {parseDate} from '../../../utils/dateUtils';
@@ -154,7 +154,7 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
         alert={context.alert}
       />
 
-      <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />
+      <ConfirmModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleConfirm={handleDelete} />
     </Container>
   );
 };

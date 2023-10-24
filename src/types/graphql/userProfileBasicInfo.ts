@@ -1,7 +1,7 @@
 import {DropdownDataNumber, DropdownDataString} from '../dropdownData';
 import {DetailsResponse, InsertResponse} from './response';
 
-export interface UserProfileBasicInfo {
+export interface ProfileBasicInfo {
   id: number;
   first_name: string;
   last_name: string;
@@ -39,7 +39,7 @@ export interface UserProfileBasicInfo {
   number_of_conference: number;
 }
 
-export interface UserProfileBasicInfoFormValues {
+export interface ProfileBasicInfoFormValues {
   id: number;
   first_name: string;
   last_name: string;
@@ -123,14 +123,14 @@ export interface ContractType {
   updated_at: string;
 }
 
-export interface UserProfileBasicInfoResponse {
+export interface ProfileBasicInfoResponse {
   details: {
-    userProfile_Basic: DetailsResponse<UserProfileBasicInfo>;
+    userProfile_Basic: DetailsResponse<ProfileBasicInfo>;
   };
   insert: {
-    userProfile_Basic_Insert: InsertResponse<UserProfileBasicInfo>;
+    userProfile_Basic_Insert: InsertResponse<ProfileBasicInfo>;
   };
   update: {
-    userProfile_Update: InsertResponse<UserProfileBasicInfo>;
+    userProfile_Update: InsertResponse<ProfileBasicInfo>;
   };
 }

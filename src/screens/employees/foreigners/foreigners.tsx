@@ -2,7 +2,7 @@ import {EditIconTwo, Theme, TrashIcon} from '@oykos-development/devkit-react-ts-
 import {Button, Table} from 'client-library';
 import React, {useState} from 'react';
 import PermitEntryModal from '../../../components/permitEntryModal/permitEntryModal';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {ForeignerPermit} from '../../../types/graphql/foreignerPermits';
 import {tableHeads} from './constants';
 import {ButtonContainer, TableContainer} from './styles';
@@ -85,7 +85,7 @@ const Foreigners: React.FC<ForeignersProps> = ({context}) => {
         alert={context.alert}
         id={id}
       />
-      <DeleteModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleDelete={handleDelete} />
+      <ConfirmModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleConfirm={handleDelete} />
     </TableContainer>
   );
 };

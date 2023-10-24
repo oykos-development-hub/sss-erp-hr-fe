@@ -12,7 +12,7 @@ import {
 } from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {DeleteModal} from '../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../shared/confirmModal/confirmModal';
 import {DropdownDataNumber} from '../../types/dropdownData';
 import {JobPosition} from '../../types/graphql/jobPositions';
 import {ActiveEmployee, SectorJobPosition} from '../../types/graphql/systematizationsTypes';
@@ -308,7 +308,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
           },
         ]}
       />
-      <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />
+      <ConfirmModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleConfirm={handleDelete} />
     </>
   );
 };

@@ -3,7 +3,7 @@ import React, {useMemo, useState} from 'react';
 import {judgesNumberResolutionTableHeads} from '../../screens/judges/judgeNorms/constants';
 import {JudgesNumberListFilters} from '../../screens/judges/judgesNumberDecisions/judgesNumberDecision';
 import useDeleteJudgeResolution from '../../services/graphql/judges/resolutions/useDeleteJudgeResolution';
-import {DeleteModal} from '../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../shared/confirmModal/confirmModal';
 import {DropdownDataString} from '../../types/dropdownData';
 import {Controls, Filters, Header, MainTitle, OverviewBox} from '../judgesList/styles';
 import {JudgeResolution} from '../../types/graphql/judgeResolutions';
@@ -113,7 +113,7 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
         itemsPerPage={2}
         pageRangeDisplayed={3}
       />
-      <DeleteModal open={deleteModal} onClose={() => setDeleteModal(false)} handleDelete={handleDelete} />
+      <ConfirmModal open={deleteModal} onClose={() => setDeleteModal(false)} handleConfirm={handleDelete} />
     </OverviewBox>
   );
 };

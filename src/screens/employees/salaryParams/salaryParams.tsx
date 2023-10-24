@@ -11,7 +11,7 @@ import {SalaryParamsPageProps} from './types';
 import {formatData, initialValues} from './utils';
 import {parseToDate} from '../../../utils/dateUtils';
 import useBasicInfoGet from '../../../services/graphql/userProfile/basicInfo/useGetBasicInfo';
-import useEducationOverview from '../../../services/graphql/userProfile/education/useEducationOverview';
+import useEducationOverview from '../../../services/graphql/userProfile/education/useGetEducation';
 import {educationTypes} from '../../../components/education/modals/constants';
 
 export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {

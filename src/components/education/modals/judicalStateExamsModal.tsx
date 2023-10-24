@@ -3,11 +3,11 @@ import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
-import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
-import {UserProfileEducationFormValues} from '../../../types/graphql/userProfileGetEducation';
+import useInsertEducation from '../../../services/graphql/userProfile/education/useInsertEducation';
 import {educationTypes, initialValues} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
 import {parseDateForBackend, parseToDate} from '../../../utils/dateUtils';
+import {ProfileEducationFormValues} from '../../../types/graphql/userProfileEducation';
 
 export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   selectedItem,
@@ -43,13 +43,13 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
     watch,
   } = useForm({defaultValues: initialValues});
 
-  const {mutate, loading: isSaving} = useEducationInsert();
+  const {insertEducation, loading: isSaving} = useInsertEducation();
 
   useEffect(() => {
     item && reset({...item, date_of_certification: parseToDate(item.date_of_certification)});
   }, [item]);
 
-  const onSubmit = async (values: UserProfileEducationFormValues) => {
+  const onSubmit = async (values: ProfileEducationFormValues) => {
     if (isSaving) return;
 
     const data = {
@@ -70,7 +70,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
     };
 
     try {
-      mutate(
+      insertEducation(
         data,
         () => {
           alert.success('Uspješno sačuvano.');

@@ -3,7 +3,7 @@ import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
 import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
-import useEducationInsert from '../../../services/graphql/userProfile/education/useEducationInsert';
+import useInsertEducation from '../../../services/graphql/userProfile/education/useInsertEducation';
 import {educationTypes, initialValues, languageAcknowledgmentLevels} from './constants';
 import {ModalContentWrapper, Row} from './styles';
 
@@ -42,7 +42,7 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
     reset,
   } = useForm({defaultValues: item});
 
-  const {mutate, loading: isSaving} = useEducationInsert();
+  const {insertEducation, loading: isSaving} = useInsertEducation();
 
   const onSubmit = async (values: any) => {
     if (isSaving) return;
@@ -65,7 +65,7 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
     };
 
     try {
-      mutate(
+      insertEducation(
         data,
         () => {
           alert?.success('Uspješno sačuvano');

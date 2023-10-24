@@ -13,7 +13,7 @@ import {
 import {useMemo, useState} from 'react';
 import {RevisionPlanModal} from '../../../components/revisionPlanModal/revisionPlanModal';
 import useGetRevisionPlans from '../../../services/graphql/revisionsPlans/useRevisionPlanOverview';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {yearsForDropdownFilter} from '../../../utils/constants';
 import {RevisionListContainer, MainTitle, TableHeader, FilterContainer} from '../styles';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
@@ -124,7 +124,7 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
           ]}
         />
 
-        <DeleteModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleDelete={handleDelete} />
+        <ConfirmModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleConfirm={handleDelete} />
       </RevisionListContainer>
 
       {revisionPlanModal && (

@@ -4,7 +4,7 @@ import {MainTitle, OverviewBox} from '../../components/employeesList/styles';
 import useAppContext from '../../context/useAppContext';
 import useDeleteSystematization from '../../services/graphql/systematization/useDeleteSystematization';
 import useGetSystematizations from '../../services/graphql/systematization/useGetSystematizations';
-import {DeleteModal} from '../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../shared/confirmModal/confirmModal';
 import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
 import {systematizationTableHeads} from './constants';
 import {SystematizationFilters} from './filters/systematizationFilters';
@@ -121,7 +121,7 @@ const Systematizations: React.FC = () => {
           pageRangeDisplayed={3}
           style={{marginTop: 22}}
         />
-        <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />
+        <ConfirmModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleConfirm={handleDelete} />
       </OverviewBox>
     </ScreenWrapper>
   );

@@ -5,7 +5,7 @@ import {Controller, useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {yesOrNoOptionsString} from '../../constants';
 import {EvaluationModalProps} from '../../screens/employees/evaluations/types';
-import useEvaluationInsert from '../../services/graphql/userProfile/evaluation/useEvaluationInsert';
+import useEvaluationInsert from '../../services/graphql/userProfile/evaluation/useInsertEvaluation';
 import {DropdownDataNumber} from '../../types/dropdownData';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormWrapper, Row} from './styles';
@@ -53,7 +53,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
     }
   }, [evaluationTypes]);
 
-  const {mutate, loading: isSaving} = useEvaluationInsert();
+  const {insertEvaluation, loading: isSaving} = useEvaluationInsert();
 
   const onSubmit = async (data: any) => {
     if (isSaving) return;
@@ -72,7 +72,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
       payload.id = selectedItem.id ? selectedItem.id : 0;
     }
 
-    await mutate(
+    await insertEvaluation(
       payload,
       () => {
         refetchList();

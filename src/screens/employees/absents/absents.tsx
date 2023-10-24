@@ -8,7 +8,7 @@ import useGetAbsence from '../../../services/graphql/userProfile/absents/useGetA
 import useGetAbsenceTypes from '../../../services/graphql/userProfile/absents/useGetAbsentsType';
 import useResolutionDelete from '../../../services/graphql/userProfile/resolution/useResolutionDelete';
 import useVacationGet from '../../../services/graphql/userProfile/vacation/useVacationGet';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {Absence, AbsenceParams} from '../../../types/graphql/absents';
 import {UserProfileVacationParams, YearVacationType} from '../../../types/graphql/profileVacationTypes';
 import {MicroserviceProps} from '../../../types/micro-service-props';
@@ -332,10 +332,10 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
         />
       )}
 
-      <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />
-      <DeleteModal
+      <ConfirmModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleConfirm={handleDelete} />
+      <ConfirmModal
         open={showDeleteVacationModal}
-        handleDelete={handleDeleteVacation}
+        handleConfirm={handleDeleteVacation}
         onClose={() => setShowDeleteVacationModal(false)}
       />
     </Container>

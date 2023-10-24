@@ -52,12 +52,12 @@ import insertAbsence from './userProfile/absents/insertAbsence';
 import getBasicInfo from './userProfile/basicInfo/getBasicInfo';
 import insertBasicInfo from './userProfile/basicInfo/insertBasicInfo';
 import updateBasicInfo from './userProfile/basicInfo/updateBasicInfo';
-import educationDelete from './userProfile/education/educationDelete';
-import educationInsert from './userProfile/education/educationInsert';
-import educationOverview from './userProfile/education/educationOverview';
-import evaluationDelete from './userProfile/evaluation/evaluationDelete';
-import evaluationInsert from './userProfile/evaluation/evaluationInsert';
-import evaluationOverview from './userProfile/evaluation/evalutationOverview';
+import deleteEducation from './userProfile/education/deleteEducation';
+import getEducation from './userProfile/education/getEducation';
+import insertEducation from './userProfile/education/insertEducation';
+import deleteEvaluation from './userProfile/evaluation/deleteEvaluation';
+import getEvaluations from './userProfile/evaluation/getEvaluations';
+import insertEvaluation from './userProfile/evaluation/insertEvaluation';
 import experienceDelete from './userProfile/experience/experienceDelete';
 import experienceInsert from './userProfile/experience/experienceInsert';
 import experienceOverview from './userProfile/experience/experienceOverview';
@@ -98,9 +98,9 @@ export const GraphQL = {
   experienceDelete: experienceDelete,
   userProfileOverview: userProfileOverview,
   getJobTenderTypes: getJobTenderTypes,
-  educationOverview: educationOverview,
-  educationInsert: educationInsert,
-  educationDelete: educationDelete,
+  getEducation: getEducation,
+  insertEducation: insertEducation,
+  deleteEducation: deleteEducation,
   familyOverview: familyOverview,
   familyInsert: familyInsert,
   familyDelete: familyDelete,
@@ -116,9 +116,9 @@ export const GraphQL = {
   resolutionOverview: resolutionOverview,
   resolutionInsert: resolutionInsert,
   resolutionDelete: resolutionDelete,
-  evaluationOverview: evaluationOverview,
-  evaluationInsert: evaluationInsert,
-  evaluationDelete: evaluationDelete,
+  getEvaluations: getEvaluations,
+  insertEvaluation: insertEvaluation,
+  deleteEvaluation: deleteEvaluation,
   getRevisions: getRevisions,
   getRevisionDetails: getRevisionDetails,
   deleteRevision: deleteRevision,

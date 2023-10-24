@@ -4,7 +4,7 @@ import {ExperienceModal} from '../../../components/experienceModal/experienceMod
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useExperienceDelete from '../../../services/graphql/userProfile/experience/useExperienceDelete';
 import useExperience from '../../../services/graphql/userProfile/experience/useExperienceOverview';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {UserProfileExperience} from '../../../types/graphql/userProfileGetExperienceTypes';
 import {tableHeads} from './constants';
 import {Container} from './styles';
@@ -149,7 +149,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
         />
       )}
 
-      <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />
+      <ConfirmModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleConfirm={handleDelete} />
     </Container>
   );
 };

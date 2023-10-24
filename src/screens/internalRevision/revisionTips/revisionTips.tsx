@@ -2,7 +2,7 @@ import {Button, Divider, EditIconTwo, Table, Theme, TrashIconTwo} from 'client-l
 import React, {useState} from 'react';
 import {RevisionTipsModal} from '../../../components/revisionTipsModal/revisionTipsModal';
 import useGetRevisionTips from '../../../services/graphql/revisionTips/useRevisionTipsOverview';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import {MainTitle, RevisionListContainer, TableHeader} from '../styles';
@@ -78,7 +78,7 @@ const RevisionTips: React.FC<RevisionTipsListProps> = ({context}) => {
           ]}
         />
 
-        <DeleteModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleDelete={handleDelete} />
+        <ConfirmModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleConfirm={handleDelete} />
       </RevisionListContainer>
 
       {revisionTipsModal && (

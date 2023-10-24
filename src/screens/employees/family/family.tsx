@@ -5,7 +5,7 @@ import {FamilyPageProps} from './types';
 import {FamilyMemberModal} from '../../../components/familyMemberModal/familyMemberModal';
 import {tableHeads} from './constants';
 import {UserProfileFamily} from '../../../types/graphql/userProfileGetFamilyTypes';
-import {DeleteModal} from '../../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import useFamilyOverview from '../../../services/graphql/userProfile/family/useFamilyOverview';
 import useFamilyDelete from '../../../services/graphql/userProfile/family/useFamilyDelete';
 
@@ -92,7 +92,7 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
         alert={context.alert}
         refetch={refetchData}
       />
-      <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={handleDelete} />
+      <ConfirmModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleConfirm={handleDelete} />
     </Container>
   );
 };

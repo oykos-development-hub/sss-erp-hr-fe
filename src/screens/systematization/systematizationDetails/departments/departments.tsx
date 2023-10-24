@@ -12,7 +12,7 @@ import {
 } from './styles';
 import {ChevronDownIcon, Typography, Accordion} from 'client-library';
 import {JobPositionTable} from '../../../../components/jobPositionTable/jobPositionTable';
-import {DeleteModal} from '../../../../shared/deleteModal/deleteModal';
+import {ConfirmModal} from '../../../../shared/confirmModal/confirmModal';
 import {SectorJobPosition, SectorType} from '../../../../types/graphql/systematizationsTypes';
 
 const Departments: React.FC<DepartmentsProps> = ({
@@ -163,7 +163,7 @@ const Departments: React.FC<DepartmentsProps> = ({
           </AccordionWrapper>
         );
       })}
-      <DeleteModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleDelete={deleteSector} />
+      <ConfirmModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleConfirm={deleteSector} />
     </SectorsContainer>
   );
 };
