@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {GraphQL} from '../..';
 import useAppContext from '../../../../context/useAppContext';
-import {ProfileBasicInfoFormValues, ProfileBasicInfoResponse} from '../../../../types/graphql/userProfileBasicInfo';
+import {ProfileBasicInfoFormValues, ProfileBasicInfoResponse} from '../../../../types/graphql/basicInfo';
 import {REQUEST_STATUSES} from '../../../constants';
 
 const useUpdateBasicInfo = () => {
@@ -10,6 +10,8 @@ const useUpdateBasicInfo = () => {
   const {fetch} = useAppContext();
 
   const updateBasicInfo = async (data: ProfileBasicInfoFormValues, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: ProfileBasicInfoResponse['update'] = await fetch(GraphQL.updateBasicInfo, {data});

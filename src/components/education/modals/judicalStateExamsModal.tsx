@@ -2,12 +2,12 @@ import {Datepicker, Dropdown, FileUpload, Modal, Typography, Input} from 'client
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
-import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import useGetSettings from '../../../services/graphql/settings/useGetSettings';
 import useInsertEducation from '../../../services/graphql/userProfile/education/useInsertEducation';
 import {educationTypes, initialValues} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
 import {parseDateForBackend, parseToDate} from '../../../utils/dateUtils';
-import {ProfileEducationFormValues} from '../../../types/graphql/userProfileEducation';
+import {ProfileEducationFormValues} from '../../../types/graphql/education';
 
 export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   selectedItem,
@@ -17,8 +17,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   refetchList,
   navigation,
 }) => {
-  const {data: types} = useSettingsDropdownOverview({entity: educationTypes.education_exam_types});
-  const typesOptions = useMemo(() => types?.map(type => ({id: type.id as number, title: type.title})) || [], [types]);
+  const {settingsData} = useGetSettings({entity: educationTypes.education_exam_types});
 
   const item = useMemo(
     () =>
@@ -110,10 +109,10 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
               render={({field: {onChange, name, value}}) => (
                 <Dropdown
                   onChange={onChange}
-                  value={value as any}
+                  value={value}
                   name={name}
                   label="VRSTA ISPITA"
-                  options={typesOptions}
+                  options={settingsData}
                   error={errors.type?.message as string}
                 />
               )}

@@ -6,8 +6,8 @@ import useGetOrganizationUnits from '../../services/graphql/organizationUnits/us
 import useGetRevisions from '../../services/graphql/revision/useGetRevisions';
 import useGetRevisionDetails from '../../services/graphql/revision/useGetRevisionDetails';
 import useInsertRevision from '../../services/graphql/revision/useInsertRevisions';
-import useSettingsDropdownOverview from '../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
-import useSuppliersOverview from '../../services/graphql/suppliers/useGetSuppliers';
+import useGetSettings from '../../services/graphql/settings/useGetSettings';
+import useGetSuppliers from '../../services/graphql/suppliers/useGetSuppliers';
 import {revisionInsertItem} from '../../types/graphql/revisionInsert';
 import {FormGroupFullWidth} from '../revisionTipsModal/styles';
 import {Column, FileUploadWrapper, FormGroup, ModalForm, ModalSection, Row} from './styles';
@@ -39,7 +39,7 @@ const initialValues: RevisionFormValues = {
 export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, alert, refetchList, id, planId}) => {
   const {revisionDetails} = useGetRevisionDetails(id);
   const {insertRevision, loading: isSaving} = useInsertRevision();
-  const {suppliers} = useSuppliersOverview();
+  const {suppliers} = useGetSuppliers();
   const {organizationUnits} = useGetOrganizationUnits(undefined);
   const {revisions} = useGetRevisions({
     page: 1,
@@ -50,16 +50,14 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
     revisor_id: 0,
   });
 
-  const {data: revisionTypes} = useSettingsDropdownOverview({entity: 'revision_types'});
+  const {settingsData} = useGetSettings({entity: 'revision_types'});
 
-  const revisionsList = revisionTypes?.map(unit => {
+  const revisionsList = settingsData?.map(setting => {
     return {
-      id: unit.id,
-      title: unit.title,
+      id: setting.id,
+      title: setting.title,
     };
   });
-
-  console.log(revisions, revisionTypes);
 
   const {
     register,
@@ -207,9 +205,9 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
                   render={({field: {name, value, onChange}}) => (
                     <Dropdown
                       name={name}
-                      value={value as any}
+                      value={value}
                       onChange={onChange}
-                      options={suppliers as any}
+                      options={suppliers}
                       error={errors.external_revision_subject_id?.message as string}
                       placeholder="Izaberite subjekt"
                       label="SUBJEKT REVIZIJE (eksterna):"
@@ -244,7 +242,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
                   render={({field: {name, value, onChange}}) => (
                     <Dropdown
                       name={name}
-                      value={value as any}
+                      value={value}
                       onChange={onChange}
                       options={revisionsList || []}
                       error={errors.revision_type_id?.message as string}
@@ -280,7 +278,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
                   render={({field: {name, value, onChange}}) => (
                     <Dropdown
                       name={name}
-                      value={value as any}
+                      value={value}
                       onChange={onChange}
                       options={quarterOptions}
                       error={errors.revision_quartal?.message as string}

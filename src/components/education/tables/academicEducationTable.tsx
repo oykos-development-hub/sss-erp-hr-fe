@@ -8,7 +8,7 @@ import useGetEducation from '../../../services/graphql/userProfile/education/use
 import useDeleteEducation from '../../../services/graphql/userProfile/education/useDeleteEducation';
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {educationTypes} from '../modals/constants';
-import {ProfileEducation, ProfileEducationItem} from '../../../types/graphql/userProfileEducation';
+import {ProfileEducation, ProfileEducationItem} from '../../../types/graphql/education';
 
 const tableHeads: TableHead[] = [
   {

@@ -10,7 +10,7 @@ import {
 } from '../../screens/jobTenders/constants';
 import useInsertJobTenderApplication from '../../services/graphql/jobTenderApplications/useInsertJobTenderApplication';
 import useBasicInfoGet from '../../services/graphql/userProfile/basicInfo/useGetBasicInfo';
-import useUserProfiles from '../../services/graphql/userProfile/useUserProfiles';
+import useGetUserProfiles from '../../services/graphql/userProfile/useGetUserProfiles';
 import {DropdownDataString} from '../../types/dropdownData';
 import {JobTender} from '../../types/graphql/jobTenders';
 import {MicroserviceProps} from '../../types/micro-service-props';
@@ -94,7 +94,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 
   const {userBasicInfo} = useBasicInfoGet(selectedUserId, {skip: !selectedUserId});
 
-  const {userProfiles} = useUserProfiles({
+  const {userProfiles} = useGetUserProfiles({
     page: 1,
     size: 1000,
   });

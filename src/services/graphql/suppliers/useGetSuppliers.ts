@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import useAppContext from '../../../context/useAppContext';
-import {Supplier, SuppliersResponse} from '../../../types/graphql/suppliersOverviewTypes';
+import {Supplier, SuppliersResponse} from '../../../types/graphql/suppliers';
 import {REQUEST_STATUSES} from '../../constants';
 
 const useGetSuppliers = (id?: number, search?: string) => {

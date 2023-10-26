@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {GraphQL} from '../..';
 import {REQUEST_STATUSES} from '../../../constants';
-import {ProfileEducationItem, ProfileEducationResponse} from '../../../../types/graphql/userProfileEducation';
+import {ProfileEducationItem, ProfileEducationResponse} from '../../../../types/graphql/education';
 import useAppContext from '../../../../context/useAppContext';
 
 const useInsertEducation = () => {
@@ -10,6 +10,8 @@ const useInsertEducation = () => {
   const {fetch} = useAppContext();
 
   const insertEducation = async (data: ProfileEducationItem, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: ProfileEducationResponse['insert'] = await fetch(GraphQL.insertEducation, {data});

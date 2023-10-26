@@ -144,7 +144,6 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({i
   const updatedTableHeads = useMemo(() => {
     // Going through tableHeads and adding a renderContents method to the table heads that need a dynamic input
     const tableHeads = judgeResolutionTableHeads;
-    const positiveIntegerRegex = /^(?:[1-9]\d*|0)?$/;
 
     tableHeads.forEach((head: TableHead) => {
       switch (head.accessor) {

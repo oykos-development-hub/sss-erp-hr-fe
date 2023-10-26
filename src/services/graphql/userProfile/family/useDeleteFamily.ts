@@ -10,6 +10,8 @@ const useDeleteFamily = () => {
   const {fetch} = useAppContext();
 
   const deleteFamily = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: ProfileFamilyResponse['delete'] = await fetch(GraphQL.deleteFamily, {id});

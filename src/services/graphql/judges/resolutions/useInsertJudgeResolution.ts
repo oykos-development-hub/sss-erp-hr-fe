@@ -14,6 +14,8 @@ const useInsertJudgeResolution = () => {
     onSuccess?: (id: number) => void,
     onError?: () => void,
   ) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: JudgeResolutionResponse['insert'] = await fetch(GraphQL.insertJudgeResolution, {data});

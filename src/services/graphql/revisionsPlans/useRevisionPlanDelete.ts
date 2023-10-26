@@ -10,6 +10,8 @@ const useDeleteRevisionPlan = () => {
   const {fetch} = useAppContext();
 
   const deleteRevisionPlan = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: RevisionPlansResponse['delete'] = await fetch(GraphQL.deleteRevisionPlan, {id});

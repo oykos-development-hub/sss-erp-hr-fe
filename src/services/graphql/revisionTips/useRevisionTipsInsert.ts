@@ -9,6 +9,8 @@ const useInsertRevisionTip = () => {
   const {fetch} = useAppContext();
 
   const insertRevisionTip = async (data: RevisionTipInsertParams, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: RevisionTipsResponse['insert'] = await fetch(GraphQL.insertRevisionTip, {data});

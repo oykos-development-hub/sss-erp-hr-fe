@@ -1,17 +1,16 @@
-import React from 'react';
 import {Button, Divider, Dropdown, EditIconTwo, Table, Theme, TrashIconTwo} from 'client-library';
-import {useMemo, useState} from 'react';
+import React, {useState} from 'react';
 import {RevisionModal} from '../../../components/revisionModal/revisionModal';
+import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
+import useDeleteRevision from '../../../services/graphql/revision/useDeleteRevision';
 import useGetRevisions from '../../../services/graphql/revision/useGetRevisions';
+import useGetSettings from '../../../services/graphql/settings/useGetSettings';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
+import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
+import {DropdownDataNumber} from '../../../types/dropdownData';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import {FilterContainer, Filters, MainTitle, RevisionListContainer, TableHeader} from '../styles';
 import {RevisionTableHeads} from './constants';
-import {DropdownDataNumber} from '../../../types/dropdownData';
-import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
-import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
-import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
-import useDeleteRevision from '../../../services/graphql/revision/useDeleteRevision';
 
 interface RevisionProps {
   context: MicroserviceProps;
@@ -67,7 +66,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
     toogleRevisionModal(id);
   };
 
-  const {data: revisionTypes} = useSettingsDropdownOverview({entity: 'revision_types'});
+  const {settingsData} = useGetSettings({entity: 'revision_types'});
 
   const revisorsList = [
     {id: 0, title: 'Sve '},
@@ -78,7 +77,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
 
   const revisionTypeOptions = [
     {id: 0, title: 'Sve '},
-    ...revisionTypes.map((unit: DropdownDataNumber) => {
+    ...settingsData.map((unit: DropdownDataNumber) => {
       return {id: unit.id, title: unit.title};
     }),
   ];
@@ -97,7 +96,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
                 onChange={value => {
                   setUnitID(value.id as number);
                 }}
-                options={organizationUnits as any}
+                options={organizationUnits}
               />
             </FilterContainer>
             <FilterContainer>

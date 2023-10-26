@@ -2,12 +2,12 @@ import {Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {VacationModalProps} from '../../screens/employees/absents/types';
-import useVacationInsert from '../../services/graphql/userProfile/vacation/useVacationInsert';
+import useVacationInsert from '../../services/graphql/userProfile/vacation/useInsertVacation';
 import {yearsForDropdown} from '../../utils/constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
-import {UserProfileVacationParams} from '../../types/graphql/profileVacationTypes';
+import {ProfileVacationParams} from '../../types/graphql/vacations';
 
-const initialValues: UserProfileVacationParams = {
+const initialValues: ProfileVacationParams = {
   id: null,
   user_profile_id: null,
   file_id: null,
@@ -24,7 +24,7 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
     setUploadedFiles(fileList);
   };
 
-  const {mutate, loading} = useVacationInsert();
+  const {insertVacation, loading} = useVacationInsert();
 
   const handleSave = (values: any) => {
     const payload = {
@@ -36,7 +36,7 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
       resolution_purpose: values.resolution_purpose,
     };
 
-    mutate(
+    insertVacation(
       payload,
       () => {
         onClose(true);

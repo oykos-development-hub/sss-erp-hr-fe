@@ -2,31 +2,31 @@ import {Button, EditIconTwo, Table, Theme, TrashIcon, Typography} from 'client-l
 import React, {useMemo, useState} from 'react';
 import {ExperienceModal} from '../../../components/experienceModal/experienceModal';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
-import useExperienceDelete from '../../../services/graphql/userProfile/experience/useExperienceDelete';
-import useExperience from '../../../services/graphql/userProfile/experience/useExperienceOverview';
+import useDeleteExperience from '../../../services/graphql/userProfile/experience/useDeleteExperience';
+import useGetExperience from '../../../services/graphql/userProfile/experience/useGetExperience';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
-import {UserProfileExperience} from '../../../types/graphql/userProfileGetExperienceTypes';
+import {ProfileExperience} from '../../../types/graphql/experience';
 import {tableHeads} from './constants';
 import {Container} from './styles';
 import {ExperiencePageProps} from './types';
 
 export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[4];
-  const {experienceData, refetchData, loading} = useExperience(userProfileID);
+  const {experience, refetch, loading} = useGetExperience(+userProfileID);
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
   const tableData = useMemo(() => {
     let totalInsuredExperience = 0;
     let totalExperience = 0;
 
-    experienceData?.forEach((item: any) => {
+    experience?.forEach((item: any) => {
       totalExperience += item.amount_of_experience;
       totalInsuredExperience += item.amount_of_insured_experience;
     });
 
     return (
-      experienceData && [
-        ...experienceData,
+      experience && [
+        ...experience,
         {
           id: '',
           relevant: 'hide',
@@ -42,28 +42,20 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
         } as any,
       ]
     );
-  }, [experienceData]);
+  }, [experience]);
 
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
 
   const selectedItem = useMemo(() => {
-    return tableData?.find((item: UserProfileExperience) => item.id === selectedItemId);
+    return tableData?.find((item: ProfileExperience) => item.id === selectedItemId);
   }, [selectedItemId]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const {mutate} = useExperienceDelete(
-    () => {
-      refetchData();
-      context.alert.success('Uspješno obrisano.');
-    },
-    () => {
-      context.alert.error('Greška. Brisanje nije moguće.');
-    },
-  );
+  const {deleteExperience} = useDeleteExperience();
 
-  const handleEdit = (item: UserProfileExperience) => {
+  const handleEdit = (item: ProfileExperience) => {
     setSelectedItemId(item.id);
     setShowModal(true);
   };
@@ -81,9 +73,18 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
   };
 
   const handleDelete = () => {
-    mutate(selectedItemId);
-    setShowDeleteModal(false);
-    setSelectedItemId(0);
+    deleteExperience(
+      selectedItemId,
+      () => {
+        refetch();
+        context.alert.success('Uspješno obrisano.');
+        setShowDeleteModal(false);
+        setSelectedItemId(0);
+      },
+      () => {
+        context.alert.error('Greška. Brisanje nije moguće.');
+      },
+    );
   };
 
   const updatedTableHeads = useMemo(() => {
@@ -91,7 +92,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
       ...tableHeads.slice(0, 1),
       {
         ...tableHeads[1],
-        renderContents: (organization_unit: string, row: UserProfileExperience) => {
+        renderContents: (organization_unit: string, row: ProfileExperience) => {
           return (
             <Typography
               variant="bodyMedium"
@@ -141,7 +142,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
       {showModal && (
         <ExperienceModal
           alert={context.alert}
-          refetchList={refetchData}
+          refetchList={refetch}
           open={showModal}
           onClose={closeModal}
           selectedItem={selectedItem}

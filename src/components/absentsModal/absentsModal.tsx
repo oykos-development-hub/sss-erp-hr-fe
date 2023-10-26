@@ -9,7 +9,7 @@ import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {dropdownOptions} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
 
-const initialValues: AbsenceParams = {
+const initialValues: any = {
   id: null,
   user_profile_id: 0,
   absent_type_id: null,
@@ -50,7 +50,7 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
 
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
-  const {mutate, loading: isSaving} = useInsertAbsence();
+  const {insertAbsence, loading: isSaving} = useInsertAbsence();
 
   const handleSave = (values: any) => {
     if (isSaving) return;
@@ -65,7 +65,7 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
       file_id: values?.file_id || null,
     };
 
-    mutate(
+    insertAbsence(
       payload,
       () => {
         onClose(true);
@@ -84,7 +84,7 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
     control,
     formState: {errors},
     reset,
-  } = useForm<AbsenceParams>({defaultValues: initialValues});
+  } = useForm({defaultValues: initialValues});
 
   useEffect(() => {
     if (selectedItem) {
@@ -110,7 +110,7 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
     setSelectedAbsenceTypeId(selectedValue);
   };
 
-  const VacationValue = () => {
+  const getVacationValue = () => {
     if (isVacation) {
       return dropdownOptions[1];
     } else if (isVacation === false) {
@@ -137,7 +137,7 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
             <Dropdown
               label="VRSTA ZAHTJEVA:"
               options={dropdownOptions.slice(1)}
-              value={VacationValue() as any}
+              value={getVacationValue()}
               onChange={handleTypeChange}
               placeholder="Birajte vrstu"
               name="vacation"
@@ -154,12 +154,12 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
                     label="VRSTA:"
                     name={name}
                     options={absenceChildTypes}
-                    value={value as any}
+                    value={value}
                     onChange={selectedValue => {
                       handleAbsenceTypeChange(selectedValue.title);
                       onChange(selectedValue);
                     }}
-                    error={errors.absent_type?.message}
+                    error={errors.absent_type?.message as string}
                     placeholder="Birajte vrstu"
                   />
                 )}
@@ -176,9 +176,9 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
                     label="DRŽAVNI ORGAN:"
                     name={name}
                     options={organizationUnits}
-                    value={value as any}
+                    value={value}
                     onChange={onChange}
-                    error={errors.target_organization_unit?.message}
+                    error={errors.target_organization_unit?.message as string}
                     placeholder="Birajte državni organ"
                   />
                 )}

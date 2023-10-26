@@ -10,6 +10,8 @@ const useDeleteAbsence = () => {
   const {fetch} = useAppContext();
 
   const deleteAbsence = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: AbsentResponse['delete'] = await fetch(GraphQL.deleteAbsence, {id});

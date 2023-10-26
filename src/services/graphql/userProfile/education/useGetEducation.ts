@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '../..';
 import useAppContext from '../../../../context/useAppContext';
-import {ProfileEducation, ProfileEducationResponse} from '../../../../types/graphql/userProfileEducation';
+import {ProfileEducation, ProfileEducationResponse} from '../../../../types/graphql/education';
 import {REQUEST_STATUSES} from '../../../constants';
 
 const usGetEducation = (id: number, education_type: string) => {

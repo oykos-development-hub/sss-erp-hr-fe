@@ -54,7 +54,7 @@ export type RevisionTipsResponse = {
 
 export type RevisionTipForm = {
   id: number;
-  responsible_person: any;
+  responsible_person: string;
   user_profile_id: DropdownDataNumber | null;
   date_of_accept: Date | null;
   due_date: DropdownDataNumber | null;

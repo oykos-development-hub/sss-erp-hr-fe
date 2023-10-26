@@ -15,6 +15,8 @@ const useInsertJobPositionInOrgUnit = () => {
     onSuccess?: (item?: JobPositionInOrgUnitParams) => void,
     onError?: () => void,
   ) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: JobPositionsInOrgUnitResponse['insert'] = await fetch(GraphQL.insertJobPositionInOrgUnit, {

@@ -1,15 +1,20 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '../..';
+import useAppContext from '../../../../context/useAppContext';
+import {ProfileSalaryParams, ProfileSalaryParamsResponse} from '../../../../types/graphql/salaryParams';
+import {REQUEST_STATUSES} from '../../../constants';
 
-const useSalaryParamsOverview = (id: number) => {
-  const [salaryParams, setSalaryParams] = useState<any>();
+const useGetSalaryParams = (id: number) => {
+  const [salaryParams, setSalaryParams] = useState<ProfileSalaryParams>();
   const [loading, setLoading] = useState(true);
 
-  const fetchSalaryParams = async () => {
-    const response = await GraphQL.salaryParamsOverview(id);
+  const {fetch} = useAppContext();
 
-    if (response) {
-      setSalaryParams(response);
+  const fetchSalaryParams = async () => {
+    const response: ProfileSalaryParamsResponse['get'] = await fetch(GraphQL.getSalaryParams, {user_profile_id: id});
+
+    if (response.userProfile_SalaryParams?.status === REQUEST_STATUSES.success) {
+      setSalaryParams(response.userProfile_SalaryParams?.items[0]);
       setLoading(false);
     }
   };
@@ -18,7 +23,7 @@ const useSalaryParamsOverview = (id: number) => {
     fetchSalaryParams();
   }, [id]);
 
-  return {data: salaryParams, loading, refetch: fetchSalaryParams};
+  return {salaryParams, loading, refetch: fetchSalaryParams};
 };
 
-export default useSalaryParamsOverview;
+export default useGetSalaryParams;

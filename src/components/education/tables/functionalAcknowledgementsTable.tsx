@@ -9,7 +9,7 @@ import {parseDate} from '../../../utils/dateUtils';
 import {educationTypes} from '../modals/constants';
 import {FunctionalAcknowledgmentModal} from '../modals/functionalAcknowledgmentsModal';
 import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './styles';
-import {ProfileEducation, ProfileEducationItem} from '../../../types/graphql/userProfileEducation';
+import {ProfileEducation, ProfileEducationItem} from '../../../types/graphql/education';
 
 const tableHeads: TableHead[] = [
   {

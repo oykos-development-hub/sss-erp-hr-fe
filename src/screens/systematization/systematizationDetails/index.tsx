@@ -10,7 +10,7 @@ import useDeleteOrganizationUnit from '../../../services/graphql/organizationUni
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useGetSystematizationDetails from '../../../services/graphql/systematization/useGetSystematizationDetails';
 import useSystematizationInsert from '../../../services/graphql/systematization/useInsertSystematization';
-import useUserProfiles from '../../../services/graphql/userProfile/useUserProfiles';
+import useUserProfiles from '../../../services/graphql/userProfile/useGetUserProfiles';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {
   InsertSystematizationParams,
@@ -185,7 +185,7 @@ export const SystematizationDetails: React.FC = () => {
                     return (
                       <Dropdown
                         onChange={onChange}
-                        value={value as any}
+                        value={value}
                         name={name}
                         label="ORGANIZACIONA JEDINICA:"
                         options={organizationUnits}

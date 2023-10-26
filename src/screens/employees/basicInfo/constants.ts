@@ -47,8 +47,8 @@ export const initialValues = {
   },
 };
 
-export const dropdownStringSchema = {id: yup.string(), title: yup.string()};
-export const dropdownNumberSchema = {id: yup.number(), title: yup.string()};
+export const dropdownStringSchema = {id: yup.string().required(), title: yup.string().required()};
+export const dropdownNumberSchema = {id: yup.number().required(), title: yup.string().required()};
 export const requiredError = 'Ovo polje je obavezno';
 
 export const contractPositions = ['Ugovor na neodređeno vrijeme', 'Ugovor na određeno vrijeme'];

@@ -2,9 +2,9 @@ import {Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
-import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import useGetSettings from '../../../services/graphql/settings/useGetSettings';
 import useInsertEducation from '../../../services/graphql/userProfile/education/useInsertEducation';
-import {ProfileEducationFormValues} from '../../../types/graphql/userProfileEducation';
+import {ProfileEducationFormValues} from '../../../types/graphql/education';
 import {academicTitles, educationTypes, initialValues} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
 
@@ -16,8 +16,7 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
   refetchList,
   navigation,
 }) => {
-  const {data: types} = useSettingsDropdownOverview({entity: educationTypes.education_academic_types});
-  const typesOptions = useMemo(() => types?.map(type => ({id: type.id as number, title: type.title})) || [], [types]);
+  const {settingsData} = useGetSettings({entity: educationTypes.education_academic_types});
 
   const item = useMemo(
     () =>
@@ -108,10 +107,10 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
                 return (
                   <Dropdown
                     onChange={onChange}
-                    value={value as any}
+                    value={value}
                     name={name}
                     label="STEPEN ŠKOLSKOG OBRAZOVANJA:"
-                    options={typesOptions}
+                    options={settingsData}
                     error={errors.type?.message as string}
                   />
                 );
@@ -127,7 +126,7 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
               render={({field: {onChange, name, value}}) => (
                 <Dropdown
                   onChange={onChange}
-                  value={value as any}
+                  value={value}
                   name={name}
                   label="STEPEN STRUČNE OSPOSOBLJENOSTI:"
                   options={academicTitles}

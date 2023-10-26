@@ -7,6 +7,7 @@ import {yesOrNoOptionsString} from '../../constants';
 import {EvaluationModalProps} from '../../screens/employees/evaluations/types';
 import useEvaluationInsert from '../../services/graphql/userProfile/evaluation/useInsertEvaluation';
 import {DropdownDataNumber} from '../../types/dropdownData';
+import {ProfileEvaluationFormValues, ProfileEvaluationParams} from '../../types/graphql/evaluations';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormWrapper, Row} from './styles';
 
@@ -14,14 +15,14 @@ const evaluationSchema = yup.object().shape({
   date_of_evaluation: yup.date().required('Ovo polje je obavezno'),
   is_relevant: yup
     .object()
-    .default(undefined)
-    .shape({id: yup.string(), title: yup.string()})
-    .required('Ovo polje je obavezno'),
-  score: yup
+    .shape({id: yup.string().required(), title: yup.string().required()})
+    .required('Ovo polje je obavezno')
+    .nullable(),
+  evaluation_type_id: yup
     .object()
-    .default(undefined)
-    .shape({id: yup.string(), title: yup.string()})
-    .required('Ovo polje je obavezno'),
+    .shape({id: yup.number().required(), title: yup.string().required()})
+    .required('Ovo polje je obavezno')
+    .nullable(),
   user_profile_id: yup.number().required('Ovo polje je obavezno'),
 });
 
@@ -55,22 +56,16 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
 
   const {insertEvaluation, loading: isSaving} = useEvaluationInsert();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: ProfileEvaluationFormValues) => {
     if (isSaving) return;
 
-    const payload: any = {
-      user_profile_id: data?.user_profile_id,
-      score: data?.score.title,
-      is_relevant: data?.is_relevant?.id === 'Da' ? true : false,
+    const payload: ProfileEvaluationParams = {
+      id: data.id ? data.id : 0,
+      user_profile_id: data.user_profile_id,
+      evaluation_type_id: data.evaluation_type_id?.id ?? 0,
+      is_relevant: data.is_relevant?.id === 'Da' ? true : false,
       date_of_evaluation: parseDateForBackend(data?.date_of_evaluation),
-      file_id: data?.file_id,
-      evaluation_type_id: data?.score.id,
-      evaluator: '',
     };
-
-    if (selectedItem) {
-      payload.id = selectedItem.id ? selectedItem.id : 0;
-    }
 
     await insertEvaluation(
       payload,
@@ -144,7 +139,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
           </Row>
           <Row>
             <Controller
-              name="score"
+              name="evaluation_type_id"
               control={control}
               render={({field: {onChange, name, value}}) => {
                 return (
@@ -154,7 +149,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
                     name={name}
                     label="OCJENA:"
                     options={evaluationTypesOption}
-                    error={errors.is_relevant?.message}
+                    error={errors.evaluation_type_id?.message}
                   />
                 );
               }}

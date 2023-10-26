@@ -10,6 +10,8 @@ const useInsertJudgeNorm = () => {
   const {fetch} = useAppContext();
 
   const insertJudgeNorm = async (data: JudgeNormInsertParams, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: JudgeNormResponse['insert'] = await fetch(GraphQL.insertJudgeNorm, {data});

@@ -7,7 +7,7 @@ import {yesOrNoOptionsString} from '../../constants';
 import {ExperienceModalProps} from '../../screens/employees/experience/types';
 import {formatData} from '../../screens/employees/experience/utils';
 import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
-import useExperienceInsert from '../../services/graphql/userProfile/experience/useExperienceInsert';
+import useInsertExperience from '../../services/graphql/userProfile/experience/useInsertExperience';
 import {DropdownDataString} from '../../types/dropdownData';
 import {calculateExperience, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormWrapper, Row} from './styles';
@@ -65,7 +65,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     setValue,
   } = useForm({resolver: yupResolver(experienceSchema), defaultValues: {user_profile_id: userProfileId}});
 
-  const {mutate, loading: isSaving} = useExperienceInsert();
+  const {insertExperience, loading: isSaving} = useInsertExperience();
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
   const {relevant, date_of_start, date_of_end, organization_unit, organization_unit_id} = watch();
@@ -89,7 +89,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     const payload = formatData(data, !selectedItem);
 
     try {
-      await mutate(
+      await insertExperience(
         payload,
         () => {
           alert.success('Uspješno sačuvano.');

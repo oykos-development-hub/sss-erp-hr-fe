@@ -1,51 +1,44 @@
 import {Button, Datepicker, Dropdown, Input} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import {educationTypes} from '../../../components/education/modals/constants';
 import {yesOrNoOptionsBoolean, yesOrNoOptionsString} from '../../../constants';
-import useSalaryParamsOverview from '../../../services/graphql/userProfile/salaryParams/useSalaryParamsOverview';
-import useSalaryParamsInsert from '../../../services/graphql/userProfile/salaryParams/useSalaryParamsinsert';
-import {UserProfileGetSalaryParams} from '../../../types/graphql/userProfileGetSalaryParams';
+import useBasicInfoGet from '../../../services/graphql/userProfile/basicInfo/useGetBasicInfo';
+import useGetEducation from '../../../services/graphql/userProfile/education/useGetEducation';
+import useInsertSalaryParams from '../../../services/graphql/userProfile/salaryParams/useInsertSalaryParams';
+import useGetSalaryParams from '../../../services/graphql/userProfile/salaryParams/useSalaryParamsOverview';
+import {ProfileSalaryFormValues} from '../../../types/graphql/salaryParams';
+import {parseToDate} from '../../../utils/dateUtils';
 import {insuranceBasis, salaryRanks} from './constants';
 import {Controls, FormColumn, FormContainer, FormFooter, FormItem, FormRow, FormWrapper} from './styles';
 import {SalaryParamsPageProps} from './types';
 import {formatData, initialValues} from './utils';
-import {parseToDate} from '../../../utils/dateUtils';
-import useBasicInfoGet from '../../../services/graphql/userProfile/basicInfo/useGetBasicInfo';
-import useEducationOverview from '../../../services/graphql/userProfile/education/useGetEducation';
-import {educationTypes} from '../../../components/education/modals/constants';
 
 export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const userProfileID = Number(context.navigation.location.pathname.split('/')[4]);
-  const {data, refetch} = useSalaryParamsOverview(userProfileID);
+  const {salaryParams, refetch} = useGetSalaryParams(userProfileID);
   const {userBasicInfo} = useBasicInfoGet(userProfileID, {skip: !userProfileID});
-  const {employeeEducationData: educationData} = useEducationOverview(
-    Number(context.navigation.location.pathname.split('/')[4]),
-    educationTypes.education_academic_types,
-  ) as any;
+  const {educationData} = useGetEducation(userProfileID, educationTypes.education_academic_types);
 
   const item = useMemo(() => {
-    if (data) {
+    if (salaryParams) {
       return {
-        ...data,
-        benefited_track: data.benefited_track ? {id: 'Da', title: 'Da'} : {id: 'Ne', title: 'Ne'},
-        without_raise: data.without_raise ? {id: 'Da', title: 'Da'} : {id: 'Ne', title: 'Ne'},
-        insurance_basis: {id: data.insurance_basis, title: data.insurance_basis},
-        obligation_reduction: {id: data.obligation_reduction, title: data.obligation_reduction},
-        weekly_work_hours: {id: data.weekly_work_hours, title: data.weekly_work_hours},
-        salary_rank: {id: data.salary_rank, title: data.salary_rank},
-        created_at: parseToDate(data.created_at),
-        user_resolution_id: data.user_resolution_id ?? {
-          id: data.user_resolution_id,
-          title: data.user_resolution_id,
-        },
+        ...salaryParams,
+        benefited_track: salaryParams.benefited_track ? {id: 'Da', title: 'Da'} : {id: 'Ne', title: 'Ne'},
+        without_raise: salaryParams.without_raise ? {id: true, title: 'Da'} : {id: false, title: 'Ne'},
+        insurance_basis: {id: salaryParams.insurance_basis, title: salaryParams.insurance_basis},
+        obligation_reduction: {id: salaryParams.obligation_reduction, title: salaryParams.obligation_reduction},
+        weekly_work_hours: {id: salaryParams.weekly_work_hours, title: salaryParams.weekly_work_hours},
+        salary_rank: {id: salaryParams.salary_rank, title: salaryParams.salary_rank},
+        created_at: parseToDate(salaryParams.created_at),
       };
     }
 
     return null;
-  }, [data]);
+  }, [salaryParams]);
 
-  const {mutate: createSalaryParams} = useSalaryParamsInsert();
+  const {insertSalaryParams} = useInsertSalaryParams();
 
   const {
     register,
@@ -53,8 +46,10 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
     formState: {isValid},
     reset,
     control,
+    setValue,
+    watch,
   } = useForm({
-    defaultValues: item || initialValues,
+    defaultValues: initialValues,
   });
 
   useEffect(() => {
@@ -63,28 +58,28 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
 
   useEffect(() => {
     if (item) {
-      reset(item);
+      reset({...watch(), ...item});
     }
   }, [item]);
 
-  const handleSave = (values: UserProfileGetSalaryParams, close: boolean) => {
-    const payload = formatData({
-      ...values,
-      user_profile_id: userProfileID,
-      organization_unit_id: userBasicInfo?.contract.organization_unit?.id,
-    });
-
-    if (!item) {
-      delete payload.id;
+  useEffect(() => {
+    if (userBasicInfo) {
+      setValue('organization_unit', userBasicInfo.contract.organization_unit);
+      setValue('job_position', userBasicInfo.contract.job_position_in_organization_unit);
+      setValue('date_of_start', parseToDate(userBasicInfo.contract.date_of_start));
+      setValue('contract_type', userBasicInfo.contract.contract_type);
     }
-    delete payload.organization_unit;
-    delete payload.created_at;
-    delete payload.user_resolution_id;
-    delete payload.user_profile;
-    delete payload.resolution;
+  }, [userBasicInfo]);
+
+  useEffect(() => {
+    if (educationData && educationData.length) setValue('education_level', (educationData[0] as any).academic_title);
+  }, [educationData]);
+
+  const handleSave = (values: ProfileSalaryFormValues, close: boolean) => {
+    const payload = formatData({...values, user_profile_id: userProfileID});
 
     if (isValid) {
-      createSalaryParams(
+      insertSalaryParams(
         payload,
         () => {
           refetch();
@@ -110,16 +105,10 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
           <FormColumn>
             <FormItem>
               <Controller
-                name=""
+                name="job_position"
                 control={control}
-                render={({field: {name}}) => (
-                  <Dropdown
-                    name={name}
-                    label="RADNO MJESTO:"
-                    isDisabled
-                    value={userBasicInfo?.job_position}
-                    options={userBasicInfo?.job_position ? new Array(userBasicInfo.job_position) : []}
-                  />
+                render={({field: {name, value}}) => (
+                  <Dropdown name={name} label="RADNO MJESTO:" isDisabled value={value} options={[]} />
                 )}
               />
             </FormItem>
@@ -127,18 +116,8 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
               <Controller
                 name="organization_unit"
                 control={control}
-                render={({field: {name}}) => (
-                  <Dropdown
-                    name={name}
-                    label="ORGANIZACIONA JEDINICA:"
-                    isDisabled
-                    value={userBasicInfo?.contract.organization_unit}
-                    options={
-                      userBasicInfo?.contract.organization_unit
-                        ? new Array(userBasicInfo?.contract.organization_unit)
-                        : []
-                    }
-                  />
+                render={({field: {name, value}}) => (
+                  <Dropdown name={name} label="ORGANIZACIONA JEDINICA:" isDisabled value={value} options={[]} />
                 )}
               />
             </FormItem>
@@ -168,8 +147,8 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
                     onChange={onChange}
                     label="BEZ POVEĆANJA:"
                     isDisabled={isDisabled}
-                    value={value as any}
-                    options={yesOrNoOptionsBoolean as any}
+                    value={value}
+                    options={yesOrNoOptionsBoolean}
                   />
                 )}
               />
@@ -208,30 +187,22 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
             </FormItem>
             <FormItem>
               <Controller
-                name="user_resolution_id"
+                name="contract_type"
                 control={control}
-                render={({field: {name}}) => (
-                  <Dropdown
-                    name={name}
-                    label="VRSTA UGOVORA:"
-                    isDisabled
-                    value={userBasicInfo?.contract.contract_type}
-                    options={
-                      userBasicInfo?.contract?.contract_type ? new Array(userBasicInfo.contract.contract_type) : []
-                    }
-                  />
+                render={({field: {name, value}}) => (
+                  <Dropdown name={name} label="VRSTA UGOVORA:" isDisabled value={value} options={[]} />
                 )}
               />
             </FormItem>
             <FormItem>
               <Controller
-                name=""
+                name="date_of_start"
                 control={control}
-                render={({field: {name}}) => (
+                render={({field: {name, value, onChange}}) => (
                   <Datepicker
-                    onChange={() => console.log('change')}
+                    onChange={onChange}
                     name={name}
-                    selected={parseToDate(userBasicInfo?.contract?.date_of_start || null)}
+                    selected={value}
                     label="POČETAK RADNOG ODNOSA:"
                     disabled
                   />
@@ -285,11 +256,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
 
           <FormColumn>
             <FormItem>
-              <Input
-                value={educationData?.[0]?.academic_title ? educationData[0].academic_title : ''}
-                label="STEPEN STRUČNOG OBRAZOVANJA:"
-                disabled
-              />
+              <Input {...register('education_level')} label="STEPEN STRUČNOG OBRAZOVANJA:" disabled />
             </FormItem>
           </FormColumn>
           <FormColumn>
@@ -311,12 +278,12 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
               <Button
                 content="Sačuvaj i zatvori"
                 variant="secondary"
-                onClick={() => handleSubmit((data: UserProfileGetSalaryParams) => handleSave(data, true))()}
+                onClick={() => handleSubmit((data: ProfileSalaryFormValues) => handleSave(data, true))()}
               />
               <Button
                 content="Sačuvaj i nastavi"
                 variant="primary"
-                onClick={() => handleSubmit((data: UserProfileGetSalaryParams) => handleSave(data, false))()}
+                onClick={() => handleSubmit((data: ProfileSalaryFormValues) => handleSave(data, false))()}
               />
             </>
           )}

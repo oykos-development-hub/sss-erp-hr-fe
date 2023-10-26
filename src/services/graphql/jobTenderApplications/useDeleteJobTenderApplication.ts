@@ -10,6 +10,8 @@ const useDeleteJobTenderApplication = () => {
   const {fetch} = useAppContext();
 
   const deleteJobTenderApplication = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: JobTenderApplicationResponse['delete'] = await fetch(GraphQL.deleteJobTenderApplication, {id});

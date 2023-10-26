@@ -1,4 +1,3 @@
-import React from 'react';
 import {DropdownDataString} from '../../types/dropdownData';
 
 export const topicOptions: DropdownDataString[] = [

@@ -1,22 +1,32 @@
 import {Modal} from 'client-library';
 import React from 'react';
-import {ContractEndModalContent, CustomText, TriangleIcon} from './styles';
+import useAppContext from '../../context/useAppContext';
 import useTerminateEmployment from '../../services/graphql/terminateEmployment/useTerminateEmployment';
-import {MicroserviceProps} from '../../types/micro-service-props';
+import {ContractEndModalContent, CustomText, TriangleIcon} from './styles';
 
-interface ContractEndProps {
+interface ContractEndModalProps {
   open: boolean;
   onClose: (action?: any) => void;
   profileId: number;
-  context: MicroserviceProps;
 }
-export const ContractEndModal: React.FC<ContractEndProps> = ({open, onClose, profileId, context}) => {
-  const {refetch} = useTerminateEmployment(profileId);
+
+export const ContractEndModal: React.FC<ContractEndModalProps> = ({open, onClose, profileId}) => {
+  const {terminateEmployment} = useTerminateEmployment();
+
+  const {navigation, alert} = useAppContext();
 
   const handleTerminateEmployment = () => {
-    refetch();
-    onClose(true);
-    context.navigation.navigate(`/hr/employees/details/${profileId}/experience`);
+    terminateEmployment(
+      profileId,
+      () => {
+        onClose(true);
+        alert.success('Radni odnos je uspješno prekinut.');
+        navigation.navigate(`/hr/employees/details/${profileId}/experience`);
+      },
+      () => {
+        alert.error('Došlo je do greške prilikom prekida radnog odnosa.');
+      },
+    );
   };
 
   return (

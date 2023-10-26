@@ -10,6 +10,8 @@ const useDeleteJobPositionInOrgUnit = () => {
   const {fetch} = useAppContext();
 
   const deleteJobPositionInOrganizationUnit = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: JobPositionsInOrgUnitResponse['delete'] = await fetch(GraphQL.deleteJobPositionInOrgUnit, {id});

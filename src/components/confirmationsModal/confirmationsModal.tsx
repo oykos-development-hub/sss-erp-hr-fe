@@ -8,7 +8,7 @@ import useInsertResolution from '../../services/graphql/userProfile/resolution/u
 import {DropdownDataNumber} from '../../types/dropdownData';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
-import useSettingsDropdownOverview from '../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import useGetSettings from '../../services/graphql/settings/useGetSettings';
 import {resolutionTypes} from '../education/modals/constants';
 import {yesOrNoOptionsString} from '../../constants';
 
@@ -36,11 +36,11 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     resolver: yupResolver(confirmationSchema),
   });
 
-  const {data: types} = useSettingsDropdownOverview({entity: resolutionTypes.resolution_types});
+  const {settingsData} = useGetSettings({entity: resolutionTypes.resolution_types});
 
   const resolutionTypesOptions = useMemo(() => {
-    return types?.slice(1, 3).filter(type => ({id: type?.id as number, title: type?.title} || []));
-  }, [types]);
+    return settingsData?.slice(1, 3).filter(setting => ({id: setting?.id as number, title: setting?.title} || []));
+  }, [settingsData]);
 
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 

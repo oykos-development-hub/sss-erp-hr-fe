@@ -12,6 +12,8 @@ const useDeleteOrganizationUnit = () => {
   } = useAppContext();
 
   const deleteOrganizationUnitFunc = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: OrganizationUnitsResponse['delete'] = await fetch(deleteOrganizationUnit, {id});

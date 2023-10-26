@@ -10,6 +10,8 @@ const useInsertResolution = () => {
   const {fetch} = useAppContext();
 
   const insertResolution = async (data: ProfileResolutionParams, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: ProfileResolutionResponse['insert'] = await fetch(GraphQL.insertResolution, {data});

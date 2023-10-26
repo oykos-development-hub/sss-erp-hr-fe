@@ -176,5 +176,5 @@ export const basicInfoSchema = yup.object({
     .matches(/^(0|[1-9]\d*)(\.\d+)?$/, 'Ovo polje je obavezno')
     .when('id', {is: undefined, then: schema => schema.required(requiredError)}),
   password: yup.string().when('id', {is: undefined, then: schema => schema.required(requiredError)}),
-  number_of_conference: yup.number(),
+  number_of_conference: yup.string(),
 });

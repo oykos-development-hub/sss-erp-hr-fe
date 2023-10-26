@@ -10,6 +10,8 @@ const useDeleteRevisionTip = () => {
   const {fetch} = useAppContext();
 
   const deleteRevisionTip = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: RevisionTipsResponse['delete'] = await fetch(GraphQL.deleteRevisionTip, {id});

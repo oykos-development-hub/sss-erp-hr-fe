@@ -10,6 +10,8 @@ const useDeleteEvaluation = () => {
   const {fetch} = useAppContext();
 
   const deleteEvaluation = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: ProfileEvaluationResponse['delete'] = await fetch(GraphQL.deleteEvaluation, {id});

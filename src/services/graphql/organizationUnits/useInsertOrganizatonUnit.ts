@@ -12,6 +12,8 @@ const useInsertOrganizationUnit = () => {
   } = useAppContext();
 
   const insertOrgUnit = async (data: OrganizationUnit, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: OrganizationUnitsResponse['insert'] = await fetch(insertOrganizationUnit, {data});

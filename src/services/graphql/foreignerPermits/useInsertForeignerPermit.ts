@@ -9,6 +9,8 @@ const useInsertForeignerPermits = () => {
   const {fetch} = useAppContext();
 
   const insertForeignerPermit = async (data: ForeignerPermit, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
     const response: ForeignerPermitResponse['insert'] = await fetch(GraphQL.insertForeignerPermit, {data});
 

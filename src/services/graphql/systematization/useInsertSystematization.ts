@@ -18,6 +18,8 @@ const useInsertSystematization = () => {
     onSuccess?: (response: SystematizationType) => void,
     onError?: () => void,
   ) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: SystematizationsResponse['insert'] = await fetch(GraphQL.insertSystematization, {data});

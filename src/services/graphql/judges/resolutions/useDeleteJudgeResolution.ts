@@ -10,6 +10,8 @@ const useDeleteJudgeResolution = () => {
   const {fetch} = useAppContext();
 
   const deleteJudgeResolution = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: JudgeResolutionResponse['delete'] = await fetch(GraphQL.deleteJudgeResolution, {id});

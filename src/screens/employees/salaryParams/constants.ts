@@ -15,8 +15,8 @@ export const salaryRanks = [
 ];
 
 export const insuranceBasis = [
-  {id: 'osnovno', title: 'Osnovno'},
-  {id: 'penziono', title: 'Penziono'},
-  {id: 'invalidsko', title: 'Invalidsko'},
-  {id: 'porodično', title: 'Porodično'},
+  {id: 'Osnovno', title: 'Osnovno'},
+  {id: 'Penziono', title: 'Penziono'},
+  {id: 'Invalidsko', title: 'Invalidsko'},
+  {id: 'Porodično', title: 'Porodično'},
 ];

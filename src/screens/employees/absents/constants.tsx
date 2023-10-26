@@ -32,7 +32,6 @@ export const tableHeadsAbsence: TableHead[] = [
       let numberOfDays = 0;
 
       for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-        const dayOfWeek = d.getDay();
         numberOfDays += 1;
       }
 
@@ -59,7 +58,7 @@ export const tableHeadsVacation: TableHead[] = [
     title: 'Vrsta zahtjeva',
     accessor: 'absent_type',
     type: 'custom',
-    renderContents: (item: any, row) => <Typography variant="bodyMedium" content={item.title} />,
+    renderContents: (item: any) => <Typography variant="bodyMedium" content={item.title} />,
     width: '30%',
   },
 

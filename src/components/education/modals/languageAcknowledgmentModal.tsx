@@ -2,7 +2,7 @@ import {Dropdown, FileUpload, Modal} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
-import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import useGetSettings from '../../../services/graphql/settings/useGetSettings';
 import useInsertEducation from '../../../services/graphql/userProfile/education/useInsertEducation';
 import {educationTypes, initialValues, languageAcknowledgmentLevels} from './constants';
 import {ModalContentWrapper, Row} from './styles';
@@ -15,11 +15,7 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
   refetchList,
   navigation,
 }) => {
-  const {data: languages} = useSettingsDropdownOverview({entity: educationTypes.education_language_types});
-  const languagesOptions = useMemo(
-    () => languages?.map(type => ({id: type.id as number, title: type.title})) || [],
-    [languages],
-  );
+  const {settingsData} = useGetSettings({entity: educationTypes.education_language_types});
 
   const item = useMemo(
     () =>
@@ -109,7 +105,7 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
                   name={name}
                   label="ZNANJE STRANOG JEZIKA:"
                   isSearchable
-                  options={languagesOptions}
+                  options={settingsData}
                   error={errors.type?.message as string}
                 />
               )}

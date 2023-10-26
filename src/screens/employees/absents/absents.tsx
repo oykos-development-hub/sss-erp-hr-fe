@@ -2,15 +2,14 @@ import {Divider} from '@oykos-development/devkit-react-ts-styled-components';
 import {Button, Dropdown, EditIconTwo, Table, Theme, TrashIcon, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {AbsentModal} from '../../../components/absentsModal/absentsModal';
-import {VacationModal} from '../../../components/vacationModal/VacationModal';
 import useAbsentDelete from '../../../services/graphql/userProfile/absents/useDeleteAbsence';
 import useGetAbsence from '../../../services/graphql/userProfile/absents/useGetAbsence';
 import useGetAbsenceTypes from '../../../services/graphql/userProfile/absents/useGetAbsentsType';
 import useResolutionDelete from '../../../services/graphql/userProfile/resolution/useDeleteResolution';
-import useVacationGet from '../../../services/graphql/userProfile/vacation/useVacationGet';
+import useGetVacations from '../../../services/graphql/userProfile/vacation/useGetVacation';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {Absence, AbsenceParams} from '../../../types/graphql/absents';
-import {UserProfileVacationParams, YearVacationType} from '../../../types/graphql/profileVacationTypes';
+import {ProfileVacation, ProfileVacationParams} from '../../../types/graphql/vacations';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import {yearsForDropdownFilter} from '../../../utils/constants';
 import {tableHeadsAbsence, tableHeadsVacation, tableHeadsYearVacation} from './constants';
@@ -27,12 +26,13 @@ import {
   YearContainer,
   YearWrapper,
 } from './styles';
+import {VacationModal} from '../../../components/vacationModal/VacationModal';
 
 const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const years = yearsForDropdownFilter();
   const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {absence, refetch, summary} = useGetAbsence(userProfileID);
-  const {vacationData, refetchUserVacation} = useVacationGet(userProfileID);
+  const {vacations, refetch: refetchVacations} = useGetVacations(+userProfileID);
   const [firstTableData, setFirstTableData] = useState<Absence[]>([]);
   const [secondTableData, setSecondTableData] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -44,7 +44,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const {mutate} = useAbsentDelete();
   const {deleteResolution} = useResolutionDelete();
   const [editItem, setEditItem] = useState<Absence | undefined>();
-  const [editItemVacation, setEditItemVacation] = useState<YearVacationType | undefined>();
+  const [editItemVacation, setEditItemVacation] = useState<ProfileVacation | undefined>();
   const [showDeleteVacationModal, setShowDeleteVacationModal] = useState<boolean>(false);
 
   const handleAdd = () => {
@@ -74,7 +74,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
     deleteResolution(
       selectedItemId,
       () => {
-        refetchUserVacation();
+        refetchVacations();
         refetch();
         context.alert.success('Uspješno obrisano.');
         setShowDeleteVacationModal(false);
@@ -98,7 +98,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
     setSelectedItemId(0);
     setEditItemVacation(undefined);
     refetch();
-    shouldRefetch && refetchUserVacation();
+    shouldRefetch && refetchVacations();
   };
 
   const handleEdit = (item: AbsenceParams) => {
@@ -106,9 +106,9 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
     setEditItem(absence?.find(tableItem => tableItem.id === item.id));
   };
 
-  const handleEditVacation = (item: UserProfileVacationParams) => {
+  const handleEditVacation = (item: ProfileVacationParams) => {
     setShowVacationModal(true);
-    setEditItemVacation(vacationData?.find(tableItem => tableItem.id === item.id));
+    setEditItemVacation(vacations?.find(tableItem => tableItem.id === item.id));
   };
 
   const handleDeleteIconClick = (id: number) => {
@@ -171,10 +171,10 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
 
   const filterVacationData = () => {
     if (!form) {
-      return vacationData || [];
+      return vacations || [];
     }
     const isAllYearSelected = form?.year.id.toString() === '';
-    const filteredData = vacationData?.filter(item => {
+    const filteredData = vacations?.filter(item => {
       return isAllYearSelected || item.year === form.year.id;
     });
 
@@ -184,7 +184,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   useEffect(() => {
     filterFirstTableData();
     filterSecondTableData();
-  }, [absence, vacationData]);
+  }, [absence, vacations]);
 
   return (
     <Container>

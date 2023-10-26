@@ -10,6 +10,8 @@ const useInsertFamily = () => {
   const {fetch} = useAppContext();
 
   const insertFamily = async (data: ProfileFamily, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: ProfileFamilyResponse['insert'] = await fetch(GraphQL.insertFamily, {data});

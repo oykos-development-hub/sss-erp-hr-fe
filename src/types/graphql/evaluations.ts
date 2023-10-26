@@ -1,3 +1,4 @@
+import {DropdownDataNumber, DropdownDataString} from '../dropdownData';
 import {DeleteResponse, GetResponse, InsertResponse} from './response';
 
 export type EvaluationType = {
@@ -17,15 +18,20 @@ export type ProfileEvaluation = {
   file_id: number;
 };
 
+export type ProfileEvaluationParams = {
+  date_of_evaluation: string | null;
+  evaluation_type_id: number;
+  id: number;
+  is_relevant: boolean;
+  user_profile_id: number;
+};
+
 export interface ProfileEvaluationFormValues {
   id?: number | null;
   user_profile_id: number;
-  evaluation_type_id: number;
+  evaluation_type_id: DropdownDataNumber | null;
   date_of_evaluation: Date | null;
-  score: string;
-  evaluator?: string;
-  is_relevant: boolean;
-  file_id: number;
+  is_relevant: DropdownDataString | null;
 }
 
 export type ProfileEvaluationResponse = {

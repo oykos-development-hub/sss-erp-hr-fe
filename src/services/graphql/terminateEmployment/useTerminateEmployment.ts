@@ -1,25 +1,31 @@
-import {useEffect, useState} from 'react';
-import useAppContext from '../../../context/useAppContext';
+import {useState} from 'react';
 import {GraphQL} from '..';
+import useAppContext from '../../../context/useAppContext';
+import {EmploymentTerminationResponse} from '../../../types/graphql/employmentTermination';
+import {REQUEST_STATUSES} from '../../constants';
 
-const useTerminateEmployment = (user_profile_id: number) => {
-  const [terminateEmployment, setTerminateEmployment] = useState<any>();
+const useTerminateEmployment = () => {
   const [loading, setLoading] = useState(true);
 
   const {fetch} = useAppContext();
 
-  const fetchTerminateEmployment = async () => {
-    const response = await fetch(GraphQL.terminateEmployment, {user_profile_id});
-    setTerminateEmployment(response);
+  const terminateEmployment = async (user_profile_id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
+    setLoading(true);
+
+    const response: EmploymentTerminationResponse = await fetch(GraphQL.terminateEmployment, {user_profile_id});
+
+    if (response.terminateEmployment?.status === REQUEST_STATUSES.success) {
+      onSuccess && onSuccess();
+    } else {
+      onError && onError();
+    }
 
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchTerminateEmployment();
-  }, []);
-
-  return {terminateEmployment, loading, refetch: fetchTerminateEmployment};
+  return {loading, terminateEmployment};
 };
 
 export default useTerminateEmployment;

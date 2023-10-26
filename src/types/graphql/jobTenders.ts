@@ -2,7 +2,7 @@ import {ModalProps} from '../../screens/employees/education/types';
 import {DropdownDataNumber} from '../dropdownData';
 import {OrganizationUnit} from './organizationUnits';
 import {DeleteResponse, DetailsResponse, GetResponse, InsertResponse} from './response';
-import {JobTenderType} from './useJobTendersTypes';
+import {JobTenderType} from './jobTenderTypes';
 
 export interface DropdownItemType {
   id: number;

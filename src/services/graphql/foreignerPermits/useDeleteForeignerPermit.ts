@@ -9,7 +9,10 @@ const useDeleteForeignerPermit = () => {
   const {fetch} = useAppContext();
 
   const deleteForeignerPermit = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
+
     const response: ForeignerPermitResponse['delete'] = await fetch(GraphQL.deleteForeignerPermit, {id});
 
     if (response.userProfile_Foreigner_Delete.status === 'success') {

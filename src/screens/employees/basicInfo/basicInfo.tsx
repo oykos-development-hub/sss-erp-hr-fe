@@ -15,7 +15,6 @@ import useAppContext from '../../../context/useAppContext';
 import useGetAvailableJobPositions from '../../../services/graphql/jobPositions/useGetAvailableJobPositions';
 import useGetAvailableJudges from '../../../services/graphql/judges/useGetJudgeAvailability';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
-import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
 import useGetBasicInfo from '../../../services/graphql/userProfile/basicInfo/useGetBasicInfo';
 import useInsertBasicInfo from '../../../services/graphql/userProfile/basicInfo/useInsertBasicInfo';
 import useUpdateBasicInfo from '../../../services/graphql/userProfile/basicInfo/useUpdateBasicInfo';
@@ -36,7 +35,8 @@ import {
 import useInsertJobTenderApplication from '../../../services/graphql/jobTenderApplications/useInsertJobTenderApplication';
 import {basicInfoSchema, booleanToYesOrNo, formatData} from './utils';
 import {ContractEndModal} from '../../../components/contractEndModal/contractEndModal';
-import {ProfileBasicInfoFormValues} from '../../../types/graphql/userProfileBasicInfo';
+import {ProfileBasicInfoFormValues} from '../../../types/graphql/basicInfo';
+import useGetSettings from '../../../services/graphql/settings/useGetSettings';
 
 export const BasicInfo: React.FC = () => {
   const context = useAppContext();
@@ -51,11 +51,11 @@ export const BasicInfo: React.FC = () => {
   const [openContractEndModal, setOpenCotractEndModal] = useState<boolean>(false);
 
   const {organizationUnits, departments} = useGetOrganizationUnits(undefined);
-  const {options: contractTypes} = useSettingsDropdownOverview({entity: 'contract_types'});
+  const {options: contractTypes} = useGetSettings({entity: 'contract_types'});
   const {insertBasicInfo, loading: isCreating} = useInsertBasicInfo();
   const {updateBasicInfo, loading: isUpdating} = useUpdateBasicInfo();
   const {insertJobTenderApplication, loading: isUpdatingApplication} = useInsertJobTenderApplication();
-
+  console.log('RERENDER');
   const {
     register,
     handleSubmit,
@@ -333,7 +333,7 @@ export const BasicInfo: React.FC = () => {
                   <Dropdown
                     name={name}
                     label="POL:"
-                    value={value as any}
+                    value={value}
                     options={genderOptions}
                     isDisabled={isDisabled}
                     onChange={onChange}
@@ -369,7 +369,7 @@ export const BasicInfo: React.FC = () => {
                   <Dropdown
                     name={name}
                     label="PJ LIČNE KARTE:"
-                    value={value as any}
+                    value={value}
                     options={cityData}
                     isDisabled={isDisabled}
                     onChange={onChange}
@@ -406,7 +406,7 @@ export const BasicInfo: React.FC = () => {
                     name={name}
                     label="DRŽAVA ROĐENJA:"
                     onChange={onChange}
-                    value={value as any}
+                    value={value}
                     isDisabled={isDisabled}
                     options={countryOptions}
                     error={errors.country_of_birth?.message}
@@ -424,7 +424,7 @@ export const BasicInfo: React.FC = () => {
                     name={name}
                     onChange={onChange}
                     label="DRŽAVLJANSTVO:"
-                    value={value as any}
+                    value={value}
                     options={countryOptions}
                     isDisabled={isDisabled}
                     isSearchable
@@ -451,7 +451,7 @@ export const BasicInfo: React.FC = () => {
                     label="PRIPADNOST NACIONALNOJ MANJINI:"
                     onChange={onChange}
                     noOptionsText="Prazno"
-                    value={value as any}
+                    value={value}
                     options={nationalMinorities}
                     isDisabled={isDisabled}
                   />
@@ -495,7 +495,7 @@ export const BasicInfo: React.FC = () => {
                   <Dropdown
                     name={name}
                     label="NACIONALNOST:"
-                    value={value as any}
+                    value={value}
                     onChange={onChange}
                     options={countryOptions}
                     isDisabled={isDisabled}
@@ -515,7 +515,7 @@ export const BasicInfo: React.FC = () => {
                   <Dropdown
                     name={name}
                     label="BRAČNO STANJE:"
-                    value={value as any}
+                    value={value}
                     onChange={onChange}
                     options={maritalOptions}
                     isDisabled={isDisabled}
@@ -532,7 +532,7 @@ export const BasicInfo: React.FC = () => {
                   <Dropdown
                     name={name}
                     label="SAMOHRANI RODITELJ:"
-                    value={value as any}
+                    value={value}
                     options={yesOrNoOptionsString}
                     isDisabled={isDisabled}
                     error={errors.single_parent?.message}
@@ -549,7 +549,7 @@ export const BasicInfo: React.FC = () => {
                   <Dropdown
                     name={name}
                     label="RIJEŠENO STAMBENO PITANJE:"
-                    value={value as any}
+                    value={value}
                     options={yesOrNoOptionsString}
                     isDisabled={isDisabled}
                     onChange={onChange}
@@ -580,7 +580,7 @@ export const BasicInfo: React.FC = () => {
                     onChange={onChange}
                     label="ORGANIZACIONA JEDINICA:"
                     isDisabled={isDisabled || creatingChosenJobApplicant}
-                    value={value as any}
+                    value={value}
                     options={organizationUnits}
                     error={errors.organization_unit_id?.message}
                   />
@@ -595,7 +595,7 @@ export const BasicInfo: React.FC = () => {
                   <Dropdown
                     name={name}
                     label="ODJELJENJE:"
-                    value={value as any}
+                    value={value}
                     onChange={onChange}
                     noOptionsText="Prazno"
                     options={departmentOptions}
@@ -614,7 +614,7 @@ export const BasicInfo: React.FC = () => {
                     name={name}
                     onChange={onChange}
                     label="RADNO MJESTO:"
-                    value={value as any}
+                    value={value}
                     noOptionsText="Prazno"
                     options={availableJobPositions}
                     isDisabled={isJobPositionInputDisabled || creatingChosenJobApplicant}
@@ -665,7 +665,7 @@ export const BasicInfo: React.FC = () => {
                     name={name}
                     label="VRSTA ZAPOSLENJA:"
                     onChange={onChange}
-                    value={value as any}
+                    value={value}
                     noOptionsText="Prazno"
                     options={contractTypes}
                     isDisabled={isDisabled}
@@ -856,12 +856,7 @@ export const BasicInfo: React.FC = () => {
         </Controls>
       </FormFooter>
       {openContractEndModal && (
-        <ContractEndModal
-          open={true}
-          onClose={() => toggleContractEndModal()}
-          profileId={profileId}
-          context={context}
-        />
+        <ContractEndModal open={true} onClose={() => toggleContractEndModal()} profileId={profileId} />
       )}
     </FormContainer>
   );

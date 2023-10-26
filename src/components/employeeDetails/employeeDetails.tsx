@@ -29,7 +29,6 @@ const EmployeeDetails: React.FC = () => {
       location: {pathname},
     },
   } = context;
-  const detailsRef = useRef<HTMLDivElement>(null);
 
   const employeesPath = pathname && pathname.split('/')[pathname.split('/').length - 1];
 

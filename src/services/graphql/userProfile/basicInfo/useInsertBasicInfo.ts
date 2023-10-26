@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {GraphQL} from '../..';
 import useAppContext from '../../../../context/useAppContext';
-import {ProfileBasicInfoFormValues, ProfileBasicInfoResponse} from '../../../../types/graphql/userProfileBasicInfo';
+import {ProfileBasicInfoFormValues, ProfileBasicInfoResponse} from '../../../../types/graphql/basicInfo';
 import {REQUEST_STATUSES} from '../../../constants';
 
 const useInsertBasicInfo = () => {
@@ -14,6 +14,8 @@ const useInsertBasicInfo = () => {
     onSuccess?: (userId: number) => void,
     onError?: (response: any) => void,
   ) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: ProfileBasicInfoResponse['insert'] = await fetch(GraphQL.insertBasicInfo, {data});

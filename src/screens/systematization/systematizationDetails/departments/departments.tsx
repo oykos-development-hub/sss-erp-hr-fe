@@ -115,7 +115,7 @@ const Departments: React.FC<DepartmentsProps> = ({
                   {!isInactive && (
                     <Menu open={collapsedSectorId === sector?.id}>
                       <MenuItem
-                        onClick={(e: any) => {
+                        onClick={(e: React.MouseEvent) => {
                           e.stopPropagation();
                           handleEditSector(sector.id);
                           setCollapsedSectorId(0);
@@ -128,7 +128,7 @@ const Departments: React.FC<DepartmentsProps> = ({
                       </MenuItem>
 
                       <MenuItem
-                        onClick={(e: any) => {
+                        onClick={(e: React.MouseEvent) => {
                           e.stopPropagation();
                           setShowDeleteModal(true);
                           setDeleteItemId(sector?.id);

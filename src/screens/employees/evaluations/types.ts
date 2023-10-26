@@ -1,4 +1,4 @@
-import {SettingsDropdown} from '../../../types/graphql/settingsDropdownType';
+import {Settings} from '../../../types/graphql/settings';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 
 export interface EvaluationPageProps {
@@ -17,5 +17,5 @@ export interface EvaluationModalProps {
   open: boolean;
   onClose: (refetch?: any, message?: any) => void;
   userProfileId?: number;
-  evaluationTypes: SettingsDropdown[];
+  evaluationTypes: Settings[];
 }

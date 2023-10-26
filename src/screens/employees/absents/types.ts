@@ -1,7 +1,7 @@
-import {AbsenceType} from '../../../types/graphql/absents';
+import {Absence, AbsenceType} from '../../../types/graphql/absents';
 
 export interface AbsenceTypeModalProps {
-  selectedItem?: any;
+  selectedItem?: Absence;
   absenceTypes: AbsenceType[];
   open: boolean;
   onClose: (action?: any) => void;

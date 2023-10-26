@@ -10,6 +10,8 @@ const useDeleteSystematization = () => {
   const {fetch} = useAppContext();
 
   const deleteSystematization = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
     const response: SystematizationsResponse['delete'] = await fetch(GraphQL.deleteSystematization, {id});
 

@@ -1,4 +1,3 @@
-import {getEnvironment} from '../get-environment';
 import deleteForeignerPermit from './foreignerPermits/deleteForeignerPermit';
 import getForeignerPermits from './foreignerPermits/getForeignerPermits';
 import insertForeignerPermit from './foreignerPermits/insertForeignerPermit';
@@ -25,8 +24,6 @@ import deleteJudgeResolution from './judges/resolutions/deleteJudgeResolution';
 import getCurrentResolutionNumbers from './judges/resolutions/getCurrentResolutionNumbers';
 import getJudgeResolutions from './judges/resolutions/getJudgeResolutions';
 import insertJudgeResolution from './judges/resolutions/insertJudgeResolution';
-import employeeInOrganizationUnitDelete from './organizationUnitsEmployees/employeeInOrganizationUnitDelete';
-import employeeInOrganizationUnitInsert from './organizationUnitsEmployees/employeeInOrganizationUnitInsert';
 import deleteRevision from './revision/deleteRevision';
 import getRevisionDetails from './revision/getRevisionDetails';
 import getRevisions from './revision/getRevisions';
@@ -39,7 +36,7 @@ import deleteRevisionPlan from './revisionsPlans/deleteRevisionPlan';
 import getRevisionPlanDetails from './revisionsPlans/getRevisionPlanDetails';
 import getRevisionPlans from './revisionsPlans/getRevisionPlans';
 import insertRevisionPlan from './revisionsPlans/insertRevisionPlan';
-import settingsDropdownOverview from './settingsDropdown/settingsDropdownOverview';
+import getSettings from './settings/getSettings';
 import systematizationDelete from './systematization/deleteSystematization';
 import systematizationDetails from './systematization/getSystematizationDetails';
 import getSystematizations from './systematization/getSystematizations';
@@ -58,23 +55,20 @@ import insertEducation from './userProfile/education/insertEducation';
 import deleteEvaluation from './userProfile/evaluation/deleteEvaluation';
 import getEvaluations from './userProfile/evaluation/getEvaluations';
 import insertEvaluation from './userProfile/evaluation/insertEvaluation';
-import experienceDelete from './userProfile/experience/experienceDelete';
-import experienceInsert from './userProfile/experience/experienceInsert';
-import experienceOverview from './userProfile/experience/experienceOverview';
+import deleteExperience from './userProfile/experience/deleteExperience';
+import getExperience from './userProfile/experience/getExperience';
+import insertExperience from './userProfile/experience/insertExperience';
 import deleteFamily from './userProfile/family/deleteFamily';
 import getFamily from './userProfile/family/getFamily';
 import insertFamily from './userProfile/family/insertFamily';
-import resolutionDelete from './userProfile/resolution/deleteResolution';
-import resolutionInsert from './userProfile/resolution/insertResolution';
-import resolutionOverview from './userProfile/resolution/getResolutions';
-import salaryParamsInsert from './userProfile/salaryParams/salarayParamsInsert';
-import salaryParamsOverview from './userProfile/salaryParams/salaryParamsOverview';
-import userProfileOverview from './userProfile/userProfileOverview';
-import GetVacation from './userProfile/vacation/vacationGet';
-import vacationInsert from './userProfile/vacation/vacationInsert';
-import getResolutions from './userProfile/resolution/getResolutions';
+import userProfileOverview from './userProfile/gtUserProfiles';
 import deleteResolution from './userProfile/resolution/deleteResolution';
+import getResolutions from './userProfile/resolution/getResolutions';
 import insertResolution from './userProfile/resolution/insertResolution';
+import getSalaryParams from './userProfile/salaryParams/getSalaryParams';
+import insertSalaryParams from './userProfile/salaryParams/insertSalaryParams';
+import getVacations from './userProfile/vacation/getVacations';
+import insertVacation from './userProfile/vacation/insertVacation';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -84,21 +78,12 @@ export const BFF_URL = {
 };
 
 export const GraphQL = {
-  fetch: (query: string, variables?: any): Promise<any> => {
-    return fetch(BFF_URL[getEnvironment()], {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({query, variables}),
-    })
-      .then(response => response.json())
-      .catch(error => console.error(error));
-  },
   updateBasicInfo: updateBasicInfo,
   getBasicInfo: getBasicInfo,
   insertBasicInfo: insertBasicInfo,
-  experienceOverview: experienceOverview,
-  experienceInsert: experienceInsert,
-  experienceDelete: experienceDelete,
+  getExperience: getExperience,
+  insertExperience: insertExperience,
+  deleteExperience: deleteExperience,
   userProfileOverview: userProfileOverview,
   getJobTenderTypes: getJobTenderTypes,
   getEducation: getEducation,
@@ -114,8 +99,8 @@ export const GraphQL = {
   insertSystematization: insertSystematization,
   getSystematizationDetails: systematizationDetails,
   deleteSystematization: systematizationDelete,
-  salaryParamsInsert: salaryParamsInsert,
-  salaryParamsOverview: salaryParamsOverview,
+  insertSalaryParams: insertSalaryParams,
+  getSalaryParams: getSalaryParams,
   getResolutions: getResolutions,
   insertResolution: insertResolution,
   deleteResolution: deleteResolution,
@@ -129,8 +114,6 @@ export const GraphQL = {
   insertJobPositionInOrgUnit: insertJobPositionInOrgUnit,
   deleteJobPositionInOrgUnit: deleteJobPositionInOrgUnit,
   jobPositionsAvailableOrganizationUnit: jobPositionsAvailableOrganizationUnit,
-  employeeInOrganizationUnitInsert: employeeInOrganizationUnitInsert,
-  employeeInOrganizationUnitDelete: employeeInOrganizationUnitDelete,
   getAbsence: absentOverview,
   getAbsenceTypes: absentTypesOverview,
   insertAbsence: insertAbsence,
@@ -143,9 +126,9 @@ export const GraphQL = {
   getJudgeResolutions: getJudgeResolutions,
   getCurrentResolutionNumbers: getCurrentResolutionNumbers,
   getJudgeAvailability: getJudgeAvailability,
-  settingsDropdownOverview: settingsDropdownOverview,
-  getVacation: GetVacation,
-  vacationInsert: vacationInsert,
+  getSettings: getSettings,
+  getVacation: getVacations,
+  insertVacation: insertVacation,
   getRevisionPlans: getRevisionPlans,
   insertRevisionPlan: insertRevisionPlan,
   deleteRevisionPlan: deleteRevisionPlan,

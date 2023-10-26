@@ -10,6 +10,8 @@ const useInsertRevisionPlan = () => {
   const {fetch} = useAppContext();
 
   const insertRevisionPlan = async (data: RevisionPlanInsertParams, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: RevisionPlansResponse['insert'] = await fetch(GraphQL.insertRevisionPlan, {data});

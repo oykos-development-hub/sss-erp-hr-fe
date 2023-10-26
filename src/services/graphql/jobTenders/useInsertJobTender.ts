@@ -10,6 +10,8 @@ const useInsertJobTender = () => {
   const {fetch} = useAppContext();
 
   const insertJobTender = async (data: JobTender, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
     const response: JobTendersResponse['insert'] = await fetch(GraphQL.insertJobTender, {data});
 

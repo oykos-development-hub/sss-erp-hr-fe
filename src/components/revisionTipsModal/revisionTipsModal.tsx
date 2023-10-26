@@ -6,7 +6,6 @@ import useGetRevisionTipDetails from '../../services/graphql/revisionTips/useRev
 import useInsertRevisionTip from '../../services/graphql/revisionTips/useRevisionTipsInsert';
 import useGetRevisionTips from '../../services/graphql/revisionTips/useRevisionTipsOverview';
 import {DropdownDataString} from '../../types/dropdownData';
-import {RevisionTipForm} from '../../types/graphql/revisionTips';
 import {MicroserviceProps} from '../../types/micro-service-props';
 import {parseDate, parseDateForBackend} from '../../utils/dateUtils';
 import {
@@ -211,7 +210,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                   render={({field: {name, value, onChange}}) => (
                     <Dropdown
                       name={name}
-                      value={value as any}
+                      value={value}
                       onChange={onChange}
                       options={revisionDeadlineOptions}
                       error={errors.due_date?.message as string}
@@ -246,7 +245,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                   render={({field: {name, value, onChange}}) => (
                     <Dropdown
                       name={name}
-                      value={value as any}
+                      value={value}
                       onChange={onChange}
                       options={revisionPriorityOptions}
                       error={errors.revision_priority?.message as string}
@@ -299,7 +298,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                       render={({field: {name, value, onChange}}) => (
                         <Dropdown
                           name={name}
-                          value={value as any}
+                          value={value}
                           onChange={onChange}
                           options={revisionStatusOptions}
                           label="STATUS SPROVOĐENJA:"
@@ -319,7 +318,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                       render={({field: {name, value, onChange}}) => (
                         <Dropdown
                           name={name}
-                          value={value as any}
+                          value={value}
                           onChange={onChange}
                           options={revisionTips.revisors || []}
                           placeholder="Izaberite revizora"
@@ -335,7 +334,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                       render={({field: {name, value, onChange}}) => (
                         <Dropdown
                           name={name}
-                          value={value as any}
+                          value={value}
                           onChange={onChange}
                           options={revisionDeadlineOptions}
                           label="NOVI ROK SPROVOĐENJA PREPORUKE:"

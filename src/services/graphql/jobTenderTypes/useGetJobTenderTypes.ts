@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useState} from 'react';
 import {GraphQL} from '..';
-import {JobTenderType, JobTenderTypeResponse} from '../../../types/graphql/useJobTendersTypes';
+import {JobTenderType, JobTenderTypeResponse} from '../../../types/graphql/jobTenderTypes';
 import useAppContext from '../../../context/useAppContext';
 import {REQUEST_STATUSES} from '../../constants';
 
@@ -22,8 +22,8 @@ const useGetJobTenderTypes = (search: string) => {
   const fetchJobTenderTypes = async () => {
     const response: JobTenderTypeResponse = await fetch(GraphQL.getJobTenderTypes, {search});
 
-    if (response.jobTenderTypes.status === REQUEST_STATUSES.success) {
-      setJobTenderTypes(jobTenderTypes);
+    if (response.jobTenderTypes?.status === REQUEST_STATUSES.success) {
+      setJobTenderTypes(response.jobTenderTypes?.items ?? []);
     }
 
     setLoading(false);

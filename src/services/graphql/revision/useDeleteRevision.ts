@@ -10,6 +10,8 @@ const useDeleteRevision = () => {
   const {fetch} = useAppContext();
 
   const deleteRevision = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: RevisionResponse['delete'] = await fetch(GraphQL.deleteRevision, {id});

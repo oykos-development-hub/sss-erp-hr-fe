@@ -11,6 +11,8 @@ const useInsertRevision = () => {
   const {fetch} = useAppContext();
 
   const insertRevision = async (data: revisionInsertItem, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: RevisionResponse['insert'] = await fetch(GraphQL.insertRevision, {data});

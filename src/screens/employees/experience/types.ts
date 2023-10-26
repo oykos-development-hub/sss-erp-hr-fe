@@ -10,6 +10,6 @@ export interface ExperienceModalProps {
   refetchList: () => void;
   selectedItem?: any;
   open: boolean;
-  onClose: (refetch?: any, message?: any) => void;
+  onClose: (refetch?: any, message?: string) => void;
   userProfileId?: number;
 }

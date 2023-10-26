@@ -5,7 +5,7 @@ import {Container} from './styles';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {EvaluationModal} from '../../../components/evaluationModal/evaluationModal';
 import useDeleteEvaluations from '../../../services/graphql/userProfile/evaluation/useDeleteEvaluation';
-import useSettingsDropdownOverview from '../../../services/graphql/settingsDropdown/useSettingsDropdownOverview';
+import useGetSettings from '../../../services/graphql/settings/useGetSettings';
 import {parseDate} from '../../../utils/dateUtils';
 import useGetEvaluations from '../../../services/graphql/userProfile/evaluation/useGetEvaluations';
 import {ProfileEvaluation} from '../../../types/graphql/evaluations';
@@ -30,7 +30,7 @@ const tableHeads: TableHead[] = [
 export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {evaluations, refetch} = useGetEvaluations(userProfileID);
-  const {data: evaluationTypes, loading} = useSettingsDropdownOverview({entity: 'evaluation_types'});
+  const {settingsData, loading} = useGetSettings({entity: 'evaluation_types'});
 
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
@@ -112,7 +112,7 @@ export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
           onClose={closeModal}
           selectedItem={selectedItem}
           userProfileId={userProfileID}
-          evaluationTypes={evaluationTypes || []}
+          evaluationTypes={settingsData || []}
         />
       )}
 

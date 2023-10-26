@@ -1,4 +1,4 @@
-import {DropdownDataBoolean, DropdownDataNumber} from '../dropdownData';
+import {DropdownDataBoolean} from '../dropdownData';
 import {DeleteResponse, GetResponse, InsertResponse} from './response';
 
 export type ProfileResolution = {

@@ -17,6 +17,8 @@ const useInsertJobTenderApplication = () => {
     onSuccess?: () => void,
     onError?: () => void,
   ) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: JobTenderApplicationResponse['insert'] = await fetch(GraphQL.insertJobTenderApplication, {data});

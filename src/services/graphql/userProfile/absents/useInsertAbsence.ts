@@ -10,21 +10,22 @@ const useInsertAbsence = () => {
   const {fetch} = useAppContext();
 
   const insertAbsence = async (data: AbsenceParams, onSuccess?: () => void, onError?: () => void) => {
-    if (!loading) {
-      setLoading(true);
-      const response: AbsentResponse['insert'] = await fetch(GraphQL.insertAbsence, {data});
+    if (loading) return;
 
-      if (response.userProfile_Absent_Insert.status === REQUEST_STATUSES.success) {
-        onSuccess && onSuccess();
-      } else {
-        onError && onError();
-      }
+    setLoading(true);
 
-      setLoading(false);
+    const response: AbsentResponse['insert'] = await fetch(GraphQL.insertAbsence, {data});
+
+    if (response.userProfile_Absent_Insert.status === REQUEST_STATUSES.success) {
+      onSuccess && onSuccess();
+    } else {
+      onError && onError();
     }
+
+    setLoading(false);
   };
 
-  return {loading, mutate: insertAbsence};
+  return {loading, insertAbsence};
 };
 
 export default useInsertAbsence;

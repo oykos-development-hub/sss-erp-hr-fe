@@ -10,6 +10,8 @@ const useDeleteResolution = () => {
   const {fetch} = useAppContext();
 
   const deleteResolution = async (id: number, onSuccess?: () => void, onError?: () => void) => {
+    if (loading) return;
+
     setLoading(true);
 
     const response: ProfileResolutionResponse['delete'] = await fetch(GraphQL.deleteResolution, {id});

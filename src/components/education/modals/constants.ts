@@ -1,4 +1,4 @@
-import {ProfileEducationFormValues} from '../../../types/graphql/userProfileEducation';
+import {ProfileEducationFormValues} from '../../../types/graphql/education';
 
 export const initialValues: ProfileEducationFormValues = {
   id: 0,

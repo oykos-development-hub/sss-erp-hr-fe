@@ -8,14 +8,11 @@ import useInsertForeignerPermits from '../../services/graphql/foreignerPermits/u
 import {ForeignerPermit} from '../../types/graphql/foreignerPermits';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {CheckboxContainer, CheckboxLabel, ColumnTitle, Form, FormColumn, FormGroup, PermitModal} from './styles';
+import {dropdownStringSchema} from '../../screens/employees/basicInfo/constants';
 
 const permitSchema = yup.object().shape({
   work_permit_number: yup.string().required('Ovo polje je obavezno'),
-  work_permit_issuer: yup
-    .object()
-    .default(undefined)
-    .shape({id: yup.string(), title: yup.string()})
-    .required('Ovo polje je obavezno'),
+  work_permit_issuer: yup.object().default(undefined).shape(dropdownStringSchema).required('Ovo polje je obavezno'),
   work_permit_date_of_start: yup.date().required('Ovo polje je obavezno'),
   work_permit_date_of_end: yup
     .date()
@@ -27,11 +24,7 @@ const permitSchema = yup.object().shape({
     }),
   residence_permit_date_of_end: yup.date(),
   residence_permit_number: yup.string().required('Ovo polje je obavezno'),
-  country_of_origin: yup
-    .object()
-    .default(undefined)
-    .shape({id: yup.string(), title: yup.string()})
-    .required('Ovo polje je obavezno'),
+  country_of_origin: yup.object().default(undefined).shape(dropdownStringSchema).required('Ovo polje je obavezno'),
   user_profile_id: yup.number().required('Ovo polje je obavezno'),
   residence_permit_indefinite_length: yup.boolean().required('Ovo polje je obavezno'),
 });
@@ -153,7 +146,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
                     onChange={onChange}
-                    value={value as any}
+                    value={value}
                     name={name}
                     label="IZDAVALAC:"
                     options={cityData}
@@ -245,7 +238,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                 render={({field: {onChange, name, value}}) => (
                   <Dropdown
                     onChange={onChange}
-                    value={value as any}
+                    value={value}
                     label="DRŽAVA:"
                     name={name}
                     options={countryOptions}

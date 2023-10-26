@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '../..';
 import useAppContext from '../../../../context/useAppContext';
-import {ProfileBasicInfo, ProfileBasicInfoResponse} from '../../../../types/graphql/userProfileBasicInfo';
+import {ProfileBasicInfo, ProfileBasicInfoResponse} from '../../../../types/graphql/basicInfo';
 import {QueryOptions} from '../../../../types/queryOptions';
 
 const useGetBasicInfo = (id: number, options?: QueryOptions) => {
