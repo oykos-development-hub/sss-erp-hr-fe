@@ -16,7 +16,7 @@ const useGetExperience = (id: number) => {
     const response: ProfileExperienceResponse['get'] = await fetch(GraphQL.getExperience, {user_profile_id: id});
 
     if (response.userProfile_Experience?.status === REQUEST_STATUSES.success) {
-      setExperience(response.userProfile_Experience?.items);
+      setExperience(response.userProfile_Experience?.items ?? []);
     }
 
     setLoading(false);

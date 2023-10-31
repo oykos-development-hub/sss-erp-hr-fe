@@ -119,7 +119,7 @@ export const basicInfoSchema = yup.object({
   }),
   nationality: yup.object(dropdownStringSchema).default(undefined),
   citizenship: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
-  national_minority: yup.object(dropdownStringSchema),
+  national_minority: yup.object(dropdownStringSchema).nullable(),
   address: yup.string().required(requiredError),
   father_name: yup.string().required(requiredError),
   mother_name: yup.string().required(requiredError),

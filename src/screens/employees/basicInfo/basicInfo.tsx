@@ -208,9 +208,8 @@ export const BasicInfo: React.FC = () => {
         single_parent: booleanToYesOrNo(userBasicInfo?.single_parent),
         gender: genderOptions.find((opt: DropdownDataString) => opt.id === userBasicInfo?.gender),
         is_president: userBasicInfo?.is_president,
-        national_minority: nationalMinorities.find(
-          (opt: DropdownDataString) => opt.id === userBasicInfo?.national_minority,
-        ),
+        national_minority:
+          nationalMinorities.find((opt: DropdownDataString) => opt.id === userBasicInfo?.national_minority) ?? null,
         official_personal_document_issuer: cityData.find(
           (opt: DropdownDataString) => opt.id === userBasicInfo?.official_personal_document_issuer,
         ),
@@ -300,6 +299,8 @@ export const BasicInfo: React.FC = () => {
   const toggleContractEndModal = () => {
     setOpenCotractEndModal(!openContractEndModal);
   };
+
+  console.log(errors);
 
   return (
     <FormContainer>

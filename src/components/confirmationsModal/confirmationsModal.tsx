@@ -38,10 +38,6 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
 
   const {settingsData} = useGetSettings({entity: resolutionTypes.resolution_types});
 
-  const resolutionTypesOptions = useMemo(() => {
-    return settingsData?.slice(1, 3).filter(setting => ({id: setting?.id as number, title: setting?.title} || []));
-  }, [settingsData]);
-
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const handleUpload = (files: FileList) => {
@@ -109,7 +105,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
       content={
         <ModalContentWrapper>
           <FormGroup>
-            {resolutionTypesOptions && (
+            {settingsData && (
               <Controller
                 name="resolution_type"
                 control={control}
@@ -117,7 +113,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
                   <Dropdown
                     label="VRSTA:"
                     name={name}
-                    options={resolutionTypesOptions as DropdownDataNumber[]}
+                    options={settingsData}
                     value={value as any}
                     onChange={onChange}
                     error={errors.resolution_type?.message}

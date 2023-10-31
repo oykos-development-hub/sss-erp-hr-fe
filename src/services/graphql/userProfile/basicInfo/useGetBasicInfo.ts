@@ -11,6 +11,8 @@ const useGetBasicInfo = (id: number, options?: QueryOptions) => {
   const {fetch} = useAppContext();
 
   const fetchUserBasicInfo = async () => {
+    setLoading(true);
+
     const response: ProfileBasicInfoResponse['details'] = await fetch(GraphQL.getBasicInfo, {user_profile_id: id});
 
     const user = response?.userProfile_Basic?.item;

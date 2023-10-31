@@ -168,7 +168,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
           </FileUploadWrapper>
         </FormWrapper>
       }
-      title={'DODAJTE NOVO ZAPOSLENJE'}
+      title={'DODAJTE NOVU LIČNU OCJENU'}
     />
   );
 };
