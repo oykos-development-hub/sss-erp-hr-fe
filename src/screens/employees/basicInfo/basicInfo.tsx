@@ -55,7 +55,6 @@ export const BasicInfo: React.FC = () => {
   const {insertBasicInfo, loading: isCreating} = useInsertBasicInfo();
   const {updateBasicInfo, loading: isUpdating} = useUpdateBasicInfo();
   const {insertJobTenderApplication, loading: isUpdatingApplication} = useInsertJobTenderApplication();
-  console.log('RERENDER');
   const {
     register,
     handleSubmit,
