@@ -82,20 +82,18 @@ export const validateDateOfBirth = (jmbg: string, dateOfBirth: Date) => {
   );
 };
 
-const passwordSchema = yup
-  .string()
-  .when('id', {
-    is: undefined, // Apply the following rules only when id is undefined
-    then: (schema) =>
-      schema
-        .required(requiredError)
-        .min(8, 'Lozinka mora imati najmanje 8 karaktera')
-        .matches(/[A-Z]/, 'Lozinka mora sadržati barem jedno veliko slovo')
-        .matches(/[a-z]/, 'Lozinka mora sadržati barem jedno malo slovo')
-        .matches(/\d/, 'Lozinka mora sadržati barem jedan broj')
-        .matches(/[,.*/%$#@!^&?<>=+-]/, 'Lozinka mora sadržati barem jedan specijalni karakter'),
-    otherwise: (schema) => schema.notRequired(), // No rules applied if id is not undefined
-  });
+const passwordSchema = yup.string().when('id', {
+  is: undefined, // Apply the following rules only when id is undefined
+  then: schema =>
+    schema
+      .required(requiredError)
+      .min(8, 'Lozinka mora imati najmanje 8 karaktera')
+      .matches(/[A-Z]/, 'Lozinka mora sadržati barem jedno veliko slovo')
+      .matches(/[a-z]/, 'Lozinka mora sadržati barem jedno malo slovo')
+      .matches(/\d/, 'Lozinka mora sadržati barem jedan broj')
+      .matches(/[,.*/%$#@!^&?<>=+-]/, 'Lozinka mora sadržati barem jedan specijalni karakter'),
+  otherwise: schema => schema.notRequired(), // No rules applied if id is not undefined
+});
 
 export const basicInfoSchema = yup.object({
   id: yup.number(),
@@ -124,12 +122,12 @@ export const basicInfoSchema = yup.object({
   country_of_birth: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
   city_of_birth: yup.lazy(value => {
     switch (typeof value) {
-    case 'object':
-      return yup.object(dropdownStringSchema).required(requiredError).default(undefined);
-    case 'string':
-      return yup.string().required(requiredError);
-    default:
-      return yup.object(dropdownStringSchema).default(undefined);
+      case 'object':
+        return yup.object(dropdownStringSchema).required(requiredError).default(undefined);
+      case 'string':
+        return yup.string().required(requiredError);
+      default:
+        return yup.object(dropdownStringSchema).default(undefined);
     }
   }),
   nationality: yup.object(dropdownStringSchema).default(undefined),
@@ -193,4 +191,3 @@ export const basicInfoSchema = yup.object({
   password: passwordSchema,
   number_of_conference: yup.string(),
 });
-
