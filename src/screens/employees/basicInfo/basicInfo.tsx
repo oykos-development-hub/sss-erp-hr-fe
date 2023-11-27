@@ -306,6 +306,7 @@ export const BasicInfo: React.FC = () => {
       <FormWrapper>
         <TextWrapper>
           <Typography content="PERSONALNI PODACI" variant="bodyMedium" />
+          {!profileData && <Button content="Uvoz podataka" />}
         </TextWrapper>
         <FormRow>
           <FormColumn>

@@ -90,8 +90,9 @@ export const FormFileUpload = styled(FileUpload)`
 
 export const TextWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   padding: 0;
   gap: 10px;
   width: 100%;
