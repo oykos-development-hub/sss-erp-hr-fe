@@ -135,6 +135,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
                   options={dropdownData as any}
                   value={value as any}
                   onChange={onChange}
+                  isRequired
                   error={errors.user_profile_id?.message as string}
                 />
               )}
@@ -142,6 +143,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
             <Input
               {...register('number_of_norm_decrease')}
               label="UMANJENJE NORME %:"
+              isRequired
               error={errors.number_of_norm_decrease?.message as string}
               type="number"
               value={watch('number_of_norm_decrease')?.toString()}
@@ -158,6 +160,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
                   options={topicOptions as any}
                   value={value as any}
                   onChange={onChange}
+                  isRequired
                   error={errors.topic?.message as string}
                 />
               )}
@@ -165,16 +168,18 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
             <Input
               {...register('number_of_items')}
               label="BROJ PREDMETA:"
+              isRequired
               error={errors.number_of_items?.message as string}
               type="number"
               value={watch('number_of_items')?.toString()}
             />
           </Row>
           <Row>
-            <Input {...register('title')} label="NORMA:" error={errors.title?.message as string} />
+            <Input {...register('title')} label="NORMA:" error={errors.title?.message as string} isRequired />
             <Input
               {...register('number_of_items_solved')}
               label="RIJEŠENO PREDMETA:"
+              isRequired
               error={errors.number_of_items_solved?.message as string}
               type="number"
               value={watch('number_of_items_solved')?.toString()}

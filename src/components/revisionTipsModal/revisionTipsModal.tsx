@@ -184,6 +184,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                   error={errors.responsible_person?.message as string}
                   placeholder="Unesite odgovorno lice"
                   label="ODGOVORNO LICE ZA PROVOĐENJE PREPORUKE:"
+                  isRequired
                 />
               </FormGroup>
               <FormGroup>
@@ -216,6 +217,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                       error={errors.due_date?.message as string}
                       placeholder="Izaberite rok"
                       label="ROK SPROVOĐENJA PREPORUKE:"
+                      isRequired
                       isDisabled={revisionTipDetails?.new_due_date && true}
                     />
                   )}
@@ -249,6 +251,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                       onChange={onChange}
                       options={revisionPriorityOptions}
                       error={errors.revision_priority?.message as string}
+                      isRequired
                       placeholder="Izaberite prioritet revizije"
                       label="PRIORITET REVIZIJE:"
                     />
@@ -273,6 +276,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                 textarea
                 label="PREPORUKA:"
                 placeholder="Unesite preporuku"
+                isRequired
                 error={errors.recommendation?.message as string}
               />
             </FormGroupFullWidth>

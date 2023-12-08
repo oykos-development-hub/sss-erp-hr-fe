@@ -114,6 +114,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
                   label="VRSTA ISPITA"
                   options={settingsData}
                   error={errors.type?.message as string}
+                  isRequired
                 />
               )}
             />
@@ -133,6 +134,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
                   name={name}
                   selected={value}
                   error={errors.date_of_certification?.message as string}
+                  isRequired
                 />
               )}
             />

@@ -117,6 +117,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
                   name={name}
                   label="DATUM:"
                   error={errors.date_of_evaluation?.message}
+                  isRequired
                 />
               )}
             />
@@ -132,6 +133,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
                     label="PRAVOSNAŽNOST:"
                     options={yesOrNoOptionsString}
                     error={errors.is_relevant?.message}
+                    isRequired
                   />
                 );
               }}
@@ -150,6 +152,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
                     label="OCJENA:"
                     options={evaluationTypesOption}
                     error={errors.evaluation_type_id?.message}
+                    isRequired
                   />
                 );
               }}

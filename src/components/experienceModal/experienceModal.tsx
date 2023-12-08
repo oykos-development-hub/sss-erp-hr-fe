@@ -148,6 +148,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
                     label="SUDSTVO:"
                     options={yesOrNoOptionsString}
                     error={errors.relevant?.message}
+                    isRequired
                   />
                 );
               }}
@@ -162,6 +163,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
                   name={name}
                   selected={value}
                   error={errors.date_of_start?.message}
+                  isRequired
                 />
               )}
             />
@@ -180,6 +182,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
                     options={organizationUnits}
                     isDisabled={!isOrgUnitDisabled}
                     error={errors.organization_unit_id?.message}
+                    isRequired
                   />
                 );
               }}
@@ -194,6 +197,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
                   name={name}
                   selected={value}
                   error={errors.date_of_end?.message}
+                  isRequired
                 />
               )}
             />
@@ -203,6 +207,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
               {...register('organization_unit')}
               label="ORGANIZACIJA/INSTITUCIJA:"
               error={errors.organization_unit?.message}
+              isRequired
               disabled={isOrgUnitDisabled}
             />
             <Input

@@ -175,6 +175,7 @@ export const SystematizationDetails: React.FC = () => {
                 <Input
                   {...methods?.register('serial_number', {required: 'Ovo polje je obavezno'})}
                   label="BROJ SISTEMATIZACIJE:"
+                  isRequired
                   error={methods?.formState?.errors.serial_number?.message as string}
                 />
                 <Controller
@@ -190,6 +191,7 @@ export const SystematizationDetails: React.FC = () => {
                         label="ORGANIZACIONA JEDINICA:"
                         options={organizationUnits}
                         isDisabled={!!systematizationDetails?.organization_unit?.id}
+                        isRequired
                         error={methods?.formState?.errors.organization_unit?.message as string}
                       />
                     );

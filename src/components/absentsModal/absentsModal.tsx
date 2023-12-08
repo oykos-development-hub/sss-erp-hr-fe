@@ -4,7 +4,7 @@ import {Controller, useForm} from 'react-hook-form';
 import {AbsenceTypeModalProps} from '../../screens/employees/absents/types';
 import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useInsertAbsence from '../../services/graphql/userProfile/absents/useInsertAbsence';
-import {AbsenceParams, AbsenceType} from '../../types/graphql/absents';
+import {AbsenceType} from '../../types/graphql/absents';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {dropdownOptions} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
@@ -161,6 +161,7 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
                     }}
                     error={errors.absent_type?.message as string}
                     placeholder="Birajte vrstu"
+                    isRequired
                   />
                 )}
               />
@@ -180,6 +181,7 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
                     onChange={onChange}
                     error={errors.target_organization_unit?.message as string}
                     placeholder="Birajte državni organ"
+                    isRequired
                   />
                 )}
               />
@@ -197,6 +199,7 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
                   name={name}
                   selected={value}
                   error={errors.date_of_start?.message as string}
+                  isRequired
                 />
               )}
             />
@@ -213,6 +216,7 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
                   name={name}
                   selected={value}
                   error={errors.date_of_end?.message as string}
+                  isRequired
                 />
               )}
             />

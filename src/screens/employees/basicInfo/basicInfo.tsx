@@ -306,7 +306,7 @@ export const BasicInfo: React.FC = () => {
       <FormWrapper>
         <TextWrapper>
           <Typography content="PERSONALNI PODACI" variant="bodyMedium" />
-          {!profileData && <Button content="Uvoz podataka" />}
+          {!profileId && <Button content="Uvoz podataka" />}
         </TextWrapper>
         <FormRow>
           <FormColumn>
@@ -315,6 +315,7 @@ export const BasicInfo: React.FC = () => {
                 {...register('first_name')}
                 label="IME:"
                 disabled={isDisabled}
+                isRequired
                 error={errors.first_name?.message}
               />
             </FormItem>
@@ -323,6 +324,7 @@ export const BasicInfo: React.FC = () => {
                 {...register('last_name')}
                 label="PREZIME"
                 disabled={isDisabled}
+                isRequired
                 error={errors.last_name?.message}
               />
             </FormItem>
@@ -338,6 +340,7 @@ export const BasicInfo: React.FC = () => {
                     options={genderOptions}
                     isDisabled={isDisabled}
                     onChange={onChange}
+                    isRequired
                     error={errors.gender?.message}
                   />
                 )}
@@ -348,6 +351,7 @@ export const BasicInfo: React.FC = () => {
                 {...register('official_personal_id')}
                 label="JMBG:"
                 disabled={isDisabled}
+                isRequired
                 error={errors.official_personal_id?.message}
               />
             </FormItem>
@@ -359,6 +363,7 @@ export const BasicInfo: React.FC = () => {
                 {...register('official_personal_document_number')}
                 label="BROJ LIČNE KARTE:"
                 disabled={isDisabled}
+                isRequired
                 error={errors.official_personal_document_number?.message}
               />
             </FormItem>
@@ -374,6 +379,7 @@ export const BasicInfo: React.FC = () => {
                     options={cityData}
                     isDisabled={isDisabled}
                     onChange={onChange}
+                    isRequired
                     error={errors.official_personal_document_issuer?.message}
                     isSearchable
                   />
@@ -393,6 +399,7 @@ export const BasicInfo: React.FC = () => {
                     onChange={onChange}
                     label="DATUM ROĐENJA:"
                     disabled={isDisabled}
+                    isRequired
                     error={errors.date_of_birth?.message}
                   />
                 )}
@@ -410,6 +417,7 @@ export const BasicInfo: React.FC = () => {
                     value={value}
                     isDisabled={isDisabled}
                     options={countryOptions}
+                    isRequired
                     error={errors.country_of_birth?.message}
                     isSearchable
                   />
@@ -429,6 +437,7 @@ export const BasicInfo: React.FC = () => {
                     options={countryOptions}
                     isDisabled={isDisabled}
                     isSearchable
+                    isRequired
                     error={errors.citizenship?.message}
                   />
                 )}
@@ -439,6 +448,7 @@ export const BasicInfo: React.FC = () => {
                 {...register('city_of_birth')}
                 label="OPŠTINA ROĐENJA:"
                 disabled={isDisabled}
+                isRequired
                 error={errors.city_of_birth?.message}
               />
             </FormItem>
@@ -464,6 +474,7 @@ export const BasicInfo: React.FC = () => {
                 {...register('address')}
                 label="ADRESA STANOVANJA:"
                 disabled={isDisabled}
+                isRequired
                 error={errors.address?.message}
               />
             </FormItem>
@@ -474,6 +485,7 @@ export const BasicInfo: React.FC = () => {
                 {...register('father_name')}
                 label="IME OCA:"
                 disabled={isDisabled}
+                isRequired
                 error={errors.father_name?.message}
               />
             </FormItem>
@@ -482,6 +494,7 @@ export const BasicInfo: React.FC = () => {
                 {...register('mother_name')}
                 label="IME MAJKE:"
                 disabled={isDisabled}
+                isRequired
                 error={errors.mother_name?.message}
               />
             </FormItem>
@@ -500,6 +513,7 @@ export const BasicInfo: React.FC = () => {
                     onChange={onChange}
                     options={countryOptions}
                     isDisabled={isDisabled}
+                    isRequired
                     error={errors.nationality?.message}
                     isSearchable
                   />
@@ -520,6 +534,7 @@ export const BasicInfo: React.FC = () => {
                     onChange={onChange}
                     options={maritalOptions}
                     isDisabled={isDisabled}
+                    isRequired
                     error={errors.marital_status?.message}
                   />
                 )}
@@ -536,6 +551,7 @@ export const BasicInfo: React.FC = () => {
                     value={value}
                     options={yesOrNoOptionsString}
                     isDisabled={isDisabled}
+                    isRequired
                     error={errors.single_parent?.message}
                     onChange={onChange}
                   />
@@ -554,6 +570,7 @@ export const BasicInfo: React.FC = () => {
                     options={yesOrNoOptionsString}
                     isDisabled={isDisabled}
                     onChange={onChange}
+                    isRequired
                     error={errors.housing_done?.message}
                   />
                 )}
@@ -583,6 +600,7 @@ export const BasicInfo: React.FC = () => {
                     isDisabled={isDisabled || creatingChosenJobApplicant}
                     value={value}
                     options={organizationUnits}
+                    isRequired
                     error={errors.organization_unit_id?.message}
                   />
                 )}
@@ -601,6 +619,7 @@ export const BasicInfo: React.FC = () => {
                     noOptionsText="Prazno"
                     options={departmentOptions}
                     isDisabled={isDisabled || !organization_unit_id || is_judge || creatingChosenJobApplicant}
+                    isRequired
                     error={errors.department_id?.message}
                   />
                 )}
@@ -619,6 +638,7 @@ export const BasicInfo: React.FC = () => {
                     noOptionsText="Prazno"
                     options={availableJobPositions}
                     isDisabled={isJobPositionInputDisabled || creatingChosenJobApplicant}
+                    isRequired
                     error={errors.job_position_in_organization_unit_id?.message}
                   />
                 )}
@@ -670,6 +690,7 @@ export const BasicInfo: React.FC = () => {
                     noOptionsText="Prazno"
                     options={contractTypes}
                     isDisabled={isDisabled}
+                    isRequired
                     error={errors.contract_type_id?.message}
                   />
                 )}
@@ -686,6 +707,7 @@ export const BasicInfo: React.FC = () => {
                     onChange={onChange}
                     label="DATUM IZBORA:"
                     disabled={isDisabled}
+                    isRequired
                     error={errors.date_of_eligibility?.message}
                   />
                 )}
@@ -719,6 +741,7 @@ export const BasicInfo: React.FC = () => {
                     selected={value ? new Date(value) : ''}
                     onChange={onChange}
                     disabled={isDisabled}
+                    isRequired
                     error={errors.date_of_start?.message}
                   />
                 )}
@@ -736,6 +759,7 @@ export const BasicInfo: React.FC = () => {
                     selected={value ? new Date(value) : ''}
                     onChange={onChange}
                     disabled={isDisabled}
+                    isRequired
                     error={errors.date_of_end?.message}
                   />
                 )}
@@ -773,6 +797,7 @@ export const BasicInfo: React.FC = () => {
                   {...register('email')}
                   label="E-MAIL:"
                   disabled={isDisabled}
+                  isRequired
                   error={errors.email && errors.email?.message}
                 />
               </FormItem>
@@ -783,6 +808,7 @@ export const BasicInfo: React.FC = () => {
                   type="password"
                   placeholder="******"
                   disabled={isDisabled}
+                  isRequired
                   error={errors?.password?.message}
                 />
               </FormItem>
@@ -791,6 +817,7 @@ export const BasicInfo: React.FC = () => {
                   {...register('phone')}
                   label="BROJ TELEFONA:"
                   disabled={isDisabled}
+                  isRequired
                   error={errors?.phone?.message}
                 />
               </FormItem>
@@ -801,6 +828,7 @@ export const BasicInfo: React.FC = () => {
                   {...register('secondary_email')}
                   label="PRIVATNI E-MAIL:"
                   disabled={isDisabled}
+                  isRequired
                   error={errors.secondary_email?.message}
                 />
               </FormItem>
@@ -816,6 +844,7 @@ export const BasicInfo: React.FC = () => {
                       maxLength={4}
                       label="PIN:"
                       disabled={isDisabled}
+                      isRequired
                       error={errors?.pin?.message}
                     />
                   )}></Controller>

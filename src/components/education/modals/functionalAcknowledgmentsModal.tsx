@@ -96,11 +96,13 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
               {...register('expertise_level', {required: 'Ovo polje je obavezno'})}
               label="FUNKCIONALNA ZNANJA:"
               error={errors.expertise_level?.message as string}
+              isRequired
             />
             <Input
               {...register('certificate_issuer', {required: 'Ovo polje je obavezno'})}
               label="IZVOĐAČ:"
               error={errors.certificate_issuer?.message as string}
+              isRequired
             />
           </Row>
           <Row>
@@ -116,6 +118,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
                   label="OCJENA:"
                   options={settingsData}
                   error={errors.type?.message as string}
+                  isRequired
                 />
               )}
             />
@@ -125,6 +128,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
               leftContent={<Typography content={<div>&euro;</div>} />}
               style={{maxWidth: '300px'}}
               error={errors.price?.message as string}
+              isRequired
               value={watch('price')}
               type="number"
             />
@@ -141,6 +145,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
                   name={name}
                   selected={value}
                   error={errors.date_of_start?.message as string}
+                  isRequired
                 />
               )}
             />
@@ -155,6 +160,7 @@ export const FunctionalAcknowledgmentModal: React.FC<ModalProps> = ({
                   name={name}
                   selected={value}
                   error={errors.date_of_end?.message as string}
+                  isRequired
                 />
               )}
             />

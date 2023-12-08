@@ -88,6 +88,7 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
                   options={yearOptions}
                   value={value as any}
                   onChange={onChange}
+                  isRequired
                   error={errors.year?.message as string}
                 />
               )}
@@ -98,6 +99,7 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
             <Input
               {...register('number_of_days', {required: 'Ovo polje je obavezno'})}
               label="UKUPAN BROJ DANA:"
+              isRequired
               error={errors.number_of_days?.message as string}
             />
           </FormGroup>

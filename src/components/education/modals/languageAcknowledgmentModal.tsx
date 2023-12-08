@@ -107,6 +107,7 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
                   isSearchable
                   options={settingsData}
                   error={errors.type?.message as string}
+                  isRequired
                 />
               )}
             />
@@ -122,6 +123,7 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
                   label="STEPEN:"
                   options={languageAcknowledgmentLevels}
                   error={errors.expertise_level?.message as string}
+                  isRequired
                 />
               )}
             />

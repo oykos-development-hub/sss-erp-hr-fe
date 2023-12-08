@@ -95,6 +95,7 @@ export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({open, onClose, a
                     value={value}
                     onChange={onChange}
                     options={yearOptions || []}
+                    isRequired
                     error={errors.year?.message as string}
                     placeholder="Izaberite godinu"
                     label="GODINA"
@@ -107,6 +108,7 @@ export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({open, onClose, a
                 {...register('name', {required: 'Ovo polje je obavezno'})}
                 label="NAZIV PLANA"
                 placeholder="Unesite naziv"
+                isRequired
                 error={errors.name?.message as string}
               />
             </FormGroup>

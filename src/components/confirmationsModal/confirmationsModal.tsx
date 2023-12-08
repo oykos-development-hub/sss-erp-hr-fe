@@ -118,6 +118,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
                     onChange={onChange}
                     error={errors.resolution_type?.message}
                     placeholder="Birajte vrstu"
+                    isRequired
                   />
                 )}
               />
@@ -137,6 +138,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
                     options={yesOrNoOptionsString}
                     error={errors.is_affect?.message}
                     placeholder="Izaberite pravosnažnost:"
+                    isRequired
                   />
                 );
               }}
@@ -153,6 +155,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
                   name={name}
                   selected={value}
                   error={errors.date_of_start?.message}
+                  isRequired
                 />
               )}
             />

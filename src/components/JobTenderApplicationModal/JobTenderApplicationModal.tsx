@@ -293,6 +293,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                     value={value}
                     onChange={onChange}
                     error={errors.type?.message}
+                    isRequired
                     isDisabled={!!selectedItem?.id}
                   />
                 )}
@@ -310,6 +311,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                     onChange={onChange}
                     isDisabled={!!selectedItem?.id || type?.id === 'external'}
                     error={errors.user_profile?.message}
+                    isRequired
                     placeholder="Unesite ime"
                   />
                 )}
@@ -320,6 +322,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                 {...register('first_name', {required: 'Ovo polje je obavezno'})}
                 label="IME:"
                 disabled={type?.id === 'internal'}
+                isRequired
                 error={errors.first_name?.message as string}
               />
 
@@ -327,6 +330,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                 {...register('last_name', {required: 'Ovo polje je obavezno'})}
                 label="PREZIME:"
                 disabled={type?.id === 'internal'}
+                isRequired
                 error={errors.last_name?.message as string}
               />
             </Row>
@@ -335,6 +339,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                 {...register('official_personal_id', {required: 'Ovo polje je obavezno'})}
                 label="BROJ LIČNE KARTE:"
                 error={errors.official_personal_id?.message as string}
+                isRequired
                 disabled={type?.id === 'internal'}
               />
 
@@ -349,6 +354,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                     name={name}
                     selected={value}
                     error={errors.date_of_birth?.message as string}
+                    isRequired
                     disabled={type?.id === 'internal'}
                   />
                 )}
@@ -370,6 +376,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                       options={countryOptions || []}
                       error={errors.citizenship?.message as string}
                       isDisabled={type?.id === 'internal'}
+                      isRequired
                       isSearchable
                     />
                   );
@@ -389,6 +396,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                       style={{width: '100%'}}
                       label="OCJENA:"
                       options={evaluationTypeOptions || []}
+                      isRequired
                       isDisabled
                     />
                   );
@@ -406,6 +414,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                     label="DATUM PRIJAVE:"
                     name={name}
                     selected={value}
+                    isRequired
                     error={errors.date_of_application?.message as string}
                   />
                 )}
@@ -423,6 +432,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                       label="STATUS:"
                       options={applicationStatusOptions || []}
                       error={errors.status?.message as string}
+                      isRequired
                       placeholder="Odaberite status"
                     />
                   );

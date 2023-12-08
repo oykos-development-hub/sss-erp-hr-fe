@@ -136,6 +136,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                 {...register('work_permit_number')}
                 label="BROJ:"
                 error={errors.work_permit_number?.message}
+                isRequired
                 placeholder="Unesite broj radne dozvole"
               />
             </FormGroup>
@@ -150,6 +151,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                     name={name}
                     label="IZDAVALAC:"
                     options={cityData}
+                    isRequired
                     error={errors.work_permit_issuer?.message}
                     placeholder="Izaberite izdavaoca"
                   />
@@ -166,6 +168,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                     label="VAŽI OD:"
                     name={name}
                     selected={value}
+                    isRequired
                     error={errors.work_permit_date_of_start?.message}
                   />
                 )}
@@ -182,6 +185,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                       label="VAŽI DO:"
                       name={name}
                       selected={value}
+                      isRequired
                       error={errors.work_permit_date_of_end?.message}
                       disabled={indefinite}
                     />
@@ -209,6 +213,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
               <Input
                 {...register('residence_permit_number')}
                 label="BROJ PASOŠA:"
+                isRequired
                 error={errors.residence_permit_number?.message}
                 placeholder="Unesite broj pasoša"
               />
@@ -223,6 +228,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                     label="VAŽI DO:"
                     name={name}
                     selected={value}
+                    isRequired
                     error={errors.residence_permit_date_of_end?.message}
                   />
                 )}
@@ -242,6 +248,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                     label="DRŽAVA:"
                     name={name}
                     options={countryOptions}
+                    isRequired
                     error={errors.country_of_origin?.message}
                     placeholder="Izaberite državu"
                     isSearchable

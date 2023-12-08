@@ -95,6 +95,7 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
               {...register('certificate_issuer', {required: 'Ovo polje je obavezno'})}
               label="INSTITUCIJA:"
               error={errors.certificate_issuer?.message as string}
+              isRequired
             />
           </FormGroup>
 
@@ -112,6 +113,7 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
                     label="STEPEN ŠKOLSKOG OBRAZOVANJA:"
                     options={settingsData}
                     error={errors.type?.message as string}
+                    isRequired
                   />
                 );
               }}
@@ -131,6 +133,7 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
                   label="STEPEN STRUČNE OSPOSOBLJENOSTI:"
                   options={academicTitles}
                   error={errors.academic_title?.message as string}
+                  isRequired
                 />
               )}
             />

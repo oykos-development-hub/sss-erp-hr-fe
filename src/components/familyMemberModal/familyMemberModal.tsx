@@ -144,6 +144,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     label="SRODSTVO:"
                     options={employeeRelationshipDropdownData}
                     error={errors.employee_relationship?.message}
+                    isRequired
                   />
                 );
               }}
@@ -162,6 +163,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     label="DRŽAVA ROĐENJA:"
                     options={countryOptions}
                     error={errors.country_of_birth?.message}
+                    isRequired
                   />
                 );
               }}
@@ -182,6 +184,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                       {id: 'Ne', title: 'Ne'},
                     ]}
                     error={errors.insurance_coverage?.message}
+                    isRequired
                   />
                 );
               }}
@@ -202,6 +205,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                       {id: 'Ne', title: 'Ne'},
                     ]}
                     error={errors.handicapped_person?.message}
+                    isRequired
                   />
                 );
               }}
@@ -212,6 +216,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
               {...register('first_name', {required: 'Ovo polje je obavezno'})}
               label="IME:"
               error={errors.first_name?.message}
+              isRequired
             />
             <Controller
               name="citizenship"
@@ -227,6 +232,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     options={countryOptions}
                     error={errors.citizenship?.message}
                     isSearchable
+                    isRequired
                   />
                 );
               }}
@@ -268,6 +274,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
               {...register('last_name', {required: 'Ovo polje je obavezno'})}
               label="PREZIME:"
               error={errors.last_name?.message}
+              isRequired
             />
             <Controller
               name="city_of_birth"
@@ -288,6 +295,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     options={cityData}
                     error={errors.city_of_birth?.message}
                     isSearchable
+                    isRequired
                   />
                 ) : (
                   <Input
@@ -299,6 +307,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                     })}
                     label="OPŠTINA:"
                     error={errors.city_of_birth?.message}
+                    isRequired
                   />
                 );
               }}
@@ -323,6 +332,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                       {id: 'Ženski', title: 'Ženski'},
                     ]}
                     error={errors.gender?.message}
+                    isRequired
                   />
                 );
               }}
@@ -331,6 +341,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
               {...register('father_name', {required: 'Ovo polje je obavezno'})}
               label="IME OCA:"
               error={errors.father_name?.message}
+              isRequired
             />
           </Row>
           <Row>
@@ -345,6 +356,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                   name={name}
                   selected={value ? new Date(value) : ''}
                   error={errors.date_of_birth?.message}
+                  isRequired
                 />
               )}
             />
@@ -352,6 +364,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
               {...register('mother_name', {required: 'Ovo polje je obavezno'})}
               label="IME MAJKE:"
               error={errors.mother_name?.message}
+              isRequired
             />
           </Row>
           <Row>
@@ -359,6 +372,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
               {...register('official_personal_id', {required: 'Ovo polje je obavezno'})}
               label="JMBG:"
               error={errors.official_personal_id?.message}
+              isRequired
             />
             <Input {...register('mother_birth_last_name')} label="PREZIME PO ROĐENJU:" />
           </Row>

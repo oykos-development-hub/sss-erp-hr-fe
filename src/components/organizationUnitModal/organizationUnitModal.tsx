@@ -112,6 +112,7 @@ export const OrganizationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
                   label="PARENT:"
                   options={dropdownData || []}
                   error={errors.parent_id?.message as string}
+                  isRequired
                   isDisabled
                 />
               )}
@@ -122,12 +123,14 @@ export const OrganizationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
               {...register('title', {required: 'Ovo polje je obavezno'})}
               label="NAZIV:"
               error={errors.title?.message as string}
+              isRequired
             />
           </FormGroup>
           <FormGroup>
             <Input
               {...register('abbreviation', {required: 'Ovo polje je obavezno'})}
               label="SKRAĆENICA:"
+              isRequired
               error={errors.abbreviation?.message as string}
             />
           </FormGroup>

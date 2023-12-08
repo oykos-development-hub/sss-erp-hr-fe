@@ -166,6 +166,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
                   {...register('title', {required: 'Ovo polje je obavezno'})}
                   label="NAZIV REVIZIJE"
                   placeholder="Unesite naziv"
+                  isRequired
                   error={errors.title?.message as string}
                 />
               </FormGroup>
@@ -174,6 +175,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
                   {...register('serial_number', {required: 'Ovo polje je obavezno'})}
                   label="BROJ REVIZIJE"
                   placeholder="Unesite broj"
+                  isRequired
                   error={errors.title?.message as string}
                 />
               </FormGroup>
@@ -193,6 +195,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
                       error={errors.internal_revision_subject_id?.message as string}
                       placeholder="Izaberite subjekt"
                       label="SUBJEKT REVIZIJE (interna):"
+                      isRequired
                       isMulti
                     />
                   )}
@@ -210,6 +213,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
                       options={suppliers}
                       error={errors.external_revision_subject_id?.message as string}
                       placeholder="Izaberite subjekt"
+                      isRequired
                       label="SUBJEKT REVIZIJE (eksterna):"
                     />
                   )}
@@ -230,6 +234,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
                       error={errors.revisor_id?.message as string}
                       placeholder="Izaberite revizora"
                       label="REVIZOR"
+                      isRequired
                       isMulti
                     />
                   )}
@@ -246,6 +251,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
                       onChange={onChange}
                       options={revisionsList || []}
                       error={errors.revision_type_id?.message as string}
+                      isRequired
                       placeholder="Izaberite vrstu revizije"
                       label="VRSTA REVIZIJE"
                     />
@@ -265,6 +271,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
                       label="DATUM REVIZIJE:"
                       name={name}
                       selected={value ? new Date(value) : ''}
+                      isRequired
                       error={errors.date_of_revision?.message as string}
                     />
                   )}
@@ -283,6 +290,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
                       options={quarterOptions}
                       error={errors.revision_quartal?.message as string}
                       placeholder="Izaberite kvartal"
+                      isRequired
                       label="KVARTAL ZA SPROVOĐENJE REVIZIJE:"
                     />
                   )}

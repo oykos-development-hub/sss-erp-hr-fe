@@ -138,6 +138,7 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
                   options={jobTenderTypeOptions}
                   value={value as any}
                   onChange={onChange}
+                  isRequired
                   error={errors.type?.message}
                 />
               )}
@@ -152,6 +153,7 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
                   options={organizationUnitsList.slice(1)}
                   value={value as any}
                   onChange={onChange}
+                  isRequired
                   error={errors.organization_unit_id?.message}
                 />
               )}
@@ -167,6 +169,7 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
                   label="DATUM OBJAVE:"
                   name={name}
                   selected={value}
+                  isRequired
                   error={errors.date_of_start?.message}
                 />
               )}
@@ -180,13 +183,19 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
                   label="OGLAS JE VALIDAN DO:"
                   name={name}
                   selected={value}
+                  isRequired
                   error={errors.date_of_end?.message}
                 />
               )}
             />
           </Row>
           <Row>
-            <Input {...register('serial_number')} label="BROJ OGLASA:" error={errors.serial_number?.message} />
+            <Input
+              {...register('serial_number')}
+              label="BROJ OGLASA:"
+              error={errors.serial_number?.message}
+              isRequired
+            />
             <Input
               {...register('number_of_vacant_seats')}
               label="BROJ UPRAŽNJENIH MJESTA:"
