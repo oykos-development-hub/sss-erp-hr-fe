@@ -9,8 +9,8 @@ const Container = styled.div<{children: ReactElement | ReactElement[]}>`
   flex-direction: column;
   align-content: center;
   justify-content: center;
-  gap: 50px;
   width: 100%;
+  gap: 50px;
   height: 100%;
   padding: 50px;
 `;
