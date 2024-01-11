@@ -230,10 +230,8 @@ export const BasicInfo: React.FC = () => {
   // When coming from the job tender applications, when changing an external candidates status to accepted, it leads here to create it in the system, basically becoming an internal candidate in order to be accepted
   useEffect(() => {
     if (!context.navigation.location.state || !organizationUnits) return;
-
     const {user} = context.navigation.location.state;
     setCreatingChosenJobApplicant(true);
-
     reset({
       ...initialValues,
       ...user,
@@ -298,8 +296,6 @@ export const BasicInfo: React.FC = () => {
   const toggleContractEndModal = () => {
     setOpenCotractEndModal(!openContractEndModal);
   };
-
-  console.log(errors);
 
   return (
     <FormContainer>
@@ -799,6 +795,7 @@ export const BasicInfo: React.FC = () => {
                   disabled={isDisabled}
                   isRequired
                   error={errors.email && errors.email?.message}
+                  autoComplete="off"
                 />
               </FormItem>
               <FormItem>
@@ -810,6 +807,7 @@ export const BasicInfo: React.FC = () => {
                   disabled={isDisabled}
                   isRequired
                   error={errors?.password?.message}
+                  autoComplete="new-password"
                 />
               </FormItem>
               <FormItem>
@@ -833,21 +831,14 @@ export const BasicInfo: React.FC = () => {
                 />
               </FormItem>
               <FormItem>
-                <Controller
-                  name="pin"
-                  control={control}
-                  render={({field: {value, name, onChange}}) => (
-                    <Input
-                      onChange={onChange}
-                      value={value}
-                      name={name}
-                      maxLength={4}
-                      label="PIN:"
-                      disabled={isDisabled}
-                      isRequired
-                      error={errors?.pin?.message}
-                    />
-                  )}></Controller>
+                <Input
+                  {...register('pin')}
+                  label="PIN:"
+                  maxLength={4}
+                  disabled={isDisabled}
+                  isRequired
+                  error={errors.pin?.message}
+                />
               </FormItem>
             </FormColumn>
           </FormRow>

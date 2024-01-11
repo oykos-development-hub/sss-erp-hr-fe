@@ -132,7 +132,7 @@ export const basicInfoSchema = yup.object({
   }),
   nationality: yup.object(dropdownStringSchema).default(undefined),
   citizenship: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
-  national_minority: yup.object(dropdownStringSchema).nullable(),
+  national_minority: yup.object(dropdownStringSchema).nullable().default(undefined),
   address: yup.string().required(requiredError),
   father_name: yup.string().required(requiredError),
   mother_name: yup.string().required(requiredError),
@@ -187,6 +187,8 @@ export const basicInfoSchema = yup.object({
   pin: yup
     .string()
     .matches(/^(0|[1-9]\d*)(\.\d+)?$/, 'Ovo polje je obavezno')
+    .min(4, 'PIN mora imati 4 karaktera')
+    .max(4, 'PIN mora imati 4 karaktera')
     .when('id', {is: undefined, then: schema => schema.required(requiredError)}),
   password: passwordSchema,
   number_of_conference: yup.string(),
