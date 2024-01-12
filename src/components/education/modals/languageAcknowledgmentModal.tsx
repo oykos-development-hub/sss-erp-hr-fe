@@ -1,4 +1,4 @@
-import {Dropdown, FileUpload, Modal} from 'client-library';
+import {Dropdown, FileUpload, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
@@ -103,7 +103,7 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
                   onChange={onChange}
                   value={value as any}
                   name={name}
-                  label="ZNANJE STRANOG JEZIKA:"
+                  label="STRANI JEZIK:"
                   isSearchable
                   options={settingsData}
                   error={errors.type?.message as string}
@@ -127,10 +127,13 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
                 />
               )}
             />
+          </Row>
+          <Row>
             <FileUpload
-              icon={<></>}
-              style={{border: 'none', padding: '0px', width: 'auto'}}
-              variant="primary"
+              icon={null}
+              style={{width: '510px'}}
+              note={<Typography variant="bodySmall" content={''} />}
+              variant="secondary"
               onUpload={item => console.log(item)}
               buttonText="Učitaj"
             />

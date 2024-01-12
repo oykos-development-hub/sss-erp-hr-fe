@@ -11,9 +11,6 @@ export const Row = styled.div`
   align-items: center;
   gap: 20px;
   margin-bottom: 20px;
-  > div {
-    width: 50%;
-  }
 `;
 
 export const FileUploadWrapper = styled.div`
