@@ -16,7 +16,7 @@ export const tableHeads: TableHead[] = [
     accessor: 'work_permit_date_of_end',
     type: 'custom',
     renderContents: (_, row: ForeignerPermit) => (
-      <Typography content={row.work_permit_date_of_end ? parseDate(row.work_permit_date_of_end) : 'Negraničeno'} />
+      <Typography content={row.work_permit_date_of_end ? parseDate(row.work_permit_date_of_end) : 'Neograničeno'} />
     ),
   },
   {title: 'Viza', accessor: 'residence_permit_number'},

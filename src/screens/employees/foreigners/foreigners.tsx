@@ -57,7 +57,7 @@ const Foreigners: React.FC<ForeignersProps> = ({context}) => {
   return (
     <TableContainer>
       <ButtonContainer>
-        <Button content="Dodaj novi unos" onClick={openModal} variant="secondary" />
+        <Button content="Dodaj radnu dozvolu" onClick={openModal} variant="secondary" />
       </ButtonContainer>
       <Table
         tableHeads={tableHeads}

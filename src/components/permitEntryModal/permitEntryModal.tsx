@@ -51,7 +51,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
   const countryOptions = useMemo(() => {
     return countries?.map((country: any) => {
       return {
-        id: country.alpha3,
+        id: country.name,
         title: country.name,
       };
     });
@@ -126,6 +126,8 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
       title="DODAJTE DOZVOLU"
       style={{width: '1020px'}}
       rightButtonOnClick={handleSubmit(onSubmit)}
+      rightButtonText="Sačuvaj"
+      leftButtonText="Otkaži"
       buttonLoading={isSaving}
       content={
         <Form>
