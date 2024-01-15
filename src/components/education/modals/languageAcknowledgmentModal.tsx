@@ -1,11 +1,12 @@
 import {Dropdown, FileUpload, Modal, Typography} from 'client-library';
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
 import useGetSettings from '../../../services/graphql/settings/useGetSettings';
 import useInsertEducation from '../../../services/graphql/userProfile/education/useInsertEducation';
 import {educationTypes, initialValues, languageAcknowledgmentLevels} from './constants';
 import {ModalContentWrapper, Row} from './styles';
+import useAppContext from '../../../context/useAppContext';
 
 export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
   selectedItem,
@@ -16,6 +17,10 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
   navigation,
 }) => {
   const {settingsData} = useGetSettings({entity: educationTypes.education_language_types});
+  const [files, setFiles] = useState<FileList | null>(null);
+  const {
+    fileService: {uploadFile},
+  } = useAppContext();
 
   const item = useMemo(
     () =>
@@ -36,9 +41,25 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
     control,
     formState: {errors},
     reset,
+    setValue,
   } = useForm({defaultValues: item});
 
   const {insertEducation, loading: isSaving} = useInsertEducation();
+
+  const handleInsertEducation = async (data: any) => {
+    await insertEducation(
+      data,
+      () => {
+        alert.success('Uspješno sačuvano.');
+        refetchList && refetchList();
+        onClose();
+      },
+      () => {
+        alert.error('Greška. Promjene nisu sačuvane.');
+        onClose();
+      },
+    );
+  };
 
   const onSubmit = async (values: any) => {
     if (isSaving) return;
@@ -60,22 +81,32 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
       score: '',
     };
 
-    try {
-      insertEducation(
-        data,
-        () => {
-          alert?.success('Uspješno sačuvano');
-          refetchList && refetchList();
-          onClose();
+    if (files) {
+      const formData = new FormData();
+      const fileArray = Array.from(files);
+
+      formData.append('file', fileArray[0]);
+
+      await uploadFile(
+        formData,
+        (res: any) => {
+          setFiles(null);
+          setValue('file_id', res[0]?.id);
+          const updatedData = {...data, file_id: res[0]?.id};
+          handleInsertEducation(updatedData);
         },
         () => {
-          alert.error('Greška. Promjene nisu sačuvane.');
-          onClose();
+          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
         },
       );
-    } catch (err) {
-      console.log(err);
+    } else {
+      handleInsertEducation(data);
     }
+  };
+
+  const handleFileUpload = (files: FileList) => {
+    setFiles(files);
+    alert.success('Fajlovi uspješno učitani');
   };
 
   useEffect(() => {
@@ -134,7 +165,7 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
               style={{width: '510px'}}
               note={<Typography variant="bodySmall" content={''} />}
               variant="secondary"
-              onUpload={item => console.log(item)}
+              onUpload={handleFileUpload}
               buttonText="Učitaj"
             />
           </Row>

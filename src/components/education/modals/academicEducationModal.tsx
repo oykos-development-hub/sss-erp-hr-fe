@@ -1,5 +1,5 @@
 import {Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
 import useGetSettings from '../../../services/graphql/settings/useGetSettings';
@@ -7,6 +7,7 @@ import useInsertEducation from '../../../services/graphql/userProfile/education/
 import {ProfileEducationFormValues} from '../../../types/graphql/education';
 import {academicTitles, educationTypes, initialValues} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
+import useAppContext from '../../../context/useAppContext';
 
 export const AcademicEducationModal: React.FC<ModalProps> = ({
   selectedItem,
@@ -17,6 +18,10 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
   navigation,
 }) => {
   const {settingsData} = useGetSettings({entity: educationTypes.education_academic_types});
+  const [files, setFiles] = useState<FileList | null>(null);
+  const {
+    fileService: {uploadFile},
+  } = useAppContext();
 
   const item = useMemo(
     () =>
@@ -32,6 +37,7 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
   const {
     register,
     handleSubmit,
+    setValue,
     control,
     formState: {errors},
     reset,
@@ -39,10 +45,20 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
 
   const {insertEducation, loading: isSaving} = useInsertEducation();
 
-  useEffect(() => {
-    item && reset(item);
-  }, [item]);
-
+  const handleInsertEducation = async (data: any) => {
+    await insertEducation(
+      data,
+      () => {
+        alert.success('Uspješno sačuvano.');
+        refetchList && refetchList();
+        onClose();
+      },
+      () => {
+        alert.error('Greška. Promjene nisu sačuvane.');
+        onClose();
+      },
+    );
+  };
   const onSubmit = async (values: ProfileEducationFormValues) => {
     if (isSaving) return;
 
@@ -63,23 +79,38 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
       score: '',
     };
 
-    try {
-      insertEducation(
-        data,
-        () => {
-          alert.success('Uspješno sačuvano.');
-          refetchList && refetchList();
-          onClose();
+    if (files) {
+      const formData = new FormData();
+      const fileArray = Array.from(files);
+
+      formData.append('file', fileArray[0]);
+
+      await uploadFile(
+        formData,
+        (res: any) => {
+          setFiles(null);
+          setValue('file_id', res[0]?.id);
+          const updatedData = {...data, file_id: res[0]?.id};
+          handleInsertEducation(updatedData);
         },
         () => {
-          alert.error('Greška. Promjene nisu sačuvane.');
-          onClose();
+          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
         },
       );
-    } catch (e) {
-      console.log(e);
+    } else {
+      handleInsertEducation(data);
     }
   };
+
+  const handleFileUpload = (files: FileList) => {
+    setFiles(files);
+    alert.success('Fajlovi uspješno učitani');
+  };
+
+  useEffect(() => {
+    item && reset(item);
+  }, [item]);
+
   return (
     <Modal
       open={open}
@@ -145,7 +176,7 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
                 icon={<></>}
                 style={{width: '100%'}}
                 variant="secondary"
-                onUpload={(item: any) => console.log(item)}
+                onUpload={handleFileUpload}
                 note={<Typography variant="bodySmall" content="Obrazovni sertifikat" />}
                 buttonText="Učitaj"
               />

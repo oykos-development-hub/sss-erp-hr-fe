@@ -19,7 +19,11 @@ const getEducation = `query UserProfileOverview($user_profile_id: Int!, $educati
             description
             created_at
             updated_at
-            file_id
+            file {
+              id
+              name
+              type
+            }
             score
         }
     }

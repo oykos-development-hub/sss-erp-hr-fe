@@ -1,4 +1,4 @@
-import {EditIconTwo, PlusIcon, TableHead, Theme, TrashIconTwo, Typography} from 'client-library';
+import {EditIconTwo, PlusIcon, TableHead, Theme, TrashIconTwo, Typography, FileIcon} from 'client-library';
 import React, {useMemo, useState} from 'react';
 import {TableProps} from '../../../screens/employees/education/types';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
@@ -9,6 +9,8 @@ import useEducationDelete from '../../../services/graphql/userProfile/education/
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {educationTypes} from '../modals/constants';
 import {ProfileEducation, ProfileEducationItem} from '../../../types/graphql/education';
+import {FileItem} from '../../fileModalView/types';
+import FileModalView from '../../fileModalView/fileModalView';
 
 const tableHeads: TableHead[] = [
   {
@@ -21,12 +23,6 @@ const tableHeads: TableHead[] = [
   {
     title: 'Stepen',
     accessor: 'expertise_level',
-    sortable: true,
-    type: 'text',
-  },
-  {
-    title: 'Datoteka',
-    accessor: 'file_id',
     sortable: true,
     type: 'text',
   },
@@ -45,6 +41,7 @@ export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({alert, naviga
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
+  const [fileToView, setFileToView] = useState<FileItem>();
 
   const {deleteEducation} = useEducationDelete();
 
@@ -106,14 +103,23 @@ export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({alert, naviga
         data={educationData || []}
         isLoading={loading}
         tableActions={[
+          {
+            name: 'showFile',
+            icon: <FileIcon stroke={Theme.palette.gray600} />,
+            onClick: (row: any) => {
+              setFileToView(row?.file);
+            },
+            shouldRender: (row: any) => row?.file?.id,
+          },
           {name: 'edit', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
           {
-            name: 'edit',
+            name: 'delete',
             onClick: item => handleDeleteIconClick(item.id),
             icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
           },
         ]}
         titleElement={title}></TableContainer>
+      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
       {showModal && (
         <LanguageAcknowledgmentModal
           open={showModal}

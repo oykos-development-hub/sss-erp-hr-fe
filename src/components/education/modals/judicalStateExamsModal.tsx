@@ -1,5 +1,5 @@
 import {Datepicker, Dropdown, FileUpload, Modal, Typography, Input} from 'client-library';
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {ModalProps} from '../../../screens/employees/education/types';
 import useGetSettings from '../../../services/graphql/settings/useGetSettings';
@@ -8,6 +8,7 @@ import {educationTypes, initialValues} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
 import {parseDateForBackend, parseToDate} from '../../../utils/dateUtils';
 import {ProfileEducationFormValues} from '../../../types/graphql/education';
+import useAppContext from '../../../context/useAppContext';
 
 export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   selectedItem,
@@ -18,7 +19,10 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   navigation,
 }) => {
   const {settingsData} = useGetSettings({entity: educationTypes.education_exam_types});
-
+  const [files, setFiles] = useState<FileList | null>(null);
+  const {
+    fileService: {uploadFile},
+  } = useAppContext();
   const item = useMemo(
     () =>
       selectedItem
@@ -39,6 +43,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
     formState: {errors},
     reset,
     register,
+    setValue,
     watch,
   } = useForm({defaultValues: initialValues});
 
@@ -47,6 +52,22 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   useEffect(() => {
     item && reset({...item, date_of_certification: parseToDate(item.date_of_certification)});
   }, [item]);
+
+  const handleInsertEducation = async (data: any) => {
+    await insertEducation(
+      data,
+      () => {
+        alert.success('Uspješno sačuvano.');
+        refetchList && refetchList();
+        onClose();
+        reset(initialValues);
+      },
+      () => {
+        alert.error('Greška. Promjene nisu sačuvane.');
+        onClose();
+      },
+    );
+  };
 
   const onSubmit = async (values: ProfileEducationFormValues) => {
     if (isSaving) return;
@@ -68,24 +89,32 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
       score: values?.score,
     };
 
-    try {
-      insertEducation(
-        data,
-        () => {
-          alert.success('Uspješno sačuvano.');
-          refetchList && refetchList();
-          onClose();
+    if (files) {
+      const formData = new FormData();
+      const fileArray = Array.from(files);
+
+      formData.append('file', fileArray[0]);
+
+      await uploadFile(
+        formData,
+        (res: any) => {
+          setFiles(null);
+          setValue('file_id', res[0]?.id);
+          const updatedData = {...data, file_id: res[0]?.id};
+          handleInsertEducation(updatedData);
         },
         () => {
-          alert.error('Greška. Promjene nisu sačuvane.');
-          onClose();
+          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
         },
       );
-    } catch (e) {
-      console.log(e);
-    } finally {
-      reset(initialValues);
+    } else {
+      handleInsertEducation(data);
     }
+  };
+
+  const handleFileUpload = (files: FileList) => {
+    setFiles(files);
+    alert.success('Fajlovi uspješno učitani');
   };
 
   return (
@@ -145,7 +174,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
                 icon={<></>}
                 style={{width: '100%'}}
                 variant="secondary"
-                onUpload={item => console.log(item)}
+                onUpload={handleFileUpload}
                 note={<Typography variant="bodySmall" content="Obrazovni sertifikat" />}
                 buttonText="Učitaj"
               />

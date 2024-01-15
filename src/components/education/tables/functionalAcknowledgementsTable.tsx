@@ -1,4 +1,4 @@
-import {EditIconTwo, PlusIcon, TableHead, Theme, TrashIconTwo, Typography} from 'client-library';
+import {EditIconTwo, PlusIcon, TableHead, Theme, TrashIconTwo, Typography, FileIcon} from 'client-library';
 import React, {useMemo, useState} from 'react';
 import {TableProps} from '../../../screens/employees/education/types';
 import useDeleteEducation from '../../../services/graphql/userProfile/education/useDeleteEducation';
@@ -10,6 +10,8 @@ import {educationTypes} from '../modals/constants';
 import {FunctionalAcknowledgmentModal} from '../modals/functionalAcknowledgmentsModal';
 import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './styles';
 import {ProfileEducation, ProfileEducationItem} from '../../../types/graphql/education';
+import FileModalView from '../../fileModalView/fileModalView';
+import {FileItem} from '../../fileModalView/types';
 
 const tableHeads: TableHead[] = [
   {
@@ -52,12 +54,6 @@ const tableHeads: TableHead[] = [
     renderContents: (item: DropdownDataNumber) => <Typography content={item.title}></Typography>,
   },
   {
-    title: 'Datoteka',
-    accessor: 'file_id',
-    sortable: true,
-    type: 'text',
-  },
-  {
     title: '',
     accessor: 'TABLE_ACTIONS',
     type: 'tableActions',
@@ -72,6 +68,7 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navi
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
+  const [fileToView, setFileToView] = useState<FileItem>();
 
   const {deleteEducation} = useDeleteEducation();
 
@@ -135,15 +132,24 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navi
         data={educationData || []}
         isLoading={loading}
         tableActions={[
+          {
+            name: 'showFile',
+            icon: <FileIcon stroke={Theme.palette.gray600} />,
+            onClick: (row: any) => {
+              setFileToView(row?.file);
+            },
+            shouldRender: (row: any) => row?.file.id,
+          },
           {name: 'edit', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
           {
-            name: 'edit',
+            name: 'delete',
             onClick: item => handleDeleteIconClick(item.id),
             icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
           },
         ]}
         titleElement={title}
       />
+      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
 
       <FunctionalAcknowledgmentModal
         open={showModal}

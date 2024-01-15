@@ -19,7 +19,11 @@ const insertEducation = `mutation UserProfileEducationInsert($data: UserProfileE
             description
             created_at
             updated_at
-            file_id
+            file {
+              id
+              name
+              type
+            }
             score
         }
     }
