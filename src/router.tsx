@@ -18,6 +18,7 @@ import JobTenders from './screens/jobTenders/landing';
 import RevisionPlansList from './screens/internalRevision/revisionsPlans/revisionsPlansList';
 import RevisionList from './screens/internalRevision/revisions/revisions';
 import RevisionTips from './screens/internalRevision/revisionTips/revisionTips';
+import {ReportsScreen} from './screens/reports/index.tsx';
 
 const employeesRegex = /\/hr\/employees(?!\/add-new)(\/.)?/;
 const systematizationDetailsRegex = /^\/hr\/systematization\/systematization-details(?:\/(\d+))?$/;
@@ -57,6 +58,7 @@ export const Router: React.FC<MicroserviceProps> = props => {
     if (pathname === '/hr/job-tenders') return <JobTenders />;
     // if (pathname === '/hr/job-tenders') return context.navigation.navigate('job-tenders/job-tenders-list');
     if (pathname === '/hr/employees/add-new') return <AddNewEmployee context={context} />;
+    if (pathname === '/hr/reports') return <ReportsScreen />;
 
     return <NotFound404 context={context} />;
   };
