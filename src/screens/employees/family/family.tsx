@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import {Container} from './styles';
-import {Typography, Button, Table, EditIcon, TrashIcon, Theme} from 'client-library';
+import {Typography, Button, Table, EditIconTwo, TrashIcon, Theme} from 'client-library';
 import {FamilyPageProps} from './types';
 import {FamilyMemberModal} from '../../../components/familyMemberModal/familyMemberModal';
 import {tableHeads} from './constants';
@@ -75,7 +75,7 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
             {
               name: 'edit',
               onClick: item => handleEdit(item),
-              icon: <EditIcon stroke={Theme?.palette?.gray800} />,
+              icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
             },
             {
               name: 'delete',
