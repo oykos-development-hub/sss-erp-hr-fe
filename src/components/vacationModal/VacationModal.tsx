@@ -70,7 +70,7 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
     insertVacation(
       payload,
       () => {
-        generateDocxDocument(documentProps).then(blob => {
+        generateDocxDocument(documentProps).then((blob: any) => {
           saveAs(blob, `Rješenje_o_godišnjem_odmoru_${values.year.id}_${first_name}_${last_name}.docx`);
         });
         onClose(true);
