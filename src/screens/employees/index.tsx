@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import EmployeeDetails from '../../components/employeeDetails/employeeDetails';
 import EmployeesList from '../../components/employeesList/employeesList';
 import useAppContext from '../../context/useAppContext';
@@ -32,6 +32,11 @@ export const EmployeesScreen: React.FC<ScreenProps> = () => {
   const screenWrapperRef = useRef<HTMLDivElement>(null);
 
   const debouncedSearch = useDebounce(search, 500);
+
+  useEffect(() => {
+    if (page === 1) return;
+    setPage(1);
+  }, [debouncedSearch]);
 
   const {navigation} = useAppContext();
 
