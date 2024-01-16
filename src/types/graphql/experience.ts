@@ -1,3 +1,4 @@
+import {FileItem} from '../../components/fileModalView/types';
 import {DropdownDataString} from '../dropdownData';
 import {DeleteResponse, GetResponse, InsertResponse} from './response';
 
@@ -10,7 +11,7 @@ export type ProfileExperience = {
   id: number;
   organization_unit: string;
   organization_unit_id: number;
-  reference_file_id: number;
+  file: FileItem;
   relevant: boolean;
   updated_at: string;
   user_profile_id: number;

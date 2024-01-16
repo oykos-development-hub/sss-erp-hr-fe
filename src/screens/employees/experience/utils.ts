@@ -23,6 +23,7 @@ export const formatData = (data: any, newExperience?: boolean) => {
   delete payload.selectedOrganizationUnit;
   delete payload.created_at;
   delete payload.updated_at;
+  delete payload.file;
 
   return payload;
 };

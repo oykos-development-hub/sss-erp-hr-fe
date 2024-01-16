@@ -124,9 +124,9 @@ export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert, navigati
             },
             shouldRender: (row: any) => row?.file?.id,
           },
-          {name: 'edit', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
+          {name: 'Izmijeni', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
           {
-            name: 'delete',
+            name: 'Obriši',
             onClick: item => handleDeleteIconClick(item.id),
             icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
           },

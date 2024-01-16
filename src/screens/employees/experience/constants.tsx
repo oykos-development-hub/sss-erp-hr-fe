@@ -42,6 +42,5 @@ export const tableHeads: TableHead[] = [
     type: 'custom',
     renderContents: (_, row: any) => <Typography variant="bodyMedium" content={row.amount_of_experience} />,
   },
-  {title: 'Dosije', accessor: 'reference_file_id', type: 'text'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];

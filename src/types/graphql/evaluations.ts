@@ -1,3 +1,4 @@
+import {FileItem} from '../../components/fileModalView/types';
 import {DropdownDataNumber, DropdownDataString} from '../dropdownData';
 import {DeleteResponse, GetResponse, InsertResponse} from './response';
 
@@ -15,7 +16,7 @@ export type ProfileEvaluation = {
   score: string;
   evaluator: string;
   is_relevant: boolean;
-  file_id: number;
+  file: FileItem;
 };
 
 export type ProfileEvaluationParams = {

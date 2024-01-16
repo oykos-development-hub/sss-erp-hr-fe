@@ -1,4 +1,4 @@
-import {Button, EditIconTwo, Table, Theme, TrashIcon, Typography} from 'client-library';
+import {Button, EditIconTwo, Table, Theme, TrashIcon, Typography, FileIcon} from 'client-library';
 import React, {useMemo, useState} from 'react';
 import {ExperienceModal} from '../../../components/experienceModal/experienceModal';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
@@ -7,13 +7,16 @@ import useGetExperience from '../../../services/graphql/userProfile/experience/u
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {ProfileExperience} from '../../../types/graphql/experience';
 import {tableHeads} from './constants';
-import {Container} from './styles';
 import {ExperiencePageProps} from './types';
+import {FileItem} from '../../../components/fileModalView/types';
+import FileModalView from '../../../components/fileModalView/fileModalView';
+import {Container} from './styles';
 
 export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {experience, refetch, loading} = useGetExperience(+userProfileID);
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
+  const [fileToView, setFileToView] = useState<FileItem>();
 
   const tableData = useMemo(() => {
     let totalInsuredExperience = 0;
@@ -125,13 +128,21 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
           isLoading={loading}
           tableActions={[
             {
-              name: 'edit',
+              name: 'showFile',
+              icon: <FileIcon stroke={Theme.palette.gray600} />,
+              onClick: (row: any) => {
+                setFileToView(row?.file);
+              },
+              shouldRender: (row: any) => row?.file?.id,
+            },
+            {
+              name: 'Izmijeni',
               onClick: item => handleEdit(item),
               icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
               shouldRender: item => item.id !== ('' as any),
             },
             {
-              name: 'delete',
+              name: 'Obriši',
               onClick: item => handleDeleteIconClick(item.id),
               icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
               shouldRender: item => item.id !== ('' as any),
@@ -139,6 +150,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
           ]}
         />
       </div>
+      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
       {showModal && (
         <ExperienceModal
           alert={context.alert}

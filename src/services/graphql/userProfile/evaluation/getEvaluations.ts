@@ -15,7 +15,11 @@ const getEvaluations = `query UserProfileEvaluation($user_profile_id: Int!){
             is_relevant
             created_at
             updated_at
-            file_id
+            file {
+              id
+              name
+              type
+          }
         }
     }
 }`;

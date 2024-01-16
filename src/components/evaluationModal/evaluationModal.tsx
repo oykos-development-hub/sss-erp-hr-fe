@@ -10,6 +10,7 @@ import {DropdownDataNumber} from '../../types/dropdownData';
 import {ProfileEvaluationFormValues, ProfileEvaluationParams} from '../../types/graphql/evaluations';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormWrapper, Row} from './styles';
+import useAppContext from '../../context/useAppContext';
 
 const evaluationSchema = yup.object().shape({
   date_of_evaluation: yup.date().required('Ovo polje je obavezno'),
@@ -36,6 +37,10 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
   evaluationTypes,
 }) => {
   const [evaluationTypesOption, setEvaluationTypesOption] = useState<DropdownDataNumber[]>([]);
+  const [files, setFiles] = useState<FileList | null>(null);
+  const {
+    fileService: {uploadFile},
+  } = useAppContext();
 
   const {
     handleSubmit,
@@ -56,19 +61,9 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
 
   const {insertEvaluation, loading: isSaving} = useEvaluationInsert();
 
-  const onSubmit = async (data: ProfileEvaluationFormValues) => {
-    if (isSaving) return;
-
-    const payload: ProfileEvaluationParams = {
-      id: data.id ? data.id : 0,
-      user_profile_id: data.user_profile_id,
-      evaluation_type_id: data.evaluation_type_id?.id ?? 0,
-      is_relevant: data.is_relevant?.id === 'Da' ? true : false,
-      date_of_evaluation: parseDateForBackend(data?.date_of_evaluation),
-    };
-
+  const handleInsertEvaluation = async (data: any) => {
     await insertEvaluation(
-      payload,
+      data,
       () => {
         refetchList();
         alert.success('Uspješno sačuvano.');
@@ -81,17 +76,55 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
     );
   };
 
+  const onSubmit = async (data: ProfileEvaluationFormValues) => {
+    if (isSaving) return;
+
+    const payload: ProfileEvaluationParams = {
+      id: data.id ? data.id : 0,
+      user_profile_id: data.user_profile_id,
+      evaluation_type_id: data.evaluation_type_id?.id ?? 0,
+      is_relevant: data.is_relevant?.id === 'Da' ? true : false,
+      date_of_evaluation: parseDateForBackend(data?.date_of_evaluation),
+    };
+
+    if (files) {
+      const formData = new FormData();
+      const fileArray = Array.from(files);
+
+      formData.append('file', fileArray[0]);
+
+      await uploadFile(
+        formData,
+        (res: any) => {
+          setFiles(null);
+          const updatedData = {...payload, file_id: res[0]?.id};
+          handleInsertEvaluation(updatedData);
+        },
+        () => {
+          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+        },
+      );
+    } else {
+      handleInsertEvaluation(payload);
+    }
+  };
+
   useEffect(() => {
     if (selectedItem) {
       reset({
         ...selectedItem,
         is_relevant: {id: selectedItem?.is_relevant ? 'Da' : 'Ne', title: selectedItem?.is_relevant ? 'Da' : 'Ne'},
         date_of_evaluation: parseToDate(selectedItem?.date_of_evaluation),
-        score: {id: selectedItem?.evaluation_type.id, title: selectedItem?.evaluation_type.title},
+        evaluation_type_id: {id: selectedItem?.evaluation_type.id, title: selectedItem?.evaluation_type.title},
         user_profile_id: Number(userProfileId),
       });
     }
   }, [selectedItem]);
+
+  const handleFileUpload = (files: FileList) => {
+    setFiles(files);
+    alert.success('Fajlovi uspješno učitani');
+  };
 
   return (
     <Modal
@@ -164,7 +197,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
               icon={<></>}
               style={{width: '100%'}}
               variant="secondary"
-              onUpload={(item: File | FileList) => console.log(item)}
+              onUpload={handleFileUpload}
               note={<Typography variant="bodySmall" content="Validacija" />}
               buttonText="Učitaj"
             />

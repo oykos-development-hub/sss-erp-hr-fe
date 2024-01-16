@@ -116,9 +116,9 @@ export const AcademicEducationTable: React.FC<TableProps> = ({alert, navigation}
             },
             shouldRender: (row: any) => row?.file?.id,
           },
-          {name: 'edit', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
+          {name: 'Izmijeni', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
           {
-            name: 'delete',
+            name: 'Obriši',
             onClick: item => handleDeleteIconClick(item.id),
             icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
           },

@@ -1,6 +1,6 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {yesOrNoOptionsString} from '../../constants';
@@ -11,6 +11,7 @@ import useInsertExperience from '../../services/graphql/userProfile/experience/u
 import {DropdownDataString} from '../../types/dropdownData';
 import {calculateExperience, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormWrapper, Row} from './styles';
+import useAppContext from '../../context/useAppContext';
 
 const experienceSchema = yup.object().shape({
   relevant: yup
@@ -37,8 +38,8 @@ const experienceSchema = yup.object().shape({
   }),
   organization_unit_id: yup
     .object()
+    .nullable()
     .default(undefined)
-    .shape({id: yup.string().required(), title: yup.string().required()})
     .when('relevant', {
       is: (value: DropdownDataString) => value && value.id === 'Da',
       then: schema => schema.required('Ovo polje je obavezno'),
@@ -64,7 +65,10 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     reset,
     setValue,
   } = useForm({resolver: yupResolver(experienceSchema), defaultValues: {user_profile_id: userProfileId}});
-
+  const [files, setFiles] = useState<FileList | null>(null);
+  const {
+    fileService: {uploadFile},
+  } = useAppContext();
   const {insertExperience, loading: isSaving} = useInsertExperience();
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
 
@@ -83,25 +87,44 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     }
   }, [selectedItem]);
 
+  const handleInsertExperience = async (data: any) => {
+    await insertExperience(
+      data,
+      () => {
+        alert.success('Uspješno sačuvano.');
+        refetchList && refetchList();
+        onClose();
+      },
+      () => {
+        alert.error('Greška. Promjene nisu sačuvane.');
+      },
+    );
+  };
+
   const onSubmit = async (data: any) => {
     if (isSaving) return;
 
     const payload = formatData(data, !selectedItem);
 
-    try {
-      await insertExperience(
-        payload,
-        () => {
-          alert.success('Uspješno sačuvano.');
-          refetchList && refetchList();
-          onClose();
+    if (files) {
+      const formData = new FormData();
+      const fileArray = Array.from(files);
+
+      formData.append('file', fileArray[0]);
+
+      await uploadFile(
+        formData,
+        (res: any) => {
+          setFiles(null);
+          const updatedData = {...payload, reference_file_id: res[0]?.id};
+          handleInsertExperience(updatedData);
         },
         () => {
-          alert.error('Greška. Promjene nisu sačuvane.');
+          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
         },
       );
-    } catch (e) {
-      console.log(e);
+    } else {
+      handleInsertExperience(payload);
     }
   };
 
@@ -121,6 +144,11 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
       setValue('organization_unit_id', {id: '', title: ''});
     }
   }, [date_of_end, date_of_start, isOrgUnitDisabled]);
+
+  const handleFileUpload = (files: FileList) => {
+    setFiles(files);
+    alert.success('Fajlovi uspješno učitani');
+  };
 
   return (
     <Modal
@@ -223,7 +251,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
               icon={<></>}
               style={{width: '100%'}}
               variant="secondary"
-              onUpload={item => console.log(item)}
+              onUpload={handleFileUpload}
               note={<Typography variant="bodySmall" content="Dokaz o zaposlenju" />}
               buttonText="Učitaj"
             />

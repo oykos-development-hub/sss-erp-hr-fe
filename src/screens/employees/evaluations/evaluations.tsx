@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import {Typography, Button, Table, TableHead, TrashIcon, Theme, EditIconTwo} from 'client-library';
+import {Typography, Button, Table, TableHead, TrashIcon, Theme, EditIconTwo, FileIcon} from 'client-library';
 import {EvaluationPageProps} from './types';
 import {Container} from './styles';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
@@ -9,6 +9,8 @@ import useGetSettings from '../../../services/graphql/settings/useGetSettings';
 import {parseDate} from '../../../utils/dateUtils';
 import useGetEvaluations from '../../../services/graphql/userProfile/evaluation/useGetEvaluations';
 import {ProfileEvaluation} from '../../../types/graphql/evaluations';
+import FileModalView from '../../../components/fileModalView/fileModalView';
+import {FileItem} from '../../../components/fileModalView/types';
 
 const tableHeads: TableHead[] = [
   {
@@ -17,7 +19,12 @@ const tableHeads: TableHead[] = [
     type: 'custom',
     renderContents: (date: any) => <Typography variant="bodyMedium" content={parseDate(date)} />,
   },
-  {title: 'Ocjena', accessor: 'score', type: 'text'},
+  {
+    title: 'Ocjena',
+    accessor: 'evaluation_type',
+    type: 'custom',
+    renderContents: (evaluation_type: any) => <Typography variant="bodyMedium" content={evaluation_type.title} />,
+  },
   {
     title: 'Pravosnažnost',
     accessor: 'is_relevant',
@@ -31,6 +38,7 @@ export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {evaluations, refetch} = useGetEvaluations(userProfileID);
   const {settingsData, loading} = useGetSettings({entity: 'evaluation_types'});
+  const [fileToView, setFileToView] = useState<FileItem>();
 
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
@@ -92,18 +100,27 @@ export const EvaluationsPage: React.FC<EvaluationPageProps> = ({context}) => {
           isLoading={loading}
           tableActions={[
             {
-              name: 'edit',
+              name: 'showFile',
+              icon: <FileIcon stroke={Theme.palette.gray600} />,
+              onClick: (row: any) => {
+                setFileToView(row?.file);
+              },
+              shouldRender: (row: any) => row?.file?.id,
+            },
+            {
+              name: 'Izmijeni',
               onClick: item => handleEdit(item),
               icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
             },
             {
-              name: 'delete',
+              name: 'Obriši',
               onClick: item => handleDeleteIconClick(item.id),
               icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
             },
           ]}
         />
       </div>
+      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
       {showModal && (
         <EvaluationModal
           alert={context.alert}

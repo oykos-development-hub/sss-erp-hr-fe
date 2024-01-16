@@ -6,6 +6,14 @@ import useVacationInsert from '../../services/graphql/userProfile/vacation/useIn
 import {yearsForDropdown} from '../../utils/constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
 import {ProfileVacationParams} from '../../types/graphql/vacations';
+import {generateDocxDocument} from './docx.ts';
+import {saveAs} from 'file-saver';
+import {AnnualLeaveDecisionDocumentProps} from './types.ts';
+import {parseDate} from '../../utils/dateUtils.ts';
+import useAppContext from '../../context/useAppContext.ts';
+import * as yup from 'yup';
+import {yupResolver} from '@hookform/resolvers/yup';
+import useGetBasicInfo from '../../services/graphql/userProfile/basicInfo/useGetBasicInfo.ts';
 
 const initialValues: ProfileVacationParams = {
   id: null,
@@ -16,15 +24,26 @@ const initialValues: ProfileVacationParams = {
   resolution_purpose: '',
 };
 
+const vacationSchema = yup.object().shape({
+  number_of_days: yup.number().required('Ovo polje je obavezno').typeError('Unešena vrijednost mora biti broj'),
+  year: yup.object().shape({id: yup.number(), title: yup.number()}).required('Ovo polje je obavezno'),
+});
+
 export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open, onClose, userProfileId, alert}) => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const {
+    contextMain: {first_name: current_user_first_name, last_name: current_user_last_name},
+  } = useAppContext();
 
   const handleUpload = (files: FileList) => {
     const fileList = Array.from(files);
     setUploadedFiles(fileList);
   };
 
+  const {userBasicInfo} = useGetBasicInfo(userProfileId, {skip: !userProfileId});
   const {insertVacation, loading} = useVacationInsert();
+
+  const {first_name, last_name, organization_unit, job_position} = userBasicInfo || {};
 
   const handleSave = (values: any) => {
     const payload = {
@@ -36,9 +55,24 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
       resolution_purpose: values.resolution_purpose,
     };
 
+    const documentProps: AnnualLeaveDecisionDocumentProps = {
+      // currently user profile id is used as id in serial number, that will probably change
+      serialNumber: generateSerialNumber(userProfileId),
+      date: parseDate(new Date(), '.'),
+      year: values.year.id,
+      numberOfDays: values.number_of_days,
+      fullName: `${first_name} ${last_name}`,
+      jobTitle: job_position?.title ?? '',
+      department: organization_unit?.title ?? '',
+      currentUser: `${current_user_first_name} ${current_user_last_name}`,
+    };
+
     insertVacation(
       payload,
       () => {
+        generateDocxDocument(documentProps).then(blob => {
+          saveAs(blob, `Rješenje_o_godišnjem_odmoru_${values.year.id}_${first_name}_${last_name}.docx`);
+        });
         onClose(true);
         alert.success('Uspješno sačuvano.');
         reset();
@@ -55,7 +89,15 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
     control,
     formState: {errors},
     reset,
-  } = useForm<any>({defaultValues: initialValues});
+  } = useForm<any>({defaultValues: initialValues, resolver: yupResolver(vacationSchema)});
+
+  const generateSerialNumber = (id: number) => {
+    const date = new Date();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    return `${month}-${id}/${year}`;
+  };
 
   useEffect(() => {
     reset({...selectedItem, year: yearOptions.find(yearOption => yearOption.id === selectedItem?.year)});
@@ -80,7 +122,7 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
             <Controller
               name="year"
               control={control}
-              rules={{required: 'Ovo polje je obavezno'}}
+              // rules={{required: 'Ovo polje je obavezno'}}
               render={({field: {onChange, name, value}}) => (
                 <Dropdown
                   label="GODINA:"
@@ -97,7 +139,7 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
 
           <FormGroup>
             <Input
-              {...register('number_of_days', {required: 'Ovo polje je obavezno'})}
+              {...register('number_of_days')}
               label="UKUPAN BROJ DANA:"
               isRequired
               error={errors.number_of_days?.message as string}
