@@ -1,22 +1,44 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
-import {Controller, Form, useForm} from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {ConfirmationsModalProps} from '../../screens/employees/confirmations/types';
 import useInsertResolution from '../../services/graphql/userProfile/resolution/useInsertResolution';
 import {DropdownDataNumber} from '../../types/dropdownData';
-import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
+import {parseDate, parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
 import useGetSettings from '../../services/graphql/settings/useGetSettings';
 import {resolutionTypes} from '../education/modals/constants';
 import {yesOrNoOptionsString} from '../../constants';
+import {yearsForDropdown} from '../../utils/constants.ts';
+import useGetVacations from '../../services/graphql/userProfile/vacation/useGetVacation.ts';
+import {generateDocxDocument} from './docx.ts';
+import {saveAs} from 'file-saver';
+import useAppContext from '../../context/useAppContext.ts';
+import {AnnualLeavePartIDecisionDocumentProps} from './types.ts';
+import {generateDocumentSerialNumber} from '../../utils/documentGenerationUtils.ts';
+import useGetBasicInfo from '../../services/graphql/userProfile/basicInfo/useGetBasicInfo.ts';
 
 const confirmationSchema = yup.object().shape({
   resolution_purpose: yup.string(),
   date_of_start: yup.date().required('Ovo polje je obavezno'),
   resolution_type: yup.object().required('Ovo polje je obavezno'),
-  is_affect: yup.object().default(undefined).shape({id: yup.string(), title: yup.string()}),
+  is_affect: yup
+    .object()
+    .default(undefined)
+    .shape({id: yup.string(), title: yup.string()})
+    .required('Ovo polje je obavezno'),
+  year: yup
+    .object()
+    .shape({id: yup.number(), title: yup.number()})
+    .test('year-required', 'Ovo polje je obavezno', function (value) {
+      const resolutionType = this.parent.resolution_type;
+      if (resolutionType && resolutionType.id === 248) {
+        return !!value.id;
+      }
+      return true;
+    }),
 });
 
 export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
@@ -32,6 +54,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     control,
     formState: {errors},
     reset,
+    watch,
   } = useForm({
     resolver: yupResolver(confirmationSchema),
   });
@@ -39,6 +62,9 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
   const {settingsData} = useGetSettings({entity: resolutionTypes.resolution_types});
 
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const resolutionType = watch('resolution_type') as DropdownDataNumber;
+  const year = watch('year');
+  const yearOptions = useMemo(() => [...yearsForDropdown().map(year => ({id: +year.id, title: +year.title}))], []);
 
   const handleUpload = (files: FileList) => {
     const fileList = Array.from(files);
@@ -46,9 +72,51 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
   };
 
   const {insertResolution, loading: isSaving} = useInsertResolution();
+  const {vacations} = useGetVacations(userProfileId);
+  const {
+    contextMain: {first_name: current_user_first_name, last_name: current_user_last_name},
+  } = useAppContext();
+  const {userBasicInfo} = useGetBasicInfo(userProfileId, {skip: !userProfileId});
+  const {first_name, last_name, organization_unit, job_position} = userBasicInfo || {};
+  const isResolutionTypeAnnualLeaveIPart = resolutionType?.id === 248;
+
+  const vacationForSelectedYear = () => {
+    if (!vacations?.length || !year?.id || !isResolutionTypeAnnualLeaveIPart) {
+      return;
+    }
+    const vacationForSelectedYear = vacations.find(vacation => vacation.year === year?.id);
+
+    if (!vacationForSelectedYear) {
+      alert.error('Korisnik nema rješenje o godišnjem odmoru za odabranu godinu.');
+      return;
+    }
+    return vacationForSelectedYear;
+  };
+
+  const generateDocument = () => {
+    if (!vacations?.length || !year?.id || !isResolutionTypeAnnualLeaveIPart) {
+      return;
+    }
+
+    const documentProps: AnnualLeavePartIDecisionDocumentProps = {
+      // currently user profile id is used as id in serial number, that will probably change
+      serialNumber: generateDocumentSerialNumber(userProfileId),
+      date: parseDate(new Date(), '.'),
+      year: year.id,
+      numberOfDays: vacationForSelectedYear()?.number_of_days.toString() ?? '',
+      fullName: `${first_name} ${last_name}`,
+      jobTitle: job_position?.title ?? '',
+      department: organization_unit?.title ?? '',
+      currentUser: `${current_user_first_name} ${current_user_last_name}`,
+    };
+
+    generateDocxDocument(documentProps).then(blob => {
+      saveAs(blob, `Rješenje_o_korišćenju_I_dijela_godišnjeg_odmora_${year.id}_${first_name}_${last_name}.docx`);
+    });
+  };
 
   const handleSave = (value: any) => {
-    if (isSaving) return;
+    if (isSaving || (isResolutionTypeAnnualLeaveIPart && !vacationForSelectedYear())) return;
 
     const payload = {
       ...value,
@@ -59,18 +127,20 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
       file_id: value?.file_id || 0,
       resolution_purpose: value?.resolution_purpose || '',
       resolution_type_id: value?.resolution_type.id || null,
-      is_affect: value?.is_affect?.id === 'Da' ? true : false,
+      is_affect: value?.is_affect?.id === 'Da',
     };
 
     delete payload.created_at;
     delete payload.updated_at;
     delete payload.resolution_type;
     delete payload.user_profile;
+    delete payload.year;
 
     insertResolution(
       payload,
       () => {
         onClose(true);
+        generateDocument();
         alert.success('Uspješno sačuvano.');
       },
       () => {
@@ -160,7 +230,25 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
               )}
             />
           </FormGroup>
-
+          {isResolutionTypeAnnualLeaveIPart && (
+            <FormGroup>
+              <Controller
+                name="year"
+                control={control}
+                render={({field: {onChange, name, value}}) => (
+                  <Dropdown
+                    label="GODINA:"
+                    name={name}
+                    options={yearOptions}
+                    value={value as any}
+                    onChange={onChange}
+                    isRequired
+                    error={errors.year?.message as string}
+                  />
+                )}
+              />
+            </FormGroup>
+          )}
           <FormGroup>
             <Input {...register('resolution_purpose')} label="SVRHA:" placeholder="Unesite opis..." textarea />
           </FormGroup>

@@ -14,6 +14,7 @@ import useAppContext from '../../context/useAppContext.ts';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import useGetBasicInfo from '../../services/graphql/userProfile/basicInfo/useGetBasicInfo.ts';
+import {generateDocumentSerialNumber} from '../../utils/documentGenerationUtils.ts';
 
 const initialValues: ProfileVacationParams = {
   id: null,
@@ -40,9 +41,8 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
     setUploadedFiles(fileList);
   };
 
-  const {userBasicInfo} = useGetBasicInfo(userProfileId, {skip: !userProfileId});
   const {insertVacation, loading} = useVacationInsert();
-
+  const {userBasicInfo} = useGetBasicInfo(userProfileId, {skip: !userProfileId});
   const {first_name, last_name, organization_unit, job_position} = userBasicInfo || {};
 
   const handleSave = (values: any) => {
@@ -57,7 +57,7 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
 
     const documentProps: AnnualLeaveDecisionDocumentProps = {
       // currently user profile id is used as id in serial number, that will probably change
-      serialNumber: generateSerialNumber(userProfileId),
+      serialNumber: generateDocumentSerialNumber(userProfileId),
       date: parseDate(new Date(), '.'),
       year: values.year.id,
       numberOfDays: values.number_of_days,
@@ -90,14 +90,6 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
     formState: {errors},
     reset,
   } = useForm<any>({defaultValues: initialValues, resolver: yupResolver(vacationSchema)});
-
-  const generateSerialNumber = (id: number) => {
-    const date = new Date();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-
-    return `${month}-${id}/${year}`;
-  };
 
   useEffect(() => {
     reset({...selectedItem, year: yearOptions.find(yearOption => yearOption.id === selectedItem?.year)});
