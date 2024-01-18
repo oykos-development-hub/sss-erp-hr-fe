@@ -12,16 +12,16 @@ const useGetSystematizations = ({page, size, id, organization_unit_id, year, sea
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const {fetch} = useAppContext();
-
+  const {fetch, contextMain} = useAppContext();
+  const isAdmin = contextMain.role_id === 1;
   const fetchSystematizations = async () => {
     setLoading(true);
-
+    const orgUnitID = isAdmin ? organization_unit_id : contextMain.organization_unit.id;
     const response: SystematizationsResponse['get'] = await fetch(GraphQL.getSystematizations, {
       page,
       size,
       id,
-      organization_unit_id,
+      organization_unit_id: orgUnitID,
       year,
       search,
     });
