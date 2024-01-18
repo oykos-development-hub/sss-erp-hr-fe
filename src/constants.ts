@@ -143,3 +143,70 @@ export const revisionTypeOptions: DropdownDataNumber[] = [
 ];
 
 export const requiredError = 'Ovo polje je obavezno';
+
+export const patterns: DropdownDataString[] = [
+  {
+    id: 'Rješenje o jubilarnoj nagradi.docx',
+    title: 'Rješenje o jubilarnoj nagradi',
+  },
+  {
+    id: 'Odluka o izboru kandidata.docx',
+    title: 'Odluka o izboru kandidata',
+  },
+  {
+    id: 'Plan za korišćenje odmora.docx',
+    title: 'Plan za korišćenje odmora',
+  },
+  {
+    id: 'Dodatak na osnovnu zaradu - dežurstvo sudija.docx',
+    title: 'Dodatak na osnovnu zaradu - dežurstvo sudija',
+  },
+  {
+    id: 'Dodatak po osnovu prekovremenog rada.docx',
+    title: 'Dodatak po osnovu prekovremenog rada',
+  },
+  {
+    id: 'Dodatak na osnovnu zaradu - specijalni dodatak.docx',
+    title: 'Dodatak na osnovnu zaradu - specijalni dodatak',
+  },
+  {
+    id: 'Rješenje o osnovnoj zaradi.docx',
+    title: 'Rješenje o osnovnoj zaradi',
+  },
+  {
+    id: 'Rješenje o isplati otpremnine.docx',
+    title: 'Rješenje o isplati otpremnine',
+  },
+  {
+    id: 'Rješenje o pomoći.docx',
+    title: 'Rješenje o pomoći',
+  },
+  {
+    id: 'Rješenje o svetkovanju vjerskog praznika.docx',
+    title: 'Rješenje o svetkovanju vjerskog praznika',
+  },
+  {
+    id: 'Rješenje o ocjeni rada državnog službenika.docx',
+    title: 'Rješenje o ocjeni rada državnog službenika',
+  },
+  {
+    id: 'Ugovor o djelu.docx',
+    title: 'Ugovor o djelu',
+  },
+  {
+    id: 'Ugovor o privremeno povremenom vršenju poslova.docx',
+    title: 'Ugovor o privremeno povremenom vršenju poslova',
+  },
+  {
+    id: 'Varijabilni dio zarade.docx',
+    title: 'Varijabilni dio zarade',
+  },
+  {
+    id: 'Sporazum o prestanku radnog odnosa.docx',
+    title: 'Sporazum o prestanku radnog odnosa',
+  },
+  {
+    id: 'Rješenje o raspoređivanju zaposlenog.docx',
+    title: 'Rješenje o raspoređivanju zaposlenog',
+  },
+];

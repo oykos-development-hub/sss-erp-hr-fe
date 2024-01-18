@@ -7,26 +7,51 @@ import {FormContainer, TitleWrapper, Option} from './styles';
 import {OverviewBox} from '../../components/employeesList/styles';
 import {StyledTabs} from '../../components/employeeDetails/styles';
 import {useForm, Controller} from 'react-hook-form';
+import {patterns} from '../../constants.ts';
+import {saveAs} from 'file-saver';
+import {DropdownDataString} from '../../types/dropdownData.ts';
 
+interface ReportsScreenProps {
+  report_type: DropdownDataString;
+}
 export const ReportsScreen: React.FC = () => {
   const {
     control,
     formState: {errors},
     handleSubmit,
-  } = useForm();
+  } = useForm<ReportsScreenProps>();
   const [activeTab, setActiveTab] = useState(1);
   const onTabChange = (tab: Tab) => {
     setActiveTab(tab.id as number);
   };
+
+  const getTitle = reportsTabs.find(tab => tab.id === activeTab)?.title ?? '';
+
+  const downloadReport = (data: ReportsScreenProps) => {
+    const fileName = data.report_type.id;
+    const downloadPath = `/patterns/${fileName}`;
+
+    saveAs(downloadPath, fileName);
+  };
+
+  const getOptions = () => {
+    switch (activeTab) {
+      case 1:
+        // izvještaji
+        return [];
+      case 2:
+        // šabloni
+        return patterns;
+      default:
+        return [];
+    }
+  };
+
   return (
     <ScreenWrapper>
       <OverviewBox>
         <TitleWrapper>
-          <Typography
-            style={{fontWeight: 600}}
-            variant="bodyMedium"
-            content={activeTab === 1 ? 'Izvještaji' : 'Šabloni'}
-          />
+          <Typography style={{fontWeight: 600}} variant="bodyMedium" content={getTitle} />
           <StyledTabs
             tabs={reportsTabs}
             activeTab={activeTab}
@@ -36,7 +61,7 @@ export const ReportsScreen: React.FC = () => {
           />
         </TitleWrapper>
         <Divider color={Theme?.palette?.gray200} height="1px" style={{margin: 0}} />
-        <FormContainer>
+        <FormContainer onSubmit={handleSubmit(downloadReport)}>
           <>
             <Option>
               <Controller
@@ -45,10 +70,10 @@ export const ReportsScreen: React.FC = () => {
                 rules={{required: 'Ovo polje je obavezno!'}}
                 render={({field: {onChange, value}}) => (
                   <Dropdown
-                    label={activeTab === 1 ? 'TIP IZVJEŠTAJA:' : 'TIP ŠABLONA:'}
+                    label={`TIP ${getTitle.slice(0, -1).toUpperCase()}A`}
                     value={value}
                     onChange={onChange}
-                    options={[]}
+                    options={getOptions()}
                     isRequired
                     error={errors.report_type?.message as string}
                   />
@@ -57,7 +82,7 @@ export const ReportsScreen: React.FC = () => {
             </Option>
 
             <Button
-              content={activeTab === 1 ? 'Generiši izvještaj' : 'Generiši šablon'}
+              content={`Generiši ${getTitle.slice(0, -1).toLowerCase()}`}
               style={{width: 'fit-content'}}
               type="submit"
             />
