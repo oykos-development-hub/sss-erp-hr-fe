@@ -761,14 +761,16 @@ export const BasicInfo: React.FC = () => {
                 )}
               />
             </FormItem>
-            <FormItem>
-              <Button
-                size="xl"
-                content={<Typography variant="bodyMedium" content="Prekid radnog odnosa" />}
-                disabled={isDisabled}
-                onClick={() => setOpenCotractEndModal(true)}
-              />
-            </FormItem>
+            {!isNew && (
+              <FormItem>
+                <Button
+                  size="xl"
+                  content={<Typography variant="bodyMedium" content="Prekid radnog odnosa" />}
+                  disabled={isDisabled}
+                  onClick={() => setOpenCotractEndModal(true)}
+                />
+              </FormItem>
+            )}
           </FormColumn>
         </FormRow>
       </FormWrapper>
