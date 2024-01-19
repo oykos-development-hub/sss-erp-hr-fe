@@ -19,6 +19,7 @@ import RevisionPlansList from './screens/internalRevision/revisionsPlans/revisio
 import RevisionList from './screens/internalRevision/revisions/revisions';
 import RevisionTips from './screens/internalRevision/revisionTips/revisionTips';
 import {ReportsScreen} from './screens/reports/index.tsx';
+import {LandingPage} from './screens/landingPage/landingPage.tsx';
 
 const employeesRegex = /\/hr\/employees(?!\/add-new)(\/.)?/;
 const systematizationDetailsRegex = /^\/hr\/systematization\/systematization-details(?:\/(\d+))?$/;
@@ -37,7 +38,7 @@ export const Router: React.FC<MicroserviceProps> = props => {
   });
 
   const renderScreen = () => {
-    if (pathname === '/hr') return <HR />;
+    if (pathname === '/hr') return <LandingPage />;
     if (employeesRegex.test(pathname)) return <EmployeesScreen context={context} />;
     if (pathname === '/hr/systematization') return <Systematizations />;
     if (pathname === '/hr/revision-recommendations') return <RevisionPlansList context={context} />;
