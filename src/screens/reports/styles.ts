@@ -14,5 +14,14 @@ export const FormContainer = styled.form`
 `;
 
 export const Option = styled.div`
-  max-width: 450px;
+  max-width: 350px;
+`;
+
+export const RowWrapper = styled.div`
+  display: flex;
+`;
+
+export const Column = styled.div`
+  width: 350px;
+  margin-right: 20px;
 `;

@@ -69,6 +69,7 @@ import getSalaryParams from './userProfile/salaryParams/getSalaryParams';
 import insertSalaryParams from './userProfile/salaryParams/insertSalaryParams';
 import getVacations from './userProfile/vacation/getVacations';
 import insertVacation from './userProfile/vacation/insertVacation';
+import vacationReport from './vacationReport/vacationReport';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -147,4 +148,5 @@ export const GraphQL = {
   getJobTenderApplications: getJobTenderApplications,
   deleteJobTenderApplication: deleteJobTenderApplication,
   insertJobTenderApplication: insertJobTenderApplication,
+  vacationReport: vacationReport,
 };
