@@ -2,7 +2,6 @@ const insertAbsence = `mutation UserProfileAbsentInsert($data: UserProfileAbsent
     userProfile_Absent_Insert(data: $data) {
         message
         status
-        data
         item {
             id
             user_profile_id
@@ -20,7 +19,11 @@ const insertAbsence = `mutation UserProfileAbsentInsert($data: UserProfileAbsent
             description
             created_at
             updated_at
-            file_id
+            file {
+                id
+                name
+                type
+            }
         }
     }
 }`;

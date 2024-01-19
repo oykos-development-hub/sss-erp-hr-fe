@@ -1,5 +1,5 @@
 import {Divider} from '@oykos-development/devkit-react-ts-styled-components';
-import {Button, Dropdown, EditIconTwo, Table, Theme, TrashIcon, Typography} from 'client-library';
+import {Button, Dropdown, EditIconTwo, Table, Theme, TrashIcon, Typography, FileIcon} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {AbsentModal} from '../../../components/absentsModal/absentsModal';
 import useAbsentDelete from '../../../services/graphql/userProfile/absents/useDeleteAbsence';
@@ -27,6 +27,8 @@ import {
   YearWrapper,
 } from './styles';
 import {VacationModal} from '../../../components/vacationModal/VacationModal';
+import {FileItem} from '../../../types/fileUploadType';
+import FileModalView from '../../../components/fileModalView/fileModalView';
 
 const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const years = yearsForDropdownFilter();
@@ -46,6 +48,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const [editItem, setEditItem] = useState<Absence | undefined>();
   const [editItemVacation, setEditItemVacation] = useState<ProfileVacation | undefined>();
   const [showDeleteVacationModal, setShowDeleteVacationModal] = useState<boolean>(false);
+  const [fileToView, setFileToView] = useState<FileItem>();
 
   const handleAdd = () => {
     setShowModal(true);
@@ -251,12 +254,20 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
           isLoading={loading}
           tableActions={[
             {
-              name: 'edit',
+              name: 'showFile',
+              icon: <FileIcon stroke={Theme.palette.gray600} />,
+              onClick: (row: any) => {
+                setFileToView(row?.file);
+              },
+              shouldRender: (row: any) => row?.file?.id,
+            },
+            {
+              name: 'Izmijeni',
               onClick: item => handleEditVacation(item),
               icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
             },
             {
-              name: 'delete',
+              name: 'Obriši',
               onClick: item => handleDeleteVacationIconClick(item.id),
               icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
             },
@@ -275,12 +286,20 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
           isLoading={loading}
           tableActions={[
             {
-              name: 'edit',
+              name: 'showFile',
+              icon: <FileIcon stroke={Theme.palette.gray600} />,
+              onClick: (row: any) => {
+                setFileToView(row?.file);
+              },
+              shouldRender: (row: any) => row?.file?.id,
+            },
+            {
+              name: 'Izmijeni',
               onClick: item => handleEdit(item),
               icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
             },
             {
-              name: 'delete',
+              name: 'Obriši',
               onClick: item => handleDeleteIconClick(item.id),
               icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
             },
@@ -298,18 +317,27 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
           isLoading={loading}
           tableActions={[
             {
-              name: 'edit',
+              name: 'showFile',
+              icon: <FileIcon stroke={Theme.palette.gray600} />,
+              onClick: (row: any) => {
+                setFileToView(row?.file);
+              },
+              shouldRender: (row: any) => row?.file?.id,
+            },
+            {
+              name: 'Izmijeni',
               onClick: item => handleEdit(item),
               icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
             },
             {
-              name: 'delete',
+              name: 'Obriši',
               onClick: item => handleDeleteIconClick(item.id),
               icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
             },
           ]}
         />
       </div>
+      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
       {showModal && (
         <AbsentModal
           open={showModal}

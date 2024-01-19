@@ -31,21 +31,44 @@ const vacationSchema = yup.object().shape({
 });
 
 export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open, onClose, userProfileId, alert}) => {
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [uploadedFile, setUploadedFile] = useState<FileList>();
+
   const {
+    fileService: {uploadFile},
     contextMain: {first_name: current_user_first_name, last_name: current_user_last_name},
   } = useAppContext();
 
   const handleUpload = (files: FileList) => {
-    const fileList = Array.from(files);
-    setUploadedFiles(fileList);
+    setUploadedFile(files);
   };
 
-  const {insertVacation, loading} = useVacationInsert();
+  const {insertVacation, loading: isSaving} = useVacationInsert();
   const {userBasicInfo} = useGetBasicInfo(userProfileId, {skip: !userProfileId});
   const {first_name, last_name, organization_unit, job_position} = userBasicInfo || {};
 
-  const handleSave = (values: any) => {
+  const handleInsertVacation = async (data: any, documentProps: any, yearID: number) => {
+    await insertVacation(
+      data,
+      () => {
+        {
+          !data.id &&
+            generateDocxDocument(documentProps).then((blob: any) => {
+              saveAs(blob, `Rješenje_o_godišnjem_odmoru_${yearID}_${first_name}_${last_name}.docx`);
+            });
+        }
+        onClose(true);
+        alert.success('Uspješno sačuvano.');
+        reset();
+      },
+      () => {
+        alert.error('Greška. Promjene nisu sačuvane.');
+      },
+    );
+  };
+
+  const handleSave = async (values: any) => {
+    if (isSaving) return;
+
     const payload = {
       id: values.id,
       user_profile_id: userProfileId,
@@ -67,20 +90,26 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
       currentUser: `${current_user_first_name} ${current_user_last_name}`,
     };
 
-    insertVacation(
-      payload,
-      () => {
-        generateDocxDocument(documentProps).then((blob: any) => {
-          saveAs(blob, `Rješenje_o_godišnjem_odmoru_${values.year.id}_${first_name}_${last_name}.docx`);
-        });
-        onClose(true);
-        alert.success('Uspješno sačuvano.');
-        reset();
-      },
-      () => {
-        alert.error('Greška. Promjene nisu sačuvane.');
-      },
-    );
+    if (uploadedFile) {
+      const formData = new FormData();
+      const fileArray = Array.from(uploadedFile);
+
+      formData.append('file', fileArray[0]);
+
+      await uploadFile(
+        formData,
+        (res: any) => {
+          setUploadedFile(undefined);
+          const updatedData = {...payload, file_id: res[0]?.id};
+          handleInsertVacation(updatedData, documentProps, values.year.id);
+        },
+        () => {
+          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+        },
+      );
+    } else {
+      handleInsertVacation(payload, documentProps, values.year.id);
+    }
   };
 
   const {
@@ -107,7 +136,7 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(handleSave)}
-      buttonLoading={loading}
+      buttonLoading={isSaving}
       content={
         <ModalContentWrapper>
           <FormGroup>
@@ -143,24 +172,14 @@ export const VacationModal: React.FC<VacationModalProps> = ({selectedItem, open,
 
           <FileUploadWrapper>
             <FileUpload
-              icon={<></>}
-              style={{width: '100%'}}
+              icon={null}
+              files={uploadedFile}
               variant="secondary"
               onUpload={handleUpload}
-              note={<Typography variant="bodySmall" content="Validacija" />}
+              note={<Typography variant="bodySmall" content="Odmori" />}
               buttonText="Učitaj"
             />
           </FileUploadWrapper>
-
-          {uploadedFiles.length > 0 && (
-            <UploadedFileWrapper>
-              {uploadedFiles.map((file, index) => (
-                <UploadedFileContainer key={index}>
-                  <Typography variant="bodySmall" content={file.name} />
-                </UploadedFileContainer>
-              ))}
-            </UploadedFileWrapper>
-          )}
         </ModalContentWrapper>
       }
       title={'Rješenje o godišnjem odmoru'}

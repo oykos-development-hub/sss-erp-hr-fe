@@ -39,7 +39,6 @@ export const tableHeadsAbsence: TableHead[] = [
     },
     width: '10%',
   },
-  {title: 'Datoteka', accessor: 'file_id', type: 'text'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];
 
@@ -82,7 +81,6 @@ export const tableHeadsVacation: TableHead[] = [
     },
     width: '10%',
   },
-  {title: 'Datoteka', accessor: 'file_id', type: 'text'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];
 
@@ -114,6 +112,5 @@ export const tableHeadsYearVacation: TableHead[] = [
     },
     width: '10%',
   },
-  {title: 'Datoteka', accessor: 'file_id', type: 'text'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];

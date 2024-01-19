@@ -10,20 +10,11 @@ export const FormGroup = styled.div`
 `;
 
 export const FileUploadWrapper = styled.div`
+  max-width: 600px;
   display: flex;
   align-items: center;
   width: 100%;
-
-  > div > div {
-    display: flex;
-    justify-content: space-between;
-    width: 80%;
-
-    & div > p > p {
-      font-weight: 600;
-      line-height: 20px;
-    }
-  }
+  margin-block: 10px;
 `;
 
 export const UploadedFileWrapper = styled.div`

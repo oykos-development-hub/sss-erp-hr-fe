@@ -1,13 +1,14 @@
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import useAppContext from '../../context/useAppContext';
 import {AbsenceTypeModalProps} from '../../screens/employees/absents/types';
 import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useInsertAbsence from '../../services/graphql/userProfile/absents/useInsertAbsence';
 import {AbsenceType} from '../../types/graphql/absents';
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {dropdownOptions} from './constants';
-import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
+import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
 
 const initialValues: any = {
   id: null,
@@ -28,14 +29,17 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
   userProfileId,
   alert,
 }) => {
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const {
+    fileService: {uploadFile},
+  } = useAppContext();
+
+  const [uploadedFile, setUploadedFile] = useState<FileList>();
   const [absenceChildTypes, setAbsenceChildTypes] = useState<AbsenceType[]>([]);
   const [isVacation, setIsVacation] = useState<boolean | null>(null);
   const [selectedAbsenceTypeId, setSelectedAbsenceTypeId] = useState(null);
 
   const handleUpload = (files: FileList) => {
-    const fileList = Array.from(files);
-    setUploadedFiles(fileList);
+    setUploadedFile(files);
   };
 
   const handleTypeChange = (selectedValue: any) => {
@@ -52,21 +56,9 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
 
   const {insertAbsence, loading: isSaving} = useInsertAbsence();
 
-  const handleSave = (values: any) => {
-    if (isSaving) return;
-    const payload = {
-      id: values?.id || 0,
-      user_profile_id: userProfileId,
-      date_of_start: parseDateForBackend(values?.date_of_start),
-      date_of_end: parseDateForBackend(values?.date_of_end),
-      absent_type_id: isVacation ? absenceChildTypes[0]?.id : values?.absent_type?.id,
-      description: values?.description,
-      target_organization_unit_id: values?.target_organization_unit?.id || null,
-      file_id: values?.file_id || null,
-    };
-
+  const handleAbsenceInsert = (data: any) => {
     insertAbsence(
-      payload,
+      data,
       () => {
         onClose(true);
         alert.success('Uspješno sačuvano.');
@@ -76,6 +68,41 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
         alert.error('Greška. Promjene nisu sačuvane.');
       },
     );
+  };
+
+  const handleSave = async (values: any) => {
+    if (isSaving) return;
+
+    const payload = {
+      id: values?.id,
+      user_profile_id: userProfileId,
+      date_of_start: parseDateForBackend(values?.date_of_start),
+      date_of_end: parseDateForBackend(values?.date_of_end),
+      absent_type_id: isVacation ? absenceChildTypes[0]?.id : values?.absent_type?.id,
+      description: values?.description,
+      target_organization_unit_id: values?.target_organization_unit?.id,
+    };
+
+    if (uploadedFile) {
+      const formData = new FormData();
+      const fileArray = Array.from(uploadedFile);
+
+      formData.append('file', fileArray[0]);
+
+      await uploadFile(
+        formData,
+        (res: any) => {
+          setUploadedFile(undefined);
+          const updatedData = {...payload, file_id: res[0]?.id};
+          handleAbsenceInsert(updatedData);
+        },
+        () => {
+          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+        },
+      );
+    } else {
+      handleAbsenceInsert(payload);
+    }
   };
 
   const {
@@ -227,23 +254,14 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
           </FormGroup>
           <FileUploadWrapper>
             <FileUpload
-              icon={<></>}
-              style={{width: '100%'}}
+              icon={null}
+              files={uploadedFile}
               variant="secondary"
               onUpload={handleUpload}
-              note={<Typography variant="bodySmall" content="Validacija" />}
+              note={<Typography variant="bodySmall" content="Zahtjevi" />}
               buttonText="Učitaj"
             />
           </FileUploadWrapper>
-          {uploadedFiles.length > 0 && (
-            <UploadedFileWrapper>
-              {uploadedFiles.map((file, index) => (
-                <UploadedFileContainer key={index}>
-                  <Typography variant="bodySmall" content={file.name} />
-                </UploadedFileContainer>
-              ))}
-            </UploadedFileWrapper>
-          )}
         </ModalContentWrapper>
       }
       title={'ZAHTJEVI'}
