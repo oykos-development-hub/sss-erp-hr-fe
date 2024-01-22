@@ -39,7 +39,7 @@ const tenderApplicationSchema = yup.object().shape({
   date_of_application: yup.date().required('Ovo polje je obavezno').nullable(),
   first_name: yup.string().required('Ovo polje je obavezno'),
   last_name: yup.string().required('Ovo polje je obavezno'),
-  official_personal_id: yup.string().required('Ovo polje je obavezno'),
+  official_personal_document_number: yup.string().required('Ovo polje je obavezno'),
   date_of_birth: yup
     .date()
     .required('Ovo polje je obavezno')
@@ -134,7 +134,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
       data.last_name = values.last_name;
       data.citizenship = values?.citizenship?.id;
       data.date_of_birth = parseDateForBackend(values?.date_of_birth) ?? '';
-      data.official_personal_id = values?.official_personal_id;
+      data.official_personal_document_number = values?.official_personal_document_number;
     } else {
       data.user_profile_id = values?.user_profile?.id;
     }
@@ -183,7 +183,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 
   const nationality = watch('citizenship');
   const navigateToUserCreation = (applicantData: JobTenderApplicationInsertParams) => {
-    const {first_name, last_name, date_of_birth, evaluation, citizenship, official_personal_id} = watch();
+    const {first_name, last_name, date_of_birth, evaluation, citizenship, official_personal_document_number} = watch();
 
     context.navigation.navigate('/hr/employees/add-new', {
       state: {
@@ -193,7 +193,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
           date_of_birth,
           evaluation,
           nationality,
-          official_personal_id,
+          official_personal_document_number,
           is_judge: true,
           is_president: type?.title === 'Javni oglas za predsjednika suda',
           organization_unit_id: jobTender?.organization_unit?.id,
@@ -210,7 +210,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
         ...watch(),
         first_name: userBasicInfo.first_name,
         last_name: userBasicInfo.last_name,
-        official_personal_id: userBasicInfo.official_personal_id,
+        official_personal_document_number: userBasicInfo.official_personal_document_number,
         date_of_birth: parseToDate(userBasicInfo.date_of_birth) ?? undefined,
         citizenship: countryOptions?.find(c => c.id === userBasicInfo.citizenship) || undefined,
         user_profile: {id: userBasicInfo.id, title: `${userBasicInfo.first_name} ${userBasicInfo.last_name}`},
@@ -336,9 +336,9 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
             </Row>
             <Row>
               <Input
-                {...register('official_personal_id', {required: 'Ovo polje je obavezno'})}
+                {...register('official_personal_document_number', {required: 'Ovo polje je obavezno'})}
                 label="BROJ LIČNE KARTE:"
-                error={errors.official_personal_id?.message as string}
+                error={errors.official_personal_document_number?.message as string}
                 isRequired
                 disabled={type?.id === 'internal'}
               />

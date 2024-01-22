@@ -11,7 +11,7 @@ export interface JobTenderApplicationInsertParams {
   id?: number;
   job_tender_id: number;
   last_name?: string;
-  official_personal_id?: string;
+  official_personal_document_number?: string;
   status: string;
   type: string;
   user_profile_id?: number;

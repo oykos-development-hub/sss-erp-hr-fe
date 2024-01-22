@@ -105,6 +105,7 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
 
   const onSubmit = async (values: any) => {
     if (isSaving) return;
+    const numberOfVacant = !values?.number_of_vacant_seats ? 1 : values?.number_of_vacant_seats;
     const payload = {
       id: values.id,
       organization_unit_id: values?.organization_unit_id?.id,
@@ -113,7 +114,7 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
       serial_number: values.serial_number,
       date_of_start: parseDateForBackend(values?.date_of_start),
       date_of_end: parseDateForBackend(values?.date_of_end),
-      number_of_vacant_seats: values?.number_of_vacant_seats,
+      number_of_vacant_seats: numberOfVacant,
     };
 
     if (files) {
