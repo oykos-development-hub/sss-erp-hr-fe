@@ -28,7 +28,11 @@ const getJobTenders = `query JobTendersOverview($id: Int, $page: Int!, $size: In
             date_of_end
             created_at
             updated_at
-            file_id
+            file {
+              id
+              name
+              type
+            }
         }
     }
 }`;

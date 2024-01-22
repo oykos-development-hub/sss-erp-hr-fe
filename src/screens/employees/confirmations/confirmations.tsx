@@ -48,7 +48,6 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
   const {deleteResolution} = useDeleteResolution();
   const tableData = resolutions;
   const [fileToView, setFileToView] = useState<FileItem>();
-
   const selectedItem = useMemo(
     () => tableData?.find((item: ProfileResolution) => item.id === selectedItemId),
     [selectedItemId, tableData],

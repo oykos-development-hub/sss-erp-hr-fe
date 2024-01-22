@@ -4,6 +4,7 @@ import {Typography, Theme} from 'client-library';
 export const Container = styled.div``;
 export const InfoPreview = styled.div`
   display: flex;
+  align-items: center;
 `;
 
 export const Details = styled.div`

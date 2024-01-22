@@ -34,8 +34,8 @@ const ueGetJudges = (
     setLoading(true);
 
     const response: JudgesResponse = await fetch(GraphQL.getJudges, {
-      user_profile: user_profile,
-      organization_unit: organization_unit,
+      user_profile_id: user_profile?.id,
+      organization_unit_id: organization_unit?.id || null,
       page: page,
       size: size,
       search: search,

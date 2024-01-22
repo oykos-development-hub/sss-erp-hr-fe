@@ -23,6 +23,7 @@ const getResolutions = `query UserProfileResolution($user_profile_id: Int){
                 id
                 title
             }
+            year
         }
     }
 }`;

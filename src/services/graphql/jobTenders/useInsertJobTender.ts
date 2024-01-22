@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {GraphQL} from '..';
 import {REQUEST_STATUSES} from '../../constants';
-import {JobTender, JobTendersResponse} from '../../../types/graphql/jobTenders';
+import {JobTenderParams, JobTendersResponse} from '../../../types/graphql/jobTenders';
 import useAppContext from '../../../context/useAppContext';
 
 const useInsertJobTender = () => {
@@ -9,7 +9,7 @@ const useInsertJobTender = () => {
 
   const {fetch} = useAppContext();
 
-  const insertJobTender = async (data: JobTender, onSuccess?: () => void, onError?: () => void) => {
+  const insertJobTender = async (data: JobTenderParams, onSuccess?: () => void, onError?: () => void) => {
     if (loading) return;
 
     setLoading(true);

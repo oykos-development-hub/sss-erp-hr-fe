@@ -64,7 +64,6 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
   const resolutionType = watch('resolution_type') as DropdownDataNumber;
   const year = watch('year');
   const yearOptions = useMemo(() => [...yearsForDropdown().map(year => ({id: +year.id, title: +year.title}))], []);
-
   const handleUpload = (files: FileList) => {
     setFiles(files);
   };
@@ -141,13 +140,13 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
       resolution_purpose: value?.resolution_purpose || '',
       resolution_type_id: value?.resolution_type.id || null,
       is_affect: value?.is_affect?.id === 'Da',
+      year: value?.year?.id || 0,
     };
 
     delete payload.created_at;
     delete payload.updated_at;
     delete payload.resolution_type;
     delete payload.user_profile;
-    delete payload.year;
     delete payload.file;
 
     if (files) {
@@ -179,6 +178,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
         date_of_end: parseToDate(selectedItem?.date_of_end),
         date_of_start: parseToDate(selectedItem?.date_of_start),
         is_affect: {id: selectedItem?.is_affect ? 'Da' : 'Ne', title: selectedItem?.is_affect ? 'Da' : 'Ne'},
+        year: {id: selectedItem?.year, title: selectedItem?.year},
       });
     }
   }, [selectedItem]);

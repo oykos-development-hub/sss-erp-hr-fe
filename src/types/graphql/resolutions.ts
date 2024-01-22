@@ -13,6 +13,7 @@ export type ProfileResolution = {
   file: FileItem;
   resolution_type: ResolutionType | null;
   is_affect: DropdownDataBoolean;
+  year: number;
 };
 
 export type ProfileResolutionForm = {
@@ -34,6 +35,7 @@ export type ProfileResolutionParams = {
   file_id: number;
   resolution_type_id: number;
   is_affect: DropdownDataBoolean;
+  year: number;
 };
 
 export type ResolutionType = {

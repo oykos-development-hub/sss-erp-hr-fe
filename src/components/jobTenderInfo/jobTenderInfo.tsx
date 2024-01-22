@@ -3,6 +3,7 @@ import {JobTender} from '../../types/graphql/jobTenders';
 import {parseDate} from '../../utils/dateUtils';
 import {MainTitle} from '../employeesList/styles';
 import {Column, Container, Details, InfoPreview, StyledLabel, StyledValue} from './styles';
+import FileList from '../fileList/fileList';
 
 interface JobTenderInfo {
   data: JobTender;
@@ -27,6 +28,10 @@ const JobTenderInfo = ({data}: JobTenderInfo) => {
           <InfoPreview>
             <StyledLabel variant="bodyMedium" content="Broj oglasa:" />
             <StyledValue variant="bodyMedium" content={data?.serial_number} />
+          </InfoPreview>
+          <InfoPreview>
+            <StyledLabel variant="bodyMedium" content="Dokument:" />
+            <StyledValue variant="bodyMedium" content={<FileList files={data?.file?.id ? [data?.file] : []} />} />
           </InfoPreview>
         </Column>
         <Column>

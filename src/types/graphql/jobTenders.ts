@@ -3,6 +3,8 @@ import {DropdownDataNumber} from '../dropdownData';
 import {OrganizationUnit} from './organizationUnits';
 import {DeleteResponse, DetailsResponse, GetResponse, InsertResponse} from './response';
 import {JobTenderType} from './jobTenderTypes';
+import {FileItem} from '../fileUploadType';
+import {number} from 'yup';
 
 export interface DropdownItemType {
   id: number;
@@ -20,7 +22,7 @@ export interface JobTender {
   date_of_end: string | null;
   created_at?: string;
   updated_at?: string;
-  file_id: number;
+  file: FileItem;
   job_position?: DropdownItemType;
   number_of_vacant_seats: number | null;
 }
@@ -31,11 +33,12 @@ export interface JobTenderParams {
   type?: DropdownItemType;
   description: string;
   serial_number: string;
-  date_of_start: string;
+  date_of_start: string | null;
   date_of_end: string | null;
   created_at?: string;
   updated_at?: string;
   file_id: number;
+  number_of_vacant_seats?: number;
 }
 
 export type JobTenderForm = {

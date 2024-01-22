@@ -1,5 +1,5 @@
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import useInsertJobTender from '../../services/graphql/jobTenders/useInsertJobTender';
 import {JobTendersModalProps} from '../../types/graphql/jobTenders';
@@ -7,6 +7,7 @@ import {FileUploadWrapper, ModalContentWrapper, Row} from '../education/modals/s
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
+import useAppContext from '../../context/useAppContext';
 
 const jobTenderSchema = yup.object().shape({
   type: yup
@@ -61,6 +62,10 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
   } = useForm({resolver: yupResolver(jobTenderSchema)});
 
   const {insertJobTender, loading: isSaving} = useInsertJobTender();
+  const [files, setFiles] = useState<FileList | null>(null);
+  const {
+    fileService: {uploadFile},
+  } = useAppContext();
 
   useEffect(() => {
     if (selectedItem) {
@@ -83,35 +88,58 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
     }
   }, [type]);
 
-  const onSubmit = (values: any) => {
-    if (isSaving) return;
+  const handleInsertJobTender = async (data: any) => {
+    insertJobTender(
+      data,
+      () => {
+        alert.success('Uspješno sačuvano.');
+        refetch();
+        onClose();
+        reset(initialValues);
+      },
+      () => {
+        alert.success('Uspješno sačuvano.');
+      },
+    );
+  };
 
-    try {
-      insertJobTender(
-        {
-          id: values.id,
-          organization_unit_id: values?.organization_unit_id?.id,
-          type: values?.type?.id,
-          description: '',
-          serial_number: values.serial_number,
-          date_of_start: parseDateForBackend(values?.date_of_start),
-          date_of_end: parseDateForBackend(values?.date_of_end),
-          file_id: values?.file_id,
-          number_of_vacant_seats: values?.number_of_vacant_seats,
+  const onSubmit = async (values: any) => {
+    if (isSaving) return;
+    const payload = {
+      id: values.id,
+      organization_unit_id: values?.organization_unit_id?.id,
+      type: values?.type?.id,
+      description: '',
+      serial_number: values.serial_number,
+      date_of_start: parseDateForBackend(values?.date_of_start),
+      date_of_end: parseDateForBackend(values?.date_of_end),
+      number_of_vacant_seats: values?.number_of_vacant_seats,
+    };
+
+    if (files) {
+      const formData = new FormData();
+      const fileArray = Array.from(files);
+
+      formData.append('file', fileArray[0]);
+
+      await uploadFile(
+        formData,
+        (res: any) => {
+          setFiles(null);
+          const updatedData = {...payload, file_id: res[0]?.id};
+          handleInsertJobTender(updatedData);
         },
         () => {
-          alert.success('Uspješno sačuvano.');
-          refetch();
-          onClose();
-          reset(initialValues);
-        },
-        () => {
-          alert.success('Uspješno sačuvano.');
+          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
         },
       );
-    } catch (e) {
-      console.log(e);
+    } else {
+      handleInsertJobTender(payload);
     }
+  };
+
+  const handleUpload = (files: FileList) => {
+    setFiles(files);
   };
 
   return (
@@ -209,7 +237,7 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
               icon={<></>}
               style={{width: '100%'}}
               variant="secondary"
-              onUpload={item => console.log(item)}
+              onUpload={handleUpload}
               note={<Typography variant="bodySmall" content="Dokument oglasa" />}
               buttonText="Učitaj"
             />
