@@ -31,7 +31,11 @@ const getRevisions = `query RevisionOverview($page: Int, $size: Int, $internal_r
                 id
                 title
             }
-            file_id
+            file {
+              id
+              name
+              type
+            }
             created_at
             updated_at
         }

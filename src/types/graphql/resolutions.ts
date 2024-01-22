@@ -1,3 +1,4 @@
+import {FileItem} from '../../components/fileModalView/types';
 import {DropdownDataBoolean} from '../dropdownData';
 import {DeleteResponse, GetResponse, InsertResponse} from './response';
 
@@ -9,7 +10,7 @@ export type ProfileResolution = {
   date_of_end?: string;
   created_at?: string;
   updated_at?: string;
-  file_id: number;
+  file: FileItem;
   resolution_type: ResolutionType | null;
   is_affect: DropdownDataBoolean;
 };

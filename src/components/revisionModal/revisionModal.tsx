@@ -1,5 +1,5 @@
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {quarterOptions} from '../../constants';
 import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
@@ -12,6 +12,7 @@ import {revisionInsertItem} from '../../types/graphql/revisionInsert';
 import {FormGroupFullWidth} from '../revisionTipsModal/styles';
 import {Column, FileUploadWrapper, FormGroup, ModalForm, ModalSection, Row} from './styles';
 import {RevisionFormValues} from '../../types/graphql/revisions';
+import useAppContext from '../../context/useAppContext';
 
 interface RevisionModalProps {
   open: boolean;
@@ -49,6 +50,10 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
     revision_type_id: 0,
     revisor_id: 0,
   });
+  const [files, setFiles] = useState<FileList | null>(null);
+  const {
+    fileService: {uploadFile},
+  } = useAppContext();
 
   const {settingsData} = useGetSettings({entity: 'revision_types'});
 
@@ -69,22 +74,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
     setValue,
   } = useForm<RevisionFormValues>({defaultValues: initialValues});
 
-  const onSubmit = (values: any) => {
-    if (isSaving) return;
-
-    const data: revisionInsertItem = {
-      id: values?.id,
-      title: values?.title || null,
-      plan_id: planId,
-      serial_number: values?.serial_number || null,
-      date_of_revision: values?.date_of_revision || null,
-      revision_quartal: values?.revision_quartal.id || null,
-      internal_revision_subject_id: values?.internal_revision_subject_id?.map((item: any) => item.value),
-      external_revision_subject_id: values?.external_revision_subject_id?.id || null,
-      revisor_id: values?.revisor_id?.map((item: any) => item.value),
-      revision_type_id: values?.revision_type_id.id || null,
-    };
-
+  const handleInsertRevision = (data: any) => {
     insertRevision(
       data,
       () => {
@@ -101,6 +91,44 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
         );
       },
     );
+  };
+
+  const onSubmit = async (values: any) => {
+    if (isSaving) return;
+
+    const data: revisionInsertItem = {
+      id: values?.id,
+      title: values?.title || null,
+      plan_id: planId,
+      serial_number: values?.serial_number || null,
+      date_of_revision: values?.date_of_revision || null,
+      revision_quartal: values?.revision_quartal.id || null,
+      internal_revision_subject_id: values?.internal_revision_subject_id?.map((item: any) => item.value),
+      external_revision_subject_id: values?.external_revision_subject_id?.id || null,
+      revisor_id: values?.revisor_id?.map((item: any) => item.value),
+      revision_type_id: values?.revision_type_id.id || null,
+    };
+
+    if (files) {
+      const formData = new FormData();
+      const fileArray = Array.from(files);
+
+      formData.append('file', fileArray[0]);
+
+      await uploadFile(
+        formData,
+        (res: any) => {
+          setFiles(null);
+          const updatedData = {...data, file_id: res[0]?.id};
+          handleInsertRevision(updatedData);
+        },
+        () => {
+          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+        },
+      );
+    } else {
+      handleInsertRevision(data);
+    }
   };
 
   const internalSubject = watch('internal_revision_subject_id');
@@ -146,6 +174,10 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
       });
     }
   }, [revisionDetails]);
+
+  const handleUpload = (files: FileList) => {
+    setFiles(files);
+  };
 
   return (
     <Modal
@@ -303,7 +335,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
               icon={<></>}
               style={{width: '100%'}}
               variant="secondary"
-              onUpload={(item: any) => console.log(item)}
+              onUpload={handleUpload}
               note={<Typography variant="bodySmall" content="Upload dokumenta" />}
               buttonText="Učitaj"
             />

@@ -1,3 +1,4 @@
+import {FileItem} from '../../components/fileModalView/types';
 import {DropdownDataNumber, DropdownDataString} from '../dropdownData';
 import {DeleteResponse, DetailsResponse, GetResponse, InsertResponse} from './response';
 
@@ -13,7 +14,7 @@ export type RevisionTip = {
   documents: string;
   reasons_for_non_executing: string;
   user_profile: DropdownDataNumber;
-  file_id: number;
+  file: FileItem;
   created_at: string;
   updated_at: string;
   revision_priority: string;

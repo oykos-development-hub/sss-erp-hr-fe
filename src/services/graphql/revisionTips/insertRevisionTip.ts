@@ -20,7 +20,11 @@ const insertRevisionTip = `mutation($data: RevisionTipsInsertMutation!) {
                 id
                 title
             }
-            file_id
+            file {
+              id
+              name
+              type
+            }
             created_at
             updated_at
             responsible_person

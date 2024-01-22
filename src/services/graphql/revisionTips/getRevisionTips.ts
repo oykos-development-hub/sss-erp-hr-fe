@@ -24,7 +24,11 @@ const getRevisionTips = `query RevisionTipsOverview($page: Int, $size: Int, $rev
                 id
                 title
             }
-            file_id
+            file {
+              id
+              name
+              type
+            }
             created_at
             updated_at
             responsible_person

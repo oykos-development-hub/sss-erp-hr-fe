@@ -41,7 +41,5 @@ export const RevisionTableHeads: TableHead[] = [
     type: 'custom',
     renderContents: item => <Typography variant="bodyMedium" content={item.title} />,
   },
-  {title: 'Datoteka', accessor: 'file_id'},
-
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];

@@ -1,4 +1,4 @@
-import {Button, Divider, EditIconTwo, Table, Theme, TrashIconTwo} from 'client-library';
+import {Button, Divider, EditIconTwo, Table, Theme, TrashIconTwo, FileIcon} from 'client-library';
 import React, {useState} from 'react';
 import {RevisionTipsModal} from '../../../components/revisionTipsModal/revisionTipsModal';
 import useGetRevisionTips from '../../../services/graphql/revisionTips/useRevisionTipsOverview';
@@ -8,6 +8,8 @@ import {MicroserviceProps} from '../../../types/micro-service-props';
 import {MainTitle, RevisionListContainer, TableHeader} from '../styles';
 import {RevisionTipsTableHeads} from './constants';
 import useDeleteRevisionTip from '../../../services/graphql/revisionTips/useRevisionTipsDelete';
+import {FileItem} from '../../../components/fileModalView/types';
+import FileModalView from '../../../components/fileModalView/fileModalView';
 
 interface RevisionTipsListProps {
   context: MicroserviceProps;
@@ -22,6 +24,7 @@ const RevisionTips: React.FC<RevisionTipsListProps> = ({context}) => {
   const toggleDeleteModal = (id: number) => {
     setDeleteModal(id);
   };
+  const [fileToView, setFileToView] = useState<FileItem>();
 
   const {deleteRevisionTip} = useDeleteRevisionTip();
 
@@ -66,12 +69,20 @@ const RevisionTips: React.FC<RevisionTipsListProps> = ({context}) => {
           isLoading={loading}
           tableActions={[
             {
-              name: 'edit',
+              name: 'showFile',
+              icon: <FileIcon stroke={Theme.palette.gray600} />,
+              onClick: (row: any) => {
+                setFileToView(row?.file);
+              },
+              shouldRender: (row: any) => row?.file?.id,
+            },
+            {
+              name: 'Izmijeni',
               onClick: item => handleEdit(item.id),
               icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
             },
             {
-              name: 'delete',
+              name: 'Obriši',
               onClick: item => toggleDeleteModal(item.id),
               icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
             },
@@ -80,6 +91,7 @@ const RevisionTips: React.FC<RevisionTipsListProps> = ({context}) => {
 
         <ConfirmModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleConfirm={handleDelete} />
       </RevisionListContainer>
+      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
 
       {revisionTipsModal && (
         <RevisionTipsModal

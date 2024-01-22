@@ -1,4 +1,4 @@
-import {Button, Divider, Dropdown, EditIconTwo, Table, Theme, TrashIconTwo} from 'client-library';
+import {Button, Divider, Dropdown, EditIconTwo, Table, Theme, TrashIconTwo, FileIcon} from 'client-library';
 import React, {useState} from 'react';
 import {RevisionModal} from '../../../components/revisionModal/revisionModal';
 import useGetOrganizationUnits from '../../../services/graphql/organizationUnits/useGetOrganizationUnits';
@@ -11,6 +11,8 @@ import {DropdownDataNumber} from '../../../types/dropdownData';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import {FilterContainer, Filters, MainTitle, RevisionListContainer, TableHeader} from '../styles';
 import {RevisionTableHeads} from './constants';
+import FileModalView from '../../../components/fileModalView/fileModalView';
+import {FileItem} from '../../../components/fileModalView/types';
 
 interface RevisionProps {
   context: MicroserviceProps;
@@ -24,6 +26,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
   const [unitID, setUnitID] = useState(0);
   const [revisorId, setRevisorId] = useState<number>(0);
   const [revisonTypeId, setRevisonTypeId] = useState<number>(0);
+  const [fileToView, setFileToView] = useState<FileItem>();
 
   const [editId, setEditId] = useState(0);
   const {revisions, loading, refetch} = useGetRevisions({
@@ -140,12 +143,20 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
           }}
           tableActions={[
             {
-              name: 'edit',
+              name: 'showFile',
+              icon: <FileIcon stroke={Theme.palette.gray600} />,
+              onClick: (row: any) => {
+                setFileToView(row?.file);
+              },
+              shouldRender: (row: any) => row?.file?.id,
+            },
+            {
+              name: 'Izmijeni',
               onClick: item => handleEdit(item.id),
               icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
             },
             {
-              name: 'delete',
+              name: 'Obriši',
               onClick: item => toggleDeleteModal(item.id),
               icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
             },
@@ -155,6 +166,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
         <ConfirmModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleConfirm={handleDelete} />
       </RevisionListContainer>
 
+      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
       {revisionModalShow && (
         <RevisionModal
           open={revisionModalShow}

@@ -1,6 +1,7 @@
 import {ValueType} from '@oykos-development/devkit-react-ts-styled-components';
 import {DropdownDataNumber, DropdownDataString} from '../dropdownData';
 import {DeleteResponse, DetailsResponse, GetResponse, InsertResponse} from './response';
+import {FileItem} from '../../components/fileModalView/types';
 
 export type Revision = {
   id: number;
@@ -14,7 +15,7 @@ export type Revision = {
   external_revision_subject: DropdownDataNumber | null;
   revisor: DropdownDataNumber[];
   revision_type: DropdownDataNumber | null;
-  file_id: number;
+  file: FileItem;
 };
 
 export type RevisionInsertParams = {

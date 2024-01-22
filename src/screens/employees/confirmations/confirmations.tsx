@@ -1,4 +1,4 @@
-import {Button, Dropdown, EditIconTwo, Table, TableHead, Theme, TrashIcon, Typography} from 'client-library';
+import {Button, Dropdown, EditIconTwo, Table, TableHead, Theme, TrashIcon, Typography, FileIcon} from 'client-library';
 import React, {useMemo, useState} from 'react';
 import {ConfirmationsModal} from '../../../components/confirmationsModal/confirmationsModal';
 import useDeleteResolution from '../../../services/graphql/userProfile/resolution/useDeleteResolution';
@@ -9,6 +9,8 @@ import {parseDate} from '../../../utils/dateUtils';
 import {Container, TableHeader, YearWrapper} from './styles';
 import {yearsForDropdownFilter} from '../../../utils/constants';
 import {ProfileResolution} from '../../../types/graphql/resolutions';
+import {FileItem} from '../../../components/fileModalView/types';
+import FileModalView from '../../../components/fileModalView/fileModalView';
 
 const tableHeads: TableHead[] = [
   {
@@ -32,7 +34,6 @@ const tableHeads: TableHead[] = [
     type: 'custom',
     renderContents: is_affect => <Typography content={is_affect ? 'Da' : 'Ne'} />,
   },
-  {title: 'Datoteka', accessor: 'file_id', type: 'text'},
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];
 
@@ -46,6 +47,7 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
   const {resolutions, refetch, loading} = useGetResolutions(userProfileID);
   const {deleteResolution} = useDeleteResolution();
   const tableData = resolutions;
+  const [fileToView, setFileToView] = useState<FileItem>();
 
   const selectedItem = useMemo(
     () => tableData?.find((item: ProfileResolution) => item.id === selectedItemId),
@@ -132,19 +134,27 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
           isLoading={loading}
           tableActions={[
             {
-              name: 'edit',
+              name: 'showFile',
+              icon: <FileIcon stroke={Theme.palette.gray600} />,
+              onClick: (row: any) => {
+                setFileToView(row?.file);
+              },
+              shouldRender: (row: any) => row?.file?.id,
+            },
+            {
+              name: 'Izmijeni',
               onClick: item => handleEdit(item),
               icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
             },
             {
-              name: 'delete',
+              name: 'Obriši',
               onClick: item => handleDeleteIconClick(item.id),
               icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
             },
           ]}
         />
       </div>
-
+      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
       <ConfirmationsModal
         open={showModal}
         onClose={refetch => handleCloseModal(refetch)}

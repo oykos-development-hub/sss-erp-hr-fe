@@ -19,7 +19,11 @@ const getRevisionTipDetails = `query RevisionTipsDetails($id: Int!){
             }
             revision_priority
             end_date
-            file_id
+            file {
+              id
+              name
+              type
+            }
             created_at
             updated_at
             responsible_person

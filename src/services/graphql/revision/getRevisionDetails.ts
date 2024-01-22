@@ -29,7 +29,11 @@ const getRevisionDetails = `query RevisionDetails($id: Int!){
                     id
                     title
                 }
-                file_id
+                file {
+                  id
+                  name
+                  type
+                }
             }
         }
     }`;

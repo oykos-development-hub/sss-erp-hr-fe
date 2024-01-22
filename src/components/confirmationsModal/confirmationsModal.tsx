@@ -7,7 +7,7 @@ import {ConfirmationsModalProps} from '../../screens/employees/confirmations/typ
 import useInsertResolution from '../../services/graphql/userProfile/resolution/useInsertResolution';
 import {DropdownDataNumber} from '../../types/dropdownData';
 import {parseDate, parseDateForBackend, parseToDate} from '../../utils/dateUtils';
-import {FileUploadWrapper, FormGroup, ModalContentWrapper, UploadedFileContainer, UploadedFileWrapper} from './styles';
+import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
 import useGetSettings from '../../services/graphql/settings/useGetSettings';
 import {resolutionTypes} from '../education/modals/constants';
 import {yesOrNoOptionsString} from '../../constants';
@@ -60,21 +60,20 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
   });
 
   const {settingsData} = useGetSettings({entity: resolutionTypes.resolution_types});
-
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<FileList | null>(null);
   const resolutionType = watch('resolution_type') as DropdownDataNumber;
   const year = watch('year');
   const yearOptions = useMemo(() => [...yearsForDropdown().map(year => ({id: +year.id, title: +year.title}))], []);
 
   const handleUpload = (files: FileList) => {
-    const fileList = Array.from(files);
-    setUploadedFiles(fileList);
+    setFiles(files);
   };
 
   const {insertResolution, loading: isSaving} = useInsertResolution();
   const {vacations} = useGetVacations(userProfileId);
   const {
     contextMain: {first_name: current_user_first_name, last_name: current_user_last_name},
+    fileService: {uploadFile},
   } = useAppContext();
   const {userBasicInfo} = useGetBasicInfo(userProfileId, {skip: !userProfileId});
   const {first_name, last_name, organization_unit, job_position} = userBasicInfo || {};
@@ -115,9 +114,23 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     });
   };
 
-  const handleSave = (value: any) => {
-    if (isSaving || (isResolutionTypeAnnualLeaveIPart && !vacationForSelectedYear())) return;
+  const handleInsertResolution = async (data: any) => {
+    insertResolution(
+      data,
+      () => {
+        onClose(true);
+        generateDocument();
+        alert.success('Uspješno sačuvano.');
+      },
+      () => {
+        onClose(true);
+        alert.error('Greška. Promjene nisu sačuvane.');
+      },
+    );
+  };
 
+  const handleSave = async (value: any) => {
+    if (isSaving || (isResolutionTypeAnnualLeaveIPart && !vacationForSelectedYear())) return;
     const payload = {
       ...value,
       id: value?.id || 0,
@@ -135,19 +148,28 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     delete payload.resolution_type;
     delete payload.user_profile;
     delete payload.year;
+    delete payload.file;
 
-    insertResolution(
-      payload,
-      () => {
-        onClose(true);
-        generateDocument();
-        alert.success('Uspješno sačuvano.');
-      },
-      () => {
-        onClose(true);
-        alert.error('Greška. Promjene nisu sačuvane.');
-      },
-    );
+    if (files) {
+      const formData = new FormData();
+      const fileArray = Array.from(files);
+
+      formData.append('file', fileArray[0]);
+
+      await uploadFile(
+        formData,
+        (res: any) => {
+          setFiles(null);
+          const updatedData = {...payload, file_id: res[0]?.id};
+          handleInsertResolution(updatedData);
+        },
+        () => {
+          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+        },
+      );
+    } else {
+      handleInsertResolution(payload);
+    }
   };
 
   useEffect(() => {
@@ -263,16 +285,6 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
               buttonText="Učitaj"
             />
           </FileUploadWrapper>
-
-          {!!uploadedFiles.length && (
-            <UploadedFileWrapper>
-              {uploadedFiles.map((file, index) => (
-                <UploadedFileContainer key={index}>
-                  <Typography variant="bodySmall" content={file.name} />
-                </UploadedFileContainer>
-              ))}
-            </UploadedFileWrapper>
-          )}
         </ModalContentWrapper>
       }
       title={'SVRHA POTVRDE I RJEŠENJA'}

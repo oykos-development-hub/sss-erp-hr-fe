@@ -16,7 +16,7 @@ const initialValues = {
   external_revision_subject: null,
   revisor: [],
   revision_type: null,
-  file_id: 0,
+  file: {id: 0, name: '', type: ''},
   year: '',
 };
 

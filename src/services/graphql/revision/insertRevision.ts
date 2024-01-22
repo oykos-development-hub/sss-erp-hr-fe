@@ -26,7 +26,11 @@ const insertRevision = `mutation($data: RevisionsInsertMutation!) {
                     id
                     title
                 }
-                file_id
+                file {
+                  id
+                  name
+                  type
+                }
                 created_at
                 updated_at
             }

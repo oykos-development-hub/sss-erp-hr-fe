@@ -18,6 +18,7 @@ import {
   RevisionModal,
   Row,
 } from './styles';
+import useAppContext from '../../context/useAppContext';
 
 interface RevisionTipModalProps {
   open: boolean;
@@ -54,7 +55,10 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
   const {revisionTips} = useGetRevisionTips({page: 1, size: 1000, revision_id: revisionId});
   const [dateOfImplementation, setDateOfImplementation] = useState<any>();
   const [secondDateOfImplementation, setSecondDateOfImplementation] = useState<any>();
-
+  const [files, setFiles] = useState<FileList | null>(null);
+  const {
+    fileService: {uploadFile},
+  } = useAppContext();
   const location = context?.navigation?.location;
   const dateOfRevision = location?.state?.dateOfRevision;
 
@@ -70,7 +74,26 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
   const implementationMonthSpan = watch('due_date');
   const secondMonthSpan = watch('new_due_date');
 
-  const onSubmit = (values: any) => {
+  const handleInsertRevisionTips = (data: any) => {
+    insertRevisionTip(
+      data,
+      () => {
+        refetchList();
+        onClose();
+        reset(initialValues);
+        alert.success(revisionTipDetails.id ? 'Preporuka uspješno sačuvana.' : 'Preporuka je uspešno dodata.');
+      },
+      () => {
+        alert.error(
+          revisionTipDetails.id
+            ? 'Došlo je do greške prilikom izmjene preporuke.'
+            : 'Došlo je do greške prilikom dodavanja preporuke.',
+        );
+      },
+    );
+  };
+
+  const onSubmit = async (values: any) => {
     if (isSaving) return;
 
     const data = {
@@ -92,22 +115,26 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
       end_date: parseDateForBackend(values?.end_date) ?? undefined,
     };
 
-    insertRevisionTip(
-      data,
-      () => {
-        refetchList();
-        onClose();
-        reset(initialValues);
-        alert.success(revisionTipDetails.id ? 'Preporuka uspješno sačuvana.' : 'Preporuka je uspešno dodata.');
-      },
-      () => {
-        alert.error(
-          revisionTipDetails.id
-            ? 'Došlo je do greške prilikom izmjene preporuke.'
-            : 'Došlo je do greške prilikom dodavanja preporuke.',
-        );
-      },
-    );
+    if (files) {
+      const formData = new FormData();
+      const fileArray = Array.from(files);
+
+      formData.append('file', fileArray[0]);
+
+      await uploadFile(
+        formData,
+        (res: any) => {
+          setFiles(null);
+          const updatedData = {...data, file_id: res[0]?.id};
+          handleInsertRevisionTips(updatedData);
+        },
+        () => {
+          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+        },
+      );
+    } else {
+      handleInsertRevisionTips(data);
+    }
   };
 
   useEffect(() => {
@@ -161,6 +188,10 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
       setSecondDateOfImplementation(formattedSecondDate);
     }
   }, [dateOfRevision, implementationMonthSpan, secondMonthSpan]);
+
+  const handleUpload = (files: FileList) => {
+    setFiles(files);
+  };
 
   return (
     <RevisionModal
@@ -286,7 +317,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                 icon={<></>}
                 style={{width: '100%'}}
                 variant="secondary"
-                onUpload={(item: any) => console.log(item)}
+                onUpload={handleUpload}
                 note={<Typography variant="bodySmall" content="Upload dokumenta" />}
                 buttonText="Učitaj"
               />
