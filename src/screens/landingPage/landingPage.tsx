@@ -1,8 +1,8 @@
-import {BoxIcon, ContractIcon, ReportIcon, TextIcon, Typography} from 'client-library';
+import {AdsIcon, BookIcon, JudgeIcon, ReportIcon, SystemIcon, SystematizationIcon, Typography} from 'client-library';
 import React from 'react';
 import useAppContext from '../../context/useAppContext';
-import {Container, ContentBox, IconWrapper, LandingPageTitle, Title, TitleWrapper} from './styles';
 import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
+import {Container, ContentBox, IconWrapper, LandingPageTitle, Title, TitleWrapper} from './styles';
 
 export const LandingPage: React.FC = () => {
   const {
@@ -26,7 +26,7 @@ export const LandingPage: React.FC = () => {
               <Title variant="bodyLarge" content="Kadrovi" />
             </TitleWrapper>
             <IconWrapper>
-              <BoxIcon />
+              <SystemIcon />
             </IconWrapper>
           </ContentBox>
           <ContentBox
@@ -38,7 +38,7 @@ export const LandingPage: React.FC = () => {
               <Title variant="bodyLarge" content="Sistematizacija" />
             </TitleWrapper>
             <IconWrapper>
-              <ContractIcon />
+              <SystematizationIcon />
             </IconWrapper>
           </ContentBox>
           <ContentBox
@@ -50,7 +50,7 @@ export const LandingPage: React.FC = () => {
               <Title variant="bodyLarge" content="Sudije" />
             </TitleWrapper>
             <IconWrapper>
-              <TextIcon />
+              <JudgeIcon />
             </IconWrapper>
           </ContentBox>
           <ContentBox
@@ -62,7 +62,7 @@ export const LandingPage: React.FC = () => {
               <Title variant="bodyLarge" content="Oglasi" />
             </TitleWrapper>
             <IconWrapper>
-              <ReportIcon />
+              <AdsIcon />
             </IconWrapper>
           </ContentBox>
           <ContentBox
@@ -74,7 +74,7 @@ export const LandingPage: React.FC = () => {
               <Title variant="bodyLarge" content="Preporuke interne revizije" />
             </TitleWrapper>
             <IconWrapper>
-              <ReportIcon />
+              <BookIcon />
             </IconWrapper>
           </ContentBox>
           <ContentBox
