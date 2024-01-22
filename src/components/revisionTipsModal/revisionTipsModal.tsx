@@ -373,6 +373,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                           onChange={onChange}
                           options={revisionDeadlineOptions}
                           label="NOVI ROK SPROVOĐENJA PREPORUKE:"
+                          isDisabled={revisionTipDetails?.status === 'Sprovedena'}
                         />
                       )}
                     />
@@ -404,7 +405,11 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                   </FormGroup>
                 </Row>
                 <FormGroupFullWidth>
-                  <Input {...register('reasons_for_non_executing')} label="RAZLOZI NESPROVOĐENJA:" />
+                  <Input
+                    {...register('reasons_for_non_executing')}
+                    label="RAZLOZI NESPROVOĐENJA:"
+                    disabled={revisionTipDetails?.status === 'Sprovedena'}
+                  />
                 </FormGroupFullWidth>
               </ModalSection>
             )}
