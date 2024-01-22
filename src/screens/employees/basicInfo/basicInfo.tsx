@@ -1,6 +1,6 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import {Switch} from '@oykos-development/devkit-react-ts-styled-components';
-import {Button, Datepicker, Dropdown, Input, Typography} from 'client-library';
+import {Button, Datepicker, Dropdown, Input, Typography, FileUpload} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {
@@ -21,6 +21,8 @@ import useUpdateBasicInfo from '../../../services/graphql/userProfile/basicInfo/
 import {DropdownDataString} from '../../../types/dropdownData';
 import {parseToDate} from '../../../utils/dateUtils';
 import {backendErrors, contractPositions, initialValues} from './constants';
+import FileList from '../../../components/fileList/fileList';
+
 import {
   Controls,
   FormColumn,
@@ -37,10 +39,16 @@ import {basicInfoSchema, booleanToYesOrNo, formatData} from './utils';
 import {ContractEndModal} from '../../../components/contractEndModal/contractEndModal';
 import {ProfileBasicInfoFormValues} from '../../../types/graphql/basicInfo';
 import useGetSettings from '../../../services/graphql/settings/useGetSettings';
+import {FileUploadWrapper} from '../../../components/absentsModal/styles';
 
 export const BasicInfo: React.FC = () => {
-  const context = useAppContext();
-  const profileId = Number(context?.navigation.location.pathname.split('/')[4]);
+  const {
+    alert,
+    fileService: {uploadFile},
+    navigation,
+    countries,
+  } = useAppContext();
+  const profileId = Number(navigation.location.pathname.split('/')[4]);
   const {userBasicInfo, refetch} = useGetBasicInfo(profileId, {skip: !profileId});
 
   const [creatingChosenJobApplicant, setCreatingChosenJobApplicant] = useState<boolean>(false);
@@ -49,6 +57,7 @@ export const BasicInfo: React.FC = () => {
   const isPresident = userBasicInfo?.is_president;
   const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
   const [openContractEndModal, setOpenCotractEndModal] = useState<boolean>(false);
+  const [uploadedFile, setUploadedFile] = useState<FileList>();
 
   const {organizationUnits, departments} = useGetOrganizationUnits(undefined);
   const {options: contractTypes} = useGetSettings({entity: 'contract_types'});
@@ -74,13 +83,13 @@ export const BasicInfo: React.FC = () => {
   });
 
   const countryOptions = useMemo(() => {
-    return context.countries?.map((country: any) => {
+    return countries?.map((country: any) => {
       return {
         id: country.alpha3,
         title: country.name,
       };
     });
-  }, [context.countries]);
+  }, [countries]);
 
   const gender = watch('gender')?.id;
 
@@ -102,95 +111,138 @@ export const BasicInfo: React.FC = () => {
     }
   }, [organization_unit_id, organizationUnits]);
 
-  const onFileUpload = (acceptedFiles: FileList) => {
-    console.log('File(s) uploaded:', acceptedFiles);
+  const handleUpload = (files: FileList) => {
+    setUploadedFile(files);
   };
 
-  const handleSave = async (values: ProfileBasicInfoFormValues, close: boolean) => {
+  const handleSaveUser = (values: ProfileBasicInfoFormValues, close: boolean) => {
+    insertBasicInfo(
+      formatData(values),
+      userId => {
+        if (creatingChosenJobApplicant) {
+          updateJobTenderApplication();
+        }
+
+        refetch();
+        alert.success('Uspješno sačuvano.');
+        setIsDisabled(true);
+
+        if (close) {
+          const overviewPathname = navigation.location.pathname.split('/').slice(0, 3).join('/');
+          navigation.navigate(overviewPathname);
+        }
+
+        navigation.navigate(`/hr/employees/details/${userId}/basic-info`, {state: {scroll: true}});
+      },
+      res => {
+        const emailErr = res.message === 'user_email_exists';
+        const jmbgErr = res.message === 'user_jmbg_exists';
+
+        if (emailErr) {
+          setError('email', {
+            type: 'custom',
+            message: backendErrors[res.message],
+          });
+        }
+        if (jmbgErr) {
+          setError('official_personal_id', {
+            type: 'custom',
+            message: backendErrors[res.message],
+          });
+        }
+
+        alert.error(
+          `Greška. Promjene nisu sačuvane. ${emailErr ? 'Postojeći Email ' : ''} ${jmbgErr ? 'Postojeći JMBG ' : ''}`,
+        );
+      },
+    );
+  };
+
+  const handleUpdateUser = (values: ProfileBasicInfoFormValues, close: boolean) => {
+    updateBasicInfo(
+      formatData(values),
+      () => {
+        refetch();
+        alert.success('Uspješno sačuvano.');
+        setIsDisabled(true);
+
+        if (close) {
+          const overviewPathname = navigation.location.pathname.split('/').slice(0, 3).join('/');
+          navigation.navigate(overviewPathname);
+        }
+      },
+      () => {
+        alert.error('Greška. Promjene nisu sačuvane.');
+      },
+    );
+  };
+
+  const onSubmit = async (values: ProfileBasicInfoFormValues, close: boolean) => {
     if (isValid) {
       if (!userBasicInfo?.id) {
         if (isCreating) return;
 
-        await insertBasicInfo(
-          formatData(values),
-          userId => {
-            if (creatingChosenJobApplicant) {
-              updateJobTenderApplication();
-            }
+        if (uploadedFile) {
+          const formData = new FormData();
+          const fileArray = Array.from(uploadedFile);
 
-            refetch();
-            context.alert.success('Uspješno sačuvano.');
-            setIsDisabled(true);
+          formData.append('file', fileArray[0]);
 
-            if (close) {
-              const overviewPathname = context.navigation.location.pathname.split('/').slice(0, 3).join('/');
-              context.navigation.navigate(overviewPathname);
-            }
-
-            context.navigation.navigate(`/hr/employees/details/${userId}/basic-info`, {state: {scroll: true}});
-          },
-          res => {
-            const emailErr = res.message === 'user_email_exists';
-            const jmbgErr = res.message === 'user_jmbg_exists';
-
-            if (emailErr) {
-              setError('email', {
-                type: 'custom',
-                message: backendErrors[res.message],
-              });
-            }
-            if (jmbgErr) {
-              setError('official_personal_id', {
-                type: 'custom',
-                message: backendErrors[res.message],
-              });
-            }
-
-            context.alert.error(
-              `Greška. Promjene nisu sačuvane. ${emailErr ? 'Postojeći Email ' : ''} ${
-                jmbgErr ? 'Postojeći JMBG ' : ''
-              }`,
-            );
-          },
-        );
+          await uploadFile(
+            formData,
+            (res: any) => {
+              setUploadedFile(undefined);
+              const updatedData = {...values, contract: {...values.contract, file_id: res[0]?.id}};
+              handleSaveUser(updatedData, close);
+            },
+            () => {
+              alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+            },
+          );
+        } else {
+          handleSaveUser(values, close);
+        }
       } else {
         if (isUpdating) return;
+        if (uploadedFile) {
+          const formData = new FormData();
+          const fileArray = Array.from(uploadedFile);
 
-        updateBasicInfo(
-          formatData(values),
-          () => {
-            refetch();
-            context.alert.success('Uspješno sačuvano.');
-            setIsDisabled(true);
+          formData.append('file', fileArray[0]);
 
-            if (close) {
-              const overviewPathname = context.navigation.location.pathname.split('/').slice(0, 3).join('/');
-              context.navigation.navigate(overviewPathname);
-            }
-          },
-          () => {
-            context.alert.error('Greška. Promjene nisu sačuvane.');
-          },
-        );
+          await uploadFile(
+            formData,
+            (res: any) => {
+              const updatedData = {...values, contract: {...values.contract, file_id: res[0]?.id}};
+              handleUpdateUser(updatedData, close);
+              setUploadedFile(undefined);
+            },
+            () => {
+              alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+            },
+          );
+        } else {
+          handleUpdateUser(values, close);
+        }
       }
     }
   };
 
   const updateJobTenderApplication = async () => {
-    await insertJobTenderApplication(context.navigation.location.state.application, () => {
-      context.alert.success('Uspješno izabran kandidat.');
-      context.navigation.navigate('/hr/job-tenders-list');
-      context.navigation.location.state = {};
+    await insertJobTenderApplication(navigation.location.state.application, () => {
+      alert.success('Uspješno izabran kandidat.');
+      navigation.navigate('/hr/job-tenders-list');
+      navigation.location.state = {};
     });
   };
 
   useEffect(() => {
     refetch();
     // If new employee, enable the form immediately
-    if (context.navigation.location.pathname.split('/')[3] === 'new-employee') {
+    if (navigation.location.pathname.split('/')[3] === 'new-employee') {
       setIsDisabled(false);
     }
-  }, [context.navigation.location]);
+  }, [navigation.location]);
 
   useEffect(() => {
     if (userBasicInfo) {
@@ -229,15 +281,15 @@ export const BasicInfo: React.FC = () => {
 
   // When coming from the job tender applications, when changing an external candidates status to accepted, it leads here to create it in the system, basically becoming an internal candidate in order to be accepted
   useEffect(() => {
-    if (!context.navigation.location.state || !organizationUnits) return;
-    const {user} = context.navigation.location.state;
+    if (!navigation.location.state || !organizationUnits) return;
+    const {user} = navigation.location.state;
     setCreatingChosenJobApplicant(true);
     reset({
       ...initialValues,
       ...user,
       organization_unit_id: organizationUnits.find((opt: any) => opt.id === user?.organization_unit_id),
     });
-  }, [context.navigation.location.state, organizationUnits]);
+  }, [navigation.location.state, organizationUnits]);
 
   useEffect(() => {
     if (organization_unit_id) {
@@ -713,16 +765,20 @@ export const BasicInfo: React.FC = () => {
               <Input {...register('number_of_conference')} label="BROJ SJEDNICE:" disabled={isDisabled} />
             </FormItem>
             <FormItem>
-              <FormFileUpload
-                onUpload={onFileUpload}
-                variant="secondary"
-                buttonVariant="primary"
-                buttonText="UČITAJ"
-                buttonSize={'sm'}
-                icon={<></>}
-                note={<Typography variant="bodySmall" content="Ugovor o radu" />}
-                disabled={isDisabled}
-              />
+              <FileUploadWrapper>
+                <FileUpload
+                  icon={null}
+                  files={uploadedFile}
+                  variant="secondary"
+                  onUpload={handleUpload}
+                  buttonText="Učitaj"
+                  note={<Typography variant="bodySmall" content="Ugovor o radu" />}
+                  disabled={isDisabled}
+                />
+              </FileUploadWrapper>
+              {userBasicInfo?.contract?.file?.id !== 0 && (
+                <FileList files={(userBasicInfo?.contract?.file && [userBasicInfo?.contract?.file]) ?? []} />
+              )}
             </FormItem>
           </FormColumn>
           <FormColumn>
@@ -856,13 +912,13 @@ export const BasicInfo: React.FC = () => {
               <Button
                 content="Sačuvaj i zatvori"
                 variant="secondary"
-                onClick={() => handleSubmit((data: any) => handleSave(data, true))()}
+                onClick={() => handleSubmit((data: any) => onSubmit(data, true))()}
                 isLoading={isUpdating || isUpdatingApplication}
               />
               <Button
                 content="Sačuvaj i nastavi"
                 variant="primary"
-                onClick={() => handleSubmit((data: any) => handleSave(data, false))()}
+                onClick={() => handleSubmit((data: any) => onSubmit(data, false))()}
                 isLoading={isUpdating || isUpdatingApplication}
               />
             </>
@@ -871,7 +927,7 @@ export const BasicInfo: React.FC = () => {
               content="Sačuvaj"
               variant="primary"
               onClick={() => {
-                handleSubmit((data: any) => handleSave(data, false))();
+                handleSubmit((data: any) => onSubmit(data, false))();
               }}
               isLoading={isCreating}
             />
