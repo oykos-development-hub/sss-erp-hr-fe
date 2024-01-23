@@ -3,4 +3,12 @@ export const reportsTabs = [
   {id: 2, title: 'Šabloni', routeName: 'patterns-tab', disabled: false},
 ];
 
-export const reportsType = [{id: '0', title: 'Iskorišteni dani godišnjeg odmora za zaposlene'}];
+export const reportTypeOptions = [
+  {id: 0, title: 'Iskorišteni dani godišnjeg odmora za zaposlene'},
+  {id: 1, title: 'Izvještaj o broju sudija'},
+];
+
+export enum HrReportType {
+  UsedVacationDays = 0,
+  NumberOfJudges = 1,
+}

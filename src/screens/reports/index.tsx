@@ -11,13 +11,15 @@ import useGetOrganizationUnits from '../../services/graphql/organizationUnits/us
 import useGetUserProfiles from '../../services/graphql/userProfile/useGetUserProfiles';
 import useVacationReport from '../../services/graphql/vacationReport/useVacationReport';
 import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
-import {DropdownDataNumber, DropdownDataString} from '../../types/dropdownData.ts';
+import {DropdownDataNumber} from '../../types/dropdownData.ts';
 import {Column, FormContainer, Option, RowWrapper, TitleWrapper} from './styles';
-import {reportsTabs, reportsType} from './types';
+import {HrReportType, reportsTabs, reportTypeOptions} from './types';
 import {VacationReportResponse} from '../../types/graphql/vacationReport.ts';
+import useGetJudges from '../../services/graphql/judges/useGetJudges.ts';
+import {JudgesListFilters} from '../judges/judgeNorms/judges.tsx';
 
 interface ReportsScreenProps {
-  report_type: DropdownDataString;
+  report_type: DropdownDataNumber;
   employee: DropdownDataNumber;
   organization_unit: DropdownDataNumber;
 }
@@ -43,7 +45,7 @@ export const ReportsScreen: React.FC = () => {
   const getTitle = reportsTabs.find(tab => tab.id === activeTab)?.title ?? '';
 
   const downloadReport = (data: ReportsScreenProps) => {
-    const fileName = data.report_type.id;
+    const fileName = data.report_type.id.toString();
     const downloadPath = `/patterns/${fileName}`;
 
     saveAs(downloadPath, fileName);
@@ -53,7 +55,7 @@ export const ReportsScreen: React.FC = () => {
     switch (activeTab) {
       case 1:
         // izvještaji
-        return reportsType;
+        return reportTypeOptions;
       case 2:
         // šabloni
         return patterns;
@@ -62,15 +64,23 @@ export const ReportsScreen: React.FC = () => {
     }
   };
 
-  const {organizationUnits} = useGetOrganizationUnits();
+  const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
+  const filteredOrganizationUnits = organizationUnits?.filter(unit => unit?.id !== 3);
 
   const reportTypeID = watch('report_type')?.id;
   const organizationUnit = watch('organization_unit');
   const emloyeeId = watch('employee')?.id;
   const {userProfiles} = useGetUserProfiles({page: 1, size: 100000, organization_unit_id: organizationUnit});
-  const {fetch} = useVacationReport();
 
-  const onSubmit = async (data: ReportsScreenProps) => {
+  const {fetch} = useVacationReport();
+  const {judges} = useGetJudges({
+    page: 1,
+    size: 1000,
+    user_profile: null,
+    organization_unit: null,
+  });
+
+  const generateVacationReport = async (data: ReportsScreenProps) => {
     if (activeTab === 1) {
       const vacationReportData = await fetch({
         employee_id: emloyeeId ? emloyeeId : null,
@@ -97,6 +107,36 @@ export const ReportsScreen: React.FC = () => {
       }
     } else if (activeTab === 2) {
       downloadReport(data);
+    }
+  };
+
+  const generateNumberofJudgesReport = async (data: ReportsScreenProps) => {
+    if (activeTab === 1) {
+      const reportData = filteredOrganizationUnits
+        ?.filter(unit => (data?.organization_unit.id === 0 ? unit?.id !== 0 : unit?.id === data?.organization_unit.id))
+        ?.map((item: any) => {
+          const filteredJudges = judges
+            ?.filter((judge: any) => judge.organization_unit.id === item.id)
+            .map(judge => judge.full_name);
+          return {
+            organization_unit: item.title,
+            judges: filteredJudges,
+          };
+        });
+      generatePdf('NUMBER_OF_JUDGES_REPORT', {reportData});
+    } else {
+      //TODO: download pattern
+    }
+  };
+
+  const onSubmit = async (data: ReportsScreenProps) => {
+    switch (reportTypeID) {
+      case HrReportType.UsedVacationDays:
+        generateVacationReport(data);
+        break;
+      case HrReportType.NumberOfJudges:
+        generateNumberofJudgesReport(data);
+        break;
     }
   };
 
@@ -133,8 +173,8 @@ export const ReportsScreen: React.FC = () => {
                 )}
               />
             </Option>
-            {reportTypeID === '0' && (
-              <RowWrapper>
+            <RowWrapper>
+              {(reportTypeID === HrReportType.NumberOfJudges || reportTypeID === HrReportType.UsedVacationDays) && (
                 <Column>
                   <Controller
                     control={control}
@@ -145,14 +185,18 @@ export const ReportsScreen: React.FC = () => {
                         label="ORGANIZACIONA JEDINICA:"
                         value={value}
                         onChange={onChange}
-                        options={organizationUnits}
+                        options={
+                          reportTypeID === HrReportType.NumberOfJudges ? filteredOrganizationUnits : organizationUnits
+                        }
                         isRequired
                         error={errors.organization_unit?.message as string}
                       />
                     )}
                   />
                 </Column>
+              )}
 
+              {reportTypeID === HrReportType.UsedVacationDays && (
                 <Column>
                   <Controller
                     control={control}
@@ -171,8 +215,8 @@ export const ReportsScreen: React.FC = () => {
                     )}
                   />
                 </Column>
-              </RowWrapper>
-            )}
+              )}
+            </RowWrapper>
 
             <Button
               content={`Generiši ${getTitle.slice(0, -1).toLowerCase()}`}

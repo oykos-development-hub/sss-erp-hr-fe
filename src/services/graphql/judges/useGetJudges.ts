@@ -30,7 +30,7 @@ const ueGetJudges = (
     return optionList;
   }, [judges]);
 
-  const fetchJudges = async () => {
+  const fetchJudges = async (onSuccess?: (items: any) => void) => {
     setLoading(true);
 
     const response: JudgesResponse = await fetch(GraphQL.getJudges, {
@@ -52,6 +52,7 @@ const ueGetJudges = (
 
       setTotal(response.judges_Overview?.total ?? 0);
       setJudges(updatedList as Judge[]);
+      onSuccess && onSuccess(updatedList);
     }
 
     setLoading(false);
