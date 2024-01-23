@@ -66,7 +66,7 @@ const JudgesList: React.FC<JudgesListProps> = ({
           />
         </Filters>
         <Controls>
-          <Button content="Dodaj normu" variant="secondary" style={{width: 130}} onClick={() => addNorm()} />
+          <Button content="Dodajte normu" variant="secondary" style={{width: 130}} onClick={() => addNorm()} />
         </Controls>
       </Header>
       <Table

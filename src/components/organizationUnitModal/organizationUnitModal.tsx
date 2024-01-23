@@ -143,7 +143,7 @@ export const OrganizationalUnitModal: React.FC<OrganizationUnitModalProps> = ({
           </FormGroup>
         </ModalContentWrapper>
       }
-      title={'DODAJ NOVO ODJELJENJE'}
+      title={'DODAJTE NOVO ODJELJENJE'}
     />
   );
 };

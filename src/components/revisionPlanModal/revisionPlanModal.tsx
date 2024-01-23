@@ -76,7 +76,7 @@ export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({open, onClose, a
     <RevisionModal
       onClose={() => onClose()}
       open={open}
-      title={'DODAJ PLAN'}
+      title={'DODAJTE PLAN'}
       rightButtonOnClick={handleSubmit(onSubmit)}
       buttonLoading={isSaving}
       leftButtonText="Otkaži"

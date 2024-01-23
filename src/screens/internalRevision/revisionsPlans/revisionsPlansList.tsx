@@ -96,7 +96,7 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
               placeholder="Odaberite godinu:"
             />
           </FilterContainer>
-          <Button content="Dodaj plan" variant="secondary" onClick={() => toogleRevisionPlanModal(0)} />
+          <Button content="Dodajte plan" variant="secondary" onClick={() => toogleRevisionPlanModal(0)} />
         </TableHeader>
         <Table
           tableHeads={TableHeads}

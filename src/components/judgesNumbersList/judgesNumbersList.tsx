@@ -73,7 +73,7 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
         <Filters></Filters>
         <Controls>
           <Button
-            content="Dodaj odluku"
+            content="Dodajte odluku"
             variant="secondary"
             style={{width: 130}}
             onClick={() => navigate('/hr/judges/number-decision/new-decision')}

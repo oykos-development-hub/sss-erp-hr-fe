@@ -52,13 +52,13 @@ export const tableHeads: TableHead[] = [
 ];
 
 export const employeeTabs = [
-  {id: 1, title: 'Osnovni Podaci', routeName: 'basic-info', disabled: false},
+  {id: 1, title: 'Osnovni podaci', routeName: 'basic-info', disabled: false},
   {id: 2, title: 'Obrazovanje', routeName: 'education', disabled: false},
-  {id: 3, title: 'Radna Knjižica', routeName: 'experience', disabled: false},
-  {id: 4, title: 'Članovi Porodice', routeName: 'family-members', disabled: false},
+  {id: 3, title: 'Radna knjižica', routeName: 'experience', disabled: false},
+  {id: 4, title: 'Članovi porodice', routeName: 'family-members', disabled: false},
   {id: 5, title: 'Dozvole', routeName: 'foreigner-permits', disabled: false},
-  {id: 6, title: 'Parametri za Obračun Plata', routeName: 'salary-params', disabled: false},
-  {id: 7, title: 'Lična Ocjena', routeName: 'evaluations', disabled: false},
+  {id: 6, title: 'Parametri za obračun plata', routeName: 'salary-params', disabled: false},
+  {id: 7, title: 'Lična ocjena', routeName: 'evaluations', disabled: false},
   {id: 10, title: 'Odsutnost', routeName: 'absents', disabled: false},
-  {id: 12, title: 'Potvrde i Rješenja', routeName: 'confirmations', disabled: false},
+  {id: 12, title: 'Potvrde i rješenja', routeName: 'confirmations', disabled: false},
 ];

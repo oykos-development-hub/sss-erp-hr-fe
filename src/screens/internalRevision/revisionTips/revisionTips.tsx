@@ -60,7 +60,7 @@ const RevisionTips: React.FC<RevisionTipsListProps> = ({context}) => {
         <MainTitle variant="bodyMedium" content="PREPORUKE" />
         <Divider color={Theme?.palette?.gray200} height="1px" />
         <TableHeader>
-          <Button content="Dodaj preporuku" variant="secondary" onClick={() => toogleRevisionTipsModal(0)} />
+          <Button content="Dodajte preporuku" variant="secondary" onClick={() => toogleRevisionTipsModal(0)} />
         </TableHeader>
         <Table
           tableHeads={RevisionTipsTableHeads}

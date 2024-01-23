@@ -187,7 +187,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
           </Row>
         </ModalContentWrapper>
       }
-      title={selectedItem?.id ? 'IZMJENA NORME' : 'DODAJ NORMU'}
+      title={selectedItem?.id ? 'IZMJENA NORME' : 'DODAJTE NORMU'}
     />
   );
 };

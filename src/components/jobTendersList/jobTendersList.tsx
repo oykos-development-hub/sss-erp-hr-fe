@@ -97,7 +97,7 @@ const JobTendersList: FC<JobTendersListProps> = ({
         </Filters>
         <Controls>
           <Button
-            content="Dodaj novi oglas"
+            content="Dodajte novi oglas"
             variant="secondary"
             style={{width: 170}}
             onClick={() => toggleJobTenderImportModal()}

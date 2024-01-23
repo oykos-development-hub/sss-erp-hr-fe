@@ -207,7 +207,7 @@ export const SystematizationDetails: React.FC = () => {
                     disabled={isSystematizationInactive}
                     variant="secondary"
                     onUpload={() => console.log('uploading')}
-                    buttonText="Dodaj dokument"
+                    buttonText="Dodajte dokument"
                     note="Izaberite datoteku ili je prevucite ovdje"
                   />
                 </FileUploadWrapper>
@@ -219,7 +219,7 @@ export const SystematizationDetails: React.FC = () => {
                     disabled={isSystematizationInactive}
                     variant="secondary"
                     onUpload={() => console.log('uploading')}
-                    buttonText="Dodaj dokument"
+                    buttonText="Dodajte dokument"
                     note="Izaberite datoteku ili je prevucite ovdje"
                   />
                 </FileUploadWrapper>
@@ -229,7 +229,7 @@ export const SystematizationDetails: React.FC = () => {
                 <Button
                   style={{height: '72px'}}
                   variant="secondary"
-                  content="Dodaj odjeljenje"
+                  content="Dodajte odjeljenje"
                   onClick={() => setShowEditSectorModal(true)}
                 />
               )}
@@ -254,7 +254,7 @@ export const SystematizationDetails: React.FC = () => {
                   style={{width: '100%', marginRight: 10}}
                   variant="secondary"
                   onUpload={() => console.log('uploading')}
-                  buttonText="Dodaj dokument"
+                  buttonText="Dodajte dokument"
                   note="Izaberite datoteku ili je prevucite ovdje"
                 />
               </FileUploadWrapper>

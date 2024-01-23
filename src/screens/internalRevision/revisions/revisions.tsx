@@ -124,7 +124,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
             </FilterContainer>
           </Filters>
 
-          <Button content="Dodaj reviziju" variant="secondary" onClick={() => toogleRevisionModal(0)} />
+          <Button content="Dodajte reviziju" variant="secondary" onClick={() => toogleRevisionModal(0)} />
         </TableHeader>
         <Table
           tableHeads={RevisionTableHeads}

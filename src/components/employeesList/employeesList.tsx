@@ -106,7 +106,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
         </Filters>
         <Controls>
           <Button
-            content="Dodaj zaposlenog"
+            content="Dodajte zaposlenog"
             variant="secondary"
             style={{width: 170}}
             onClick={() => {

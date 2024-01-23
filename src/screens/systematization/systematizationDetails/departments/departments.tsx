@@ -124,7 +124,7 @@ const Departments: React.FC<DepartmentsProps> = ({
                       </MenuItem>
 
                       <MenuItem onClick={(e: any) => addJobPosition(e, sector)}>
-                        <Typography content="Dodaj radno mjesto" variant="bodyMedium" />
+                        <Typography content="Dodajte radno mjesto" variant="bodyMedium" />
                       </MenuItem>
 
                       <MenuItem

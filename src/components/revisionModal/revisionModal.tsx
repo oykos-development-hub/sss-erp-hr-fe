@@ -183,7 +183,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
     <Modal
       onClose={() => onClose()}
       open={open}
-      title={'DODAJ REVIZIJU'}
+      title={'DODAJTE REVIZIJU'}
       rightButtonOnClick={handleSubmit(onSubmit)}
       buttonLoading={isSaving}
       leftButtonText="Otkaži"
