@@ -13,13 +13,17 @@ const getEvaluations = `query UserProfileEvaluation($user_profile_id: Int!){
             score
             evaluator
             is_relevant
+            decision_number
+            evaluation_period
+            reason_for_evaluation
             created_at
             updated_at
+            file_id
             file {
-              id
-              name
-              type
-          }
+                id
+                name
+                type
+            }
         }
     }
 }`;

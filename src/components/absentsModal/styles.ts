@@ -16,12 +16,3 @@ export const FileUploadWrapper = styled.div`
   width: 100%;
   margin-block: 10px;
 `;
-
-export const UploadedFileWrapper = styled.div`
-  margin-top: 20px;
-`;
-
-export const UploadedFileContainer = styled.div`
-  padding-top: 20px;
-  padding-inline: 10px;
-`;

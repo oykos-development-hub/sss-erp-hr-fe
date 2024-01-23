@@ -1,7 +1,8 @@
-const insertEvaluation = `mutation UserProfileinsertEvaluation($data: UserProfileEvaluationInsertMutation!){
+const insertEvaluation = `mutation UserProfileEvaluationInsert($data: UserProfileEvaluationInsertMutation!){
     userProfile_Evaluation_Insert(data: $data) {
         message
         status
+        data
         item {
             id
             user_profile_id
@@ -12,10 +13,16 @@ const insertEvaluation = `mutation UserProfileinsertEvaluation($data: UserProfil
             date_of_evaluation
             score
             evaluator
+            reason_for_evaluation
             is_relevant
             created_at
             updated_at
             file_id
+            file {
+                id
+                name
+                type
+            }
         }
     }
 }`;

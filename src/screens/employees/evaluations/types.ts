@@ -1,10 +1,6 @@
 import {Settings} from '../../../types/graphql/settings';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 
-export interface EvaluationPageProps {
-  context: MicroserviceProps;
-}
-
 export type YearType = {
   id: number | string;
   title: string;

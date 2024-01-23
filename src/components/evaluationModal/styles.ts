@@ -20,15 +20,9 @@ export const Row = styled.div`
 `;
 
 export const FileUploadWrapper = styled.div`
+  max-width: 600px;
   display: flex;
   align-items: center;
   width: 100%;
-  > div > div {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    & div > p > p {
-      font-weight: 600;
-    }
-  }
+  margin-block: 10px;
 `;

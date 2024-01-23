@@ -1,8 +1,7 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import {Datepicker, Dropdown, FileUpload, Modal, Typography} from 'client-library';
+import {Datepicker, Dropdown, FileUpload, Modal, Typography, Input} from 'client-library';
 import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import * as yup from 'yup';
 import {yesOrNoOptionsString} from '../../constants';
 import {EvaluationModalProps} from '../../screens/employees/evaluations/types';
 import useEvaluationInsert from '../../services/graphql/userProfile/evaluation/useInsertEvaluation';
@@ -11,23 +10,9 @@ import {ProfileEvaluationFormValues, ProfileEvaluationParams} from '../../types/
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormWrapper, Row} from './styles';
 import useAppContext from '../../context/useAppContext';
+import {ReasonForAssessment, evaluationSchema} from './constants';
 
-const evaluationSchema = yup.object().shape({
-  date_of_evaluation: yup.date().required('Ovo polje je obavezno'),
-  is_relevant: yup
-    .object()
-    .shape({id: yup.string().required(), title: yup.string().required()})
-    .required('Ovo polje je obavezno')
-    .nullable(),
-  evaluation_type_id: yup
-    .object()
-    .shape({id: yup.number().required(), title: yup.string().required()})
-    .required('Ovo polje je obavezno')
-    .nullable(),
-  user_profile_id: yup.number().required('Ovo polje je obavezno'),
-});
-
-export const EvaluationModal: React.FC<EvaluationModalProps> = ({
+export const EvaluationModalForJudge: React.FC<EvaluationModalProps> = ({
   alert,
   refetchList,
   selectedItem,
@@ -47,6 +32,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
     control,
     formState: {errors},
     reset,
+    register,
   } = useForm({
     resolver: yupResolver(evaluationSchema),
     defaultValues: {user_profile_id: Number(userProfileId) ?? null},
@@ -85,6 +71,10 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
       evaluation_type_id: data.evaluation_type_id?.id ?? 0,
       is_relevant: data.is_relevant?.id === 'Da' ? true : false,
       date_of_evaluation: parseDateForBackend(data?.date_of_evaluation),
+      reason_for_evaluation: data?.reason_for_evaluation?.title || '',
+      evaluation_period: data.evaluation_period,
+      decision_number: data.decision_number,
+      file_id: data.file_id,
     };
 
     if (files) {
@@ -117,6 +107,10 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
         date_of_evaluation: parseToDate(selectedItem?.date_of_evaluation),
         evaluation_type_id: {id: selectedItem?.evaluation_type.id, title: selectedItem?.evaluation_type.title},
         user_profile_id: Number(userProfileId),
+        reason_for_evaluation: {
+          id: selectedItem?.reason_for_evaluation,
+          title: selectedItem?.reason_for_evaluation,
+        },
       });
     }
   }, [selectedItem]);
@@ -125,7 +119,6 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
     setFiles(files);
     alert.success('Fajlovi uspješno učitani');
   };
-
   return (
     <Modal
       open={open}
@@ -155,7 +148,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
               )}
             />
             <Controller
-              name="is_relevant"
+              name="reason_for_evaluation"
               control={control}
               render={({field: {onChange, name, value}}) => {
                 return (
@@ -163,10 +156,9 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
                     onChange={onChange}
                     value={value as any}
                     name={name}
-                    label="PRAVOSNAŽNOST:"
-                    options={yesOrNoOptionsString}
-                    error={errors.is_relevant?.message}
-                    isRequired
+                    label="RAZLOG OCJENJIVANJA:"
+                    options={ReasonForAssessment}
+                    error={errors.reason_for_evaluation?.message}
                   />
                 );
               }}
@@ -190,17 +182,39 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
                 );
               }}
             />
-            <FileUploadWrapper>
-              <FileUpload
-                icon={<></>}
-                style={{width: '100%'}}
-                variant="secondary"
-                onUpload={handleFileUpload}
-                note={<Typography variant="bodySmall" content="Validacija" />}
-                buttonText="Učitaj"
-              />
-            </FileUploadWrapper>
+            <Input {...register('evaluation_period')} label="PERIOD OCJENJVANJA:" />
           </Row>
+          <Row>
+            <Input {...register('decision_number')} label="BROJ ODLUKE:" />
+            <Controller
+              name="is_relevant"
+              control={control}
+              render={({field: {onChange, name, value}}) => {
+                return (
+                  <Dropdown
+                    onChange={onChange}
+                    value={value as any}
+                    name={name}
+                    label="PRAVOSNAŽNOST:"
+                    options={yesOrNoOptionsString}
+                    error={errors.is_relevant?.message}
+                    isRequired
+                  />
+                );
+              }}
+            />
+          </Row>
+
+          <FileUploadWrapper>
+            <FileUpload
+              icon={<></>}
+              style={{width: '100%'}}
+              variant="secondary"
+              onUpload={handleFileUpload}
+              note={<Typography variant="bodySmall" content="Validacija" />}
+              buttonText="Učitaj"
+            />
+          </FileUploadWrapper>
         </FormWrapper>
       }
       title={'DODAJTE LIČNU OCJENU'}
