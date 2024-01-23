@@ -309,14 +309,14 @@ export const BasicInfo: React.FC = () => {
 
   useEffect(() => {
     if (dirtyFields.is_president) {
-      is_president ? setValue('is_judge', true) : setValue('is_judge', false);
+      if (is_president) setValue('is_judge', true);
     }
   }, [is_president]);
 
   const isJudgeSwitchDisabled = (): boolean => {
     if (creatingChosenJobApplicant) return true;
     if (organization_unit_id?.title && organization_unit_id.title?.indexOf('Sudski savjet') > -1) return true;
-    if (is_judge) return false;
+    if (userBasicInfo?.is_judge || is_judge) return false;
     if (judgeAvailablity?.judge) return false;
     return true;
   };
@@ -325,7 +325,7 @@ export const BasicInfo: React.FC = () => {
     if (creatingChosenJobApplicant) return true;
     if (organization_unit_id?.title && organization_unit_id.title?.indexOf('Sudski savjet') > -1) return true;
     if (isPresident) return false;
-    if (judgeAvailablity?.president) return false;
+    if (judgeAvailablity?.president && is_judge) return false;
 
     return true;
   };
@@ -337,6 +337,10 @@ export const BasicInfo: React.FC = () => {
       setValue('job_position_in_organization_unit_id', null);
     }
   }, [is_judge, is_president]);
+
+  useEffect(() => {
+    if (is_president && !is_judge) setValue('is_president', false);
+  }, [is_judge]);
 
   const isJobPositionInputDisabled =
     isDisabled ||
