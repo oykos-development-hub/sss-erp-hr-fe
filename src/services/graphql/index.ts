@@ -16,6 +16,7 @@ import getJobTenderTypes from './jobTenderTypes/getJobTenderTypes';
 import deleteJobTender from './jobTenders/deleteJobTender';
 import getJobTenders from './jobTenders/getJobTenders';
 import insertJobTender from './jobTenders/insertJobTender';
+import judgeEvaluationReport from './judgeEvaluationReport/judgeEvaluationReport';
 import getJudgeAvailability from './judges/getJudgeAvailability';
 import getJudges from './judges/getJudges';
 import deleteJudgeNorm from './judges/norms/deleteJudgeNorm';
@@ -149,4 +150,5 @@ export const GraphQL = {
   deleteJobTenderApplication: deleteJobTenderApplication,
   insertJobTenderApplication: insertJobTenderApplication,
   vacationReport: vacationReport,
+  judgeEvaluationReport: judgeEvaluationReport,
 };

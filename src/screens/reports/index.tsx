@@ -1,27 +1,31 @@
 import {Tab} from '@oykos-development/devkit-react-ts-styled-components';
 import {Button, Divider, Dropdown, Theme, Typography} from 'client-library';
 import {saveAs} from 'file-saver';
-import {useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {StyledTabs} from '../../components/employeeDetails/styles';
 import {OverviewBox} from '../../components/employeesList/styles';
+import {ReasonForAssessment} from '../../components/evaluationModal/constants.ts';
 import {patterns} from '../../constants.ts';
 import useAppContext from '../../context/useAppContext';
+import useGetJudges from '../../services/graphql/judges/useGetJudges.ts';
 import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useGetUserProfiles from '../../services/graphql/userProfile/useGetUserProfiles';
 import useVacationReport from '../../services/graphql/vacationReport/useVacationReport';
 import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
 import {DropdownDataNumber} from '../../types/dropdownData.ts';
 import {Column, FormContainer, Option, RowWrapper, TitleWrapper} from './styles';
-import {HrReportType, reportsTabs, reportTypeOptions} from './types';
-import {VacationReportResponse} from '../../types/graphql/vacationReport.ts';
-import useGetJudges from '../../services/graphql/judges/useGetJudges.ts';
-import {JudgesListFilters} from '../judges/judgeNorms/judges.tsx';
+import {HrReportType, reportTypeOptions, reportsTabs} from './types';
+import useGetSettings from '../../services/graphql/settings/useGetSettings.ts';
+import useJudgeEvaluationReport from '../../services/graphql/judgeEvaluationReport/useJudgeEvaluationReport.ts';
+import {parseDate} from '../../utils/dateUtils.ts';
 
 interface ReportsScreenProps {
   report_type: DropdownDataNumber;
   employee: DropdownDataNumber;
   organization_unit: DropdownDataNumber;
+  reason_for_evaluation: DropdownDataNumber;
+  score: DropdownDataNumber;
 }
 export const ReportsScreen: React.FC = () => {
   const {
@@ -33,7 +37,6 @@ export const ReportsScreen: React.FC = () => {
 
   const {
     reportService: {generatePdf},
-    contextMain,
     alert,
   } = useAppContext();
 
@@ -63,7 +66,8 @@ export const ReportsScreen: React.FC = () => {
         return [];
     }
   };
-
+  const [evaluationTypesOption, setEvaluationTypesOption] = useState<DropdownDataNumber[]>([]);
+  const {settingsData} = useGetSettings({entity: 'evaluation_types'});
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
   const filteredOrganizationUnits = organizationUnits?.filter(unit => unit?.id !== 3);
 
@@ -73,12 +77,18 @@ export const ReportsScreen: React.FC = () => {
   const {userProfiles} = useGetUserProfiles({page: 1, size: 100000, organization_unit_id: organizationUnit});
 
   const {fetch} = useVacationReport();
+  const {fetchJudgeEvaluationReport} = useJudgeEvaluationReport();
   const {judges} = useGetJudges({
     page: 1,
     size: 1000,
     user_profile: null,
     organization_unit: null,
   });
+
+  useMemo(() => {
+    const newData = settingsData.map(item => ({id: item.id || 0, title: item.title || ''}));
+    setEvaluationTypesOption(newData);
+  }, [settingsData]);
 
   const generateVacationReport = async (data: ReportsScreenProps) => {
     if (activeTab === 1) {
@@ -129,6 +139,39 @@ export const ReportsScreen: React.FC = () => {
     }
   };
 
+  const generateJudgeEvaluationReport = async (data: ReportsScreenProps) => {
+    if (activeTab === 1) {
+      const judgeEvaluationData = await fetchJudgeEvaluationReport({
+        reason_for_evaluation: data?.reason_for_evaluation?.title || null,
+        organization_unit_id: data?.organization_unit?.id || null,
+        score: data?.score?.title || null,
+      });
+
+      const dataForReport = judgeEvaluationData?.items?.map((item: any) => {
+        return {
+          id: item.id,
+          full_name: item.full_name,
+          judgment: item.judgment,
+          reason_for_evaluation: item.reason_for_evaluation,
+          date_of_evaluation: parseDate(item.date_of_evaluation),
+          score: item.score,
+          evaluation_period: item.evaluation_period,
+          decision_number: item.decision_number,
+        };
+      });
+
+      if (dataForReport !== undefined) {
+        generatePdf('JUDGE_EVALUATION_REPORT', {
+          dataForReport,
+        });
+      } else {
+        alert.error('Greška prilikom generisanja izvještaja.');
+      }
+    } else {
+      downloadReport(data);
+    }
+  };
+
   const onSubmit = async (data: ReportsScreenProps) => {
     switch (reportTypeID) {
       case HrReportType.UsedVacationDays:
@@ -136,6 +179,9 @@ export const ReportsScreen: React.FC = () => {
         break;
       case HrReportType.NumberOfJudges:
         generateNumberofJudgesReport(data);
+        break;
+      case HrReportType.EvaluationsForJudges:
+        generateJudgeEvaluationReport(data);
         break;
     }
   };
@@ -174,12 +220,17 @@ export const ReportsScreen: React.FC = () => {
               />
             </Option>
             <RowWrapper>
-              {(reportTypeID === HrReportType.NumberOfJudges || reportTypeID === HrReportType.UsedVacationDays) && (
+              {(reportTypeID === HrReportType.NumberOfJudges ||
+                reportTypeID === HrReportType.UsedVacationDays ||
+                reportTypeID === HrReportType.EvaluationsForJudges) && (
                 <Column>
                   <Controller
                     control={control}
                     name="organization_unit"
-                    rules={{required: 'Ovo polje je obavezno!'}}
+                    rules={{
+                      required:
+                        reportTypeID !== HrReportType.EvaluationsForJudges ? 'Ovo polje je obavezno!' : undefined,
+                    }}
                     render={({field: {onChange, value}}) => (
                       <Dropdown
                         label="ORGANIZACIONA JEDINICA:"
@@ -188,7 +239,7 @@ export const ReportsScreen: React.FC = () => {
                         options={
                           reportTypeID === HrReportType.NumberOfJudges ? filteredOrganizationUnits : organizationUnits
                         }
-                        isRequired
+                        isRequired={reportTypeID !== HrReportType.EvaluationsForJudges}
                         error={errors.organization_unit?.message as string}
                       />
                     )}
@@ -215,6 +266,45 @@ export const ReportsScreen: React.FC = () => {
                     )}
                   />
                 </Column>
+              )}
+              {reportTypeID === HrReportType.EvaluationsForJudges && (
+                <>
+                  <Column>
+                    <Controller
+                      name="reason_for_evaluation"
+                      control={control}
+                      render={({field: {onChange, name, value}}) => {
+                        return (
+                          <Dropdown
+                            onChange={onChange}
+                            value={value as any}
+                            name={name}
+                            label="RAZLOG OCJENJIVANJA:"
+                            options={ReasonForAssessment}
+                          />
+                        );
+                      }}
+                    />
+                  </Column>
+                  <Column>
+                    <Controller
+                      name="score"
+                      control={control}
+                      render={({field: {onChange, name, value}}) => {
+                        return (
+                          <Dropdown
+                            onChange={onChange}
+                            value={value as any}
+                            name={name}
+                            label="OCJENA:"
+                            options={evaluationTypesOption}
+                            isRequired
+                          />
+                        );
+                      }}
+                    />
+                  </Column>
+                </>
               )}
             </RowWrapper>
 
