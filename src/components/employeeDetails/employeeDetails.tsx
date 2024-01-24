@@ -59,7 +59,7 @@ const EmployeeDetails: React.FC = () => {
       case 'confirmations':
         return <ConfirmationsPage context={context} />;
       case 'evaluations':
-        return <EvaluationsPage context={context} />;
+        return <EvaluationsPage />;
       case 'absents':
         return <Absents context={context} />;
       default:
