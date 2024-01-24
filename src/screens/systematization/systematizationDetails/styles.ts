@@ -39,7 +39,6 @@ export const FileUploadWrapper = styled.div`
   & > div > div {
     display: flex;
     justify-content: space-between;
-    width: 100%;
 
     & div > p > p {
       font-weight: 600;

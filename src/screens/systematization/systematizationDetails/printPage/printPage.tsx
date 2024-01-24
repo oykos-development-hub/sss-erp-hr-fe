@@ -2,7 +2,7 @@ import React from 'react';
 import {PrintPageProps} from '../../types';
 import {JobInfo, PrintPageWrapper, SectorTitle} from './styles';
 import {Typography, Divider, Theme} from 'client-library';
-import {SectorType} from '../../../../types/graphql/systematizationsTypes';
+import {SectorJobPosition, SectorType} from '../../../../types/graphql/systematizationsTypes';
 
 export const PrintPage: React.FC<PrintPageProps> = ({sectorDetails}) => {
   return (
@@ -17,7 +17,7 @@ export const PrintPage: React.FC<PrintPageProps> = ({sectorDetails}) => {
               <Divider height="2px" color={Theme?.palette?.gray200} />
             </div>
             <div>
-              {sector?.job_positions_organization_units?.map((jobPosition: any) => {
+              {sector?.job_positions_organization_units?.map((jobPosition: SectorJobPosition) => {
                 return (
                   <>
                     <JobInfo key={`job-position-${jobPosition?.id}`}>
@@ -27,6 +27,7 @@ export const PrintPage: React.FC<PrintPageProps> = ({sectorDetails}) => {
                         style={{fontWeight: 600, minWidth: 200}}
                       />
                       <Typography variant="bodyMedium" content={jobPosition?.description} style={{minWidth: 200}} />
+                      <Typography variant="bodyMedium" content={jobPosition?.available_slots} style={{minWidth: 50}} />
                       <Typography
                         variant="bodyMedium"
                         content={jobPosition?.employees?.map((item: any) => item?.title).join(', ')}

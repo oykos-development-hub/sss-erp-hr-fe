@@ -14,10 +14,11 @@ import useUserProfiles from '../../../services/graphql/userProfile/useGetUserPro
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {
   InsertSystematizationParams,
+  SectorJobPosition,
   SectorType,
   SystematizationType,
 } from '../../../types/graphql/systematizationsTypes';
-import {parseToDate} from '../../../utils/dateUtils';
+import {parseDate, parseToDate} from '../../../utils/dateUtils';
 import {systematizationDetailsTabs} from '../constants';
 import {formatSystematization} from '../utils';
 import Departments from './departments/departments';
@@ -25,6 +26,9 @@ import {Footer} from './footer/footer';
 import {PrintPage} from './printPage/printPage';
 import {FileUploadWrapper, MainWrapper, Row, TitleWrapper, UploadWrapper} from './styles';
 import useGetJobPositions from '../../../services/graphql/jobPositions/useGetJobPositions';
+import {JobPositionOrgUnitTableData, SystematizationDocumentProps, TableData} from './printPage/types.ts';
+import {generateDocxDocument} from './printPage/docx.ts';
+import {saveAs} from 'file-saver';
 
 const initialValues: any = {
   organization_unit: null,
@@ -79,38 +83,70 @@ export const SystematizationDetails: React.FC = () => {
   const methods = useForm({
     defaultValues: {...initialValues, user_profile_id: contextMain?.id},
   });
+  const organizationUnit = methods?.watch('organization_unit');
 
   const handleSave = (data: InsertSystematizationParams) => {
-    const payload = formatSystematization(data);
+    if (activeTab === 1) {
+      const payload = formatSystematization(data);
 
-    mutate(
-      payload,
-      (item: SystematizationType) => {
-        const {id, serial_number} = item;
+      mutate(
+        payload,
+        (item: SystematizationType) => {
+          const {id, serial_number} = item;
 
-        const route =
-          id > 0 && !systematizationId ? `/hr/systematization/systematization-details/${id}` : '/hr/systematization';
-        navigate(route, {replace: true});
+          const route =
+            id > 0 && !systematizationId ? `/hr/systematization/systematization-details/${id}` : '/hr/systematization';
+          navigate(route, {replace: true});
 
-        // Reset breadcrumbs
-        breadcrumbs.remove();
+          // Reset breadcrumbs
+          breadcrumbs.remove();
 
-        id &&
-          breadcrumbs.add({
-            name: `Sistematizacija broj ${serial_number}`,
-            to: `/hr/systematization/systematization-details/${id}`,
-          });
+          id &&
+            breadcrumbs.add({
+              name: `Sistematizacija broj ${serial_number}`,
+              to: `/hr/systematization/systematization-details/${id}`,
+            });
 
-        if (systematizationDetails && systematizationDetails.id) {
-          refetch();
-        }
+          if (systematizationDetails && systematizationDetails.id) {
+            refetch();
+          }
 
-        alert.success('Uspješno sačuvano');
-      },
-      () => {
-        alert.error('Greška. Promjene nisu sačuvane.');
-      },
-    );
+          alert.success('Uspješno sačuvano');
+        },
+        () => {
+          alert.error('Greška. Promjene nisu sačuvane.');
+        },
+      );
+    } else if (systematizationDetails?.sectors?.length) {
+      const tableData = (): TableData[] => {
+        return systematizationDetails?.sectors.map((sector: SectorType) => {
+          return {
+            title: sector?.title ?? '',
+            id: sector?.id ?? 0,
+            job_positions_organization_units: sector?.job_positions_organization_units?.map(
+              (jobPosition: SectorJobPosition) => {
+                return {
+                  available_slots: jobPosition?.available_slots ?? 0,
+                  description: jobPosition?.description ?? '',
+                  requirements: jobPosition?.requirements ?? '',
+                  job_title: jobPosition?.job_positions?.title ?? '',
+                };
+              },
+            ) as JobPositionOrgUnitTableData[],
+          };
+        });
+      };
+
+      const documentProps: SystematizationDocumentProps = {
+        date: parseDate(new Date(), '.'),
+        organizationUnit: organizationUnit?.title ?? '',
+        tableData: tableData(),
+      };
+
+      generateDocxDocument(documentProps).then((blob: any) => {
+        saveAs(blob, 'Sistematizacija.docx');
+      });
+    }
   };
 
   const handleCloseModal = () => {
