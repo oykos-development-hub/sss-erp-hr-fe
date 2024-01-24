@@ -276,12 +276,14 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
           ) : (
             <>
               <Button
-                content="Sačuvaj i zatvori"
+                content="Otkaži"
                 variant="secondary"
-                onClick={() => handleSubmit((data: ProfileSalaryFormValues) => handleSave(data, true))()}
+                onClick={() => {
+                  setIsDisabled(true);
+                }}
               />
               <Button
-                content="Sačuvaj i nastavi"
+                content="Sačuvaj"
                 variant="primary"
                 onClick={() => handleSubmit((data: ProfileSalaryFormValues) => handleSave(data, false))()}
               />
