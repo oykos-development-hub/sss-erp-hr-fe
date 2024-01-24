@@ -26,7 +26,7 @@ const getJobTenderApplications = `query JobTendersApplications($job_tender_id: I
             type
             first_name
             last_name
-            official_personal_id
+            official_personal_document_number
             date_of_birth
             citizenship
             status

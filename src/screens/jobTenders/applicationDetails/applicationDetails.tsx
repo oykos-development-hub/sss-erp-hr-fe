@@ -29,11 +29,11 @@ const ApplicationDetailsScreen = (props: ScreenProps) => {
         <Details>
           <Row>
             <InfoPreview label="Tip Kandidata:" value={application?.type} />
-            <InfoPreview label="JMBG:" value={application?.official_personal_id} />
+            <InfoPreview label="JMBG:" value={application?.official_personal_document_number} />
           </Row>
           <InfoPreview label="Ime:" value={application?.first_name} />
           <InfoPreview label="Prezime:" value={application?.last_name} />
-          <InfoPreview label="Broj lične karte:" value={application?.official_personal_id} />
+          <InfoPreview label="Broj lične karte:" value={application?.official_personal_document_number} />
           <InfoPreview label="Datum rođenja:" value={parseDate(application?.date_of_birth)} />
           <InfoPreview
             label="Državljanstvo:"

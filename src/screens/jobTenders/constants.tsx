@@ -53,7 +53,7 @@ export const applicationsTableHeads: TableHead[] = [
       return <Typography content={date_of_birth ? parseDate(date_of_birth) : ''} />;
     },
   },
-  {title: 'Broj lične karte', accessor: 'official_personal_id'},
+  {title: 'Broj lične karte', accessor: 'official_personal_document_number'},
   {
     title: 'Datum prijave',
     accessor: 'date_of_application',

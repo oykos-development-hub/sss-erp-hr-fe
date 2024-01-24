@@ -37,7 +37,7 @@ export interface JobTenderApplication {
   type: 'external' | 'internal';
   first_name: string;
   last_name: string;
-  official_personal_id: string;
+  official_personal_document_number: string;
   date_of_birth: string | null;
   citizenship: string;
   nationality: string;
