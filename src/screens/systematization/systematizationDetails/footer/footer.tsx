@@ -1,7 +1,7 @@
-import {Button, Modal, Switch, Tooltip, Typography} from 'client-library';
 import React, {ReactElement, useEffect, useState} from 'react';
-import {Controller, useFormContext} from 'react-hook-form';
+import {Button, Modal, Switch, Tooltip, Typography} from 'client-library';
 import {FooterProps} from '../../types';
+import {Controller, useFormContext} from 'react-hook-form';
 import {Activation, DatepickerElement, FooterWrapper, SwitchWrapper} from './styles';
 
 export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id = 0, active = 0}) => {
@@ -34,7 +34,7 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id =
     <Switch name={name} onChange={handleSwitch} checked={isSwitchChecked} disabled={!date_of_activation || !!active} />
   );
 
-  const buttonContent = id > 0 ? (isOverViewTab ? 'Sačuvaj' : 'Štampaj') : 'Prikaži odjeljenja';
+  const buttonContent = id > 0 ? (isOverViewTab ? 'Sačuvaj' : 'Generiši dokument') : 'Prikaži odjeljenja';
 
   useEffect(() => {
     setIsSwitchChecked(isActive);

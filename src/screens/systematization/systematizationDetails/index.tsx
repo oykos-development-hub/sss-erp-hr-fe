@@ -24,7 +24,7 @@ import {formatSystematization} from '../utils';
 import Departments from './departments/departments';
 import {Footer} from './footer/footer';
 import {PrintPage} from './printPage/printPage';
-import {FileUploadWrapper, MainWrapper, Row, TitleWrapper, UploadWrapper} from './styles';
+import {FileUploadWrapper, MainWrapper, Row, TitleWrapper} from './styles';
 import useGetJobPositions from '../../../services/graphql/jobPositions/useGetJobPositions';
 import {JobPositionOrgUnitTableData, SystematizationDocumentProps, TableData} from './printPage/types.ts';
 import {generateDocxDocument} from './printPage/docx.ts';
@@ -234,32 +234,6 @@ export const SystematizationDetails: React.FC = () => {
                   }}
                 />
               </Row>
-
-              <UploadWrapper>
-                <FileUploadWrapper>
-                  <Typography content="Uvodni dio dokumenta" variant="bodySmall" />
-                  <FileUpload
-                    icon={<></>}
-                    disabled={isSystematizationInactive}
-                    variant="secondary"
-                    onUpload={() => console.log('uploading')}
-                    buttonText="Dodajte dokument"
-                    note="Izaberite datoteku ili je prevucite ovdje"
-                  />
-                </FileUploadWrapper>
-
-                <FileUploadWrapper>
-                  <Typography content="Zaključni dio dokumenta" variant="bodySmall" />
-                  <FileUpload
-                    icon={<></>}
-                    disabled={isSystematizationInactive}
-                    variant="secondary"
-                    onUpload={() => console.log('uploading')}
-                    buttonText="Dodajte dokument"
-                    note="Izaberite datoteku ili je prevucite ovdje"
-                  />
-                </FileUploadWrapper>
-              </UploadWrapper>
 
               {systematizationId && +systematizationId > 0 && !isSystematizationInactive && (
                 <Button
