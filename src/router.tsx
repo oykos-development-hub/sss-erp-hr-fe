@@ -13,13 +13,13 @@ import ApplicationsScreen from './screens/jobTenders/applications/applications';
 import {JobTenderDetailsScreen} from './screens/jobTenders/jobTenderDetails/jobTenderDetails';
 import {JudgesNumbersDetails} from './screens/judges/judgesDecisionDetails/judgesDecisionDetails';
 import {AddNewEmployee} from './screens/employees/addNew/addNew';
-import Judges from './screens/judges/landing';
-import JobTenders from './screens/jobTenders/landing';
 import RevisionPlansList from './screens/internalRevision/revisionsPlans/revisionsPlansList';
 import RevisionList from './screens/internalRevision/revisions/revisions';
 import RevisionTips from './screens/internalRevision/revisionTips/revisionTips';
 import {ReportsScreen} from './screens/reports/index.tsx';
 import {LandingPage} from './screens/landingPage/landingPage.tsx';
+import {Judges} from './screens/judges/landing.tsx';
+import {JobTenders} from './screens/jobTenders/landing.tsx';
 
 const employeesRegex = /\/hr\/employees(?!\/add-new)(\/.)?/;
 const systematizationDetailsRegex = /^\/hr\/systematization\/systematization-details(?:\/(\d+))?$/;

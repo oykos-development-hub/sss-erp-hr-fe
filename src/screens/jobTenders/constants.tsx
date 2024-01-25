@@ -24,7 +24,6 @@ export const tableHeads: TableHead[] = [
     type: 'custom',
     renderContents: (date_of_start: string) => <Typography content={date_of_start ? parseDate(date_of_start) : ''} />,
   },
-  {title: 'Dokumenta', accessor: 'file_id'},
   {title: 'Status', accessor: 'active', type: 'badge', width: 150},
   {
     title: '',
