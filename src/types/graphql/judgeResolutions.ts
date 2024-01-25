@@ -5,15 +5,18 @@ import {DeleteResponse, GetResponse, InsertResponse} from './response';
 export interface JudgeResolutionItem {
   id: number;
   organization_unit: DropdownDataNumber;
-  // available_slots_presidents: number;
-  // available_slots_judges: number;
+  available_slots_presidents: number;
+  available_slots_judges: number;
+  available_slots_total: number;
   number_of_judges: number;
   number_of_presidents: number;
-  real_number_of_judges: number;
-  real_number_of_presidents: number;
-  // number_of_employees: number;
-  // number_of_relocated_judges: number;
-  // number_of_suspended_judges: number;
+  total_number: number;
+  number_of_employees: number;
+  number_of_relocated_judges: number;
+  number_of_suspended_judges: number;
+  vacant_slots: number;
+  vacant_slots_judges: number;
+  vacant_slots_presidents: number;
 }
 
 export interface JudgeResolution {

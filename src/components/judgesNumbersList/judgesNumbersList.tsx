@@ -1,12 +1,14 @@
-import {Button, Divider, EditIconTwo, Pagination, Table, Theme, TrashIcon, EyeIcon} from 'client-library';
-import React, {useMemo, useState} from 'react';
+import {Button, Divider, EditIconTwo, Pagination, Table, Theme, TrashIcon, DownloadIcon} from 'client-library';
+import React, {useEffect, useMemo, useState} from 'react';
 import {judgesNumberResolutionTableHeads} from '../../screens/judges/judgeNorms/constants';
 import {JudgesNumberListFilters} from '../../screens/judges/judgesNumberDecisions/judgesNumberDecision';
 import useDeleteJudgeResolution from '../../services/graphql/judges/resolutions/useDeleteJudgeResolution';
 import {ConfirmModal} from '../../shared/confirmModal/confirmModal';
 import {DropdownDataString} from '../../types/dropdownData';
 import {Controls, Filters, Header, MainTitle, OverviewBox} from '../judgesList/styles';
-import {JudgeResolution} from '../../types/graphql/judgeResolutions';
+import {JudgeResolution, JudgeResolutionItem} from '../../types/graphql/judgeResolutions';
+import useOrganizationUintCalculateEmployeeStats from '../../services/graphql/judges/resolutions/useGetCurrentResolutionNumbers';
+import useAppContext from '../../context/useAppContext';
 
 export interface JudgesNumbersListProps {
   data: JudgeResolution[];
@@ -31,10 +33,15 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
   loading,
 }) => {
   const [deleteId, setDeleteId] = useState(0);
+  const [resolutionId, setResolutionId] = useState(0);
   const [deleteModal, setDeleteModal] = useState(false);
-
+  const {refetch: fetchJudgesData} = useOrganizationUintCalculateEmployeeStats({
+    resolution_id: resolutionId || null,
+  });
   const {deleteJudgeResolution} = useDeleteJudgeResolution();
-
+  const {
+    reportService: {generatePdf},
+  } = useAppContext();
   const list: JudgeResolution[] = useMemo(
     () =>
       data?.map((item: JudgeResolution) => ({
@@ -65,6 +72,26 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (resolutionId) {
+      fetchJudgesData(res => {
+        const reportData = res?.map((item: any) => ({
+          organization_unit: item.organization_unit.title,
+          available_slots_presidents: item.available_slots_presidents,
+          available_slots_judges: item.available_slots_judges,
+          available_slots_total: item.available_slots_total,
+          number_of_judges: item.number_of_judges,
+          number_of_presidents: item.number_of_presidents,
+          total_number: item.total_number,
+          vacant_slots: item.vacant_slots,
+          vacant_slots_judges: item.vacant_slots_judges,
+          vacant_slots_presidents: item.vacant_slots_presidents,
+        }));
+        generatePdf('JUDGE_NUMBER_DECISION_REPORT', {reportData});
+      });
+    }
+  }, [resolutionId]);
+
   return (
     <OverviewBox>
       <MainTitle variant="bodyMedium" content="PREGLED ODLUKA O BROJU SUDIJA I PREDSJEDNIKA" />
@@ -90,13 +117,11 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
             name: 'edit',
             onClick: row => navigate(`/hr/judges/number-decision/${row.id}`),
             icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            shouldRender: (decision: JudgeResolution) => !!decision.active,
           },
           {
-            name: 'edit',
-            onClick: row => navigate(`/hr/judges/number-decision/${row.id}`),
-            icon: <EyeIcon stroke={Theme?.palette?.gray800} />,
-            shouldRender: (decision: JudgeResolution) => !decision.active,
+            name: 'download',
+            onClick: row => setResolutionId(row.id),
+            icon: <DownloadIcon stroke={Theme.palette.gray800} />,
           },
           {
             name: 'delete',
