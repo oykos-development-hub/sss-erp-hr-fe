@@ -109,7 +109,10 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
     watch,
     setValue,
   } = useForm({
-    defaultValues: {type: {id: 'internal', title: 'Interni'}},
+    defaultValues: {
+      type: {id: 'internal', title: 'Interni'},
+      status: {id: ApplicationStatusEnum.WAITING, title: 'Na čekanju'},
+    },
     resolver: yupResolver(tenderApplicationSchema),
   });
 
@@ -128,7 +131,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
       active: true,
     };
 
-    if (!selectedItem?.id) data.status = ApplicationStatusEnum.WAITING;
+    if (!selectedItem?.id && !data.status) data.status = ApplicationStatusEnum.WAITING;
 
     if (values?.id) data.id = values?.id;
     if (data.type === 'external') {
@@ -422,27 +425,26 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                   />
                 )}
               />
-              {selectedItem?.id && (
-                <Controller
-                  name="status"
-                  rules={{required: 'Ovo polje je obavezno'}}
-                  control={control}
-                  render={({field: {onChange, name, value}}) => {
-                    return (
-                      <Dropdown
-                        onChange={onChange}
-                        value={value as any}
-                        name={name}
-                        label="STATUS:"
-                        options={applicationStatusOptions || []}
-                        error={errors.status?.message as string}
-                        isRequired
-                        placeholder="Odaberite status"
-                      />
-                    );
-                  }}
-                />
-              )}
+
+              <Controller
+                name="status"
+                rules={{required: 'Ovo polje je obavezno'}}
+                control={control}
+                render={({field: {onChange, name, value}}) => {
+                  return (
+                    <Dropdown
+                      onChange={onChange}
+                      value={value as any}
+                      name={name}
+                      label="STATUS:"
+                      options={applicationStatusOptions || []}
+                      error={errors.status?.message as string}
+                      placeholder="Odaberite status"
+                      isDisabled={!selectedItem?.id}
+                    />
+                  );
+                }}
+              />
             </Row>
           </ModalContentWrapper>
         }
