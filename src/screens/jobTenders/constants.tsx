@@ -102,21 +102,28 @@ export const evaluationTypeOptions: DropdownDataString[] = [
   },
 ];
 
+export enum ApplicationStatusEnum {
+  WAITING = 'waiting',
+  REJECTED = 'rejected',
+  ACCEPTED = 'accepted',
+  DENIED = 'denied',
+}
+
 export const applicationStatusOptions: DropdownDataString[] = [
   {
-    id: 'waiting',
+    id: ApplicationStatusEnum.WAITING,
     title: 'Na čekanju',
   },
   {
-    id: 'rejected',
+    id: ApplicationStatusEnum.REJECTED,
     title: 'Nije izabran',
   },
   {
-    id: 'accepted',
+    id: ApplicationStatusEnum.ACCEPTED,
     title: 'Izabran',
   },
   {
-    id: 'denied',
+    id: ApplicationStatusEnum.DENIED,
     title: 'Odbijen',
   },
 ];

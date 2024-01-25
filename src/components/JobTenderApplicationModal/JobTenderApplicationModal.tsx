@@ -4,6 +4,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {
+  ApplicationStatusEnum,
   applicationStatusOptions,
   applicationTypeOptions,
   evaluationTypeOptions,
@@ -126,6 +127,8 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
       job_tender_id: jobTender?.id ?? 0,
       active: true,
     };
+
+    if (!selectedItem?.id) data.status = ApplicationStatusEnum.WAITING;
 
     if (values?.id) data.id = values?.id;
     if (data.type === 'external') {
@@ -419,25 +422,27 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                   />
                 )}
               />
-              <Controller
-                name="status"
-                rules={{required: 'Ovo polje je obavezno'}}
-                control={control}
-                render={({field: {onChange, name, value}}) => {
-                  return (
-                    <Dropdown
-                      onChange={onChange}
-                      value={value as any}
-                      name={name}
-                      label="STATUS:"
-                      options={applicationStatusOptions || []}
-                      error={errors.status?.message as string}
-                      isRequired
-                      placeholder="Odaberite status"
-                    />
-                  );
-                }}
-              />
+              {selectedItem?.id && (
+                <Controller
+                  name="status"
+                  rules={{required: 'Ovo polje je obavezno'}}
+                  control={control}
+                  render={({field: {onChange, name, value}}) => {
+                    return (
+                      <Dropdown
+                        onChange={onChange}
+                        value={value as any}
+                        name={name}
+                        label="STATUS:"
+                        options={applicationStatusOptions || []}
+                        error={errors.status?.message as string}
+                        isRequired
+                        placeholder="Odaberite status"
+                      />
+                    );
+                  }}
+                />
+              )}
             </Row>
           </ModalContentWrapper>
         }
