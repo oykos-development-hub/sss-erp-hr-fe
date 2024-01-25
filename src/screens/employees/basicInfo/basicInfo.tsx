@@ -231,7 +231,7 @@ export const BasicInfo: React.FC = () => {
   const updateJobTenderApplication = async () => {
     await insertJobTenderApplication(navigation.location.state.application, () => {
       alert.success('Uspješno izabran kandidat.');
-      navigation.navigate('/hr/job-tenders-list');
+      navigation.navigate('/hr/job-tenders/job-tenders-list');
       navigation.location.state = {};
     });
   };
