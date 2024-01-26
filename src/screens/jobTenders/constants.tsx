@@ -1,5 +1,5 @@
 import React from 'react';
-import {TableHead, Typography} from 'client-library';
+import {TableHead, Typography, Badge} from 'client-library';
 import {DropdownDataString} from '../../types/dropdownData';
 import {DropdownItemType} from '../../types/graphql/jobTenders';
 import {parseDate} from '../../utils/dateUtils';
@@ -24,7 +24,17 @@ export const tableHeads: TableHead[] = [
     type: 'custom',
     renderContents: (date_of_start: string) => <Typography content={date_of_start ? parseDate(date_of_start) : ''} />,
   },
-  {title: 'Status', accessor: 'active', type: 'badge', width: 150},
+  {
+    title: 'Status',
+    accessor: 'active',
+    type: 'custom',
+    renderContents: (active, row) =>
+      row.active === true ? (
+        <Badge style={{width: 150}} content={<Typography content="Aktivan" />} variant="success" />
+      ) : (
+        <Badge style={{width: 150}} content={<Typography content="Završen" />} variant="warning" />
+      ),
+  },
   {
     title: '',
     accessor: 'TABLE_ACTIONS',

@@ -121,6 +121,7 @@ const JobTendersList: FC<JobTendersListProps> = ({
             name: 'edit',
             onClick: item => toggleJobTenderImportModal(item),
             icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+            shouldRender: (row: any) => row?.active,
           },
           {
             name: 'delete',
@@ -129,6 +130,7 @@ const JobTendersList: FC<JobTendersListProps> = ({
               setDeleteItemID(item.id);
             },
             icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+            shouldRender: (row: any) => row?.active,
           },
         ]}
       />
