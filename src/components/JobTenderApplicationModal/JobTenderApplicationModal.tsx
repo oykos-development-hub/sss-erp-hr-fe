@@ -422,29 +422,30 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                     selected={value}
                     isRequired
                     error={errors.date_of_application?.message as string}
+                    minDate={jobTender?.date_of_end ? new Date(jobTender?.date_of_end) : undefined}
                   />
                 )}
               />
-
-              <Controller
-                name="status"
-                rules={{required: 'Ovo polje je obavezno'}}
-                control={control}
-                render={({field: {onChange, name, value}}) => {
-                  return (
-                    <Dropdown
-                      onChange={onChange}
-                      value={value as any}
-                      name={name}
-                      label="STATUS:"
-                      options={applicationStatusOptions || []}
-                      error={errors.status?.message as string}
-                      placeholder="Odaberite status"
-                      isDisabled={!selectedItem?.id}
-                    />
-                  );
-                }}
-              />
+              {selectedItem?.id && (
+                <Controller
+                  name="status"
+                  rules={{required: 'Ovo polje je obavezno'}}
+                  control={control}
+                  render={({field: {onChange, name, value}}) => {
+                    return (
+                      <Dropdown
+                        onChange={onChange}
+                        value={value as any}
+                        name={name}
+                        label="STATUS:"
+                        options={applicationStatusOptions || []}
+                        error={errors.status?.message as string}
+                        placeholder="Odaberite status"
+                      />
+                    );
+                  }}
+                />
+              )}
             </Row>
           </ModalContentWrapper>
         }

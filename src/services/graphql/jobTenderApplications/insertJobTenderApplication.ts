@@ -23,7 +23,10 @@ const insertJobTenderApplication = `mutation($data: JobTenderApplicationInsertMu
             date_of_birth
             date_of_application
             official_personal_document_number
-            evaluation
+            evaluation {
+                id
+                title
+            }
             status
             created_at
             updated_at

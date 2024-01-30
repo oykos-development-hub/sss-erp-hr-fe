@@ -282,11 +282,13 @@ export const BasicInfo: React.FC = () => {
   // When coming from the job tender applications, when changing an external candidates status to accepted, it leads here to create it in the system, basically becoming an internal candidate in order to be accepted
   useEffect(() => {
     if (!navigation.location.state || !organizationUnits) return;
-    const {user} = navigation.location.state;
+
+    const {user, application} = navigation.location.state;
     setCreatingChosenJobApplicant(true);
     reset({
       ...initialValues,
       ...user,
+      date_of_start: application?.date_of_application,
       organization_unit_id: organizationUnits.find((opt: any) => opt.id === user?.organization_unit_id),
     });
   }, [navigation.location.state, organizationUnits]);

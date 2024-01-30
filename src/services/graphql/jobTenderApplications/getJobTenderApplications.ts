@@ -30,7 +30,10 @@ const getJobTenderApplications = `query JobTendersApplications($job_tender_id: I
             date_of_birth
             citizenship
             status
-            evaluation
+            evaluation {
+                id
+                title
+            }
             date_of_application
             created_at
             updated_at
