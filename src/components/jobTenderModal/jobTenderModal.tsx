@@ -135,7 +135,8 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
         },
       );
     } else {
-      handleInsertJobTender(payload);
+      const fileId = selectedItem?.file && selectedItem?.file?.id ? selectedItem?.file?.id : 0;
+      handleInsertJobTender({...payload, file_id: fileId});
     }
   };
 
