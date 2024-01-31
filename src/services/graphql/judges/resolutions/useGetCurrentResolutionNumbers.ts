@@ -18,7 +18,9 @@ const useGetCurrentResolutionNumbers = ({resolution_id, active}: {resolution_id:
     });
 
     if (response.organizationUintCalculateEmployeeStats?.items) {
-      setJudgesData(response.organizationUintCalculateEmployeeStats.items);
+      setJudgesData(
+        response.organizationUintCalculateEmployeeStats.items.filter(item => item.available_slots_presidents > 0),
+      );
       onSuccess && onSuccess(response.organizationUintCalculateEmployeeStats.items);
     }
 

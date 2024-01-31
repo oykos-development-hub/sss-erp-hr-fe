@@ -19,6 +19,7 @@ import {HrReportType, reportTypeOptions, reportsTabs} from './types';
 import useGetSettings from '../../services/graphql/settings/useGetSettings.ts';
 import useJudgeEvaluationReport from '../../services/graphql/judgeEvaluationReport/useJudgeEvaluationReport.ts';
 import {parseDate} from '../../utils/dateUtils.ts';
+import useGetCurrentResolutionNumbers from '../../services/graphql/judges/resolutions/useGetCurrentResolutionNumbers.ts';
 
 interface ReportsScreenProps {
   report_type: DropdownDataNumber;
@@ -83,6 +84,10 @@ export const ReportsScreen: React.FC = () => {
     size: 1000,
     user_profile: null,
     organization_unit: null,
+  });
+  const {judgesData} = useGetCurrentResolutionNumbers({
+    resolution_id: null,
+    active: true,
   });
 
   useMemo(() => {
@@ -172,6 +177,12 @@ export const ReportsScreen: React.FC = () => {
     }
   };
 
+  const generateVacantJudgePositionsReport = async () => {
+    generatePdf('VACANT_JUDGE_POSITIONS', {
+      judgesData,
+    });
+  };
+
   const onSubmit = async (data: ReportsScreenProps) => {
     switch (reportTypeID) {
       case HrReportType.UsedVacationDays:
@@ -182,6 +193,9 @@ export const ReportsScreen: React.FC = () => {
         break;
       case HrReportType.EvaluationsForJudges:
         generateJudgeEvaluationReport(data);
+        break;
+      case HrReportType.VacantJudgePositions:
+        generateVacantJudgePositionsReport();
         break;
     }
   };
