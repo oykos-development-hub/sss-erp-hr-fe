@@ -93,9 +93,7 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
         data={tableData || []}
         style={{marginBottom: 22}}
         isLoading={loading}
-        onRowClick={() =>
-          jobTenderApplications.find((item: any) => item.status === 'Na čekanju' && toggleApplicationModal(item.id))
-        }
+        onRowClick={row => toggleApplicationModal(row.id)}
         tableActions={[
           {
             name: 'edit',

@@ -146,7 +146,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
     }
 
     try {
-      if (data.status === 'Izabran' && data.type === 'external') {
+      if (data.status === 'Izabran' && data.type === 'external' && selectedItem?.status !== 'Izabran') {
         navigateToUserCreation(data);
       } else {
         insertJobTenderApplication(
@@ -245,7 +245,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   }, [selectedItem]);
 
   useEffect(() => {
-    if (status?.id === 'accepted' && type?.id === 'external') {
+    if (status?.id === 'accepted' && type?.id === 'external' && selectedItem?.status !== 'Izabran') {
       setConfirmationModal(true);
     }
   }, [status]);
@@ -422,7 +422,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                     selected={value}
                     isRequired
                     error={errors.date_of_application?.message as string}
-                    minDate={jobTender?.date_of_end ? new Date(jobTender?.date_of_end) : undefined}
+                    minDate={jobTender?.date_of_start ? new Date(jobTender?.date_of_start) : undefined}
                   />
                 )}
               />
