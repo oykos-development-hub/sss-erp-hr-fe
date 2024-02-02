@@ -39,6 +39,7 @@ export const ReportsScreen: React.FC = () => {
   const {
     reportService: {generatePdf},
     alert,
+    contextMain: {role_id},
   } = useAppContext();
 
   const [activeTab, setActiveTab] = useState(1);
@@ -59,7 +60,10 @@ export const ReportsScreen: React.FC = () => {
     switch (activeTab) {
       case 1:
         // izvještaji
-        return reportTypeOptions;
+        // remove judges age report for non admin users (in the future there will be another user except admin that will have access to this report)
+        return role_id === 1
+          ? reportTypeOptions
+          : reportTypeOptions.filter(option => option.id !== HrReportType.AgeStructureOfJudges);
       case 2:
         // šabloni
         return patterns;
@@ -183,6 +187,14 @@ export const ReportsScreen: React.FC = () => {
     });
   };
 
+  const generateJudgesAgeStructureReport = () => {
+    if (!judges) return;
+
+    generatePdf('JUDGES_AGE_STRUCTURE_REPORT', {
+      judges,
+    });
+  };
+
   const onSubmit = async (data: ReportsScreenProps) => {
     switch (reportTypeID) {
       case HrReportType.UsedVacationDays:
@@ -196,6 +208,9 @@ export const ReportsScreen: React.FC = () => {
         break;
       case HrReportType.VacantJudgePositions:
         generateVacantJudgePositionsReport();
+        break;
+      case HrReportType.AgeStructureOfJudges:
+        generateJudgesAgeStructureReport();
         break;
     }
   };
