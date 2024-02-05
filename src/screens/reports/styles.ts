@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import {Input} from 'client-library';
 
 export const TitleWrapper = styled.div`
   display: flex;
@@ -24,4 +25,8 @@ export const RowWrapper = styled.div`
 export const Column = styled.div`
   width: 350px;
   margin-right: 20px;
+`;
+
+export const ReasonForCertificateInput = styled(Input)`
+  width: 720px;
 `;

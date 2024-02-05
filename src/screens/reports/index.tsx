@@ -14,12 +14,16 @@ import useGetUserProfiles from '../../services/graphql/userProfile/useGetUserPro
 import useVacationReport from '../../services/graphql/vacationReport/useVacationReport';
 import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
 import {DropdownDataNumber} from '../../types/dropdownData.ts';
-import {Column, FormContainer, Option, RowWrapper, TitleWrapper} from './styles';
+import {Column, FormContainer, Option, ReasonForCertificateInput, RowWrapper, TitleWrapper} from './styles';
 import {HrReportType, reportTypeOptions, reportsTabs} from './types';
 import useGetSettings from '../../services/graphql/settings/useGetSettings.ts';
 import useJudgeEvaluationReport from '../../services/graphql/judgeEvaluationReport/useJudgeEvaluationReport.ts';
 import {parseDate} from '../../utils/dateUtils.ts';
 import useGetCurrentResolutionNumbers from '../../services/graphql/judges/resolutions/useGetCurrentResolutionNumbers.ts';
+import {generateDocumentSerialNumber} from '../../utils/documentGenerationUtils.ts';
+import {generateDocxDocument} from './certificateOfPermanentEmploymentReport/docx.ts';
+import {CertificateOfPermanentEmploymentReport} from './certificateOfPermanentEmploymentReport/types.ts';
+import {UserProfile} from '../../types/graphql/userProfiles.ts';
 
 interface ReportsScreenProps {
   report_type: DropdownDataNumber;
@@ -27,6 +31,7 @@ interface ReportsScreenProps {
   organization_unit: DropdownDataNumber;
   reason_for_evaluation: DropdownDataNumber;
   score: DropdownDataNumber;
+  reason_for_certificate: string;
 }
 export const ReportsScreen: React.FC = () => {
   const {
@@ -34,6 +39,8 @@ export const ReportsScreen: React.FC = () => {
     formState: {errors},
     handleSubmit,
     watch,
+    register,
+    resetField,
   } = useForm<ReportsScreenProps>();
 
   const {
@@ -78,8 +85,9 @@ export const ReportsScreen: React.FC = () => {
 
   const reportTypeID = watch('report_type')?.id;
   const organizationUnit = watch('organization_unit');
-  const emloyeeId = watch('employee')?.id;
+  const employeeId = watch('employee')?.id;
   const {userProfiles} = useGetUserProfiles({page: 1, size: 100000, organization_unit_id: organizationUnit});
+  const [selectedUser, setSelectedUser] = useState<UserProfile>();
 
   const {fetch} = useVacationReport();
   const {fetchJudgeEvaluationReport} = useJudgeEvaluationReport();
@@ -94,6 +102,19 @@ export const ReportsScreen: React.FC = () => {
     active: true,
   });
 
+  useEffect(() => {
+    // If the selected employee is not in the selected organization unit, reset the employee field
+    if (userProfiles.some(user => user.id === employeeId)) return;
+    resetField('employee');
+  }, [userProfiles]);
+
+  useEffect(() => {
+    if (employeeId) {
+      const selectedUser = userProfiles.find(user => user.id === employeeId);
+      setSelectedUser(selectedUser);
+    }
+  }, [employeeId]);
+
   useMemo(() => {
     const newData = settingsData.map(item => ({id: item.id || 0, title: item.title || ''}));
     setEvaluationTypesOption(newData);
@@ -102,7 +123,7 @@ export const ReportsScreen: React.FC = () => {
   const generateVacationReport = async (data: ReportsScreenProps) => {
     if (activeTab === 1) {
       const vacationReportData = await fetch({
-        employee_id: emloyeeId ? emloyeeId : null,
+        employee_id: employeeId ? employeeId : null,
         organization_unit_id: organizationUnit?.id,
         type: 1,
       });
@@ -195,6 +216,26 @@ export const ReportsScreen: React.FC = () => {
     });
   };
 
+  const generateCertificateOfPermanentEmploymentReport = (data: ReportsScreenProps) => {
+    const {
+      reason_for_certificate,
+      employee: {title: employeeName, id},
+    } = data;
+    const documentProps: CertificateOfPermanentEmploymentReport = {
+      serial_number: generateDocumentSerialNumber(id),
+      date: parseDate(new Date(), '.'),
+      reason_for_certificate,
+      employee_name: employeeName,
+      organization_unit: selectedUser?.organization_unit.title || '',
+      job_position: selectedUser?.job_position.title || '',
+      department: selectedUser?.department.title || '',
+    };
+
+    generateDocxDocument(documentProps).then(blob => {
+      saveAs(blob, `Potvrda-o-stalnom-radnom-odnosu-${employeeName}.docx`);
+    });
+  };
+
   const onSubmit = async (data: ReportsScreenProps) => {
     switch (reportTypeID) {
       case HrReportType.UsedVacationDays:
@@ -212,8 +253,14 @@ export const ReportsScreen: React.FC = () => {
       case HrReportType.AgeStructureOfJudges:
         generateJudgesAgeStructureReport();
         break;
+      case HrReportType.CertificateOfPermanentEmployment:
+        generateCertificateOfPermanentEmploymentReport(data);
+        break;
     }
   };
+
+  // Takes in an array of allowed report types and returns a boolean indicating whether the current report type is allowed
+  const configureUIElementsForReportType = (allowedTypes: number[]): boolean => allowedTypes.includes(reportTypeID);
 
   return (
     <ScreenWrapper>
@@ -249,16 +296,20 @@ export const ReportsScreen: React.FC = () => {
               />
             </Option>
             <RowWrapper>
-              {(reportTypeID === HrReportType.NumberOfJudges ||
-                reportTypeID === HrReportType.UsedVacationDays ||
-                reportTypeID === HrReportType.EvaluationsForJudges) && (
+              {configureUIElementsForReportType([
+                HrReportType.NumberOfJudges,
+                HrReportType.UsedVacationDays,
+                HrReportType.EvaluationsForJudges,
+                HrReportType.CertificateOfPermanentEmployment,
+              ]) && (
                 <Column>
                   <Controller
                     control={control}
                     name="organization_unit"
                     rules={{
-                      required:
-                        reportTypeID !== HrReportType.EvaluationsForJudges ? 'Ovo polje je obavezno!' : undefined,
+                      required: !configureUIElementsForReportType([HrReportType.EvaluationsForJudges])
+                        ? 'Ovo polje je obavezno!'
+                        : undefined,
                     }}
                     render={({field: {onChange, value}}) => (
                       <Dropdown
@@ -266,9 +317,11 @@ export const ReportsScreen: React.FC = () => {
                         value={value}
                         onChange={onChange}
                         options={
-                          reportTypeID === HrReportType.NumberOfJudges ? filteredOrganizationUnits : organizationUnits
+                          configureUIElementsForReportType([HrReportType.NumberOfJudges])
+                            ? filteredOrganizationUnits
+                            : organizationUnits
                         }
-                        isRequired={reportTypeID !== HrReportType.EvaluationsForJudges}
+                        isRequired={!configureUIElementsForReportType([HrReportType.NumberOfJudges])}
                         error={errors.organization_unit?.message as string}
                       />
                     )}
@@ -276,11 +329,19 @@ export const ReportsScreen: React.FC = () => {
                 </Column>
               )}
 
-              {reportTypeID === HrReportType.UsedVacationDays && (
+              {configureUIElementsForReportType([
+                HrReportType.UsedVacationDays,
+                HrReportType.CertificateOfPermanentEmployment,
+              ]) && (
                 <Column>
                   <Controller
                     control={control}
                     name="employee"
+                    rules={
+                      configureUIElementsForReportType([HrReportType.CertificateOfPermanentEmployment])
+                        ? {required: 'Ovo polje je obavezno'}
+                        : {}
+                    }
                     render={({field: {onChange, value}}) => (
                       <Dropdown
                         label="ZAPOSLENI:"
@@ -291,12 +352,13 @@ export const ReportsScreen: React.FC = () => {
                           title: ` ${user.first_name} ${user.last_name} `,
                         }))}
                         error={errors.employee?.message as string}
+                        isRequired={configureUIElementsForReportType([HrReportType.CertificateOfPermanentEmployment])}
                       />
                     )}
                   />
                 </Column>
               )}
-              {reportTypeID === HrReportType.EvaluationsForJudges && (
+              {configureUIElementsForReportType([HrReportType.EvaluationsForJudges]) && (
                 <>
                   <Column>
                     <Controller
@@ -336,7 +398,17 @@ export const ReportsScreen: React.FC = () => {
                 </>
               )}
             </RowWrapper>
-
+            <RowWrapper>
+              {configureUIElementsForReportType([HrReportType.CertificateOfPermanentEmployment]) && (
+                <ReasonForCertificateInput
+                  {...register('reason_for_certificate', {required: 'Ovo polje je obavezno'})}
+                  error={errors.reason_for_certificate?.message as string}
+                  isRequired
+                  label="Razlog potvrde"
+                  textarea
+                />
+              )}
+            </RowWrapper>
             <Button
               content={`Generiši ${getTitle.slice(0, -1).toLowerCase()}`}
               style={{width: 'fit-content'}}

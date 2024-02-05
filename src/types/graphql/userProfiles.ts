@@ -24,6 +24,7 @@ export interface UserProfile {
   role: DropdownDataNumber;
   organization_unit: DropdownDataNumber;
   job_position: DropdownDataNumber;
+  department: DropdownDataNumber;
   created_at: string;
   updated_at: string;
 }

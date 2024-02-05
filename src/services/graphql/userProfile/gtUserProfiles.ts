@@ -25,6 +25,10 @@ const userProfileOverview = `query UserProfileOverview($id: Int, $is_active: Boo
                 id
                 title
             }
+            department {
+                id
+                title
+            }
             created_at
             updated_at
         }

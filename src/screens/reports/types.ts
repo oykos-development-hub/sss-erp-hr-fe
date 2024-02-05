@@ -9,6 +9,7 @@ export const reportTypeOptions = [
   {id: 2, title: 'Izvještaj o ocjenjivanju sudija'},
   {id: 3, title: 'Izvještaj o slobodnim sudijskim mjestima'},
   {id: 4, title: 'Izvještaj o starosnoj strukturi sudija'},
+  {id: 5, title: 'Potvrda o stalnom radnom odnosu'},
 ];
 
 export enum HrReportType {
@@ -17,4 +18,5 @@ export enum HrReportType {
   EvaluationsForJudges = 2,
   VacantJudgePositions = 3,
   AgeStructureOfJudges = 4,
+  CertificateOfPermanentEmployment = 5,
 }
