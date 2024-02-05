@@ -14,17 +14,18 @@ export interface DropdownItemType {
 export interface JobTender {
   id: number;
   organization_unit_id: number;
-  organization_unit?: DropdownItemType;
-  type?: DropdownItemType;
   description: string;
   serial_number: string;
   date_of_start: string | null;
   date_of_end: string | null;
+  file: FileItem;
+  number_of_vacant_seats: number | null;
   created_at?: string;
   updated_at?: string;
-  file: FileItem;
   job_position?: DropdownItemType;
-  number_of_vacant_seats: number | null;
+  organization_unit?: DropdownItemType;
+  type?: DropdownItemType;
+  active?: boolean;
 }
 
 export interface JobTenderParams {

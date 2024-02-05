@@ -27,8 +27,9 @@ export const StyledLabel = styled(Typography)`
 
 export const StyledValue = styled(Typography)``;
 
-export const ButtonContainer = styled.div`
+export const TitleAndButtonContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 22px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 `;

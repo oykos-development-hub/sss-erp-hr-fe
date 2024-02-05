@@ -2,17 +2,50 @@ import {Divider, Theme} from '@oykos-development/devkit-react-ts-styled-componen
 import {JobTender} from '../../types/graphql/jobTenders';
 import {parseDate} from '../../utils/dateUtils';
 import {MainTitle} from '../employeesList/styles';
-import {Column, Container, Details, InfoPreview, StyledLabel, StyledValue} from './styles';
+import {Column, Container, Details, InfoPreview, StyledLabel, StyledValue, TitleAndButtonContainer} from './styles';
 import FileList from '../fileList/fileList';
+import {Button} from 'client-library';
+import useJobTenderApplications from '../../services/graphql/jobTenderApplications/useGetJobTenderApplications.ts';
+import useAppContext from '../../context/useAppContext.ts';
 
 interface JobTenderInfo {
   data: JobTender;
 }
 
 const JobTenderInfo = ({data}: JobTenderInfo) => {
+  const {
+    reportService: {generatePdf},
+  } = useAppContext();
+
+  const {jobTenderApplications} = useJobTenderApplications(
+    {page: 1, size: 10000, job_tender_id: data?.id},
+    {skip: !data?.id},
+  );
+  const printReport = () => {
+    const mappedCandidates = jobTenderApplications.map(item => ({
+      name: `${item?.first_name} ${item?.last_name}`,
+      organization_unit: item?.organization_unit?.title,
+      evaluation: item?.evaluation,
+      date: parseDate(item?.date_of_application),
+    }));
+
+    generatePdf('JOB_TENDER_CANDIDATES', {
+      dataForReport: {
+        jobTender: `${data?.type?.title} - ${data?.serial_number}`,
+        candidates: mappedCandidates,
+      },
+    });
+  };
+
   return (
     <Container>
-      <MainTitle variant="bodyMedium" content={`BROJ OGLASA: ${data?.serial_number}`} />
+      <TitleAndButtonContainer>
+        <MainTitle variant="bodyMedium" content={`BROJ OGLASA: ${data?.serial_number}`} />
+        {data?.active === false ? (
+          <Button content={'Štampaj'} onClick={() => printReport()} style={{marginBottom: 10}} />
+        ) : null}
+      </TitleAndButtonContainer>
+
       <Divider color={Theme?.palette?.gray200} height="1px" />
 
       <Details>
