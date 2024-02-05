@@ -1,7 +1,7 @@
 import {Tab} from '@oykos-development/devkit-react-ts-styled-components';
 import {Button, Divider, Dropdown, Theme, Typography} from 'client-library';
 import {saveAs} from 'file-saver';
-import {useMemo, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {StyledTabs} from '../../components/employeeDetails/styles';
 import {OverviewBox} from '../../components/employeesList/styles';
