@@ -138,7 +138,7 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
           alert={alert}
           refetchList={refetch}
           jobTender={jobTender}
-          applicationIds={jobTenderApplications.map((item: JobTenderApplication) => item.id)}
+          applicationIds={jobTenderApplications.map((item: JobTenderApplication) => item?.user_profile?.id)}
           {...props}
         />
       )}
