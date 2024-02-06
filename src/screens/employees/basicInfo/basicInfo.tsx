@@ -237,7 +237,9 @@ export const BasicInfo: React.FC = () => {
   };
 
   useEffect(() => {
-    refetch();
+    setTimeout(() => {
+      refetch();
+    }, 400);
     // If new employee, enable the form immediately
     if (navigation.location.pathname.split('/')[3] === 'new-employee') {
       setIsDisabled(false);
@@ -360,7 +362,7 @@ export const BasicInfo: React.FC = () => {
       <FormWrapper>
         <TextWrapper>
           <Typography content="PERSONALNI PODACI" variant="bodyMedium" />
-          {!profileId && <Button content="Uvoz podataka" />}
+          {!profileId && <Button content="Uvoz podataka" disabled />}
         </TextWrapper>
         <FormRow>
           <FormColumn>
