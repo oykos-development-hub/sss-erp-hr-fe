@@ -818,7 +818,7 @@ export const BasicInfo: React.FC = () => {
                     label="KRAJ RADNOG ODNOSA:"
                     selected={value ? new Date(value) : ''}
                     onChange={onChange}
-                    disabled={isDisabled}
+                    disabled={isDisabled || contract_type_id?.id === 7}
                     isRequired
                     error={errors.date_of_end?.message}
                   />
