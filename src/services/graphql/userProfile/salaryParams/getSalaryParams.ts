@@ -33,7 +33,11 @@ const getSalaryParams = `query UserProfileSalaryParams($user_profile_id: Int!){
                 resolution_purpose,
                 date_of_start,
                 date_of_end,
-                file_id
+                file {
+                  id
+                  name
+                  type
+                }
             }
             created_at
             updated_at

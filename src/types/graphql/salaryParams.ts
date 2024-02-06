@@ -1,4 +1,5 @@
 import {DropdownDataBoolean, DropdownDataNumber, DropdownDataString} from '../dropdownData';
+import {FileItem} from '../fileUploadType';
 import {GetResponse, InsertResponse} from './response';
 
 export interface ProfileSalaryParams {
@@ -39,7 +40,7 @@ export interface SalaryParamsResolution {
   resolution_purpose: string;
   date_of_start: string;
   date_of_end: string;
-  file_id: number;
+  file: FileItem;
 }
 
 // This type includes some properties coming from different API endpoints

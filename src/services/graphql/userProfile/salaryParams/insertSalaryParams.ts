@@ -34,7 +34,11 @@ const salaryParamsInsert = `mutation UserProfileSalaryParamsInsert($data: UserPr
                 resolution_purpose,
                 date_of_start,
                 date_of_end,
-                file_id
+                file {
+                  id
+                  name
+                  type
+                }
             }
             created_at
             updated_at
