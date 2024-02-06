@@ -22,12 +22,15 @@ const JobTenderInfo = ({data}: JobTenderInfo) => {
     {skip: !data?.id},
   );
   const printReport = () => {
-    const mappedCandidates = jobTenderApplications.map(item => ({
-      name: `${item?.first_name} ${item?.last_name}`,
-      organization_unit: item?.organization_unit?.title,
-      evaluation: item?.evaluation,
-      date: parseDate(item?.date_of_application),
-    }));
+    const mappedCandidates = jobTenderApplications
+      .map(item => ({
+        name: `${item?.first_name} ${item?.last_name}`,
+        organization_unit: item?.organization_unit?.title,
+        evaluation: item?.evaluation,
+        date: parseDate(item?.date_of_application),
+        status: item?.status,
+      }))
+      .sort((a, b) => +(b.status === 'Izabran') - +(a.status === 'Izabran'));
 
     generatePdf('JOB_TENDER_CANDIDATES', {
       dataForReport: {
