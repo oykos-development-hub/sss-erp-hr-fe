@@ -154,14 +154,16 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
         />
       </div>
       {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
-      <ConfirmationsModal
-        open={showModal}
-        onClose={refetch => handleCloseModal(refetch)}
-        selectedItem={selectedItem}
-        userProfileId={userProfileID}
-        key={selectedItem ? selectedItem.id : 'new'}
-        alert={context.alert}
-      />
+      {showModal && (
+        <ConfirmationsModal
+          open={showModal}
+          onClose={refetch => handleCloseModal(refetch)}
+          selectedItem={selectedItem}
+          userProfileId={userProfileID}
+          key={selectedItem ? selectedItem.id : 'new'}
+          alert={context.alert}
+        />
+      )}
 
       <ConfirmModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleConfirm={handleDelete} />
     </Container>
