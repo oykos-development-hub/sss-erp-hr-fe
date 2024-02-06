@@ -220,6 +220,15 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({i
               )}
             </Controls>
           )}
+          {!resolutionItem?.active && (
+            <Controls>
+              <Button
+                content="Nazad"
+                variant="secondary"
+                onClick={() => context.navigation.navigate('/hr/judges/number-decision')}
+              />
+            </Controls>
+          )}
         </FormFooter>
       </OverviewBox>
     </ScreenWrapper>

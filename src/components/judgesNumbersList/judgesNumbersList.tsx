@@ -114,17 +114,18 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
         isLoading={loading}
         tableActions={[
           {
-            name: 'edit',
+            name: 'Izmijeni',
             onClick: row => navigate(`/hr/judges/number-decision/${row.id}`),
             icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
           },
           {
-            name: 'download',
+            name: 'Preuzmi',
             onClick: row => setResolutionId(row.id),
             icon: <DownloadIcon stroke={Theme.palette.gray800} />,
+            shouldRender: (decision: JudgeResolution) => !!decision.active,
           },
           {
-            name: 'delete',
+            name: 'Obriši',
             onClick: item => openDeleteModal(item.id),
             icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
             shouldRender: (decision: JudgeResolution) => !decision.active,
