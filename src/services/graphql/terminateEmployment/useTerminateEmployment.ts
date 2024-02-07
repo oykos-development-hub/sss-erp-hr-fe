@@ -5,16 +5,23 @@ import {EmploymentTerminationResponse} from '../../../types/graphql/employmentTe
 import {REQUEST_STATUSES} from '../../constants';
 
 const useTerminateEmployment = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const {fetch} = useAppContext();
 
-  const terminateEmployment = async (user_profile_id: number, onSuccess?: () => void, onError?: () => void) => {
+  const terminateEmployment = async (
+    {user_profile_id, file_id}: {user_profile_id: number; file_id: number},
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) => {
     if (loading) return;
 
     setLoading(true);
 
-    const response: EmploymentTerminationResponse = await fetch(GraphQL.terminateEmployment, {user_profile_id});
+    const response: EmploymentTerminationResponse = await fetch(GraphQL.terminateEmployment, {
+      user_profile_id,
+      file_id,
+    });
 
     if (response.terminateEmployment?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();

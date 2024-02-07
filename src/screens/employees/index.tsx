@@ -42,7 +42,12 @@ export const EmployeesScreen: React.FC<ScreenProps> = () => {
 
   const isDetails = navigation.location.pathname.split('/')[3] === 'details';
 
-  const {userProfiles, total, loading} = useGetUserProfiles({page, size: 10, ...filters, name: debouncedSearch});
+  const {userProfiles, total, loading, refetch} = useGetUserProfiles({
+    page,
+    size: 10,
+    ...filters,
+    name: debouncedSearch,
+  });
 
   const onFilterChange = (value: any, name: string) => {
     setFilters({...filters, [name]: value});
@@ -70,7 +75,7 @@ export const EmployeesScreen: React.FC<ScreenProps> = () => {
         parentRef={screenWrapperRef}
         loading={loading}
       />
-      {isDetails && <EmployeeDetails />}
+      {isDetails && <EmployeeDetails refetchUsers={refetch} />}
     </ScreenWrapper>
   );
 };

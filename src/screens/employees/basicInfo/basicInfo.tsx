@@ -23,25 +23,16 @@ import {parseToDate} from '../../../utils/dateUtils';
 import {backendErrors, contractPositions, initialValues} from './constants';
 import FileList from '../../../components/fileList/fileList';
 
-import {
-  Controls,
-  FormColumn,
-  FormContainer,
-  FormFileUpload,
-  FormFooter,
-  FormItem,
-  FormRow,
-  FormWrapper,
-  TextWrapper,
-} from './styles';
+import {Controls, FormColumn, FormContainer, FormFooter, FormItem, FormRow, FormWrapper, TextWrapper} from './styles';
 import useInsertJobTenderApplication from '../../../services/graphql/jobTenderApplications/useInsertJobTenderApplication';
 import {basicInfoSchema, booleanToYesOrNo, formatData} from './utils';
 import {ContractEndModal} from '../../../components/contractEndModal/contractEndModal';
 import {ProfileBasicInfoFormValues} from '../../../types/graphql/basicInfo';
 import useGetSettings from '../../../services/graphql/settings/useGetSettings';
 import {FileUploadWrapper} from '../../../components/absentsModal/styles';
+import {BasicInfoProps} from './types.ts';
 
-export const BasicInfo: React.FC = () => {
+export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
   const {
     alert,
     fileService: {uploadFile},
@@ -163,6 +154,7 @@ export const BasicInfo: React.FC = () => {
       formatData(values),
       () => {
         refetch();
+        refetchUsers && refetchUsers();
         alert.success('Uspješno sačuvano.');
         setIsDisabled(true);
 
@@ -943,7 +935,12 @@ export const BasicInfo: React.FC = () => {
         </Controls>
       </FormFooter>
       {openContractEndModal && (
-        <ContractEndModal open={true} onClose={() => toggleContractEndModal()} profileId={profileId} />
+        <ContractEndModal
+          open={true}
+          onClose={() => toggleContractEndModal()}
+          profileId={profileId}
+          refetchUsers={refetchUsers}
+        />
       )}
     </FormContainer>
   );

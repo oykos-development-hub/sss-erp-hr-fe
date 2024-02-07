@@ -44,7 +44,7 @@ export const formatData = (data: any) => {
       active: data?.active === false ? false : true,
       date_of_eligibility: parseDateForBackend(data?.date_of_eligibility),
       number_of_conference: data?.number_of_conference,
-      file_id: data?.contract.file_id,
+      file_id: data?.contract?.file_id ?? null,
     },
   };
 

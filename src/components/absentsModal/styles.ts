@@ -15,4 +15,5 @@ export const FileUploadWrapper = styled.div`
   align-items: center;
   width: 100%;
   margin-block: 10px;
+  margin-top: 20px;
 `;

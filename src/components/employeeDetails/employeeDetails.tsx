@@ -13,6 +13,7 @@ import Foreigners from '../../screens/employees/foreigners/foreigners';
 import {SalaryParams} from '../../screens/employees/salaryParams/salaryParams';
 import {getRouteName} from '../../utils/getRouteName';
 import {EmployeeDetailsBox, StyledTabs} from './styles';
+import {EmployeeDetailsProps} from './types.ts';
 
 const getCurrentTab = (pathname: string) => {
   const path = pathname.split('/');
@@ -20,7 +21,7 @@ const getCurrentTab = (pathname: string) => {
   return employeeTabs.find(tab => tab.routeName === name)?.id;
 };
 
-const EmployeeDetails: React.FC = () => {
+const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({refetchUsers}) => {
   const context = useAppContext();
   const [activeTab, setActiveTab] = useState(getCurrentTab(context.navigation.location.pathname) || 1);
   const {
@@ -45,7 +46,7 @@ const EmployeeDetails: React.FC = () => {
   const employeesRoute = useMemo(() => {
     switch (employeesPath) {
       case 'basic-info':
-        return <BasicInfo />;
+        return <BasicInfo refetchUsers={refetchUsers} />;
       case 'salary-params':
         return <SalaryParams context={context} />;
       case 'education':
@@ -68,8 +69,8 @@ const EmployeeDetails: React.FC = () => {
   }, [employeesPath, context]);
 
   useEffect(() => {
-    setActiveTab(getCurrentTab(context.navigation.location.pathname) || 1);
-  }, [context.navigation.location.pathname]);
+    setActiveTab(getCurrentTab(pathname) || 1);
+  }, [pathname]);
 
   // TODO: find a better way of handling this
   if (employeesPath === 'employees') {
