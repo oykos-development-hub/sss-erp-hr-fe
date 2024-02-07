@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {DepartmentsProps} from '../../types';
 import {
   AccordionHeader,
@@ -69,6 +69,14 @@ const Departments: React.FC<DepartmentsProps> = ({
       ...(selectedItemId ? jobPositions : sector.job_positions_organization_units),
     ]);
   };
+
+  useEffect(() => {
+    const jobPositions = sectors?.find(
+      (sector: SectorType) => sector?.id === selectedItemId,
+    )?.job_positions_organization_units;
+
+    setJobPositions(jobPositions || []);
+  }, [sectors]);
 
   const cancelJobPosition = () => {
     // remove the first item from the array

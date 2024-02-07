@@ -4,7 +4,7 @@ import {UserProfile} from '../../types/graphql/userProfiles';
 import {ActiveEmployee, SectorType} from '../../types/graphql/systematizationsTypes';
 
 export interface DepartmentsProps {
-  sectors: SectorType[];
+  sectors?: SectorType[];
   handleDeleteSector: (id: number) => void;
   handleEditSector: (id: number) => void;
   systematizationId: number;
