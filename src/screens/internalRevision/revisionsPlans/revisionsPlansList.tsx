@@ -14,7 +14,6 @@ import {useMemo, useState} from 'react';
 import {RevisionPlanModal} from '../../../components/revisionPlanModal/revisionPlanModal';
 import useGetRevisionPlans from '../../../services/graphql/revisionsPlans/useRevisionPlanOverview';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
-import {yearsForDropdownFilter} from '../../../utils/constants';
 import {RevisionListContainer, MainTitle, TableHeader, FilterContainer} from '../styles';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import useDeleteRevisionPlan from '../../../services/graphql/revisionsPlans/useRevisionPlanDelete';
@@ -29,7 +28,6 @@ const TableHeads: TableHead[] = [
 ];
 
 const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
-  const years = yearsForDropdownFilter(1);
   const [deleteModal, setDeleteModal] = useState(0);
   const [revisionPlanModal, setRevisionPlanModal] = useState(false);
   const [editId, setEditId] = useState(0);
@@ -37,6 +35,17 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
 
   const {deleteRevisionPlan} = useDeleteRevisionPlan();
   const {revisionPlans, loading, refetch} = useGetRevisionPlans({page: 1, size: 1000});
+
+  const yearsWithRevisionPlans: number[] = useMemo(() => {
+    if (!revisionPlans) return [];
+    return revisionPlans?.map((item: any) => +item.year);
+  }, [revisionPlans]);
+
+  const yearsWithRevisionPlansDropdown: {id: number | string; title: string}[] = yearsWithRevisionPlans.map(year => ({
+    id: year,
+    title: year.toString(),
+  }));
+  yearsWithRevisionPlansDropdown.unshift({id: '', title: 'Sve'});
 
   const toggleDeleteModal = (id: number) => {
     setDeleteModal(id);
@@ -89,7 +98,7 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
           <FilterContainer>
             <Dropdown
               label="GODINA:"
-              options={years}
+              options={yearsWithRevisionPlansDropdown}
               name="year"
               value={form?.year || null}
               onChange={handleChange}
@@ -134,6 +143,7 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
           refetchList={refetch}
           alert={context.alert}
           id={editId}
+          yearsWithRevisionPlans={yearsWithRevisionPlans}
         />
       )}
     </ScreenWrapper>

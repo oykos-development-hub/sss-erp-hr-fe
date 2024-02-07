@@ -33,12 +33,20 @@ export const cityData = [
   {id: 'Žabljak', title: 'Žabljak'},
 ];
 
-export const yearsForDropdown = (numYearsToAdd?: number) => {
-  const maxOffset = 10 + (numYearsToAdd || 0);
+export const yearsForDropdown = (
+  numYearsToAdd?: number,
+  excludeYears?: number[],
+  futureDirection = false, // If true years will go from current year to future
+) => {
+  const maxOffset = 10 + (numYearsToAdd || 0) + (excludeYears ? excludeYears.length : 0);
   const thisYear = new Date().getFullYear() + (numYearsToAdd || 0);
   const allYears = [];
   for (let x = 0; x < maxOffset; x++) {
-    allYears.push({id: Number(thisYear - x), title: (thisYear - x).toString()});
+    const year = futureDirection ? thisYear + x : thisYear - x;
+    if (excludeYears?.includes(year)) {
+      continue;
+    }
+    allYears.push({id: Number(year), title: year.toString()});
   }
   return allYears;
 };

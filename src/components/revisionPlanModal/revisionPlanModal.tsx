@@ -13,6 +13,7 @@ interface RevisionPlanProps {
   refetchList: () => void;
   alert: any;
   id: number;
+  yearsWithRevisionPlans: number[];
 }
 
 const initialValues: RevisionPlanForm = {
@@ -21,11 +22,18 @@ const initialValues: RevisionPlanForm = {
   year: null,
 };
 
-export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({open, onClose, alert, refetchList, id}) => {
+export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({
+  open,
+  onClose,
+  alert,
+  refetchList,
+  id,
+  yearsWithRevisionPlans,
+}) => {
   const {revisionPlanDetails} = useGetRevisionPlanDetails(id);
   const {insertRevisionPlan, loading: isSaving} = useInsertRevisionPlan();
 
-  const yearOptions = yearsForDropdown(1).map(year => ({id: year.id, title: year.title}));
+  const yearOptions = yearsForDropdown(1, yearsWithRevisionPlans, true);
 
   const {
     register,
