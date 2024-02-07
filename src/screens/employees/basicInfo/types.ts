@@ -1,3 +1,3 @@
 export interface BasicInfoProps {
-  refetchUsers: () => void;
+  refetchUsers?: () => void;
 }
