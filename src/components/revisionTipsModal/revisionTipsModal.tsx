@@ -73,6 +73,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
 
   const implementationMonthSpan = watch('due_date');
   const secondMonthSpan = watch('new_due_date');
+  const revisionStatusConducted = watch('status')?.id === 'Sprovedena';
 
   const handleInsertRevisionTips = (data: any) => {
     insertRevisionTip(
@@ -358,6 +359,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                           options={revisionTips.revisors || []}
                           placeholder="Izaberite revizora"
                           label="IMPLEMENTACIJU PREPORUKE POTVRDIO:"
+                          isDisabled={!revisionStatusConducted}
                         />
                       )}
                     />
@@ -373,7 +375,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                           onChange={onChange}
                           options={revisionDeadlineOptions}
                           label="NOVI ROK SPROVOĐENJA PREPORUKE:"
-                          isDisabled={revisionTipDetails?.status === 'Sprovedena'}
+                          isDisabled={revisionStatusConducted}
                         />
                       )}
                     />
@@ -399,6 +401,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                           label="PREPORUKA SPROVEDENA:"
                           name={name}
                           selected={value ? new Date(value) : ''}
+                          disabled={!revisionStatusConducted}
                         />
                       )}
                     />
@@ -408,7 +411,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                   <Input
                     {...register('reasons_for_non_executing')}
                     label="RAZLOZI NESPROVOĐENJA:"
-                    disabled={revisionTipDetails?.status === 'Sprovedena'}
+                    disabled={revisionStatusConducted}
                   />
                 </FormGroupFullWidth>
               </ModalSection>
