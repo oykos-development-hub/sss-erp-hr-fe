@@ -24,11 +24,13 @@ import {formatSystematization} from '../utils';
 import Departments from './departments/departments';
 import {Footer} from './footer/footer';
 import {PrintPage} from './printPage/printPage';
-import {FileUploadWrapper, MainWrapper, Row, TitleWrapper} from './styles';
+import {FileUploadWrapper, MainWrapper, Row, TitleWrapper, StyledFileIcon, FileIconButton} from './styles';
 import useGetJobPositions from '../../../services/graphql/jobPositions/useGetJobPositions';
 import {JobPositionOrgUnitTableData, SystematizationDocumentProps, TableData} from './printPage/types.ts';
 import {generateDocxDocument} from './printPage/docx.ts';
 import {saveAs} from 'file-saver';
+import FileModalView from '../../../components/fileModalView/fileModalView.tsx';
+import {FileItem} from '../../../components/fileModalView/types.ts';
 
 const initialValues: any = {
   organization_unit: null,
@@ -85,38 +87,72 @@ export const SystematizationDetails: React.FC = () => {
   });
   const organizationUnit = methods?.watch('organization_unit');
 
-  const handleSave = (data: InsertSystematizationParams) => {
+  const [uploadedFile, setUploadedFile] = useState<FileList>();
+  const [showFileUploadError, setShowFileUploadError] = useState<boolean>(false);
+  const handleUpload = (files: FileList) => {
+    setUploadedFile(files);
+    setShowFileUploadError(false);
+  };
+  const {
+    fileService: {uploadFile},
+  } = useAppContext();
+  const [fileToView, setFileToView] = useState<FileItem>();
+
+  const handleMutate = (data: InsertSystematizationParams) => {
+    const payload = formatSystematization(data);
+
+    mutate(
+      payload,
+      (item: SystematizationType) => {
+        const {id, serial_number} = item;
+
+        const route =
+          id > 0 && !systematizationId ? `/hr/systematization/systematization-details/${id}` : '/hr/systematization';
+        navigate(route, {replace: true});
+
+        // Reset breadcrumbs
+        breadcrumbs.remove();
+
+        id &&
+          breadcrumbs.add({
+            name: `Sistematizacija broj ${serial_number}`,
+            to: `/hr/systematization/systematization-details/${id}`,
+          });
+
+        if (systematizationDetails && systematizationDetails.id) {
+          refetch();
+        }
+
+        alert.success('Uspješno sačuvano');
+      },
+      () => {
+        alert.error('Greška. Promjene nisu sačuvane.');
+      },
+    );
+  };
+
+  const handleSave = async (data: InsertSystematizationParams) => {
     if (activeTab === 1) {
-      const payload = formatSystematization(data);
+      if (uploadedFile) {
+        const formData = new FormData();
+        const fileArray = Array.from(uploadedFile);
 
-      mutate(
-        payload,
-        (item: SystematizationType) => {
-          const {id, serial_number} = item;
+        formData.append('file', fileArray[0]);
 
-          const route =
-            id > 0 && !systematizationId ? `/hr/systematization/systematization-details/${id}` : '/hr/systematization';
-          navigate(route, {replace: true});
-
-          // Reset breadcrumbs
-          breadcrumbs.remove();
-
-          id &&
-            breadcrumbs.add({
-              name: `Sistematizacija broj ${serial_number}`,
-              to: `/hr/systematization/systematization-details/${id}`,
-            });
-
-          if (systematizationDetails && systematizationDetails.id) {
-            refetch();
-          }
-
-          alert.success('Uspješno sačuvano');
-        },
-        () => {
-          alert.error('Greška. Promjene nisu sačuvane.');
-        },
-      );
+        await uploadFile(
+          formData,
+          (res: any) => {
+            setUploadedFile(undefined);
+            data.file_id = res[0]?.id;
+            handleMutate(data);
+          },
+          () => {
+            alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+          },
+        );
+      } else {
+        setShowFileUploadError(true);
+      }
     } else if (systematizationDetails?.sectors?.length) {
       const tableData = (): TableData[] => {
         return systematizationDetails?.sectors.map((sector: SectorType) => {
@@ -258,15 +294,23 @@ export const SystematizationDetails: React.FC = () => {
 
               <FileUploadWrapper>
                 <Typography content="dokument o usvajanju sistematizacije" variant="bodySmall" />
-                <FileUpload
-                  icon={<></>}
-                  disabled={isSystematizationInactive}
-                  style={{width: '100%', marginRight: 10}}
-                  variant="secondary"
-                  onUpload={() => console.log('uploading')}
-                  buttonText="Dodajte dokument"
-                  note="Izaberite datoteku ili je prevucite ovdje"
-                />
+                {systematizationDetails?.file?.id ? (
+                  <FileIconButton onClick={() => setFileToView(systematizationDetails.file)}>
+                    <Typography content={systematizationDetails.file.name} variant="bodySmall" />
+                    <StyledFileIcon stroke={Theme.palette.gray600} />
+                  </FileIconButton>
+                ) : (
+                  <FileUpload
+                    icon={<></>}
+                    disabled={isSystematizationInactive}
+                    style={{width: '100%', marginRight: 10}}
+                    variant="secondary"
+                    onUpload={handleUpload}
+                    buttonText="Dodajte dokument"
+                    note="Izaberite datoteku ili je prevucite ovdje"
+                    error={showFileUploadError ? 'Morate učitati fajl' : undefined}
+                  />
+                )}
               </FileUploadWrapper>
             </MainWrapper>
           ) : (
@@ -290,6 +334,7 @@ export const SystematizationDetails: React.FC = () => {
           />
         )}
       </OverviewBox>
+      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
     </ScreenWrapper>
   );
 };

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-
+import {FileIcon} from 'client-library';
 export const TitleWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -50,12 +50,14 @@ export const FileUploadWrapper = styled.div`
   }
 `;
 
-export const UploadWrapper = styled.div`
+export const StyledFileIcon = styled(FileIcon)`
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+`;
+export const FileIconButton = styled.button`
+  all: unset;
+  cursor: pointer;
   display: flex;
-  margin-bottom: 1.5em;
-  width: 100%;
-  gap: 1.25em;
-  & > div > div {
-    width: 100%;
-  }
+  flex-direction: row;
 `;

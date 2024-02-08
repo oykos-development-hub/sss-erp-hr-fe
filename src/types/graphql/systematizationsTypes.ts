@@ -11,6 +11,11 @@ export type SystematizationType = {
   date_of_activation: string;
   created_at: string;
   updated_at: string;
+  file?: {
+    id: number;
+    name: string;
+    type: string;
+  };
 };
 
 export type SectorJobPosition = {

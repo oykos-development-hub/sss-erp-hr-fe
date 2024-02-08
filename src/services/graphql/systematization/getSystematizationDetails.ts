@@ -12,6 +12,11 @@ const getSystematizationDetails = `query SystematizationDetails($id: Int) {
                 id 
                 title
             }
+            file {
+                id
+                name
+                type
+            }
             description
             serial_number 
             active 
