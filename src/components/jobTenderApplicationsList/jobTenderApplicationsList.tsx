@@ -66,6 +66,7 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
   };
 
   const toggleApplicationModal = (id?: number) => {
+    if (jobTender?.active === false) return;
     setShowModal(prev => !prev);
 
     handleEdit(id || 0);
