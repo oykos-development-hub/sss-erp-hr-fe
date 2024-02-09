@@ -132,6 +132,7 @@ export const SystematizationDetails: React.FC = () => {
   };
 
   const handleSave = async (data: InsertSystematizationParams) => {
+    console.log(systematizationId);
     if (activeTab === 1) {
       if (uploadedFile) {
         const formData = new FormData();
@@ -150,6 +151,8 @@ export const SystematizationDetails: React.FC = () => {
             alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
           },
         );
+      } else if (!systematizationId) {
+        handleMutate(data);
       } else {
         setShowFileUploadError(true);
       }
