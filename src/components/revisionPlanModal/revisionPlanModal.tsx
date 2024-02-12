@@ -4,8 +4,8 @@ import {Controller, useForm} from 'react-hook-form';
 import useGetRevisionPlanDetails from '../../services/graphql/revisionsPlans/useRevisionPlanDetails';
 import useInsertRevisionPlan from '../../services/graphql/revisionsPlans/useRevisionPlanInsert';
 import {RevisionPlanForm} from '../../types/graphql/revisionPlans';
-import {yearsForDropdown} from '../../utils/constants';
 import {FormGroup, ModalForm, ModalSection, RevisionModal} from './styles';
+import {DropdownDataString} from '../../types/dropdownData';
 
 interface RevisionPlanProps {
   open: boolean;
@@ -13,7 +13,7 @@ interface RevisionPlanProps {
   refetchList: () => void;
   alert: any;
   id: number;
-  yearsWithRevisionPlans: number[];
+  yearsWithRevisionPlans: DropdownDataString[];
 }
 
 const initialValues: RevisionPlanForm = {
@@ -32,8 +32,6 @@ export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({
 }) => {
   const {revisionPlanDetails} = useGetRevisionPlanDetails(id);
   const {insertRevisionPlan, loading: isSaving} = useInsertRevisionPlan();
-
-  const yearOptions = yearsForDropdown(1, yearsWithRevisionPlans, true);
 
   const {
     register,
@@ -75,7 +73,9 @@ export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({
       reset({
         name: revisionPlanDetails.name,
         id: revisionPlanDetails.id,
-        year: yearOptions.find(yearOption => yearOption.title === revisionPlanDetails?.year),
+        year: yearsWithRevisionPlans.find(
+          (yearOption: DropdownDataString) => yearOption.title === revisionPlanDetails?.year,
+        ),
       });
     }
   }, [revisionPlanDetails]);
@@ -102,7 +102,7 @@ export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({
                     name={name}
                     value={value}
                     onChange={onChange}
-                    options={yearOptions || []}
+                    options={yearsWithRevisionPlans}
                     isRequired
                     error={errors.year?.message as string}
                     placeholder="Izaberite godinu"

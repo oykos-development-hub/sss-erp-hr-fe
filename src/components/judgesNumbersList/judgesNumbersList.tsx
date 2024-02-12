@@ -1,4 +1,4 @@
-import {Button, Divider, EditIconTwo, Pagination, Table, Theme, TrashIcon, DownloadIcon} from 'client-library';
+import {Button, Divider, EditIconTwo, Pagination, Table, Theme, TrashIcon, DownloadIcon, EyeIcon} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {judgesNumberResolutionTableHeads} from '../../screens/judges/judgeNorms/constants';
 import {JudgesNumberListFilters} from '../../screens/judges/judgesNumberDecisions/judgesNumberDecision';
@@ -117,6 +117,13 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
             name: 'Izmijeni',
             onClick: row => navigate(`/hr/judges/number-decision/${row.id}`),
             icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+            shouldRender: row => row.active,
+          },
+          {
+            name: 'Pregled',
+            onClick: row => navigate(`/hr/judges/number-decision/${row.id}`),
+            icon: <EyeIcon stroke={Theme?.palette?.gray800} />,
+            shouldRender: row => !row.active,
           },
           {
             name: 'Preuzmi',

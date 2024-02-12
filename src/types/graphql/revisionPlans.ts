@@ -1,4 +1,4 @@
-import {DropdownDataNumber} from '../dropdownData';
+import {DropdownDataNumber, DropdownDataString} from '../dropdownData';
 import {DeleteResponse, DetailsResponse, GetResponse, InsertResponse} from './response';
 
 export type RevisionPlan = {
@@ -34,6 +34,6 @@ export type RevisionPlansResponse = {
 
 export type RevisionPlanForm = {
   name: string;
-  year: DropdownDataNumber | null;
+  year: DropdownDataString | null;
   id: number | null;
 };

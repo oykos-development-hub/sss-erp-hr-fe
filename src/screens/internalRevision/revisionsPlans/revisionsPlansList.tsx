@@ -17,6 +17,7 @@ import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {RevisionListContainer, MainTitle, TableHeader, FilterContainer} from '../styles';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import useDeleteRevisionPlan from '../../../services/graphql/revisionsPlans/useRevisionPlanDelete';
+import {getYearOptions} from '../../../utils/constants';
 
 interface RevisionPlanListProps {
   context: MicroserviceProps;
@@ -36,16 +37,14 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
   const {deleteRevisionPlan} = useDeleteRevisionPlan();
   const {revisionPlans, loading, refetch} = useGetRevisionPlans({page: 1, size: 1000});
 
-  const yearsWithRevisionPlans: number[] = useMemo(() => {
-    if (!revisionPlans) return [];
-    return revisionPlans?.map((item: any) => +item.year);
-  }, [revisionPlans]);
+  const yearsWithRevisionPlans = useMemo(() => {
+    const years = getYearOptions(8, false, 8);
 
-  const yearsWithRevisionPlansDropdown: {id: number | string; title: string}[] = yearsWithRevisionPlans.map(year => ({
-    id: year,
-    title: year.toString(),
-  }));
-  yearsWithRevisionPlansDropdown.unshift({id: '', title: 'Sve'});
+    const existingYears = revisionPlans?.map(item => item.year) || [];
+    const filteredYears = years.filter(year => !existingYears.includes(year.title));
+
+    return filteredYears;
+  }, [revisionPlans]);
 
   const toggleDeleteModal = (id: number) => {
     setDeleteModal(id);
@@ -98,7 +97,7 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
           <FilterContainer>
             <Dropdown
               label="GODINA:"
-              options={yearsWithRevisionPlansDropdown}
+              options={getYearOptions(10, true, 5)}
               name="year"
               value={form?.year || null}
               onChange={handleChange}
