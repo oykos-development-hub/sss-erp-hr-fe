@@ -20,10 +20,10 @@ export const Judges: React.FC = () => {
           <ContentBox
             onClick={() => {
               navigate('/hr/judges/number-decision');
-              breadcrumbs.add({name: 'Odlika o broju sudija', path: '/hr/judges/number-decision'});
+              breadcrumbs.add({name: 'Odluka o broju sudija', path: '/hr/judges/number-decision'});
             }}>
             <TitleWrapper>
-              <Title variant="bodyLarge" content="Odlika o broju sudija" />
+              <Title variant="bodyLarge" content="Odluka o broju sudija" />
             </TitleWrapper>
             <IconWrapper>
               <JudgeIcon />
