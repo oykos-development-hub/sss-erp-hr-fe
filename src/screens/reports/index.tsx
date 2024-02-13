@@ -120,85 +120,73 @@ export const ReportsScreen: React.FC = () => {
     setEvaluationTypesOption(newData);
   }, [settingsData]);
 
-  const generateVacationReport = async (data: ReportsScreenProps) => {
-    if (activeTab === 1) {
-      const vacationReportData = await fetch({
-        employee_id: employeeId ? employeeId : null,
-        organization_unit_id: organizationUnit?.id,
-        type: 1,
-      });
+  const generateVacationReport = async () => {
+    const vacationReportData = await fetch({
+      employee_id: employeeId ? employeeId : null,
+      organization_unit_id: organizationUnit?.id,
+      type: 1,
+    });
 
-      const data = vacationReportData?.items?.map((item: any) => {
-        return {
-          full_name: item.full_name,
-          organization_unit: item.organization_unit,
-          total_days: item.total_days,
-          used_days: item.used_days,
-          left_days: item.left_days,
-        };
-      });
+    const data = vacationReportData?.items?.map((item: any) => {
+      return {
+        full_name: item.full_name,
+        organization_unit: item.organization_unit,
+        total_days: item.total_days,
+        used_days: item.used_days,
+        left_days: item.left_days,
+      };
+    });
 
-      if (data !== undefined) {
-        generatePdf('VACATION_REPORT', {
-          data,
-        });
-      } else {
-        alert.error('Greška prilikom generisanja izvještaja.');
-      }
-    } else if (activeTab === 2) {
-      downloadReport(data);
+    if (data !== undefined) {
+      generatePdf('VACATION_REPORT', {
+        data,
+      });
+    } else {
+      alert.error('Greška prilikom generisanja izvještaja.');
     }
   };
 
   const generateNumberofJudgesReport = async (data: ReportsScreenProps) => {
-    if (activeTab === 1) {
-      const reportData = filteredOrganizationUnits
-        ?.filter(unit => (data?.organization_unit.id === 0 ? unit?.id !== 0 : unit?.id === data?.organization_unit.id))
-        ?.map((item: any) => {
-          const filteredJudges = judges
-            ?.filter((judge: any) => judge.organization_unit.id === item.id)
-            .map(judge => judge.full_name);
-          return {
-            organization_unit: item.title,
-            judges: filteredJudges,
-          };
-        });
-      generatePdf('NUMBER_OF_JUDGES_REPORT', {reportData});
-    } else {
-      //TODO: download pattern
-    }
+    const reportData = filteredOrganizationUnits
+      ?.filter(unit => (data?.organization_unit.id === 0 ? unit?.id !== 0 : unit?.id === data?.organization_unit.id))
+      ?.map((item: any) => {
+        const filteredJudges = judges
+          ?.filter((judge: any) => judge.organization_unit.id === item.id)
+          .map(judge => judge.full_name);
+        return {
+          organization_unit: item.title,
+          judges: filteredJudges,
+        };
+      });
+    generatePdf('NUMBER_OF_JUDGES_REPORT', {reportData});
   };
 
   const generateJudgeEvaluationReport = async (data: ReportsScreenProps) => {
-    if (activeTab === 1) {
-      const judgeEvaluationData = await fetchJudgeEvaluationReport({
-        reason_for_evaluation: data?.reason_for_evaluation?.title || null,
-        organization_unit_id: data?.organization_unit?.id || null,
-        score: data?.score?.title || null,
-      });
+    const judgeEvaluationData = await fetchJudgeEvaluationReport({
+      reason_for_evaluation: data?.reason_for_evaluation?.title || null,
+      organization_unit_id: data?.organization_unit?.id || null,
+      score: data?.score?.title || null,
+    });
 
-      const dataForReport = judgeEvaluationData?.items?.map((item: any) => {
-        return {
-          id: item.id,
-          full_name: item.full_name,
-          judgment: item.judgment,
-          reason_for_evaluation: item.reason_for_evaluation,
-          date_of_evaluation: parseDate(item.date_of_evaluation),
-          score: item.score,
-          evaluation_period: item.evaluation_period,
-          decision_number: item.decision_number,
-        };
-      });
+    const dataForReport = judgeEvaluationData?.items?.map((item: any) => {
+      return {
+        id: item.id,
+        full_name: item.full_name,
+        judgment: item.judgment,
+        reason_for_evaluation: item.reason_for_evaluation,
+        date_of_evaluation: parseDate(item.date_of_evaluation),
+        score: item.score,
+        evaluation_period: item.evaluation_period,
+        decision_number: item.decision_number,
+      };
+    });
 
-      if (dataForReport !== undefined) {
-        generatePdf('JUDGE_EVALUATION_REPORT', {
-          dataForReport,
-        });
-      } else {
-        alert.error('Greška prilikom generisanja izvještaja.');
-      }
+    if (dataForReport !== undefined) {
+      generatePdf('JUDGE_EVALUATION_REPORT', {
+        dataForReport,
+      });
     } else {
-      downloadReport(data);
+      alert.error('Greška prilikom generisanja izvještaja.');
     }
   };
 
@@ -237,25 +225,29 @@ export const ReportsScreen: React.FC = () => {
   };
 
   const onSubmit = async (data: ReportsScreenProps) => {
-    switch (reportTypeID) {
-      case HrReportType.UsedVacationDays:
-        generateVacationReport(data);
-        break;
-      case HrReportType.NumberOfJudges:
-        generateNumberofJudgesReport(data);
-        break;
-      case HrReportType.EvaluationsForJudges:
-        generateJudgeEvaluationReport(data);
-        break;
-      case HrReportType.VacantJudgePositions:
-        generateVacantJudgePositionsReport();
-        break;
-      case HrReportType.AgeStructureOfJudges:
-        generateJudgesAgeStructureReport();
-        break;
-      case HrReportType.CertificateOfPermanentEmployment:
-        generateCertificateOfPermanentEmploymentReport(data);
-        break;
+    if (activeTab === 1) {
+      switch (reportTypeID) {
+        case HrReportType.UsedVacationDays:
+          generateVacationReport();
+          break;
+        case HrReportType.NumberOfJudges:
+          generateNumberofJudgesReport(data);
+          break;
+        case HrReportType.EvaluationsForJudges:
+          generateJudgeEvaluationReport(data);
+          break;
+        case HrReportType.VacantJudgePositions:
+          generateVacantJudgePositionsReport();
+          break;
+        case HrReportType.AgeStructureOfJudges:
+          generateJudgesAgeStructureReport();
+          break;
+        case HrReportType.CertificateOfPermanentEmployment:
+          generateCertificateOfPermanentEmploymentReport(data);
+          break;
+      }
+    } else if (activeTab === 2) {
+      downloadReport(data);
     }
   };
 
