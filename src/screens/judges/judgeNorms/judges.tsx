@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import JudgeNormModal from '../../../components/judgeNormModal/judgeNormModal';
 import JudgesList from '../../../components/judgesList/judgesList';
 import NormsList from '../../../components/normsList/normsList';
@@ -35,6 +35,11 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
   const {judges, total, refetch, loading} = useGetJudges({page, size: 10, ...filters});
   const {judgeOptions} = useGetJudges({page, size: 1000, ...initialValues});
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const screenWrapperRef = useRef<HTMLDivElement>(null);
+
+  let isNorm: boolean;
+  isNorm = normsList.length > 0;
 
   const selectedNormItem = useMemo(() => {
     return normsList?.find((item: JudgeNorm) => item.id === selectedNormItemId);
@@ -99,7 +104,7 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
   };
 
   return (
-    <ScreenWrapper>
+    <ScreenWrapper ref={screenWrapperRef}>
       <JudgesList
         toggleJudgesNorms={toggleJudgesNorms}
         onPageChange={onPageChange}
@@ -111,8 +116,11 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
         total={total}
         addNorm={() => openNormModal()}
         loading={loading}
+        parentRef={screenWrapperRef}
+        isNorm={isNorm}
       />
-      {normsList.length > 0 && (
+
+      {isNorm && (
         <NormsList
           data={normsList}
           toggleNormsModal={item => openNormModal(item)}

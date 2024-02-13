@@ -1,9 +1,10 @@
-import React, {useMemo} from 'react';
 import {Button, Divider, Pagination, Table} from 'client-library';
-import {JudgesListFilters} from '../../screens/judges/judgeNorms/judges';
-import {Controls, FilterDropdown, Filters, Header, MainTitle, OverviewBox} from './styles';
+import React, {RefObject, useEffect, useMemo, useRef} from 'react';
 import {judgeTableHeads} from '../../screens/judges/judgeNorms/constants';
+import {JudgesListFilters} from '../../screens/judges/judgeNorms/judges';
 import {Judge} from '../../types/graphql/judges';
+import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
+import {Controls, FilterDropdown, Filters, Header, MainTitle, OverviewBox} from './styles';
 
 export interface JudgesListProps {
   toggleJudgesNorms: (item?: Judge) => void;
@@ -16,6 +17,8 @@ export interface JudgesListProps {
   filters: JudgesListFilters;
   addNorm: () => void;
   loading: boolean;
+  parentRef: RefObject<HTMLDivElement>;
+  isNorm: boolean;
 }
 
 const JudgesList: React.FC<JudgesListProps> = ({
@@ -29,7 +32,11 @@ const JudgesList: React.FC<JudgesListProps> = ({
   filters,
   addNorm,
   loading,
+  parentRef,
+  isNorm,
 }) => {
+  const overviewRef = useRef<HTMLDivElement>(null);
+
   const list: Judge[] = useMemo(
     () =>
       data?.map((item: Judge) => ({
@@ -40,8 +47,14 @@ const JudgesList: React.FC<JudgesListProps> = ({
     [data],
   );
 
+  useEffect(() => {
+    if (isNorm) {
+      scrollToTheNextElement(parentRef, overviewRef);
+    }
+  }, [isNorm]);
+
   return (
-    <OverviewBox>
+    <OverviewBox ref={overviewRef}>
       <MainTitle variant="bodyMedium" content="PREGLED SUDIJA I PREDSJEDNIKA" />
       {/*TODO: theme color */}
       <Divider color="#615959" height="1px" />
@@ -74,7 +87,10 @@ const JudgesList: React.FC<JudgesListProps> = ({
         data={list}
         style={{marginBottom: 22}}
         isLoading={loading}
-        onRowClick={item => toggleJudgesNorms(item)}
+        onRowClick={item => {
+          toggleJudgesNorms(item);
+          isNorm && scrollToTheNextElement(parentRef, overviewRef);
+        }}
       />
       <Pagination
         pageCount={Math.ceil(total / 10)}
