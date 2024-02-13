@@ -38,8 +38,7 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
 
   const screenWrapperRef = useRef<HTMLDivElement>(null);
 
-  let isNorm: boolean;
-  isNorm = normsList.length > 0;
+  const isNorm = normsList.length > 0;
 
   const selectedNormItem = useMemo(() => {
     return normsList?.find((item: JudgeNorm) => item.id === selectedNormItemId);
