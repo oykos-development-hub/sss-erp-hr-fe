@@ -57,7 +57,7 @@ export const SystematizationDetails: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState(1);
   const [showEditSectorModal, setShowEditSectorModal] = useState(false);
-  const [sectorId, setSectorId] = useState<number>(0);
+  const [selectedSector, setSelectedSector] = useState<SectorType>();
 
   const {alert} = useAppContext();
 
@@ -77,10 +77,6 @@ export const SystematizationDetails: React.FC = () => {
   const {mutate} = useSystematizationInsert();
 
   const isSystematizationInactive = systematizationDetails?.active === 1;
-
-  const selectedSector = useMemo(() => {
-    return systematizationDetails?.sectors?.find((i: SectorType) => i.id === sectorId);
-  }, [sectorId]);
 
   const methods = useForm({
     defaultValues: {...initialValues, user_profile_id: contextMain?.id},
@@ -206,7 +202,11 @@ export const SystematizationDetails: React.FC = () => {
   };
 
   const editSector = (id: number) => {
-    setSectorId(id);
+    const sector = systematizationDetails?.sectors?.find((i: SectorType) => i.id === id);
+    if (sector) {
+      setSelectedSector(sector);
+    }
+
     setShowEditSectorModal(true);
   };
 

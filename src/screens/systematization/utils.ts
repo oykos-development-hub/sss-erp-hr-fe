@@ -15,6 +15,7 @@ export const formatSystematization = (data: any) => {
   delete payload.created_at;
   delete payload.updated_at;
   delete payload.active_employees;
+  delete payload.file;
 
   return payload;
 };
