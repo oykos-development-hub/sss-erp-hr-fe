@@ -3224,6 +3224,8 @@ See https://reactjs.org/docs/forms.html#controlled-components`);let n;t.initialP
                 abbreviation
                 color
                 icon
+                address
+                description
                 job_positions_organization_units {
                     id
                     job_positions {
