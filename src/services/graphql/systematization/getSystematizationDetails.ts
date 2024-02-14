@@ -30,6 +30,8 @@ const getSystematizationDetails = `query SystematizationDetails($id: Int) {
                 abbreviation
                 color
                 icon
+                address
+                description
                 job_positions_organization_units {
                     id
                     job_positions {
