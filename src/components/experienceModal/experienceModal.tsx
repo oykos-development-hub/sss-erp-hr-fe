@@ -23,8 +23,7 @@ const experienceSchema = yup.object().shape({
   amount_of_insured_experience: yup
     .number()
     .transform(value => (!value || isNaN(value) ? null : value))
-    .nullable()
-    .required('Ovo polje je obavezno'),
+    .nullable(),
   date_of_end: yup
     .date()
     .required('Ovo polje je obavezno')

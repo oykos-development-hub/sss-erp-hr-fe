@@ -259,13 +259,6 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
               <Input {...register('education_level')} label="STEPEN STRUČNOG OBRAZOVANJA:" disabled />
             </FormItem>
           </FormColumn>
-          <FormColumn>
-            <FormItem>
-              <FormItem>
-                <Input {...register('education_naming')} label="ZANIMANJE PO STRUCI:" disabled={isDisabled} />
-              </FormItem>
-            </FormItem>
-          </FormColumn>
         </FormRow>
       </FormWrapper>
 

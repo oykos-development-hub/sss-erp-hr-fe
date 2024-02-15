@@ -152,7 +152,7 @@ export const basicInfoSchema = yup.object({
     .required(requiredError)
     .default(undefined),
   gender: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
-  single_parent: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
+  single_parent: yup.object(dropdownStringSchema).default(undefined),
   housing_done: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
   is_president: yup.boolean().default(false),
   is_judge: yup.boolean().default(false),

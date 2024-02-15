@@ -37,11 +37,23 @@ export const countriesData: DropdownDataString[] = [
 export const maleMaritalStatusOptions: DropdownDataString[] = [
   {id: 'Oženjen', title: 'Oženjen'},
   {id: 'Neoženjen', title: 'Neoženjen'},
+  {id: 'Vjeren', title: 'Vjeren'},
+  {id: 'Vanbračna zajednica', title: 'Vanbračna zajednica'},
+  {id: 'Razveden', title: 'Razveden'},
+  {id: 'Udovac', title: 'Udovac'},
+  {id: 'U vezi', title: 'U vezi'},
+  {id: 'Slobodan', title: 'Slobodan'},
 ];
 
 export const femaleMaritalStatusOptions: DropdownDataString[] = [
   {id: 'Udata', title: 'Udata'},
   {id: 'Neudata', title: 'Neudata'},
+  {id: 'Vjerena', title: 'Vjerena'},
+  {id: 'Vanbračna zajednica', title: 'Vanbračna zajednica'},
+  {id: 'Razvedena', title: 'Razvedena'},
+  {id: 'Udovica', title: 'Udovica'},
+  {id: 'U vezi', title: 'U vezi'},
+  {id: 'Slobodna', title: 'Slobodna'},
 ];
 
 export const genderOptions: DropdownDataString[] = [

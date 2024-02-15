@@ -184,7 +184,7 @@ export const AcademicEducationModal: React.FC<ModalProps> = ({
           </FormGroup>
         </ModalContentWrapper>
       }
-      title={'DODAJTE NOVO AKADEMSKO OBRAZOVANJE'}
+      title={'DODAJTE NOVO OBRAZOVANJE'}
     />
   );
 };

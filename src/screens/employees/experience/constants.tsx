@@ -33,7 +33,12 @@ export const tableHeads: TableHead[] = [
     accessor: 'amount_of_insured_experience',
     type: 'custom',
     renderContents: (_, row: any) => {
-      return <Typography variant="bodyMedium" content={row.amount_of_insured_experience} />;
+      return (
+        <Typography
+          variant="bodyMedium"
+          content={row.amount_of_insured_experience ? row.amount_of_insured_experience : row.amount_of_experience}
+        />
+      );
     },
   },
   {

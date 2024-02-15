@@ -94,7 +94,7 @@ export const AcademicEducationTable: React.FC<TableProps> = ({alert, navigation}
 
   const title = (
     <TableTitle>
-      <TableTitleTypography variant="bodyLarge" content="Akademsko obrazovanje" />
+      <TableTitleTypography variant="bodyLarge" content="Obrazovanje" />
       <AddIcon onClick={handleAdd}>
         <PlusIcon width={'18px'} stroke={Theme?.palette?.primary500} />
       </AddIcon>

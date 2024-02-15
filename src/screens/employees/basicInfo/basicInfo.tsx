@@ -74,12 +74,17 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
   });
 
   const countryOptions = useMemo(() => {
-    return countries?.map((country: any) => {
-      return {
-        id: country.alpha3,
-        title: country.name,
-      };
+    const options = countries?.map((country: any) => ({
+      id: country.alpha3,
+      title: country.name,
+    }));
+
+    options.unshift({
+      id: 'unspecified',
+      title: 'Ne želim da se izjasnim',
     });
+
+    return options;
   }, [countries]);
 
   const gender = watch('gender')?.id;
@@ -619,8 +624,6 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
                     value={value}
                     options={yesOrNoOptionsString}
                     isDisabled={isDisabled}
-                    isRequired
-                    error={errors.single_parent?.message}
                     onChange={onChange}
                   />
                 )}

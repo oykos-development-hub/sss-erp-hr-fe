@@ -51,7 +51,7 @@ export const dropdownStringSchema = {id: yup.string().required(), title: yup.str
 export const dropdownNumberSchema = {id: yup.number().required(), title: yup.string().required()};
 export const requiredError = 'Ovo polje je obavezno';
 
-export const contractPositions = ['Ugovor na neodređeno vrijeme', 'Ugovor na određeno vrijeme'];
+export const contractPositions = ['Na neodređeno vrijeme', 'Na određeno vrijeme'];
 
 export const backendErrors: {[key: string]: string} = {
   user_email_exists: 'Email adresa već postoji u sistemu.',

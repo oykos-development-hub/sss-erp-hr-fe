@@ -1,17 +1,8 @@
 export const salaryRanks = [
-  {id: 'I', title: 'I'},
-  {id: 'II', title: 'II'},
-  {id: 'III', title: 'III'},
-  {id: 'IV', title: 'IV'},
-  {id: 'V', title: 'V'},
-  {id: 'VI', title: 'VI'},
-  {id: 'VII', title: 'VII'},
-  {id: 'VIII', title: 'VIII'},
-  {id: 'IX', title: 'IX'},
-  {id: 'X', title: 'X'},
-  {id: 'XI', title: 'XI'},
-  {id: 'XII', title: 'XII'},
-  {id: 'XIII', title: 'XIII'},
+  {id: 'A', title: 'A'},
+  {id: 'B', title: 'B'},
+  {id: 'C', title: 'C'},
+  {id: 'D', title: 'D'},
 ];
 
 export const insuranceBasis = [
