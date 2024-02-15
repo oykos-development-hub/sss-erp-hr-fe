@@ -349,6 +349,25 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
     setOpenCotractEndModal(!openContractEndModal);
   };
 
+  const extractDateOfBirthFromJMBG = (jmbg: any) => {
+    const day = jmbg.substring(0, 2);
+    const month = jmbg.substring(2, 4);
+    const year = jmbg.substring(4, 7);
+
+    const fullYear = `${jmbg[4] < 9 ? '2' : '1'}${year}`;
+
+    return new Date(`${fullYear}-${month}-${day}`);
+  };
+
+  const handleJMBGChange = (event: any) => {
+    const jmbgValue = event.target.value;
+
+    if (jmbgValue.length === 13) {
+      const dateOfBirth = extractDateOfBirthFromJMBG(jmbgValue);
+      setValue('date_of_birth', dateOfBirth);
+    }
+  };
+
   return (
     <FormContainer>
       <FormWrapper>
@@ -400,6 +419,7 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
                 label="JMBG:"
                 disabled={isDisabled}
                 isRequired
+                onChange={handleJMBGChange}
                 error={errors.official_personal_id?.message}
               />
             </FormItem>

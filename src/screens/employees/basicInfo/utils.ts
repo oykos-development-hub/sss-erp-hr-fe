@@ -139,7 +139,12 @@ export const basicInfoSchema = yup.object({
   mother_name: yup.string().required(requiredError),
   mother_birth_last_name: yup.string(),
   personal_id: yup.string(),
-  official_personal_id: yup.string().required(requiredError).default(undefined),
+  official_personal_id: yup
+    .string()
+    .matches(/^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[0-2])(\d{3})(2[1-9]|29)\d{3}\d{1}$/, 'Neispravan JMBG format')
+    .length(13, 'JMBG mora da ima 13 cifara')
+    .required(requiredError)
+    .default(undefined),
   official_personal_document_number: yup.string().required(requiredError).default(undefined),
   official_personal_document_issuer: yup
     .object()
