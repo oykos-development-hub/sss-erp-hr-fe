@@ -25,6 +25,7 @@ import {
   TriangleIcon,
 } from '../JobTenderApplicationModal/styles';
 import {JobTenderApplication, JobTenderApplicationInsertParams} from '../../types/graphql/jobTenderApplications';
+import useGetSettings from '../../services/graphql/settings/useGetSettings';
 
 const tenderApplicationSchema = yup.object().shape({
   type: yup
@@ -92,6 +93,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 }) => {
   const [selectedUserId, setSelectedIdUser] = useState<number>(0);
   const [confirmationModal, setConfirmationModal] = useState<boolean>(false);
+  const {settingsData, loading} = useGetSettings({entity: 'evaluation_types'});
 
   const {userBasicInfo} = useBasicInfoGet(selectedUserId, {skip: !selectedUserId});
 
@@ -295,7 +297,12 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                   <Dropdown
                     label="TIP KANDIDATA:"
                     name={name}
-                    options={applicationTypeOptions}
+                    options={
+                      jobTender?.type?.title === 'Dobrovoljno trajno raspoređivanje' ||
+                      jobTender?.type?.title === 'Javni oglas za napredovanje'
+                        ? applicationTypeOptions.filter(option => option.title === 'Interni')
+                        : applicationTypeOptions
+                    }
                     value={value}
                     onChange={onChange}
                     error={errors.type?.message}
@@ -401,9 +408,11 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                       name={name}
                       style={{width: '100%'}}
                       label="OCJENA:"
-                      options={evaluationTypeOptions || []}
+                      options={settingsData}
                       isRequired
-                      isDisabled
+                      isDisabled={
+                        jobTender?.type?.title !== 'Javni oglas za predsjednika suda' || type?.id !== 'external'
+                      }
                     />
                   );
                 }}
