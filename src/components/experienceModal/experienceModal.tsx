@@ -69,7 +69,7 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     fileService: {uploadFile},
   } = useAppContext();
   const {insertExperience, loading: isSaving} = useInsertExperience();
-  const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
+  const {organizationUnits} = useGetOrganizationUnits();
 
   const {relevant, date_of_start, date_of_end, organization_unit, organization_unit_id} = watch();
 

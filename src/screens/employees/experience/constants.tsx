@@ -32,14 +32,7 @@ export const tableHeads: TableHead[] = [
     title: 'Radni staž',
     accessor: 'amount_of_insured_experience',
     type: 'custom',
-    renderContents: (_, row: any) => {
-      return (
-        <Typography
-          variant="bodyMedium"
-          content={row.amount_of_insured_experience ? row.amount_of_insured_experience : row.amount_of_experience}
-        />
-      );
-    },
+    renderContents: (_, row: any) => <Typography variant="bodyMedium" content={row.amount_of_insured_experience} />,
   },
   {
     title: 'Radno iskustvo',
