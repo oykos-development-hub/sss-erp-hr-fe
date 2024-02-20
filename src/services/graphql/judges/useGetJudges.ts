@@ -6,7 +6,7 @@ import {REQUEST_STATUSES} from '../../constants';
 import {QueryOptions} from '../../../types/queryOptions';
 
 const ueGetJudges = (
-  {organization_unit, user_profile, page, size, search}: JudgesOverviewQueryParams,
+  {organization_unit, user_profile, page, size, search, norm_year}: JudgesOverviewQueryParams,
   options?: QueryOptions,
 ) => {
   const [judges, setJudges] = useState<Judge[]>();
@@ -39,6 +39,7 @@ const ueGetJudges = (
       page: page,
       size: size,
       search: search,
+      norm_year: Number(norm_year?.id),
     });
 
     if (response.judges_Overview?.status === REQUEST_STATUSES.success) {
@@ -60,7 +61,7 @@ const ueGetJudges = (
 
   useEffect(() => {
     fetchJudges();
-  }, [user_profile, organization_unit, page, size, search]);
+  }, [user_profile, organization_unit, page, size, search, norm_year]);
 
   return {judges, judgeOptions, total, loading, refetch: fetchJudges};
 };

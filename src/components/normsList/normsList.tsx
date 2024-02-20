@@ -5,15 +5,26 @@ import {DropdownDataString} from '../../types/dropdownData';
 import {judgeNormsTableHeads} from '../../screens/judges/judgeNorms/constants';
 import {topicOptions} from '../../screens/judges/constants';
 import {JudgeNorm} from '../../types/graphql/judgeNorms';
+import {getYearOptions} from '../../utils/constants';
+import {JudgesListFilters} from '../../screens/judges/judgeNorms/judges';
 
 interface NormsListProps {
   data: JudgeNorm[];
   toggleNormsModal: (item: JudgeNorm) => void;
   handleDeleteIconClick: (id: number) => void;
   loading: boolean;
+  onFilterChange: (value: any, name: string) => void;
+  filters: JudgesListFilters;
 }
 
-const NormsList: React.FC<NormsListProps> = ({data, toggleNormsModal, handleDeleteIconClick, loading}) => {
+const NormsList: React.FC<NormsListProps> = ({
+  data,
+  toggleNormsModal,
+  handleDeleteIconClick,
+  loading,
+  onFilterChange,
+  filters,
+}) => {
   const [topic, setTopic] = useState<DropdownDataString | null>(null);
 
   const onTopicChange = (value: any) => {
@@ -35,16 +46,23 @@ const NormsList: React.FC<NormsListProps> = ({data, toggleNormsModal, handleDele
   return (
     <OverviewBox>
       <Header>
-        <Filters>
-          <FilterDropdown
-            label="MATERIJA:"
-            options={topicOptions}
-            value={topic}
-            name="topic"
-            onChange={value => onTopicChange(value)}
-            placeholder="Odaberite materiju"
-          />
-        </Filters>
+        <FilterDropdown
+          label="MATERIJA:"
+          options={topicOptions}
+          value={topic}
+          name="topic"
+          onChange={value => onTopicChange(value)}
+          placeholder="Odaberite materiju"
+        />
+
+        <FilterDropdown
+          label="GODINA:"
+          options={getYearOptions(10, true, 2)}
+          value={filters?.norm_year}
+          name="norm_year_id"
+          onChange={value => onFilterChange(value, 'norm_year')}
+          placeholder="Odaberite godinu"
+        />
       </Header>
       <Table
         tableHeads={judgeNormsTableHeads}

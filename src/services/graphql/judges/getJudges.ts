@@ -1,5 +1,5 @@
-const getJudges = `query JudgesOverview($user_profile_id: Int, $organization_unit_id: Int, $page: Int, $size: Int) {
-      judges_Overview(user_profile_id: $user_profile_id, organization_unit_id: $organization_unit_id, page: $page, size: $size) {
+const getJudges = `query JudgesOverview($user_profile_id: Int, $organization_unit_id: Int, $page: Int, $size: Int, $norm_year: Int) {
+      judges_Overview(user_profile_id: $user_profile_id, organization_unit_id: $organization_unit_id, page: $page, size: $size, norm_year: $norm_year) {
           status 
           message
           total 
@@ -30,6 +30,8 @@ const getJudges = `query JudgesOverview($user_profile_id: Int, $organization_uni
                 number_of_norm_decrease
                 number_of_items
                 number_of_items_solved
+                norm_start_date
+                norm_end_date
                 evaluation {
                     id
                     date_of_evaluation

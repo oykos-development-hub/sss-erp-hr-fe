@@ -15,11 +15,13 @@ import {ScreenProps} from '../../../types/screen-props';
 export interface JudgesListFilters {
   organization_unit: DropdownDataNumber | null;
   user_profile: DropdownDataNumber | null;
+  norm_year: DropdownDataNumber | null;
 }
 
 const initialValues: JudgesListFilters = {
   organization_unit: null,
   user_profile: null,
+  norm_year: null,
 };
 
 const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
@@ -125,6 +127,8 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
           toggleNormsModal={item => openNormModal(item)}
           handleDeleteIconClick={handleDeleteIconClick}
           loading={loading}
+          filters={filters}
+          onFilterChange={onFilterChange}
         />
       )}
 

@@ -1,5 +1,5 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import {Dropdown, Input, Modal} from 'client-library';
+import {Dropdown, Input, Modal, Datepicker} from 'client-library';
 import React, {useEffect, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import * as yup from 'yup';
@@ -22,6 +22,8 @@ const initialValues: JudgeNormForm = {
   date_of_evaluation: null,
   date_of_evaluation_validity: null,
   topic: null,
+  norm_start_date: '',
+  norm_end_date: '',
 };
 
 const schema = yup.object().shape({
@@ -40,6 +42,8 @@ const schema = yup.object().shape({
     .transform(value => (Number.isNaN(value) ? null : value))
     .nullable()
     .required('Ovo polje je obavezno'),
+  norm_start_date: yup.string().required('Ovo polje je obavezno'),
+  norm_end_date: yup.string().required('Ovo polje je obavezno'),
 });
 
 const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose, selectedItem, dropdownData}) => {
@@ -87,9 +91,11 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
           number_of_items: values?.number_of_items || 1,
           number_of_items_solved: values?.number_of_items_solved || 1,
           evaluation_id: null,
-          relocation_id: values?.relocation?.id || 1,
+          relocation_id: values?.relocation?.id || null,
           date_of_evaluation: parseDateForBackend(values?.date_of_start),
           date_of_evaluation_validity: parseDateForBackend(values?.date_of_end),
+          norm_start_date: parseDateForBackend(values.norm_start_date),
+          norm_end_date: parseDateForBackend(values.norm_end_date),
         },
         () => {
           refetchList && refetchList();
@@ -171,6 +177,40 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               type="number"
               value={watch('number_of_items_solved')?.toString()}
             />
+          </Row>
+          <Row>
+            <div style={{width: '100%'}}>
+              <Controller
+                name="norm_start_date"
+                control={control}
+                render={({field: {onChange, name, value}}) => (
+                  <Datepicker
+                    label="TRAJANJE NORME OD:"
+                    name={name}
+                    selected={value ? new Date(value) : null}
+                    onChange={onChange}
+                    isRequired
+                    error={errors.user_profile_id?.message as string}
+                  />
+                )}
+              />
+            </div>
+            <div style={{width: '100%'}}>
+              <Controller
+                name="norm_end_date"
+                control={control}
+                render={({field: {onChange, name, value}}) => (
+                  <Datepicker
+                    label="TRAJANJE NORME DO:"
+                    name={name}
+                    selected={value ? new Date(value) : null}
+                    onChange={onChange}
+                    isRequired
+                    error={errors.user_profile_id?.message as string}
+                  />
+                )}
+              />
+            </div>
           </Row>
         </ModalContentWrapper>
       }

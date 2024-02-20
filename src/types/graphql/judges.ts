@@ -23,6 +23,7 @@ export interface JudgesOverviewQueryParams {
   page: number;
   size: number;
   search?: string;
+  norm_year?: DropdownDataNumber | null;
 }
 
 export interface JudgeResolutionsItem {
