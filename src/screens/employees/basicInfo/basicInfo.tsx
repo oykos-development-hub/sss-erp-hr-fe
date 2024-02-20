@@ -840,6 +840,22 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
                 )}
               />
             </FormItem>
+            <FormItem>
+              <Controller
+                name="judge_application_submission_date"
+                control={control}
+                render={({field: {onChange, name, value}}) => (
+                  <Datepicker
+                    name={name}
+                    selected={value ? new Date(value) : null}
+                    onChange={onChange}
+                    label="DATUM POLAGANJA ZAKLETVE:"
+                    disabled={!userBasicInfo?.is_judge}
+                    error={errors.judge_application_submission_date?.message}
+                  />
+                )}
+              />
+            </FormItem>
             {!isNew && (
               <FormItem>
                 <Button

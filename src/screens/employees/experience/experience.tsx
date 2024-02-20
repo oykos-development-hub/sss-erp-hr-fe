@@ -6,7 +6,7 @@ import useDeleteExperience from '../../../services/graphql/userProfile/experienc
 import useGetExperience from '../../../services/graphql/userProfile/experience/useGetExperience';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {ProfileExperience} from '../../../types/graphql/experience';
-import {tableHeads} from './constants';
+import {formatExperience, tableHeads} from './constants';
 import {ExperiencePageProps} from './types';
 import {FileItem} from '../../../components/fileModalView/types';
 import FileModalView from '../../../components/fileModalView/fileModalView';
@@ -25,6 +25,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
     experience?.forEach((item: any) => {
       totalExperience += item.amount_of_experience;
       totalInsuredExperience += item.amount_of_insured_experience;
+      console.log(totalExperience, 'experience');
     });
 
     return (
@@ -39,7 +40,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
           amount_of_insured_experience: (
             <Typography variant="bodyMedium" style={{fontWeight: 600}} content={totalInsuredExperience} />
           ),
-          amount_of_experience: <Typography variant="bodyMedium" style={{fontWeight: 600}} content={totalExperience} />,
+          amount_of_experience: totalExperience,
           reference_file_id: '',
           TABLE_ACTIONS: '',
         } as any,
@@ -62,10 +63,12 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
     setSelectedItemId(item.id);
     setShowModal(true);
   };
+
   const handleDeleteIconClick = (id: number) => {
     setShowDeleteModal(true);
     setSelectedItemId(id);
   };
+
   const handleAdd = () => {
     setShowModal(true);
   };

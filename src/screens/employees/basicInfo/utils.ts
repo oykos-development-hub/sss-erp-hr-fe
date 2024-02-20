@@ -33,6 +33,7 @@ export const formatData = (data: any) => {
     date_of_taking_oath: new Date(),
     national_minority: data?.national_minority?.id,
     official_personal_document_issuer: data?.official_personal_document_issuer?.id,
+    judge_application_submission_date: data?.judge_application_submission_date,
     contract: {
       organization_unit_id: data?.organization_unit_id?.id || null,
       organization_unit_department_id: data?.department_id?.id || null,
@@ -198,4 +199,11 @@ export const basicInfoSchema = yup.object({
     .when('id', {is: undefined, then: schema => schema.required(requiredError)}),
   password: passwordSchema,
   number_of_conference: yup.string(),
+  judge_application_submission_date: yup
+    .string()
+    .nullable()
+    .when('is_judge', {
+      is: true,
+      then: schema => schema.required('Ovo polje je obavezno'),
+    }),
 });

@@ -42,6 +42,7 @@ export interface ProfileBasicInfo {
     type: string;
   };
   number_of_conference: string;
+  judge_application_submission_date: string;
 }
 
 export interface ProfileBasicInfoFormValues {
@@ -81,6 +82,7 @@ export interface ProfileBasicInfoFormValues {
   personal_id: string;
   number_of_conference: string;
   file_id: number;
+  judge_application_submission_date: string;
 }
 
 export interface UserContract {
