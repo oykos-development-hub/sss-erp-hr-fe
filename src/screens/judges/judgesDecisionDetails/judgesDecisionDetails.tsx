@@ -199,11 +199,9 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({i
           titleElement={
             <Filters>
               <Input
-                {...register('serial_number', {required: 'Redni broj je obavezan'})}
+                {...register('serial_number')}
                 label="REDNI BROJ:"
                 style={{width: 300}}
-                isRequired
-                error={errors.serial_number?.message as string}
                 placeholder="Unesite redni broj"
                 disabled={isDisabled}
               />

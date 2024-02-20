@@ -97,21 +97,6 @@ export const applicationTypeOptions: DropdownDataString[] = [
   },
 ];
 
-export const evaluationTypeOptions: DropdownDataString[] = [
-  {
-    id: 'Dobar',
-    title: 'Dobar',
-  },
-  {
-    id: 'Los',
-    title: 'Loš',
-  },
-  {
-    id: 'Zao',
-    title: 'Zao',
-  },
-];
-
 export enum ApplicationStatusEnum {
   WAITING = 'waiting',
   REJECTED = 'rejected',

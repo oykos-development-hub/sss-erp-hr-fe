@@ -1,4 +1,4 @@
-import {DropdownDataNumber} from '../dropdownData';
+import {DropdownDataNumber, DropdownDataString} from '../dropdownData';
 import {DropdownItemType} from './jobTenders';
 import {DeleteResponse, GetResponse, InsertResponse} from './response';
 
@@ -15,6 +15,7 @@ export interface JobTenderApplicationInsertParams {
   status: string;
   type: string;
   user_profile_id?: number;
+  evaluation?: string;
 }
 
 export interface JobTenderApplicationsGetParams {
@@ -41,7 +42,7 @@ export interface JobTenderApplication {
   date_of_birth: string | null;
   citizenship: string;
   nationality: string;
-  evaluation: string;
+  evaluation: DropdownDataString;
   date_of_application: string;
   created_at: string;
   updated_at: string;

@@ -53,20 +53,6 @@ export const judgeTableHeads: TableHead[] = [
     type: 'custom',
     renderContents: (item: DropdownDataNumber) => <Typography content={item.title} />,
   },
-  {
-    title: 'Pozicija',
-    accessor: 'job_position',
-    type: 'custom',
-    renderContents: (item: DropdownDataNumber) => <Typography content={item.title} />,
-  },
-  {
-    title: 'Rezultat procjene',
-    accessor: 'evaluation_title',
-  },
-  {
-    title: 'Relokacija',
-    accessor: 'relocation_title',
-  },
 ];
 
 export const judgesNumberResolutionTableHeads: TableHead[] = [

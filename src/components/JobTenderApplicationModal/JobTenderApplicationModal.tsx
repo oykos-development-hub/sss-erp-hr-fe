@@ -7,7 +7,6 @@ import {
   ApplicationStatusEnum,
   applicationStatusOptions,
   applicationTypeOptions,
-  evaluationTypeOptions,
 } from '../../screens/jobTenders/constants';
 import useInsertJobTenderApplication from '../../services/graphql/jobTenderApplications/useInsertJobTenderApplication';
 import useBasicInfoGet from '../../services/graphql/userProfile/basicInfo/useGetBasicInfo';
@@ -137,7 +136,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 
     if (values?.id) data.id = values?.id;
     if (data.type === 'external') {
-      // data.evaluation = values?.evaluation?.id;
+      data.evaluation = values?.evaluation?.id;
       data.first_name = values.first_name;
       data.last_name = values.last_name;
       data.citizenship = values?.citizenship?.id;
@@ -237,7 +236,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
           : undefined,
         type: selectedItem?.type ? applicationTypeOptions.find(st => st.id === selectedItem?.type) : undefined,
         evaluation: selectedItem?.evaluation
-          ? evaluationTypeOptions.find(st => st.id === selectedItem?.evaluation)
+          ? settingsData.find(st => st.title === selectedItem?.evaluation.title)
           : undefined,
         citizenship: selectedItem?.citizenship
           ? countryOptions?.find(st => st.id === selectedItem.citizenship)

@@ -34,11 +34,6 @@ const schema = yup.object().shape({
     .min(0, 'Najmanji broj je 0')
     .max(100, 'Najveći broj je 100'),
   topic: yup.object().required('Ovo polje je obavezno'),
-  number_of_items: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? null : value))
-    .nullable()
-    .required('Ovo polje je obavezno'),
   title: yup.string().required('Ovo polje je obavezno'),
   number_of_items_solved: yup
     .number()
@@ -149,7 +144,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
               value={watch('number_of_norm_decrease')?.toString()}
             />
           </Row>
-          <Row>
+          <div style={{marginBottom: '20px'}}>
             <Controller
               name="topic"
               control={control}
@@ -165,15 +160,7 @@ const JudgeNormModal: React.FC<ModalProps> = ({alert, refetchList, open, onClose
                 />
               )}
             />
-            <Input
-              {...register('number_of_items')}
-              label="BROJ PREDMETA:"
-              isRequired
-              error={errors.number_of_items?.message as string}
-              type="number"
-              value={watch('number_of_items')?.toString()}
-            />
-          </Row>
+          </div>
           <Row>
             <Input {...register('title')} label="NORMA:" error={errors.title?.message as string} isRequired />
             <Input
