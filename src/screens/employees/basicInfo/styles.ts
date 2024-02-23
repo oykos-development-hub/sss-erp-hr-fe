@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import {FileUpload} from 'client-library';
+import {Switch, SwitchProps} from '@oykos-development/devkit-react-ts-styled-components';
+import {rem} from 'polished';
 
 export const Controls = styled.div`
   display: flex;
@@ -101,4 +103,14 @@ export const TextWrapper = styled.div`
   & > p {
     font-weight: 600;
   }
+`;
+
+//TODO check switch from client-library, it's not working properly so I had to style switch from devkit
+export const StyledSwitch = styled(Switch)<SwitchProps>`
+  ${({checked, disabled, theme}) => `
+  label {
+    background-color: ${checked && !disabled ? theme.palette.primary500 : theme.palette.gray300} 
+    box-shadow: ${!disabled && `0 0 0 ${rem('4px')} ${theme.palette.primary50}`};
+  }
+    `}
 `;

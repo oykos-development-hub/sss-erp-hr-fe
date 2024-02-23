@@ -1,6 +1,5 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import {Switch} from '@oykos-development/devkit-react-ts-styled-components';
-import {Button, Datepicker, Dropdown, Input, Typography, FileUpload} from 'client-library';
+import {Button, Datepicker, Dropdown, Input, Typography, FileUpload, Theme} from 'client-library';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {
@@ -23,7 +22,17 @@ import {parseToDate} from '../../../utils/dateUtils';
 import {backendErrors, contractPositions, initialValues} from './constants';
 import FileList from '../../../components/fileList/fileList';
 
-import {Controls, FormColumn, FormContainer, FormFooter, FormItem, FormRow, FormWrapper, TextWrapper} from './styles';
+import {
+  Controls,
+  FormColumn,
+  FormContainer,
+  FormFooter,
+  FormItem,
+  FormRow,
+  FormWrapper,
+  StyledSwitch,
+  TextWrapper,
+} from './styles';
 import useInsertJobTenderApplication from '../../../services/graphql/jobTenderApplications/useInsertJobTenderApplication';
 import {basicInfoSchema, booleanToYesOrNo, formatData} from './utils';
 import {ContractEndModal} from '../../../components/contractEndModal/contractEndModal';
@@ -720,12 +729,13 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
                 name="is_judge"
                 control={control}
                 render={({field: {onChange, name, value}}) => (
-                  <Switch
+                  <StyledSwitch
                     name={name}
                     checked={value}
                     onChange={onChange}
                     content={<Typography variant="bodyMedium" content="SUDIJA:" style={{marginLeft: 10}} />}
                     disabled={isDisabled || isJudgeSwitchDisabled()}
+                    theme={Theme}
                   />
                 )}
               />
@@ -734,15 +744,18 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
               <Controller
                 name="is_president"
                 control={control}
-                render={({field: {onChange, name, value}}) => (
-                  <Switch
-                    name={name}
-                    checked={value}
-                    onChange={onChange}
-                    content={<Typography variant="bodyMedium" content="PREDSJEDNIK SUDA:" style={{marginLeft: 10}} />}
-                    disabled={isDisabled || isPresidentSwitchDisabled()}
-                  />
-                )}
+                render={({field: {onChange, name, value}}) => {
+                  return (
+                    <StyledSwitch
+                      name={name}
+                      checked={value}
+                      onChange={onChange}
+                      content={<Typography variant="bodyMedium" content="PREDSJEDNIK SUDA:" style={{marginLeft: 10}} />}
+                      disabled={isDisabled || isPresidentSwitchDisabled()}
+                      theme={Theme}
+                    />
+                  );
+                }}
               />
             </div>
           </FormColumn>
@@ -850,8 +863,9 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
                     selected={value ? new Date(value) : null}
                     onChange={onChange}
                     label="DATUM POLAGANJA ZAKLETVE:"
-                    disabled={!userBasicInfo?.is_judge}
+                    disabled={isDisabled || isJudgeSwitchDisabled() || !is_judge}
                     error={errors.judge_application_submission_date?.message}
+                    isRequired={is_judge}
                   />
                 )}
               />
