@@ -29,14 +29,24 @@ export type ProfileVacationResponse = {
     userProfile_Vacation: GetResponse<ProfileVacation>;
   };
   insert: {
-    userProfile_Vacation_Insert: InsertResponse<ProfileVacation>;
+    userProfile_Vacations_Insert: InsertResponse<ProfileVacation>;
   };
   delete: {
     userProfile_Resolution_Delete: DeleteResponse;
   };
 };
 
+export type SingleUserVacationParams = {
+  user_profile_id: number;
+  number_of_days: number;
+};
+
 export type ProfileVacationParams = {
+  year: number;
+  data: SingleUserVacationParams[];
+};
+
+export type ProfileVacationExportParams = {
   id: number | null;
   user_profile_id: number | null;
   year: number | null;

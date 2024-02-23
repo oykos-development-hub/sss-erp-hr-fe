@@ -69,7 +69,7 @@ import insertResolution from './userProfile/resolution/insertResolution';
 import getSalaryParams from './userProfile/salaryParams/getSalaryParams';
 import insertSalaryParams from './userProfile/salaryParams/insertSalaryParams';
 import getVacations from './userProfile/vacation/getVacations';
-import insertVacation from './userProfile/vacation/insertVacation';
+import insertVacations from './userProfile/vacation/insertVacations';
 import vacationReport from './vacationReport/vacationReport';
 
 export const BFF_URL = {
@@ -130,7 +130,7 @@ export const GraphQL = {
   getJudgeAvailability: getJudgeAvailability,
   getSettings: getSettings,
   getVacation: getVacations,
-  insertVacation: insertVacation,
+  insertVacations: insertVacations,
   getRevisionPlans: getRevisionPlans,
   insertRevisionPlan: insertRevisionPlan,
   deleteRevisionPlan: deleteRevisionPlan,

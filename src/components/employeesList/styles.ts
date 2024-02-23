@@ -14,6 +14,7 @@ export const Header = styled.div`
 
 export const Controls = styled.div`
   display: flex;
+  gap: 10px;
 `;
 
 export const Filters = styled.div`

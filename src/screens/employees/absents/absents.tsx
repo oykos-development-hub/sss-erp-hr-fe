@@ -9,10 +9,9 @@ import useResolutionDelete from '../../../services/graphql/userProfile/resolutio
 import useGetVacations from '../../../services/graphql/userProfile/vacation/useGetVacation';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {Absence, AbsenceParams} from '../../../types/graphql/absents';
-import {ProfileVacation, ProfileVacationParams} from '../../../types/graphql/vacations';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import {yearsForDropdownFilter} from '../../../utils/constants';
-import {tableHeadsAbsence, tableHeadsVacation, tableHeadsYearVacation} from './constants';
+import {tableHeadsAbsence, tableHeadsVacation} from './constants';
 import {
   ButtonWrapper,
   Container,
@@ -26,7 +25,6 @@ import {
   YearContainer,
   YearWrapper,
 } from './styles';
-import {VacationModal} from '../../../components/vacationModal/VacationModal';
 import {FileItem} from '../../../types/fileUploadType';
 import FileModalView from '../../../components/fileModalView/fileModalView';
 
@@ -38,7 +36,6 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const [firstTableData, setFirstTableData] = useState<Absence[]>([]);
   const [secondTableData, setSecondTableData] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [showVacationModal, setShowVacationModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
   const [form, setForm] = useState<any>();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -46,16 +43,11 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const {mutate} = useAbsentDelete();
   const {deleteResolution} = useResolutionDelete();
   const [editItem, setEditItem] = useState<Absence | undefined>();
-  const [editItemVacation, setEditItemVacation] = useState<ProfileVacation | undefined>();
   const [showDeleteVacationModal, setShowDeleteVacationModal] = useState<boolean>(false);
   const [fileToView, setFileToView] = useState<FileItem>();
 
   const handleAdd = () => {
     setShowModal(true);
-  };
-
-  const handleAddVacation = () => {
-    setShowVacationModal(true);
   };
 
   const handleDelete = async () => {
@@ -96,22 +88,9 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
     shouldRefetch && refetch();
   };
 
-  const handleCloseVacationModal = (shouldRefetch: boolean) => {
-    setShowVacationModal(false);
-    setSelectedItemId(0);
-    setEditItemVacation(undefined);
-    refetch();
-    shouldRefetch && refetchVacations();
-  };
-
   const handleEdit = (item: AbsenceParams) => {
     setShowModal(true);
     setEditItem(absence?.find(tableItem => tableItem.id === item.id));
-  };
-
-  const handleEditVacation = (item: ProfileVacationParams) => {
-    setShowVacationModal(true);
-    setEditItemVacation(vacations?.find(tableItem => tableItem.id === item.id));
   };
 
   const handleDeleteIconClick = (id: number) => {
@@ -172,18 +151,6 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
     );
   }, [secondTableData, form?.year?.id]);
 
-  const filterVacationData = () => {
-    if (!form) {
-      return vacations || [];
-    }
-    const isAllYearSelected = form?.year.id.toString() === '';
-    const filteredData = vacations?.filter(item => {
-      return isAllYearSelected || item.year === form.year.id;
-    });
-
-    return filteredData || [];
-  };
-
   useEffect(() => {
     filterFirstTableData();
     filterSecondTableData();
@@ -232,48 +199,12 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
         <ButtonWrapper>
           <Button
             variant="secondary"
-            content={<Typography variant="bodyMedium" content="Rješenje o godišnjem odmoru" />}
-            onClick={handleAddVacation}
-          />
-          <Button
-            variant="secondary"
             content={<Typography variant="bodyMedium" content="Zahtjevi" />}
             onClick={handleAdd}
             style={{marginLeft: '10px'}}
           />
         </ButtonWrapper>
       </TableHeader>
-      <div>
-        <div>
-          <TableTitle content="GODIŠNJI ODMORI" variant="bodyMedium" />
-          <Divider height="1px" style={{marginBottom: '30px'}} />
-        </div>
-        <Table
-          tableHeads={tableHeadsYearVacation}
-          data={filterVacationData() || []}
-          isLoading={loading}
-          tableActions={[
-            {
-              name: 'showFile',
-              icon: <FileIcon stroke={Theme.palette.gray600} />,
-              onClick: (row: any) => {
-                setFileToView(row?.file);
-              },
-              shouldRender: (row: any) => row?.file?.id,
-            },
-            {
-              name: 'Izmijeni',
-              onClick: item => handleEditVacation(item),
-              icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            },
-            {
-              name: 'Obriši',
-              onClick: item => handleDeleteVacationIconClick(item.id),
-              icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-            },
-          ]}
-        />
-      </div>
 
       <div>
         <div>
@@ -347,16 +278,6 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
           alert={context.alert}
           absenceTypes={absenceTypes || []}
           key={editItem ? editItem.id : 'new'}
-        />
-      )}
-      {showVacationModal && (
-        <VacationModal
-          open={showVacationModal}
-          onClose={refetch => handleCloseVacationModal(refetch)}
-          selectedItem={editItemVacation}
-          userProfileId={Number(userProfileID)}
-          alert={context.alert}
-          key={editItemVacation ? editItemVacation.id : 'new'}
         />
       )}
 

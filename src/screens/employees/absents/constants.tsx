@@ -1,6 +1,6 @@
 import React from 'react';
 import {TableHead, Typography} from 'client-library';
-import {parseDate} from '../../../utils/dateUtils';
+import {calculateBusinessDays, parseDate} from '../../../utils/dateUtils';
 
 export const tableHeadsAbsence: TableHead[] = [
   {
@@ -66,49 +66,8 @@ export const tableHeadsVacation: TableHead[] = [
     accessor: '',
     type: 'custom',
     renderContents: (_, row: any) => {
-      const startDate = new Date(row.date_of_start);
-      const endDate = new Date(row.date_of_end);
-
-      let numberOfDays = 0;
-
-      for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-        const dayOfWeek = d.getDay();
-        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-          numberOfDays += 1;
-        }
-      }
+      const numberOfDays = calculateBusinessDays(row.date_of_start, row.date_of_end);
       return <Typography variant="bodyMedium" content={row.number_of_days ? row.number_of_days : numberOfDays} />;
-    },
-    width: '10%',
-  },
-  {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
-];
-
-export const tableHeadsYearVacation: TableHead[] = [
-  {
-    title: 'Godina',
-    accessor: 'year',
-    type: 'custom',
-    renderContents: year => {
-      return <Typography variant="bodyMedium" content={year} />;
-    },
-    width: '15%',
-  },
-  {
-    title: 'Vrsta zahtjeva',
-    accessor: 'resolution_type',
-    type: 'custom',
-    renderContents: item => {
-      return <Typography variant="bodyMedium" content={item.title} />;
-    },
-    width: '30%',
-  },
-  {
-    title: 'Dana',
-    accessor: '',
-    type: 'custom',
-    renderContents: (_, row: any) => {
-      return <Typography variant="bodyMedium" content={row.number_of_days ? row.number_of_days : ''} />;
     },
     width: '10%',
   },

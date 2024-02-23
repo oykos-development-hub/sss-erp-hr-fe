@@ -1,5 +1,5 @@
 import {Button, Divider, Pagination, SearchIcon, Table, Theme} from 'client-library';
-import React, {ChangeEvent, RefObject, useEffect, useRef, useState} from 'react';
+import React, {ChangeEvent, RefObject, useEffect, useMemo, useRef, useState} from 'react';
 import {statusOptions} from '../../constants';
 import {EmployeeListFilters} from '../../screens/employees';
 import {tableHeads} from '../../screens/employees/constants';
@@ -8,9 +8,14 @@ import useGetOrganizationUnits from '../../services/graphql/organizationUnits/us
 import {UserProfile} from '../../types/graphql/userProfiles';
 import {scrollToTheNextElement} from '../../utils/scrollToTheNextElement';
 import {Controls, FilterDropdown, FilterInput, Filters, Header, MainTitle, OverviewBox} from './styles';
+import useAppContext from '../../context/useAppContext.ts';
+import useGetUserProfiles from '../../services/graphql/userProfile/useGetUserProfiles.ts';
+import {REQUEST_STATUSES} from '../../services/constants.ts';
+import {uploadAnnualLeaveXslx} from '../../services/uploadAnnualLeaveXslx.ts';
+import {SingleUserVacationParams} from '../../types/graphql/vacations.ts';
+import useInsertVacations from '../../services/graphql/userProfile/vacation/useInsertVacations.ts';
 
 export interface EmployeesListProps {
-  navigation?: any;
   toggleEmployeeImportModal: () => void;
   onPageChange: (page: number) => void;
   search: string;
@@ -26,7 +31,6 @@ export interface EmployeesListProps {
 }
 
 const EmployeesList: React.FC<EmployeesListProps> = ({
-  navigation,
   onPageChange,
   data,
   search,
@@ -38,11 +42,24 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
 }) => {
   const [selectedRowId, setSelectedRowId] = useState(0);
   const overviewRef = useRef<HTMLDivElement>(null);
-  const state = navigation.location.state;
-  const isDetails = navigation.location.pathname.split('/').length === 6;
+  const {
+    navigation: {
+      location: {state, pathname},
+      navigate,
+    },
+    alert,
+    spreadsheetService: {openImportModal, closeImportModal},
+    contextMain: {token},
+  } = useAppContext();
+  const isDetails = pathname.split('/').length === 6;
 
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
   const {jobPositions} = useGetJobPositions('');
+  const {userProfiles} = useGetUserProfiles({
+    page: 1,
+    size: 10000,
+  });
+  const {insertVacations, loading: isSaving} = useInsertVacations();
 
   const userProfileList = data.items
     ? data?.items?.map((item: UserProfile) => ({
@@ -62,6 +79,51 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
       scrollToTheNextElement(parentRef, overviewRef);
     }
   }, [isDetails]);
+
+  const handleUploadTable = async (files: FileList) => {
+    const response = await uploadAnnualLeaveXslx(files[0], token);
+    if (response?.status === REQUEST_STATUSES.success) {
+      if (response?.data?.length) {
+        return response.data;
+      }
+      return null;
+    } else {
+      alert.error('Došlo je do greške prilikom učitavanja fajla!');
+    }
+  };
+
+  const handleSubmit = async (leaveData: SingleUserVacationParams[]) => {
+    if (!leaveData?.length) return;
+    const filteredData = leaveData.filter(item => item.number_of_days > 0);
+    const currentYear = new Date().getFullYear();
+    await insertVacations(
+      {year: currentYear, data: filteredData},
+      () => {
+        alert.success('Godišnji odmori uspješno sačuvani.');
+        closeImportModal();
+      },
+      () => {
+        alert.error('Došlo je do greške prilikom čuvanja godišnjih odmora!');
+      },
+    );
+  };
+
+  const sheetData = userProfiles?.map((item: UserProfile) => ({
+    id: item.id,
+    full_name: `${item.first_name} ${item.last_name}`,
+    job_position: item.job_position?.title,
+  }));
+
+  const importAnnualLeaveDays = () => {
+    const modalProps = {
+      type: 'IMPORT_ANNUAL_LEAVE',
+      data: sheetData,
+      onSubmit: handleSubmit,
+      handleUpload: handleUploadTable,
+      content: 'Tabela godišnjih odmora',
+    };
+    openImportModal(modalProps);
+  };
 
   return (
     <OverviewBox ref={overviewRef}>
@@ -105,12 +167,20 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
           />
         </Filters>
         <Controls>
+          {/*  Button should only be visible to HR*/}
+          {/*  that role doesn't exist yet*/}
+          <Button
+            content="Plan godišnjih odmora"
+            variant="secondary"
+            style={{width: 170}}
+            onClick={importAnnualLeaveDays}
+          />
           <Button
             content="Dodajte zaposlenog"
             variant="secondary"
             style={{width: 170}}
             onClick={() => {
-              navigation.navigate('/hr/employees/add-new');
+              navigate('/hr/employees/add-new');
             }}
           />
         </Controls>
@@ -122,7 +192,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
         isLoading={loading}
         selectedRowId={selectedRowId}
         onRowClick={(row: UserProfile) => {
-          navigation.navigate(`/hr/employees/details/${row.id}/basic-info`);
+          navigate(`/hr/employees/details/${row.id}/basic-info`);
           scrollToTheNextElement(parentRef, overviewRef);
           setSelectedRowId(row.id);
         }}

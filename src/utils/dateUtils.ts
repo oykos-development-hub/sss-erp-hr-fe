@@ -38,3 +38,35 @@ export const parseToDate = (dateString: string | null) => {
 
   return new Date(dateString);
 };
+
+export const calculateBusinessDays = (start: string | Date, end: string | Date): number => {
+  const startDate = typeof start === 'string' ? new Date(start) : start;
+  const endDate = typeof end === 'string' ? new Date(end) : end;
+
+  if (startDate > endDate) {
+    console.error('Start date cannot be after end date.');
+    return 0;
+  }
+
+  const currentDate = new Date(startDate);
+  let businessDays = 0;
+
+  while (currentDate <= endDate) {
+    const dayOfWeek = currentDate.getDay();
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) businessDays++;
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return businessDays;
+};
+
+export const findNextBusinessDay = (inputDate: string | Date): Date => {
+  const date = new Date(inputDate);
+
+  // Increment the date until it's a business day (Monday to Friday)
+  do {
+    date.setDate(date.getDate() + 1);
+  } while (date.getDay() === 0 || date.getDay() === 6);
+
+  return date;
+};

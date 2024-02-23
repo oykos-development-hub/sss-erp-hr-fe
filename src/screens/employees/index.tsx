@@ -38,9 +38,13 @@ export const EmployeesScreen: React.FC<ScreenProps> = () => {
     setPage(1);
   }, [debouncedSearch]);
 
-  const {navigation} = useAppContext();
+  const {
+    navigation: {
+      location: {pathname},
+    },
+  } = useAppContext();
 
-  const isDetails = navigation.location.pathname.split('/')[3] === 'details';
+  const isDetails = pathname.split('/')[3] === 'details';
 
   const {userProfiles, total, loading, refetch} = useGetUserProfiles({
     page,
@@ -64,7 +68,6 @@ export const EmployeesScreen: React.FC<ScreenProps> = () => {
   return (
     <ScreenWrapper ref={screenWrapperRef}>
       <EmployeesList
-        navigation={navigation}
         onPageChange={onPageChange}
         toggleEmployeeImportModal={toggleEmployeeImportModal}
         data={{items: userProfiles, total}}

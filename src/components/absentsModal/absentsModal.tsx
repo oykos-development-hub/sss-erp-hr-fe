@@ -6,9 +6,20 @@ import {AbsenceTypeModalProps} from '../../screens/employees/absents/types';
 import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 import useInsertAbsence from '../../services/graphql/userProfile/absents/useInsertAbsence';
 import {AbsenceType} from '../../types/graphql/absents';
-import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
+import {
+  calculateBusinessDays,
+  findNextBusinessDay,
+  parseDate,
+  parseDateForBackend,
+  parseToDate,
+} from '../../utils/dateUtils';
 import {dropdownOptions} from './constants';
 import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
+import {generateDocxDocument} from './docx.ts';
+import {AnnualLeaveDecisionDocumentProps} from './types.ts';
+import {generateDocumentSerialNumber} from '../../utils/documentGenerationUtils.ts';
+import {saveAs} from 'file-saver';
+import useGetBasicInfo from '../../services/graphql/userProfile/basicInfo/useGetBasicInfo.ts';
 
 const initialValues: any = {
   id: null,
@@ -31,6 +42,7 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
 }) => {
   const {
     fileService: {uploadFile},
+    contextMain: {first_name: current_user_first_name, last_name: current_user_last_name},
   } = useAppContext();
 
   const [uploadedFile, setUploadedFile] = useState<FileList>();
@@ -53,7 +65,8 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
   };
 
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
-
+  const {userBasicInfo} = useGetBasicInfo(userProfileId, {skip: !userProfileId});
+  const {first_name, last_name, organization_unit, job_position} = userBasicInfo || {};
   const {insertAbsence, loading: isSaving} = useInsertAbsence();
 
   const handleAbsenceInsert = (data: any) => {
@@ -61,6 +74,27 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
       data,
       () => {
         onClose(true);
+        if (isVacation) {
+          const year = new Date(data.date_of_start).getFullYear();
+          const documentProps: AnnualLeaveDecisionDocumentProps = {
+            // currently user profile id is used as id in serial number, that will probably change
+            serialNumber: generateDocumentSerialNumber(userProfileId),
+            date: parseDate(new Date(), '.'),
+            year,
+            numberOfDays: calculateBusinessDays(data.date_of_start, data.date_of_end),
+            dateOfStart: parseDate(data.date_of_start, '.'),
+            dateOfEnd: parseDate(data.date_of_end, '.'),
+            nextBusinessDay: parseDate(findNextBusinessDay(data.date_of_end), '.'),
+            fullName: `${first_name} ${last_name}`,
+            jobTitle: job_position?.title ?? '',
+            department: organization_unit?.title ?? '',
+            currentUser: `${current_user_first_name} ${current_user_last_name}`,
+          };
+
+          generateDocxDocument(documentProps).then((blob: any) => {
+            saveAs(blob, `Rješenje_o_godišnjem_odmoru_${year}_${first_name}_${last_name}.docx`);
+          });
+        }
         alert.success('Uspješno sačuvano.');
         reset(initialValues);
       },
