@@ -49,7 +49,17 @@ export const tableHeads: TableHead[] = [
     title: 'Radni staž',
     accessor: 'amount_of_insured_experience',
     type: 'custom',
-    renderContents: (_, row: any) => <Typography variant="bodyMedium" content={row.amount_of_insured_experience} />,
+    renderContents: (_, row: any) => {
+      const isTotalExperience = row.id === ''; //  total experience row has an empty id and that row need to be bold
+
+      return (
+        <Typography
+          variant="bodyMedium"
+          style={{fontWeight: isTotalExperience ? 600 : ''}}
+          content={formatExperience(row.amount_of_insured_experience)}
+        />
+      );
+    },
   },
   {
     title: 'Radno iskustvo',

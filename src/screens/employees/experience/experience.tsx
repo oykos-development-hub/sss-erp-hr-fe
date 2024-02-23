@@ -6,7 +6,7 @@ import useDeleteExperience from '../../../services/graphql/userProfile/experienc
 import useGetExperience from '../../../services/graphql/userProfile/experience/useGetExperience';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {ProfileExperience} from '../../../types/graphql/experience';
-import {formatExperience, tableHeads} from './constants';
+import {tableHeads} from './constants';
 import {ExperiencePageProps} from './types';
 import {FileItem} from '../../../components/fileModalView/types';
 import FileModalView from '../../../components/fileModalView/fileModalView';
@@ -25,7 +25,6 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
     experience?.forEach((item: any) => {
       totalExperience += item.amount_of_experience;
       totalInsuredExperience += item.amount_of_insured_experience;
-      console.log(totalExperience, 'experience');
     });
 
     return (
@@ -37,9 +36,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
           organization_unit: '',
           date_of_start: '',
           date_of_end: '',
-          amount_of_insured_experience: (
-            <Typography variant="bodyMedium" style={{fontWeight: 600}} content={totalInsuredExperience} />
-          ),
+          amount_of_insured_experience: totalInsuredExperience,
           amount_of_experience: totalExperience,
           reference_file_id: '',
           TABLE_ACTIONS: '',
