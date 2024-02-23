@@ -221,9 +221,24 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
         date_of_birth: parseToDate(userBasicInfo.date_of_birth) ?? undefined,
         citizenship: countryOptions?.find(c => c.id === userBasicInfo.citizenship) || undefined,
         user_profile: {id: userBasicInfo.id, title: `${userBasicInfo.first_name} ${userBasicInfo.last_name}`},
+        evaluation: userBasicInfo.evaluation,
       });
     }
   }, [userBasicInfo]);
+
+  const resetForm = () => {
+    reset({
+      ...watch(),
+      first_name: '',
+      last_name: '',
+      official_personal_document_number: '',
+      date_of_birth: undefined,
+      date_of_application: undefined,
+      citizenship: undefined,
+      user_profile: undefined,
+      evaluation: undefined,
+    });
+  };
 
   useEffect(() => {
     if (selectedItem) {
@@ -303,7 +318,11 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                         : applicationTypeOptions
                     }
                     value={value}
-                    onChange={onChange}
+                    onChange={e => {
+                      onChange(e);
+                      // Reset form when user manually changes candidate type.
+                      resetForm();
+                    }}
                     error={errors.type?.message}
                     isRequired
                     isDisabled={!!selectedItem?.id}

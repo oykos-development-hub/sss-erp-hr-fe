@@ -33,6 +33,7 @@ export interface ProfileBasicInfo {
   phone: string;
   organization_unit: DropdownDataNumber;
   job_position: DropdownDataNumber;
+  evaluation: DropdownDataNumber;
   contract: UserContract;
   national_minority: string;
   personal_id: string;

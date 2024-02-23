@@ -42,6 +42,10 @@ const getBasicInfo = `query UserProfileOverview($user_profile_id: Int!){
                 id
                 title
             }
+            evaluation{
+                id
+                title
+            }
             judge_application_submission_date
             contract {
                 id
