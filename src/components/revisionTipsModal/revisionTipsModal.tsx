@@ -284,8 +284,8 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                       options={revisionPriorityOptions}
                       error={errors.revision_priority?.message as string}
                       isRequired
-                      placeholder="Izaberite prioritet revizije"
-                      label="PRIORITET REVIZIJE:"
+                      placeholder="Izaberite prioritet preporuke"
+                      label="PRIORITET PREPORUKE:"
                     />
                   )}
                 />
@@ -325,7 +325,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
             </FileUploadWrapper>
             {id > 0 && (
               <ModalSection>
-                <ModalSectionTitle content="SPROVOĐENJE REVIZIJE:" variant="bodyMedium" />
+                <ModalSectionTitle content="SPROVOĐENJE PREPORUKE:" variant="bodyMedium" />
                 <Row>
                   <FormGroup>
                     <Controller
