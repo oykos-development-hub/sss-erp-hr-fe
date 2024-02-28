@@ -14,4 +14,5 @@ export interface EvaluationModalProps {
   onClose: (refetch?: any, message?: any) => void;
   userProfileId?: number;
   evaluationTypes: Settings[];
+  isPresident?: boolean;
 }

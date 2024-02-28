@@ -163,6 +163,7 @@ export const EvaluationsPage = () => {
           selectedItem={selectedItem}
           userProfileId={userProfileID}
           evaluationTypes={settingsData || []}
+          isPresident={userBasicInfo?.is_president}
         />
       )}
 

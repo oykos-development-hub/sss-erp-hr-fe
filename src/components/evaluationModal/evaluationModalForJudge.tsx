@@ -20,6 +20,7 @@ export const EvaluationModalForJudge: React.FC<EvaluationModalProps> = ({
   onClose,
   userProfileId,
   evaluationTypes,
+  isPresident,
 }) => {
   const [evaluationTypesOption, setEvaluationTypesOption] = useState<DropdownDataNumber[]>([]);
   const [files, setFiles] = useState<FileList | null>(null);
@@ -119,6 +120,11 @@ export const EvaluationModalForJudge: React.FC<EvaluationModalProps> = ({
     setFiles(files);
     alert.success('Fajlovi uspješno učitani');
   };
+
+  const filteredOptions = isPresident
+    ? evaluationTypesOption.filter(option => option.title === 'Dobar' || option.title === 'Nezadovoljava')
+    : evaluationTypesOption;
+
   return (
     <Modal
       open={open}
@@ -175,7 +181,7 @@ export const EvaluationModalForJudge: React.FC<EvaluationModalProps> = ({
                     value={value as any}
                     name={name}
                     label="OCJENA:"
-                    options={evaluationTypesOption}
+                    options={filteredOptions}
                     error={errors.evaluation_type_id?.message}
                     isRequired
                   />
