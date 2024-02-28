@@ -312,111 +312,110 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                 error={errors.recommendation?.message as string}
               />
             </FormGroupFullWidth>
-
-            <FileUploadWrapper>
-              <FileUpload
-                icon={<></>}
-                style={{width: '100%'}}
-                variant="secondary"
-                onUpload={handleUpload}
-                note={<Typography variant="bodySmall" content="Upload dokumenta" />}
-                buttonText="Učitaj"
-              />
-            </FileUploadWrapper>
-            {id > 0 && (
-              <ModalSection>
-                <ModalSectionTitle content="SPROVOĐENJE PREPORUKE:" variant="bodyMedium" />
-                <Row>
-                  <FormGroup>
-                    <Controller
-                      control={control}
-                      name="status"
-                      render={({field: {name, value, onChange}}) => (
-                        <Dropdown
-                          name={name}
-                          value={value}
-                          onChange={onChange}
-                          options={revisionStatusOptions}
-                          label="STATUS SPROVOĐENJA:"
-                        />
-                      )}
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <Input {...register('documents')} label="REF. DOKUMENTA:" />
-                  </FormGroup>
-                </Row>
-                <Row>
-                  <FormGroup>
-                    <Controller
-                      control={control}
-                      name="user_profile_id"
-                      render={({field: {name, value, onChange}}) => (
-                        <Dropdown
-                          name={name}
-                          value={value}
-                          onChange={onChange}
-                          options={revisionTips.revisors || []}
-                          placeholder="Izaberite revizora"
-                          label="IMPLEMENTACIJU PREPORUKE POTVRDIO:"
-                          isDisabled={!revisionStatusConducted}
-                        />
-                      )}
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <Controller
-                      control={control}
-                      name="new_due_date"
-                      render={({field: {name, value, onChange}}) => (
-                        <Dropdown
-                          name={name}
-                          value={value}
-                          onChange={onChange}
-                          options={revisionDeadlineOptions}
-                          label="NOVI ROK SPROVOĐENJA PREPORUKE:"
-                          isDisabled={revisionStatusConducted}
-                        />
-                      )}
-                    />
-                  </FormGroup>
-                </Row>
-
-                <Row>
-                  <FormGroup>
-                    <Input
-                      {...register('new_date_of_execution')}
-                      label="NOVI DATUM:"
-                      value={secondDateOfImplementation && parseDate(secondDateOfImplementation)}
-                      disabled
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <Controller
-                      name="end_date"
-                      control={control}
-                      render={({field: {onChange, name, value}}) => (
-                        <Datepicker
-                          onChange={onChange}
-                          label="PREPORUKA SPROVEDENA:"
-                          name={name}
-                          selected={value ? new Date(value) : ''}
-                          disabled={!revisionStatusConducted}
-                        />
-                      )}
-                    />
-                  </FormGroup>
-                </Row>
-                <FormGroupFullWidth>
-                  <Input
-                    {...register('reasons_for_non_executing')}
-                    label="RAZLOZI NESPROVOĐENJA:"
-                    disabled={revisionStatusConducted}
-                  />
-                </FormGroupFullWidth>
-              </ModalSection>
-            )}
           </ModalSection>
+
+          {id > 0 && (
+            <>
+              <ModalSectionTitle content="SPROVOĐENJE PREPORUKE:" variant="bodyMedium" />
+              <Row>
+                <FormGroup>
+                  <Controller
+                    control={control}
+                    name="status"
+                    render={({field: {name, value, onChange}}) => (
+                      <Dropdown
+                        name={name}
+                        value={value}
+                        onChange={onChange}
+                        options={revisionStatusOptions}
+                        label="STATUS SPROVOĐENJA:"
+                      />
+                    )}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Input {...register('documents')} label="REF. DOKUMENTA:" />
+                </FormGroup>
+              </Row>
+              <Row>
+                <FormGroup>
+                  <Controller
+                    control={control}
+                    name="user_profile_id"
+                    render={({field: {name, value, onChange}}) => (
+                      <Dropdown
+                        name={name}
+                        value={value}
+                        onChange={onChange}
+                        options={revisionTips.revisors || []}
+                        placeholder="Izaberite revizora"
+                        label="IMPLEMENTACIJU PREPORUKE POTVRDIO:"
+                        isDisabled={!revisionStatusConducted}
+                      />
+                    )}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Controller
+                    control={control}
+                    name="new_due_date"
+                    render={({field: {name, value, onChange}}) => (
+                      <Dropdown
+                        name={name}
+                        value={value}
+                        onChange={onChange}
+                        options={revisionDeadlineOptions}
+                        label="NOVI ROK SPROVOĐENJA PREPORUKE:"
+                        isDisabled={revisionStatusConducted}
+                      />
+                    )}
+                  />
+                </FormGroup>
+              </Row>
+              <Row>
+                <FormGroup>
+                  <Input
+                    {...register('new_date_of_execution')}
+                    label="NOVI DATUM:"
+                    value={secondDateOfImplementation && parseDate(secondDateOfImplementation)}
+                    disabled
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Controller
+                    name="end_date"
+                    control={control}
+                    render={({field: {onChange, name, value}}) => (
+                      <Datepicker
+                        onChange={onChange}
+                        label="PREPORUKA SPROVEDENA:"
+                        name={name}
+                        selected={value ? new Date(value) : ''}
+                        disabled={!revisionStatusConducted}
+                      />
+                    )}
+                  />
+                </FormGroup>
+              </Row>
+              <FormGroupFullWidth>
+                <Input
+                  {...register('reasons_for_non_executing')}
+                  label="RAZLOZI NESPROVOĐENJA:"
+                  disabled={revisionStatusConducted}
+                />
+              </FormGroupFullWidth>
+              <FileUploadWrapper>
+                <FileUpload
+                  icon={<></>}
+                  style={{width: '100%'}}
+                  variant="secondary"
+                  onUpload={handleUpload}
+                  note={<Typography variant="bodySmall" content="Upload dokumenta" />}
+                  buttonText="Učitaj"
+                />
+              </FileUploadWrapper>
+            </>
+          )}
         </ModalForm>
       }
     />

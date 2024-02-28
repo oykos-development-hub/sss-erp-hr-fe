@@ -8,7 +8,7 @@ export const ModalForm = styled.form`
 `;
 
 export const ModalSection = styled.div`
-  margin-bottom: 68px;
+  margin-bottom: 70px;
 `;
 
 export const ModalSectionTitle = styled(Typography)`
@@ -42,18 +42,10 @@ export const CheckboxLabel = styled(Typography)`
 `;
 
 export const FileUploadWrapper = styled.div`
+  max-width: 600px;
   display: flex;
   align-items: center;
   width: 100%;
-
-  > div > div {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-
-    & div > p > p {
-      font-weight: 600;
-      line-height: 20px;
-    }
-  }
+  margin-block: 10px;
+  margin-top: 20px;
 `;
