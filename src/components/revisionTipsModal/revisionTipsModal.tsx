@@ -59,8 +59,6 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
   const {
     fileService: {uploadFile},
   } = useAppContext();
-  const location = context?.navigation?.location;
-  const dateOfRevision = location?.state?.dateOfRevision;
 
   const {
     register,
@@ -74,6 +72,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
   const implementationMonthSpan = watch('due_date');
   const secondMonthSpan = watch('new_due_date');
   const revisionStatusConducted = watch('status')?.id === 'Sprovedena';
+  const dateOfAccept = watch('date_of_accept');
 
   const handleInsertRevisionTips = (data: any) => {
     insertRevisionTip(
@@ -171,7 +170,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
     }
   }, [revisionTipDetails]);
 
-  const calculateDateOfImplementation = (revisionDate: string, monthSpan: DropdownDataString | null) => {
+  const calculateDateOfImplementation = (revisionDate: Date, monthSpan: DropdownDataString | null) => {
     const parsedDateOfRevision = new Date(revisionDate);
     const monthsToAdd = Number(monthSpan);
     parsedDateOfRevision.setMonth(parsedDateOfRevision.getMonth() + monthsToAdd);
@@ -179,16 +178,17 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
   };
 
   useEffect(() => {
-    if (dateOfRevision && implementationMonthSpan) {
-      const formattedDate = calculateDateOfImplementation(dateOfRevision, implementationMonthSpan.id);
+    if (dateOfAccept && implementationMonthSpan) {
+      const formattedDate = calculateDateOfImplementation(dateOfAccept, implementationMonthSpan.id);
       setDateOfImplementation(formattedDate);
     }
 
     if (implementationMonthSpan && secondMonthSpan) {
-      const formattedSecondDate = calculateDateOfImplementation(dateOfImplementation, secondMonthSpan.id);
+      const currentDate = new Date();
+      const formattedSecondDate = calculateDateOfImplementation(currentDate, secondMonthSpan.id);
       setSecondDateOfImplementation(formattedSecondDate);
     }
-  }, [dateOfRevision, implementationMonthSpan, secondMonthSpan]);
+  }, [dateOfAccept, implementationMonthSpan, secondMonthSpan]);
 
   const handleUpload = (files: FileList) => {
     setFiles(files);
@@ -222,6 +222,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
               <FormGroup>
                 <Controller
                   name="date_of_accept"
+                  rules={{required: 'Ovo polje je obavezno'}}
                   control={control}
                   render={({field: {onChange, name, value}}) => (
                     <Datepicker
@@ -229,6 +230,8 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                       label="DATUM PRIHVATANJA AKCIONOG PLANA:"
                       name={name}
                       selected={value ? new Date(value) : ''}
+                      isRequired
+                      error={errors.date_of_accept?.message}
                     />
                   )}
                 />
