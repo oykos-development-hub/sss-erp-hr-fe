@@ -73,9 +73,7 @@ export const RevisionPlanModal: React.FC<RevisionPlanProps> = ({
       reset({
         name: revisionPlanDetails.name,
         id: revisionPlanDetails.id,
-        year: yearsWithRevisionPlans.find(
-          (yearOption: DropdownDataString) => yearOption.title === revisionPlanDetails?.year,
-        ),
+        year: {id: revisionPlanDetails?.year, title: revisionPlanDetails?.year},
       });
     }
   }, [revisionPlanDetails]);
