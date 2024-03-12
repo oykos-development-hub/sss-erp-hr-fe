@@ -1,9 +1,8 @@
-const insertExperience = `mutation UserProfileExperienceInsert($data: UserProfileExperienceInsertMutation!){
-    userProfile_Experience_Insert(data: $data) {
+const insertExperiences = `mutation UserProfileExperiencesInsert($data: [UserProfileExperienceInsertMutation]){
+    userProfile_Experiences_Insert(data: $data) {
         message
         status
-        data
-        item {
+        items {
             id
             user_profile_id
             relevant
@@ -20,8 +19,13 @@ const insertExperience = `mutation UserProfileExperienceInsert($data: UserProfil
             created_at
             updated_at
             reference_file_id
+            file {
+                id
+                name
+                type
+            }
         }
     }
 }`;
 
-export default insertExperience;
+export default insertExperiences;

@@ -2,18 +2,20 @@ import React from 'react';
 import {TableHead, Typography} from 'client-library';
 import {parseDate} from '../../../utils/dateUtils';
 
-export function formatExperience(amount_of_experience: number) {
-  const years = Math.floor(amount_of_experience / 12);
-  const months = amount_of_experience % 12;
-
+export function formatExperience(years: number, months: number, days: number) {
   let result = '';
   if (years > 0) {
-    result += years && `${years} god.`;
+    result += years && `${years} god,`;
   }
 
   if (months > 0) {
+    // result += result.length > 0 ? ' i ' : '';
+    result += months && ` ${months} mj,`;
+  }
+
+  if (days > 0) {
     result += result.length > 0 ? ' i ' : '';
-    result += months && `${months} mjes.`;
+    result += months && `${months} dan.`;
   }
 
   return result;
@@ -56,7 +58,11 @@ export const tableHeads: TableHead[] = [
         <Typography
           variant="bodyMedium"
           style={{fontWeight: isTotalExperience ? 600 : ''}}
-          content={formatExperience(row.amount_of_insured_experience)}
+          content={formatExperience(
+            row.years_of_insured_experience,
+            row.months_of_insured_experience,
+            row.days_of_insured_experience,
+          )}
         />
       );
     },
@@ -72,7 +78,7 @@ export const tableHeads: TableHead[] = [
         <Typography
           variant="bodyMedium"
           style={{fontWeight: isTotalExperience ? 600 : ''}}
-          content={formatExperience(row.amount_of_experience)}
+          content={formatExperience(row.years_of_experience, row.months_of_experience, row.days_of_experience)}
         />
       );
     },

@@ -19,12 +19,16 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
   const [fileToView, setFileToView] = useState<FileItem>();
 
   const tableData = useMemo(() => {
-    let totalInsuredExperience = 0;
-    let totalExperience = 0;
+    let totalYearsOfInsuredExperience = 0;
+    let totalMonthsOfInsuredExperience = 0;
+    let totalYearsOfExperience = 0;
+    let totalMonthsOfExperience = 0;
 
     experience?.forEach((item: any) => {
-      totalExperience += item.amount_of_experience;
-      totalInsuredExperience += item.amount_of_insured_experience;
+      totalYearsOfInsuredExperience += item.years_of_insured_experience;
+      totalMonthsOfInsuredExperience += item.months_of_insured_experience;
+      totalYearsOfExperience += item.years_of_experience;
+      totalMonthsOfExperience += item.months_of_experience;
     });
 
     return (
@@ -36,8 +40,10 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
           organization_unit: '',
           date_of_start: '',
           date_of_end: '',
-          amount_of_insured_experience: totalInsuredExperience,
-          amount_of_experience: totalExperience,
+          years_of_experience: totalYearsOfExperience,
+          years_of_insured_experience: totalYearsOfInsuredExperience,
+          months_of_experience: totalMonthsOfExperience,
+          months_of_insured_experience: totalMonthsOfInsuredExperience,
           reference_file_id: '',
           TABLE_ACTIONS: '',
         } as any,

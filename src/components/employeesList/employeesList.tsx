@@ -11,9 +11,12 @@ import {Controls, FilterDropdown, FilterInput, Filters, Header, MainTitle, Overv
 import useAppContext from '../../context/useAppContext.ts';
 import useGetUserProfiles from '../../services/graphql/userProfile/useGetUserProfiles.ts';
 import {REQUEST_STATUSES} from '../../services/constants.ts';
-import {uploadAnnualLeaveXslx} from '../../services/uploadAnnualLeaveXslx.ts';
+import {importAnnualLeaveExcel} from '../../services/importExcel/importAnnualLeaveExcel.ts';
 import {SingleUserVacationParams} from '../../types/graphql/vacations.ts';
 import useInsertVacations from '../../services/graphql/userProfile/vacation/useInsertVacations.ts';
+import {importExperienceExcel} from '../../services/importExcel/importExperienceExcel.ts';
+import useInsertExperiences from '../../services/graphql/userProfile/experience/useInsertExperiences.ts';
+import {ProfileExperience} from '../../types/graphql/experience.ts';
 
 export interface EmployeesListProps {
   toggleEmployeeImportModal: () => void;
@@ -59,7 +62,8 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
     page: 1,
     size: 10000,
   });
-  const {insertVacations, loading: isSaving} = useInsertVacations();
+  const {insertVacations} = useInsertVacations();
+  const {insertExperiences} = useInsertExperiences();
 
   const userProfileList = data.items
     ? data?.items?.map((item: UserProfile) => ({
@@ -80,8 +84,14 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
     }
   }, [isDetails]);
 
-  const handleUploadTable = async (files: FileList) => {
-    const response = await uploadAnnualLeaveXslx(files[0], token);
+  const sheetData = userProfiles?.map((item: UserProfile) => ({
+    id: item.id,
+    full_name: `${item.first_name} ${item.last_name}`,
+    job_position: item.job_position?.title,
+  }));
+
+  const handleUploadAnnualLeaveTable = async (files: FileList) => {
+    const response = await importAnnualLeaveExcel(files[0], token);
     if (response?.status === REQUEST_STATUSES.success) {
       if (response?.data?.length) {
         return response.data;
@@ -92,7 +102,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
     }
   };
 
-  const handleSubmit = async (leaveData: SingleUserVacationParams[]) => {
+  const handleSubmitAnnualLeave = async (leaveData: SingleUserVacationParams[]) => {
     if (!leaveData?.length) return;
     const filteredData = leaveData.filter(item => item.number_of_days > 0);
     const currentYear = new Date().getFullYear();
@@ -108,21 +118,66 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
     );
   };
 
-  const sheetData = userProfiles?.map((item: UserProfile) => ({
-    id: item.id,
-    full_name: `${item.first_name} ${item.last_name}`,
-    job_position: item.job_position?.title,
-  }));
-
-  const importAnnualLeaveDays = () => {
+  const importAnnualLeave = () => {
     const modalProps = {
       type: 'IMPORT_ANNUAL_LEAVE',
       data: sheetData,
-      onSubmit: handleSubmit,
-      handleUpload: handleUploadTable,
+      onSubmit: handleSubmitAnnualLeave,
+      handleUpload: handleUploadAnnualLeaveTable,
       content: 'Tabela godišnjih odmora',
     };
     openImportModal(modalProps);
+  };
+
+  const handleUploadExperienceTable = async (files: FileList) => {
+    const response = await importExperienceExcel(files[0], token);
+    if (response?.status === REQUEST_STATUSES.success) {
+      if (response?.data?.length) {
+        const updatedResponse = response.data.map(({updated_at, created_at, ...rest}: ProfileExperience) => rest);
+
+        return updatedResponse;
+      } else {
+        if (response?.validation?.length) {
+          return {
+            // TODO change this in client container and all modules
+            // currently it accepts just data but better option would be
+            // {data: any[], errors: string[]} or
+            // {data: any[], errors: {column: number; message: string; row: number}[]}
+            // so that it can correctly handle the errors
+            errors: response?.validation?.map(
+              (error: {column: number; message: string; row: number}) =>
+                `Red ${error.row}, Kolona ${error.column}: ${error.message}`,
+            ),
+          };
+        }
+      }
+      return null;
+    } else {
+      alert.error('Došlo je do greške prilikom učitavanja fajla!');
+    }
+  };
+
+  const importExperience = () => {
+    const modalProps = {
+      type: 'IMPORT_EXPERIENCE',
+      data: sheetData,
+      onSubmit: handleSubmitExperience,
+      handleUpload: handleUploadExperienceTable,
+      content: 'Tabela radnih knjižica',
+    };
+    openImportModal(modalProps);
+  };
+  const handleSubmitExperience = async (experienceData: ProfileExperience[]) => {
+    await insertExperiences(
+      {data: experienceData},
+      () => {
+        alert.success('Radne knjižice uspješno sačuvane.');
+        closeImportModal();
+      },
+      () => {
+        alert.error('Došlo je do greške prilikom čuvanja radnih knjižica!');
+      },
+    );
   };
 
   return (
@@ -173,8 +228,9 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
             content="Plan godišnjih odmora"
             variant="secondary"
             style={{width: 170}}
-            onClick={importAnnualLeaveDays}
+            onClick={importAnnualLeave}
           />
+          <Button content="Radna knjižica" variant="secondary" style={{width: 170}} onClick={importExperience} />
           <Button
             content="Dodajte zaposlenog"
             variant="secondary"

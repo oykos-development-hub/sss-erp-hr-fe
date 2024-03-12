@@ -3,8 +3,6 @@ import {DropdownDataString} from '../dropdownData';
 import {DeleteResponse, GetResponse, InsertResponse} from './response';
 
 export type ProfileExperience = {
-  amount_of_experience: number;
-  amount_of_insured_experience: number;
   created_at: string;
   date_of_end: string;
   date_of_start: string;
@@ -15,6 +13,12 @@ export type ProfileExperience = {
   relevant: boolean;
   updated_at: string;
   user_profile_id: number;
+  years_of_experience: number;
+  years_of_insured_experience: number;
+  months_of_experience: number;
+  months_of_insured_experience: number;
+  days_of_experience: number;
+  days_of_insured_experience: number;
 };
 
 export type ProfileExperienceFormValues = {
@@ -39,5 +43,8 @@ export type ProfileExperienceResponse = {
   };
   delete: {
     userProfile_Experience_Delete: DeleteResponse;
+  };
+  insertMultiple: {
+    userProfile_Experiences_Insert: InsertResponse<ProfileExperience[]>;
   };
 };

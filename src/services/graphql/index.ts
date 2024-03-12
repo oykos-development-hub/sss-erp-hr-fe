@@ -59,6 +59,7 @@ import insertEvaluation from './userProfile/evaluation/insertEvaluation';
 import deleteExperience from './userProfile/experience/deleteExperience';
 import getExperience from './userProfile/experience/getExperience';
 import insertExperience from './userProfile/experience/insertExperience';
+import insertExperiences from './userProfile/experience/insertExperiences';
 import deleteFamily from './userProfile/family/deleteFamily';
 import getFamily from './userProfile/family/getFamily';
 import insertFamily from './userProfile/family/insertFamily';
@@ -85,6 +86,7 @@ export const GraphQL = {
   insertBasicInfo: insertBasicInfo,
   getExperience: getExperience,
   insertExperience: insertExperience,
+  insertExperiences: insertExperiences,
   deleteExperience: deleteExperience,
   userProfileOverview: userProfileOverview,
   getJobTenderTypes: getJobTenderTypes,

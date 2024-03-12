@@ -8,8 +8,12 @@ const getExperience = `query UserProfileExperience($user_profile_id: Int){
             relevant
             organization_unit
             organization_unit_id
-            amount_of_experience
-            amount_of_insured_experience
+            years_of_experience
+            years_of_insured_experience
+            months_of_experience
+            months_of_insured_experience
+            days_of_experience
+            days_of_insured_experience
             date_of_start
             date_of_end
             created_at

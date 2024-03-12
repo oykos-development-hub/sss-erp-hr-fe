@@ -21,9 +21,9 @@ const experienceSchema = yup.object().shape({
     .shape({id: yup.string().required(), title: yup.string().required()}),
   amount_of_experience: yup.number().required('Ovo polje je obavezno'),
   amount_of_insured_experience: yup
-    .number()
-    .transform(value => (!value || isNaN(value) ? null : value))
-    .nullable(),
+    .string()
+    .nullable()
+    .matches(/^$|^\d+-\d+-\d+$/, 'Format mora biti tri broja odvojena crtama, npr. 2-3-1'),
   date_of_end: yup
     .date()
     .required('Ovo polje je obavezno')
@@ -239,8 +239,8 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
             />
             <Input
               {...register('amount_of_insured_experience')}
-              label="PRIJAVLJENI STAŽ (MJESECI):"
-              type="number"
+              label="PRIJAVLJENI STAŽ (G-M-D):"
+              error={errors.amount_of_insured_experience?.message}
               value={watch('amount_of_insured_experience')?.toString()}
             />
           </Row>
