@@ -10,14 +10,18 @@ export function formatExperience(years: number, months: number, days: number) {
 
   if (months > 0) {
     // result += result.length > 0 ? ' i ' : '';
-    result += months && ` ${months} mj,`;
+    result += months && ` ${months} mj`;
   }
 
   if (days > 0) {
     result += result.length > 0 ? ' i ' : '';
-    result += months && `${months} dan.`;
+    result += days && `${days} dan/a`;
   }
 
+  // remove trailing comma if there are no months or years
+  if (days === 0 && months === 0) {
+    result = result.slice(0, -1);
+  }
   return result;
 }
 

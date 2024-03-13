@@ -21,14 +21,42 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
   const tableData = useMemo(() => {
     let totalYearsOfInsuredExperience = 0;
     let totalMonthsOfInsuredExperience = 0;
+    let totalDaysOfInsuredExperience = 0;
     let totalYearsOfExperience = 0;
     let totalMonthsOfExperience = 0;
+    let totalDaysOfExperience = 0;
 
     experience?.forEach((item: any) => {
+      // Add current item's experience to the totals
       totalYearsOfInsuredExperience += item.years_of_insured_experience;
       totalMonthsOfInsuredExperience += item.months_of_insured_experience;
+      totalDaysOfInsuredExperience += item.days_of_insured_experience;
+
       totalYearsOfExperience += item.years_of_experience;
       totalMonthsOfExperience += item.months_of_experience;
+      totalDaysOfExperience += item.days_of_experience;
+
+      // Adjust for overflow in days and months for insured experience
+      while (totalDaysOfInsuredExperience >= 31) {
+        totalDaysOfInsuredExperience -= 31;
+        totalMonthsOfInsuredExperience += 1;
+      }
+
+      while (totalMonthsOfInsuredExperience >= 12) {
+        totalMonthsOfInsuredExperience -= 12;
+        totalYearsOfInsuredExperience += 1;
+      }
+
+      // Adjust for overflow in days and months for general experience
+      while (totalDaysOfExperience >= 31) {
+        totalDaysOfExperience -= 31;
+        totalMonthsOfExperience += 1;
+      }
+
+      while (totalMonthsOfExperience >= 12) {
+        totalMonthsOfExperience -= 12;
+        totalYearsOfExperience += 1;
+      }
     });
 
     return (
@@ -44,6 +72,8 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
           years_of_insured_experience: totalYearsOfInsuredExperience,
           months_of_experience: totalMonthsOfExperience,
           months_of_insured_experience: totalMonthsOfInsuredExperience,
+          days_of_experience: totalDaysOfExperience,
+          days_of_insured_experience: totalDaysOfInsuredExperience,
           reference_file_id: '',
           TABLE_ACTIONS: '',
         } as any,
