@@ -9,7 +9,7 @@ const useInsertAbsence = () => {
 
   const {fetch} = useAppContext();
 
-  const insertAbsence = async (data: AbsenceParams, onSuccess?: () => void, onError?: () => void) => {
+  const insertAbsence = async (data: AbsenceParams, onSuccess?: () => void, onError?: (message: string) => void) => {
     if (loading) return;
 
     setLoading(true);
@@ -19,7 +19,7 @@ const useInsertAbsence = () => {
     if (response.userProfile_Absent_Insert.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
-      onError && onError();
+      onError && onError(response?.userProfile_Absent_Insert?.message);
     }
 
     setLoading(false);

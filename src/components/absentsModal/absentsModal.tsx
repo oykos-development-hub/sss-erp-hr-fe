@@ -98,8 +98,10 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
         alert.success('Uspješno sačuvano.');
         reset(initialValues);
       },
-      () => {
-        alert.error('Greška. Promjene nisu sačuvane.');
+      (message: string) => {
+        message === 'limit is reached'
+          ? alert.error('Nije moguće kreirati rješenje o godišnjem odmoru. Nemate dovoljno preostalih slobodnih dana.')
+          : alert.error('Greška. Promjene nisu sačuvane.');
       },
     );
   };
