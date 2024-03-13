@@ -32,6 +32,7 @@ export const formatData = (data: any, newExperience?: boolean) => {
   delete payload.updated_at;
   delete payload.file;
   delete payload.amount_of_insured_experience;
+  delete payload.amount_of_experience;
 
   return payload;
 };
