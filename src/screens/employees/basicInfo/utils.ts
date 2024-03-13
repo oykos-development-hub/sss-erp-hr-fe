@@ -15,6 +15,7 @@ export const formatData = (data: any) => {
     father_name: data?.father_name,
     mother_name: data?.mother_name,
     mother_birth_last_name: data?.mother_birth_last_name,
+    personal_id: data?.personal_id,
     official_personal_id: data?.official_personal_id,
     official_personal_document_number: data?.official_personal_document_number,
     housing_description: data?.housing_description,

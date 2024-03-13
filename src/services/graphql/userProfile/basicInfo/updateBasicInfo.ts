@@ -45,6 +45,7 @@ const updateBasicInfo = `mutation($data: UserProfileUpdateMutation!) {
                 title
             }
             judge_application_submission_date
+            personal_id
             contract {
                 id
                 user_profile {

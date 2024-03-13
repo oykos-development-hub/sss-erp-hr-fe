@@ -34,6 +34,7 @@ export const initialValues = {
   middle_name: '',
   role_id: 0,
   judge_application_submission_date: '',
+  personal_id: '',
   contract: {
     contract_type_id: undefined,
     organization_unit_id: undefined,
