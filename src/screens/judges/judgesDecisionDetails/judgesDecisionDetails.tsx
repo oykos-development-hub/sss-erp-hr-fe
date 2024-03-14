@@ -125,10 +125,12 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({i
     const resolutions: any = {};
     // Creating inputs for each of the organization units in the table
     list.forEach((listItem: any) => {
-      resolutions[listItem.organization_unit.id] = {
-        ...listItem,
-        organization_unit: listItem.organization_unit,
-      };
+      if (listItem.organization_unit.title !== 'Sekretarijat Sudskog savjeta') {
+        resolutions[listItem.organization_unit.id] = {
+          ...listItem,
+          organization_unit: listItem.organization_unit,
+        };
+      }
     });
 
     const initialValues = {
