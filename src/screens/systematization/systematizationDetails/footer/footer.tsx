@@ -3,12 +3,20 @@ import {Button, Modal, Switch, Tooltip, Typography} from 'client-library';
 import {FooterProps} from '../../types';
 import {Controller, useFormContext} from 'react-hook-form';
 import {Activation, DatepickerElement, FooterWrapper, SwitchWrapper} from './styles';
+import {SystematizationStatus} from './constants';
 
-export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id = 0, active = 0}) => {
+export const Footer: React.FC<FooterProps> = ({
+  activeTab,
+  handleSaveButton,
+  id = 0,
+  status = 0,
+  uploadedFile,
+  setError,
+}) => {
   // conditions:
   const isOverViewTab = activeTab === 1;
-  const isActive = active === 2; // if active isn't equal to 2, it could be inactive(1), or draft(0)
-  const isDraft = active === 0;
+  const isActive = status === SystematizationStatus.ACTIVE;
+  const isDraft = status === SystematizationStatus.DRAFT;
 
   const {
     control,
@@ -26,19 +34,24 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id =
     else {
       // uncheck and set active to previous status(inactive(1), or draft(0))
       setIsSwitchChecked(false);
-      setValue('active', active);
+      setValue('active', status);
     }
   };
 
   const switchElement = (name: string): ReactElement => (
-    <Switch name={name} onChange={handleSwitch} checked={isSwitchChecked} disabled={!date_of_activation || !!active} />
+    <Switch
+      name={name}
+      onChange={handleSwitch}
+      checked={isSwitchChecked}
+      disabled={!date_of_activation || !!status || uploadedFile === undefined}
+    />
   );
 
   const buttonContent = id > 0 ? (isOverViewTab ? 'Sačuvaj' : 'Generiši dokument') : 'Prikaži odjeljenja';
 
   useEffect(() => {
     setIsSwitchChecked(isActive);
-  }, [active]);
+  }, [status]);
 
   return (
     <FooterWrapper>
@@ -49,7 +62,7 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id =
             control={control}
             render={({field: {onChange, name, value}}) => (
               <DatepickerElement
-                disabled={!!active}
+                disabled={!!status}
                 onChange={onChange}
                 label="DATUM USVAJANJA SISTEMATIZACIJE:"
                 name={name}
@@ -73,8 +86,10 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id =
                     content="Za aktivaciju sistematizacije neophodno je unijeti datum usvajanja sistematizacije.">
                     {switchElement(name)}
                   </Tooltip>
+                ) : uploadedFile === undefined ? (
+                  (setError(true), switchElement(name))
                 ) : (
-                  switchElement(name)
+                  (setError(false), switchElement(name))
                 )}
               </SwitchWrapper>
             )}
@@ -91,9 +106,7 @@ export const Footer: React.FC<FooterProps> = ({activeTab, handleSaveButton, id =
         leftButtonOnClick={() => setIsModalOpen(false)}
         leftButtonText="Otkaži"
         rightButtonOnClick={() => {
-          setIsSwitchChecked(!isSwitchChecked);
-          setValue('active', 2);
-          setIsModalOpen(false);
+          setIsSwitchChecked(!isSwitchChecked), setValue('active', 2), setIsModalOpen(false);
         }}
         rightButtonText="Aktiviraj"
       />

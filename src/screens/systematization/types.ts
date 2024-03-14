@@ -34,8 +34,10 @@ export interface PrintPageProps {
 export interface FooterProps {
   activeTab: number;
   handleSaveButton: () => void;
-  active?: number;
+  status?: number;
   id: number;
+  uploadedFile?: FileList;
+  setError: (arg: boolean) => void;
 }
 
 export interface SectorModalProps {

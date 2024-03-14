@@ -89,6 +89,10 @@ export const SystematizationDetails: React.FC = () => {
     setUploadedFile(files);
     setShowFileUploadError(false);
   };
+
+  const handleShowError = (errorMessage: boolean) => {
+    setShowFileUploadError(errorMessage);
+  };
   const {
     fileService: {uploadFile},
   } = useAppContext();
@@ -128,9 +132,10 @@ export const SystematizationDetails: React.FC = () => {
   };
 
   const handleSave = async (data: InsertSystematizationParams) => {
-    console.log(systematizationId);
     if (activeTab === 1) {
       if (uploadedFile) {
+        setShowFileUploadError(false);
+
         const formData = new FormData();
         const fileArray = Array.from(uploadedFile);
 
@@ -147,10 +152,8 @@ export const SystematizationDetails: React.FC = () => {
             alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
           },
         );
-      } else if (!systematizationId) {
-        handleMutate(data);
       } else {
-        setShowFileUploadError(true);
+        handleMutate(data);
       }
     } else if (systematizationDetails?.sectors?.length) {
       const tableData = (): TableData[] => {
@@ -323,8 +326,10 @@ export const SystematizationDetails: React.FC = () => {
           <Footer
             activeTab={activeTab}
             handleSaveButton={methods?.handleSubmit(handleSave)}
-            active={systematizationDetails?.active}
+            status={systematizationDetails?.active}
             id={+systematizationId}
+            uploadedFile={uploadedFile}
+            setError={handleShowError}
           />
         </FormProvider>
         {showEditSectorModal && (
