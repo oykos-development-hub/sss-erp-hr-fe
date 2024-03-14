@@ -296,6 +296,8 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
     reset({
       ...initialValues,
       ...user,
+      is_judge: user?.is_judge,
+      is_president: user?.is_president,
       date_of_start: application?.date_of_application,
       organization_unit_id: organizationUnits.find((opt: any) => opt.id === user?.organization_unit_id),
     });
@@ -324,7 +326,7 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
   }, [is_president]);
 
   const isJudgeSwitchDisabled = (): boolean => {
-    if (creatingChosenJobApplicant) return true;
+    if (creatingChosenJobApplicant) return false;
     if (organization_unit_id?.title && organization_unit_id.title?.indexOf('Sudski savjet') > -1) return true;
     if (userBasicInfo?.is_judge || is_judge) return false;
     if (judgeAvailablity?.judge) return false;

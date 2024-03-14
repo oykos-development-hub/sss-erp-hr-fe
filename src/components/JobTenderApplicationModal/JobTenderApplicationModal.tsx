@@ -198,7 +198,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
 
   const nationality = watch('citizenship');
   const navigateToUserCreation = (applicantData: JobTenderApplicationInsertParams) => {
-    const {first_name, last_name, date_of_birth, evaluation, citizenship, official_personal_document_number} = watch();
+    const {first_name, last_name, date_of_birth, evaluation, official_personal_document_number} = watch();
 
     context.navigation.navigate('/hr/employees/add-new', {
       state: {
