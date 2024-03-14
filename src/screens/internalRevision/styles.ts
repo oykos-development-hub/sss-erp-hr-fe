@@ -27,3 +27,12 @@ export const FilterContainer = styled.div`
   width: 300px;
   margin-right: 20px;
 `;
+
+export const FileUploadWrapper = styled.div`
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-block: 10px;
+  margin-top: 20px;
+`;

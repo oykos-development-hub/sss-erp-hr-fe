@@ -31,6 +31,11 @@ const insertRevision = `mutation($data: RevisionsInsertMutation!) {
                   name
                   type
                 }
+                tips_file {
+                    id
+                    name
+                    type
+                }
                 created_at
                 updated_at
             }

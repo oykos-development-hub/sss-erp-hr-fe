@@ -2,11 +2,11 @@ import {Datepicker, Dropdown, FileUpload, Input, Typography} from 'client-librar
 import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {revisionDeadlineOptions, revisionPriorityOptions, revisionStatusOptions} from '../../constants';
+import useAppContext from '../../context/useAppContext';
 import useGetRevisionTipDetails from '../../services/graphql/revisionTips/useRevisionTipsDetails';
 import useInsertRevisionTip from '../../services/graphql/revisionTips/useRevisionTipsInsert';
 import useGetRevisionTips from '../../services/graphql/revisionTips/useRevisionTipsOverview';
 import {DropdownDataString} from '../../types/dropdownData';
-import {MicroserviceProps} from '../../types/micro-service-props';
 import {parseDate, parseDateForBackend} from '../../utils/dateUtils';
 import {
   FileUploadWrapper,
@@ -18,7 +18,6 @@ import {
   RevisionModal,
   Row,
 } from './styles';
-import useAppContext from '../../context/useAppContext';
 
 interface RevisionTipModalProps {
   open: boolean;
@@ -27,7 +26,6 @@ interface RevisionTipModalProps {
   alert: any;
   id: number;
   revisionId: number;
-  context: MicroserviceProps;
 }
 
 const initialValues: any = {
@@ -48,7 +46,6 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
   refetchList,
   id,
   revisionId,
-  context,
 }) => {
   const {revisionTipDetails} = useGetRevisionTipDetails(id);
   const {insertRevisionTip, loading: isSaving} = useInsertRevisionTip();

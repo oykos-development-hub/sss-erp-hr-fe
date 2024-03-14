@@ -8,7 +8,8 @@ export type revisionInsertItem = {
   internal_revision_subject_id: number[] | null;
   external_revision_subject_id: number | null;
   revisor_id: number[];
-  revision_type_id: number;
+  revision_type_id: number | null;
+  tips_file_id?: number;
 };
 
 export type revisionInsertResponse = {

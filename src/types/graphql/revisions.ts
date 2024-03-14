@@ -16,6 +16,7 @@ export type Revision = {
   revisor: DropdownDataNumber[];
   revision_type: DropdownDataNumber | null;
   file: FileItem;
+  tips_file?: FileItem;
 };
 
 export type RevisionInsertParams = {

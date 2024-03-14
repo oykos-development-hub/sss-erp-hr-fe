@@ -34,6 +34,11 @@ const getRevisionDetails = `query RevisionDetails($id: Int!){
                   name
                   type
                 }
+                tips_file {
+                    id
+                    name
+                    type
+                }
             }
         }
     }`;
