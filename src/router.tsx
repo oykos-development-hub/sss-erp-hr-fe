@@ -42,7 +42,7 @@ export const Router: React.FC<MicroserviceProps> = props => {
     if (employeesRegex.test(pathname)) return <EmployeesScreen context={context} />;
     if (pathname === '/hr/systematization') return <Systematizations />;
     if (pathname === '/hr/revision-recommendations') return <RevisionPlansList context={context} />;
-    if (recommendationsRegex.test(pathname)) return <RevisionTips context={context} />;
+    if (recommendationsRegex.test(pathname)) return <RevisionTips />;
     if (revisionsRegex.test(pathname)) return <RevisionList context={context} />;
     // if (pathname === '/hr/job-positions') return <LandingScreen context={context} />;
     if (JobTendersRegex.test(pathname)) return <JobTendersScreen context={context} />;

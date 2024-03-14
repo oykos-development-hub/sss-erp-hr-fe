@@ -282,7 +282,7 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
         date_of_eligibility: parseToDate(userBasicInfo?.contract?.date_of_eligibility),
         user_profile_id: userBasicInfo?.id,
         active: userBasicInfo?.contract?.active,
-        number_of_conference: userBasicInfo?.contract.number_of_conference,
+        number_of_conference: userBasicInfo?.contract?.number_of_conference,
       });
     }
   }, [userBasicInfo]);
