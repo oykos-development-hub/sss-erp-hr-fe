@@ -16,6 +16,10 @@ export interface JobTenderApplicationInsertParams {
   type: string;
   user_profile_id?: number;
   evaluation?: string;
+  number_of_assembly?: string | null;
+  date_of_start?: string | null;
+  date_of_election?: string | null;
+  date_of_oath?: string | null;
 }
 
 export interface JobTenderApplicationsGetParams {

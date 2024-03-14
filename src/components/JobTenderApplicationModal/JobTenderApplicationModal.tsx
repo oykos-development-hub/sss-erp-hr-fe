@@ -66,6 +66,10 @@ const tenderApplicationSchema = yup.object().shape({
       otherwise: schema => schema.optional(),
     }),
   evaluation: yup.object(),
+  date_of_start: yup.date().nullable(),
+  date_of_election: yup.date().nullable(),
+  date_of_oath: yup.date().nullable(),
+  number_of_assembly: yup.string(),
 });
 
 export interface JobTenderApplicationModalModalProps extends ScreenProps {
@@ -130,6 +134,10 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
       status: values?.status?.title,
       job_tender_id: jobTender?.id ?? 0,
       active: true,
+      date_of_election: parseDateForBackend(values?.date_of_election),
+      date_of_oath: parseDateForBackend(values?.date_of_oath),
+      date_of_start: parseDateForBackend(values?.date_of_start),
+      number_of_assembly: values?.number_of_assembly,
     };
 
     if (!selectedItem?.id && !data.status) data.status = ApplicationStatusEnum.WAITING;
@@ -436,6 +444,37 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                 }}
               />
             </RowFullWidth>
+
+            {type?.id === 'internal' && status?.id === ApplicationStatusEnum.ACCEPTED && (
+              <>
+                <Row>
+                  <Controller
+                    name="date_of_start"
+                    control={control}
+                    render={({field: {onChange, name, value}}) => (
+                      <Datepicker onChange={onChange} label="POČETAK RADNOG ODNOSA:" name={name} selected={value} />
+                    )}
+                  />
+                  <Controller
+                    name="date_of_election"
+                    control={control}
+                    render={({field: {onChange, name, value}}) => (
+                      <Datepicker onChange={onChange} label="DATUM IZBORA:" name={name} selected={value} />
+                    )}
+                  />
+                </Row>
+                <Row>
+                  <Controller
+                    name="date_of_oath"
+                    control={control}
+                    render={({field: {onChange, name, value}}) => (
+                      <Datepicker onChange={onChange} label="DATUM POLAGANJA ZAKLETVE:" name={name} selected={value} />
+                    )}
+                  />
+                  <Input {...register('number_of_assembly')} label="BROJ SJEDNICE:" />
+                </Row>
+              </>
+            )}
             <Row>
               <Controller
                 name="date_of_application"
@@ -453,6 +492,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                   />
                 )}
               />
+
               {selectedItem?.id && (
                 <Controller
                   name="status"
