@@ -144,7 +144,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
           );
         },
       },
-      ...tableHeads.slice(3),
+      ...tableHeads.slice(2),
     ];
   }, [organizationUnits, tableHeads]);
 

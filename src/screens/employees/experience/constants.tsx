@@ -40,13 +40,13 @@ export const tableHeads: TableHead[] = [
     type: 'custom',
   },
   {
-    title: 'Početak',
+    title: 'Početak radnog odnosa',
     accessor: 'date_of_start',
     type: 'custom',
     renderContents: (item: any) => (item ? <Typography variant="bodyMedium" content={parseDate(item)} /> : <></>),
   },
   {
-    title: 'Kraj',
+    title: 'Kraj radnog odnosa',
     accessor: 'date_of_end',
     type: 'custom',
     renderContents: (item: any) => (item ? <Typography variant="bodyMedium" content={parseDate(item)} /> : <></>),
