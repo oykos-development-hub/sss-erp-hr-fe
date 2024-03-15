@@ -32,7 +32,15 @@ export const tableHeads: TableHead[] = [
     type: 'custom',
     renderContents: (job_position: DropdownDataNumber, row: UserProfile) => (
       <Typography
-        content={row.is_judge ? 'Sudija' : row.is_judge_president ? 'Predsjednik suda' : job_position?.title}
+        content={
+          row.is_judge && row.is_judge_president
+            ? 'Predsjednik suda'
+            : row.is_judge
+            ? 'Sudija'
+            : row.is_judge_president
+            ? 'Predsjednik suda'
+            : job_position?.title
+        }
         variant="bodyMedium"
       />
     ),

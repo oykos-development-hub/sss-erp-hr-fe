@@ -210,14 +210,13 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
           nationality,
           official_personal_document_number,
           is_judge: true,
-          is_president: type?.title === 'Javni oglas za predsjednika suda',
+          is_president: jobTender?.type?.title === 'Javni oglas za predsjednika suda',
           organization_unit_id: jobTender?.organization_unit?.id,
         },
         application: applicantData,
       },
     });
   };
-
   // Choosing an internal user to populate the corresponding fields.
   useEffect(() => {
     if (userBasicInfo) {

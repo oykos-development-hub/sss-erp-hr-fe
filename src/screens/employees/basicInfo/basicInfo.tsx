@@ -326,7 +326,7 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
   }, [is_president]);
 
   const isJudgeSwitchDisabled = (): boolean => {
-    if (creatingChosenJobApplicant) return false;
+    if (creatingChosenJobApplicant) return true;
     if (organization_unit_id?.title && organization_unit_id.title?.indexOf('Sudski savjet') > -1) return true;
     if (userBasicInfo?.is_judge || is_judge) return false;
     if (judgeAvailablity?.judge) return false;
@@ -865,7 +865,7 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
                     selected={value ? new Date(value) : null}
                     onChange={onChange}
                     label="DATUM POLAGANJA ZAKLETVE:"
-                    disabled={isDisabled || isJudgeSwitchDisabled() || !is_judge}
+                    disabled={isDisabled || !is_judge}
                     error={errors.judge_application_submission_date?.message}
                     isRequired={is_judge}
                   />
