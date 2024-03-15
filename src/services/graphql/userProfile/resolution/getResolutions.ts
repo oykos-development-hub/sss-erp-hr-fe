@@ -14,6 +14,7 @@ const getResolutions = `query UserProfileResolution($user_profile_id: Int){
             date_of_end
             created_at
             updated_at
+            value
             file {
               id
               name

@@ -39,6 +39,7 @@ const confirmationSchema = yup.object().shape({
       }
       return true;
     }),
+  value: yup.string(),
 });
 
 export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
@@ -141,6 +142,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
       resolution_type_id: value?.resolution_type.id || null,
       is_affect: value?.is_affect?.id === 'Da',
       year: value?.year?.id || 0,
+      value: value?.value,
     };
 
     delete payload.created_at;
@@ -179,6 +181,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
         date_of_start: parseToDate(selectedItem?.date_of_start),
         is_affect: {id: selectedItem?.is_affect ? 'Da' : 'Ne', title: selectedItem?.is_affect ? 'Da' : 'Ne'},
         year: {id: selectedItem?.year, title: selectedItem?.year},
+        value: selectedItem?.value,
       });
     }
   }, [selectedItem]);
@@ -211,47 +214,52 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
                     error={errors.resolution_type?.message}
                     placeholder="Birajte vrstu"
                     isRequired
+                    isDisabled={selectedItem?.resolution_type?.title === 'Rješenje o godišnjem odmoru'}
                   />
                 )}
               />
             )}
           </FormGroup>
-          <FormGroup>
-            <Controller
-              name="is_affect"
-              control={control}
-              render={({field: {onChange, name, value}}) => {
-                return (
-                  <Dropdown
-                    onChange={onChange}
-                    value={value as any}
-                    name={name}
-                    label="PRAVOSNAŽNOST:"
-                    options={yesOrNoOptionsString}
-                    error={errors.is_affect?.message}
-                    placeholder="Izaberite pravosnažnost:"
-                    isRequired
-                  />
-                );
-              }}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Controller
-              name="date_of_start"
-              control={control}
-              render={({field: {onChange, name, value}}) => (
-                <Datepicker
-                  onChange={onChange}
-                  label="DATUM RJEŠENJA/POTVRDE:"
-                  name={name}
-                  selected={value}
-                  error={errors.date_of_start?.message}
-                  isRequired
+          {resolutionType?.title !== 'Rješenje o godišnjem odmoru' && (
+            <>
+              <FormGroup>
+                <Controller
+                  name="is_affect"
+                  control={control}
+                  render={({field: {onChange, name, value}}) => {
+                    return (
+                      <Dropdown
+                        onChange={onChange}
+                        value={value as any}
+                        name={name}
+                        label="PRAVOSNAŽNOST:"
+                        options={yesOrNoOptionsString}
+                        error={errors.is_affect?.message}
+                        placeholder="Izaberite pravosnažnost:"
+                        isRequired
+                      />
+                    );
+                  }}
                 />
-              )}
-            />
-          </FormGroup>
+              </FormGroup>
+              <FormGroup>
+                <Controller
+                  name="date_of_start"
+                  control={control}
+                  render={({field: {onChange, name, value}}) => (
+                    <Datepicker
+                      onChange={onChange}
+                      label="DATUM RJEŠENJA/POTVRDE:"
+                      name={name}
+                      selected={value}
+                      error={errors.date_of_start?.message}
+                      isRequired
+                    />
+                  )}
+                />
+              </FormGroup>
+            </>
+          )}
           {isResolutionTypeAnnualLeaveIPart && (
             <FormGroup>
               <Controller
@@ -269,6 +277,11 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
                   />
                 )}
               />
+            </FormGroup>
+          )}
+          {resolutionType?.title === 'Rješenje o godišnjem odmoru' && (
+            <FormGroup>
+              <Input {...register('value')} label="PRIPADAJUĆI DANI GODIŠNJEG ODMORA:" />
             </FormGroup>
           )}
           <FormGroup>

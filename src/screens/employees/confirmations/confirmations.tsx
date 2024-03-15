@@ -1,53 +1,33 @@
-import {Button, Dropdown, EditIconTwo, Table, TableHead, Theme, TrashIcon, Typography, FileIcon} from 'client-library';
-import React, {useMemo, useState} from 'react';
+import {Button, Dropdown, EditIconTwo, FileIcon, Table, Theme, TrashIcon, Typography} from 'client-library';
+import {useMemo, useState} from 'react';
 import {ConfirmationsModal} from '../../../components/confirmationsModal/confirmationsModal';
+import FileModalView from '../../../components/fileModalView/fileModalView';
+import {FileItem} from '../../../components/fileModalView/types';
+import useAppContext from '../../../context/useAppContext';
 import useDeleteResolution from '../../../services/graphql/userProfile/resolution/useDeleteResolution';
 import useGetResolutions from '../../../services/graphql/userProfile/resolution/useGetResolutions';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
-import {MicroserviceProps} from '../../../types/micro-service-props';
-import {parseDate} from '../../../utils/dateUtils';
-import {Container, TableHeader, YearWrapper} from './styles';
-import {yearsForDropdownFilter} from '../../../utils/constants';
 import {ProfileResolution} from '../../../types/graphql/resolutions';
-import {FileItem} from '../../../components/fileModalView/types';
-import FileModalView from '../../../components/fileModalView/fileModalView';
+import {yearsForDropdownFilter} from '../../../utils/constants';
+import {tableHeads} from './constants.tsx';
+import {Container, TableHeader, YearWrapper} from './styles';
 
-const tableHeads: TableHead[] = [
-  {
-    title: 'Vrsta',
-    accessor: 'resolution_type',
-    type: 'custom',
-    renderContents: (item: any) => {
-      return <Typography variant="bodyMedium" content={item.title} />;
-    },
-  },
-  {
-    title: 'Datum izdavanja',
-    accessor: 'date_of_start',
-    type: 'custom',
-    renderContents: (date_of_start: string) => <Typography content={date_of_start ? parseDate(date_of_start) : ''} />,
-  },
-  {title: 'Svrha', accessor: 'resolution_purpose', type: 'text'},
-  {
-    title: 'Pravosnažnost',
-    accessor: 'is_affect',
-    type: 'custom',
-    renderContents: is_affect => <Typography content={is_affect ? 'Da' : 'Ne'} />,
-  },
-  {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
-];
-
-export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({context}) => {
+export const ConfirmationsPage = () => {
+  const {
+    alert,
+    navigation: {location},
+  } = useAppContext();
   const years = yearsForDropdownFilter();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
   const [form, setForm] = useState<any>();
-  const userProfileID = context.navigation.location.pathname.split('/')[4];
+  const userProfileID = location.pathname.split('/')[4];
   const {resolutions, refetch, loading} = useGetResolutions(userProfileID);
   const {deleteResolution} = useDeleteResolution();
   const tableData = resolutions;
   const [fileToView, setFileToView] = useState<FileItem>();
+
   const selectedItem = useMemo(
     () => tableData?.find((item: ProfileResolution) => item.id === selectedItemId),
     [selectedItemId, tableData],
@@ -82,12 +62,12 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
       selectedItemId,
       () => {
         refetch();
-        context.alert.success('Uspješno obrisano.');
+        alert.success('Uspješno obrisano.');
         setShowDeleteModal(false);
         setSelectedItemId(0);
       },
       () => {
-        context.alert.error('Greška. Brisanje nije moguće.');
+        alert.error('Greška. Brisanje nije moguće.');
       },
     );
     setShowDeleteModal(false);
@@ -161,7 +141,7 @@ export const ConfirmationsPage: React.FC<{context: MicroserviceProps}> = ({conte
           selectedItem={selectedItem}
           userProfileId={userProfileID}
           key={selectedItem ? selectedItem.id : 'new'}
-          alert={context.alert}
+          alert={alert}
         />
       )}
 

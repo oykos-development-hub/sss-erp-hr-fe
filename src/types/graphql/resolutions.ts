@@ -1,5 +1,5 @@
 import {FileItem} from '../../components/fileModalView/types';
-import {DropdownDataBoolean} from '../dropdownData';
+import {DropdownDataBoolean, DropdownDataNumber} from '../dropdownData';
 import {DeleteResponse, GetResponse, InsertResponse} from './response';
 
 export type ProfileResolution = {
@@ -14,6 +14,7 @@ export type ProfileResolution = {
   resolution_type: ResolutionType | null;
   is_affect: DropdownDataBoolean;
   year: number;
+  value: string;
 };
 
 export type ProfileResolutionForm = {
@@ -30,12 +31,13 @@ export type ProfileResolutionParams = {
   id: number;
   user_profile_id?: number;
   resolution_purpose: string;
-  date_of_start: string;
+  date_of_start: Date;
   date_of_end?: string;
   file_id: number;
-  resolution_type_id: number;
+  resolution_type_id: DropdownDataNumber;
   is_affect: DropdownDataBoolean;
-  year: number;
+  year: DropdownDataNumber;
+  value: string;
 };
 
 export type ResolutionType = {

@@ -58,7 +58,7 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({refetchUsers}) => {
       case 'foreigner-permits':
         return <Foreigners context={context} />;
       case 'confirmations':
-        return <ConfirmationsPage context={context} />;
+        return <ConfirmationsPage />;
       case 'evaluations':
         return <EvaluationsPage />;
       case 'absents':
