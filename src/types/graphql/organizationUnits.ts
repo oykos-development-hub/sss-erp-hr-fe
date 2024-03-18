@@ -19,6 +19,7 @@ export type GetOrganizationUnitsParams = {
   size?: number;
   search?: string;
   disable_filters?: boolean;
+  has_president?: boolean | null;
 };
 
 export type GetOrganizationUnitsOptions = {

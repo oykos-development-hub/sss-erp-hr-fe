@@ -88,7 +88,6 @@ export const JobTendersScreen: React.FC<ScreenProps> = ({context}) => {
           onClose={handleCloseModal}
           selectedItem={selectedItem}
           jobTenderTypeOptions={jobTenderTypes || []}
-          organizationUnitsList={organizationUnits}
           refetch={refetch}
           alert={alert}
         />

@@ -55,7 +55,6 @@ export type JobTenderForm = {
 
 export interface JobTendersModalProps extends ModalProps {
   jobTenderTypeOptions: JobTenderType[];
-  organizationUnitsList: Pick<OrganizationUnit, 'id' | 'title'>[];
   onClose: () => void;
   refetch: () => void;
   alert: any;

@@ -8,6 +8,7 @@ import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import useAppContext from '../../context/useAppContext';
+import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
 
 const jobTenderSchema = yup.object().shape({
   type: yup
@@ -46,7 +47,6 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
   selectedItem,
   open,
   onClose,
-  organizationUnitsList,
   jobTenderTypeOptions,
   alert,
   refetch,
@@ -60,6 +60,15 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
     watch,
     setValue,
   } = useForm({resolver: yupResolver(jobTenderSchema)});
+
+  const {type} = watch();
+
+  // has_president is false, because we need OJ that do not have a president
+
+  const {organizationUnits: organizationUnitsList} = useGetOrganizationUnits(
+    {has_president: type?.title === 'Javni oglas za predsjednika suda' ? false : null},
+    {allOption: true},
+  );
 
   const {insertJobTender, loading: isSaving} = useInsertJobTender();
   const [files, setFiles] = useState<FileList | null>(null);
@@ -77,8 +86,6 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
       });
     }
   }, [selectedItem]);
-
-  const {type} = watch();
 
   const isNumOfVacantSeatsDisabled = type?.title === 'Javni oglas za predsjednika suda';
 
