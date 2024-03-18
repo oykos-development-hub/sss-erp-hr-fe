@@ -37,6 +37,7 @@ export interface FooterProps {
   status?: number;
   id: number;
   uploadedFile?: FileList;
+  file?: number;
   setError: (arg: boolean) => void;
 }
 

@@ -330,6 +330,7 @@ export const SystematizationDetails: React.FC = () => {
             id={+systematizationId}
             uploadedFile={uploadedFile}
             setError={handleShowError}
+            file={systematizationDetails?.file?.id}
           />
         </FormProvider>
         {showEditSectorModal && (

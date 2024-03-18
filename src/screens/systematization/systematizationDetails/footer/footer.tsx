@@ -12,6 +12,7 @@ export const Footer: React.FC<FooterProps> = ({
   status = 0,
   uploadedFile,
   setError,
+  file,
 }) => {
   // conditions:
   const isOverViewTab = activeTab === 1;
@@ -43,7 +44,7 @@ export const Footer: React.FC<FooterProps> = ({
       name={name}
       onChange={handleSwitch}
       checked={isSwitchChecked}
-      disabled={!date_of_activation || !!status || uploadedFile === undefined}
+      disabled={!date_of_activation || !!status || (uploadedFile === undefined && file === 0)}
     />
   );
 
