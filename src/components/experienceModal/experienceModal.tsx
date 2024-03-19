@@ -12,6 +12,7 @@ import {DropdownDataString} from '../../types/dropdownData';
 import {calculateExperience, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormWrapper, Row} from './styles';
 import useAppContext from '../../context/useAppContext';
+import {formatExperienceForModal} from '../../screens/employees/experience/constants';
 
 const experienceSchema = yup.object().shape({
   relevant: yup
@@ -20,10 +21,6 @@ const experienceSchema = yup.object().shape({
     .required('Ovo polje je obavezno')
     .shape({id: yup.string().required(), title: yup.string().required()}),
   amount_of_experience: yup.number().required('Ovo polje je obavezno'),
-  amount_of_insured_experience: yup
-    .string()
-    .nullable()
-    .matches(/^$|^\d+-\d+-\d+$/, 'Format mora biti tri broja odvojena crtama, npr. 2-3-1'),
   date_of_end: yup
     .date()
     .required('Ovo polje je obavezno')
@@ -45,6 +42,13 @@ const experienceSchema = yup.object().shape({
       otherwise: schema => schema.optional(),
     }),
   user_profile_id: yup.number().required(),
+  amount_of_insured_experience: yup
+    .string()
+    .nullable()
+    .matches(
+      /^$|^0?\d{1,2}-(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01])$/,
+      'Pogrešan format. Ispravan format je GG-MM-DD, MM ne moze biti broj preko 12, a DD preko 31.',
+    ),
 });
 
 export const ExperienceModal: React.FC<ExperienceModalProps> = ({
@@ -65,6 +69,8 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     setValue,
   } = useForm({resolver: yupResolver(experienceSchema), defaultValues: {user_profile_id: userProfileId}});
   const [files, setFiles] = useState<FileList | null>(null);
+  const [inputValue, setInputValue] = React.useState('');
+
   const {
     fileService: {uploadFile},
   } = useAppContext();
@@ -73,18 +79,9 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
 
   const {relevant, date_of_start, date_of_end, organization_unit, organization_unit_id} = watch();
 
-  useEffect(() => {
-    if (selectedItem) {
-      reset({
-        ...selectedItem,
-        relevant: {id: selectedItem?.relevant ? 'Da' : 'Ne', title: selectedItem?.relevant ? 'Da' : 'Ne'},
-        organization_unit_id: organizationUnits.find(orgUnit => orgUnit.id === selectedItem?.organization_unit_id),
-        date_of_start: parseToDate(selectedItem?.date_of_start),
-        date_of_end: parseToDate(selectedItem?.date_of_end),
-        user_profile_id: userProfileId,
-      });
-    }
-  }, [selectedItem]);
+  const addDashes = (input: string) => {
+    return input.replace(/\D/g, '').replace(/(\d{2})(?=\d)/g, '$1-');
+  };
 
   const handleInsertExperience = async (data: any) => {
     await insertExperience(
@@ -149,6 +146,37 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     alert.success('Fajlovi uspješno učitani');
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(addDashes(e.target.value));
+  };
+
+  useEffect(() => {
+    if (selectedItem) {
+      const formattedExperience = formatExperienceForModal(
+        selectedItem.years_of_insured_experience,
+        selectedItem.months_of_insured_experience,
+        selectedItem.days_of_insured_experience,
+      );
+      setInputValue(formattedExperience);
+
+      reset({
+        ...selectedItem,
+        relevant: {id: selectedItem?.relevant ? 'Da' : 'Ne', title: selectedItem?.relevant ? 'Da' : 'Ne'},
+        organization_unit_id:
+          selectedItem?.relevant === 'Ne'
+            ? organizationUnits.find(orgUnit => orgUnit.id === selectedItem?.organization_unit_id)
+            : {
+                id: selectedItem.organization_unit_id,
+                title: selectedItem.organization_unit_title,
+              },
+        date_of_start: parseToDate(selectedItem?.date_of_start),
+        date_of_end: parseToDate(selectedItem?.date_of_end),
+        user_profile_id: userProfileId,
+      });
+    } else {
+      setInputValue('');
+    }
+  }, [selectedItem]);
   return (
     <Modal
       open={open}
@@ -239,9 +267,10 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
             />
             <Input
               {...register('amount_of_insured_experience')}
-              label="PRIJAVLJENI STAŽ (G-M-D):"
+              label="PRIJAVLJENI STAŽ (GG-MM-DD):"
               error={errors.amount_of_insured_experience?.message}
-              value={watch('amount_of_insured_experience')?.toString()}
+              value={inputValue}
+              onChange={handleChange}
             />
           </Row>
 

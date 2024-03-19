@@ -25,6 +25,10 @@ export function formatExperience(years: number, months: number, days: number) {
   return result;
 }
 
+export const formatExperienceForModal = (years: string, months: string, days: string): string => {
+  return `${years}-${months}-${days}`;
+};
+
 export const tableHeads: TableHead[] = [
   {
     title: 'Sudstvo',
