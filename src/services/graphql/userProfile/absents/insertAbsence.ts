@@ -1,5 +1,5 @@
 const insertAbsence = `mutation UserProfileAbsentInsert($data: UserProfileAbsentInsertMutation!){
-    userProfile_Absent_Insert(data: $data) {
+    userProfileAbsent_Insert(data: $data) {
         message
         status
         item {

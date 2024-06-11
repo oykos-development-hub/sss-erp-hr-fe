@@ -1,5 +1,5 @@
 const getRevisionPlanDetails = `query RevisionPlansDetails($id: Int!){
-    revision_plans_Details(id: $id) {
+    revisionPlans_Details(id: $id) {
         message
         status
         item {

@@ -1,5 +1,5 @@
 const insertForeignerPermit = `mutation UserProfileForeignerInsert($data: UserProfileForeignerInsertMutation!){
-    userProfile_Foreigner_Insert(data: $data) {
+    userProfileForeigner_Insert(data: $data) {
         message
         data
         status

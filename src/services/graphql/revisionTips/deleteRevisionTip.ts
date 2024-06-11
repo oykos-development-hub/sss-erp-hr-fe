@@ -1,5 +1,5 @@
 const deleteRevisionTip = `mutation($id: Int!) {
-    revision_tips_Delete(id: $id) {
+    revisionTips_Delete(id: $id) {
         message
         status
     }

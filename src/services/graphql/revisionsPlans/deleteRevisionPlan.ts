@@ -1,6 +1,6 @@
 const deleteRevisionPlan = `
   mutation($id: Int!) {
-      revision_plans_Delete(id: $id) {
+      revisionPlans_Delete(id: $id) {
           message
           status
       }

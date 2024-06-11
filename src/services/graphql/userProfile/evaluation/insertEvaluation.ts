@@ -1,5 +1,5 @@
 const insertEvaluation = `mutation UserProfileEvaluationInsert($data: UserProfileEvaluationInsertMutation!){
-    userProfile_Evaluation_Insert(data: $data) {
+    userProfileEvaluation_Insert(data: $data) {
         message
         status
         data

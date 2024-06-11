@@ -1,5 +1,5 @@
 const insertJobTenderApplication = `mutation($data: JobTenderApplicationInsertMutation!) {
-    jobTender_Applications_Insert(data: $data) {
+    jobTenderApplications_Insert(data: $data) {
         message
         status
         data

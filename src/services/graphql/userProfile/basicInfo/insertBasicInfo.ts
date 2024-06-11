@@ -1,5 +1,5 @@
 const insertBasicInfo = `mutation($data: UserProfileBasicInsertMutation!) {
-    userProfile_Basic_Insert(data: $data) {
+    userProfileBasic_Insert(data: $data) {
         message
         status
         data

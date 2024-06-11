@@ -1,5 +1,5 @@
 const deleteResolution = `mutation($id: Int!) {
-    userProfile_Resolution_Delete(id: $id) {
+    userProfileResolution_Delete(id: $id) {
         message
         status
     }

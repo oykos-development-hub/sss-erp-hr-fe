@@ -1,5 +1,5 @@
 const insertResolution = `mutation UserProfileResolutionInsert($data: UserProfileResolutionInsertMutation!){
-    userProfile_Resolution_Insert(data: $data) {
+    userProfileResolution_Insert(data: $data) {
         message
         status
         data

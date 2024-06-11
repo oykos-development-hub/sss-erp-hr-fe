@@ -1,5 +1,5 @@
 const insertRevisionPlan = `mutation($data: RevisionPlanInsertMutation!) {
-        revision_plans_Insert(data: $data) {
+        revisionPlans_Insert(data: $data) {
             message
             status
             data

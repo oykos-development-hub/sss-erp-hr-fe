@@ -1,5 +1,5 @@
 const getRevisionTips = `query RevisionTipsOverview($page: Int, $size: Int, $revision_id: Int){
-    revision_tips_Overview(page: $page, size: $size, revision_id: $revision_id) {
+    revisionTips_Overview(page: $page, size: $size, revision_id: $revision_id) {
         message
         status
         total

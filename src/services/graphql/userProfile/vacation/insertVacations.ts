@@ -1,5 +1,5 @@
 const insertVacations = `mutation UserProfileVacationsInsert($data: UserProfileVacationsInsertMutation!){
-    userProfile_Vacations_Insert(data: $data) {
+    userProfileVacations_Insert(data: $data) {
         message
         status
         data

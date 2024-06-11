@@ -1,5 +1,5 @@
 const insertExperience = `mutation UserProfileExperienceInsert($data: UserProfileExperienceInsertMutation!){
-    userProfile_Experience_Insert(data: $data) {
+    userProfileExperience_Insert(data: $data) {
         message
         status
         data

@@ -1,5 +1,5 @@
 const salaryParamsInsert = `mutation UserProfileSalaryParamsInsert($data: UserProfileSalaryParamsInsertMutation!){
-    userProfile_SalaryParams_Insert(data: $data) {
+    userProfileSalaryParams_Insert(data: $data) {
         message
         data
         status

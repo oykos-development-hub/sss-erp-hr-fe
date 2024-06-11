@@ -1,5 +1,5 @@
 const insertEducation = `mutation UserProfileEducationInsert($data: UserProfileEducationInsertMutation!){
-    userProfile_Education_Insert(data: $data) {
+    userProfileEducation_Insert(data: $data) {
         message
         status
         item {

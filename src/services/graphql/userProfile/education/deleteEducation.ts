@@ -1,6 +1,6 @@
 const deleteEducation = `
     mutation($id: Int!) {
-      userProfile_Education_Delete(id: $id) {
+      userProfileEducation_Delete(id: $id) {
           message
           status
       }

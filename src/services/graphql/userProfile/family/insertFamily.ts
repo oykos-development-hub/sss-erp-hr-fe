@@ -1,5 +1,5 @@
 const insertFamily = `mutation UserProfileFamilyInsert($data: UserProfileFamilyInsertMutation!){
-    userProfile_Family_Insert(data: $data) {
+    userProfileFamily_Insert(data: $data) {
         message
         status
         data
