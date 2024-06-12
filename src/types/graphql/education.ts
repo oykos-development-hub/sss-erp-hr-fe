@@ -51,9 +51,9 @@ export type ProfileEducationResponse = {
     userProfile_Education: GetResponse<ProfileEducation>;
   };
   insert: {
-    userProfile_Education_Insert: InsertResponse<ProfileEducation>;
+    userProfileEducation_Insert: InsertResponse<ProfileEducation>;
   };
   delete: {
-    userProfile_Education_Delete: DeleteResponse;
+    userProfileEducation_Delete: DeleteResponse;
   };
 };

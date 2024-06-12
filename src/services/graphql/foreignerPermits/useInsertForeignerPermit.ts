@@ -14,7 +14,7 @@ const useInsertForeignerPermits = () => {
     setLoading(true);
     const response: ForeignerPermitResponse['insert'] = await fetch(GraphQL.insertForeignerPermit, {data});
 
-    if (response.userProfile_Foreigner_Insert.status === 'success') {
+    if (response.userProfileForeigner_Insert.status === 'success') {
       onSuccess && onSuccess();
     } else {
       onError && onError();

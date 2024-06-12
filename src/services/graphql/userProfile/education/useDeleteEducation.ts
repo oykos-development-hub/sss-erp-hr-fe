@@ -16,7 +16,7 @@ const useDeleteEducation = () => {
 
     const response: ProfileEducationResponse['delete'] = await fetch(GraphQL.deleteEducation, {id});
 
-    if (response.userProfile_Education_Delete?.status === REQUEST_STATUSES.success) {
+    if (response.userProfileEducation_Delete?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

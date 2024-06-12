@@ -16,7 +16,7 @@ const useInsertEvaluation = () => {
 
     const response: ProfileEvaluationResponse['insert'] = await fetch(GraphQL.insertEvaluation, {data});
 
-    if (response.userProfile_Evaluation_Insert?.status === REQUEST_STATUSES.success) {
+    if (response.userProfileEvaluation_Insert?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

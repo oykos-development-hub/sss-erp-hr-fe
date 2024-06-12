@@ -13,8 +13,8 @@ const useGetRevisionTipDetails = (id: number) => {
   const fetchRevisionTipDetails = async () => {
     const response: RevisionTipsResponse['details'] = await fetch(GraphQL.getRevisionTipDetails, {id});
 
-    if (response.revision_tips_Details?.status === REQUEST_STATUSES.success) {
-      setRevisionTipDetails(response.revision_tips_Details?.item);
+    if (response.revisionTips_Details?.status === REQUEST_STATUSES.success) {
+      setRevisionTipDetails(response.revisionTips_Details?.item);
     }
 
     setLoading(false);

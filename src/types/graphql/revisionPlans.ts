@@ -19,16 +19,16 @@ export type RevisionPlanInsertParams = {
 
 export type RevisionPlansResponse = {
   get: {
-    revision_plans_Overview: GetResponse<RevisionPlan>;
+    revisionPlans_Overview: GetResponse<RevisionPlan>;
   };
   details: {
-    revision_plans_Details: DetailsResponse<RevisionPlan>;
+    revisionPlans_Details: DetailsResponse<RevisionPlan>;
   };
   insert: {
-    revision_plans_Insert: InsertResponse<RevisionPlan>;
+    revisionPlans_Insert: InsertResponse<RevisionPlan>;
   };
   delete: {
-    revision_plans_Delete: DeleteResponse;
+    revisionPlans_Delete: DeleteResponse;
   };
 };
 

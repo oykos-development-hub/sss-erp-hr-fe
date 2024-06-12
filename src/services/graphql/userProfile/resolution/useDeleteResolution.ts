@@ -16,7 +16,7 @@ const useDeleteResolution = () => {
 
     const response: ProfileResolutionResponse['delete'] = await fetch(GraphQL.deleteResolution, {id});
 
-    if (response.userProfile_Resolution_Delete?.status === REQUEST_STATUSES.success) {
+    if (response.userProfileResolution_Delete?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

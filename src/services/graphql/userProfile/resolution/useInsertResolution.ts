@@ -15,7 +15,7 @@ const useInsertResolution = () => {
     setLoading(true);
 
     const response: ProfileResolutionResponse['insert'] = await fetch(GraphQL.insertResolution, {data});
-    if (response.userProfile_Resolution_Insert?.status === REQUEST_STATUSES.success) {
+    if (response.userProfileResolution_Insert?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

@@ -68,6 +68,6 @@ export type ProfileSalaryParamsResponse = {
     userProfile_SalaryParams: GetResponse<ProfileSalaryParams>;
   };
   insert: {
-    userProfile_SalaryParams_Insert: InsertResponse<ProfileSalaryParams>;
+    userProfileSalaryParams_Insert: InsertResponse<ProfileSalaryParams>;
   };
 };

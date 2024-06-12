@@ -37,9 +37,9 @@ export type ForeignerPermitResponse = {
     userProfile_Foreigner: GetResponse<ForeignerPermit>;
   };
   insert: {
-    userProfile_Foreigner_Insert: InsertResponse<ForeignerPermit>;
+    userProfileForeigner_Insert: InsertResponse<ForeignerPermit>;
   };
   delete: {
-    userProfile_Foreigner_Delete: DeleteResponse;
+    userProfileForeigner_Delete: DeleteResponse;
   };
 };

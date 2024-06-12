@@ -16,7 +16,7 @@ const useInsertFamily = () => {
 
     const response: ProfileFamilyResponse['insert'] = await fetch(GraphQL.insertFamily, {data});
 
-    if (response.userProfile_Family_Insert?.status === REQUEST_STATUSES.success) {
+    if (response.userProfileFamily_Insert?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

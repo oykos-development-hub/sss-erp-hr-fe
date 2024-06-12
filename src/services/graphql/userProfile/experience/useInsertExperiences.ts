@@ -13,7 +13,7 @@ const useInsertExperiences = () => {
     setLoading(true);
 
     const response: ProfileExperienceResponse['insertMultiple'] = await fetch(GraphQL.insertExperiences, data);
-    if (response.userProfile_Experiences_Insert?.status === REQUEST_STATUSES.success) {
+    if (response.userProfileExperiences_Insert?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

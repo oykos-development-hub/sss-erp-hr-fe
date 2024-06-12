@@ -15,9 +15,9 @@ const useGetRevisionPlans = ({page, size}: PaginationProps) => {
   const fetchRevisionPlans = async () => {
     const response: RevisionPlansResponse['get'] = await fetch(GraphQL.getRevisionPlans, {page, size});
 
-    if (response.revision_plans_Overview?.status === REQUEST_STATUSES.success) {
-      setRevisionPlans(response.revision_plans_Overview.items ?? []);
-      setTotal(response.revision_plans_Overview.total ?? 0);
+    if (response.revisionPlans_Overview?.status === REQUEST_STATUSES.success) {
+      setRevisionPlans(response.revisionPlans_Overview.items ?? []);
+      setTotal(response.revisionPlans_Overview.total ?? 0);
     }
 
     setLoading(false);

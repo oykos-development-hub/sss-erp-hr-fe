@@ -20,8 +20,8 @@ const useInsertBasicInfo = () => {
 
     const response: ProfileBasicInfoResponse['insert'] = await fetch(GraphQL.insertBasicInfo, {data});
 
-    if (response.userProfile_Basic_Insert?.status === REQUEST_STATUSES.success) {
-      onSuccess && onSuccess(response?.userProfile_Basic_Insert.item?.id || 0);
+    if (response.userProfileBasic_Insert?.status === REQUEST_STATUSES.success) {
+      onSuccess && onSuccess(response?.userProfileBasic_Insert.item?.id || 0);
     } else {
       onError && onError(response);
     }

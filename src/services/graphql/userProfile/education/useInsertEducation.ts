@@ -16,7 +16,7 @@ const useInsertEducation = () => {
 
     const response: ProfileEducationResponse['insert'] = await fetch(GraphQL.insertEducation, {data});
 
-    if (response.userProfile_Education_Insert?.status === REQUEST_STATUSES.success) {
+    if (response.userProfileEducation_Insert?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

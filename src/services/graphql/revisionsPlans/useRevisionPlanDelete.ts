@@ -16,7 +16,7 @@ const useDeleteRevisionPlan = () => {
 
     const response: RevisionPlansResponse['delete'] = await fetch(GraphQL.deleteRevisionPlan, {id});
 
-    if (response.revision_plans_Delete?.status === REQUEST_STATUSES.success) {
+    if (response.revisionPlans_Delete?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

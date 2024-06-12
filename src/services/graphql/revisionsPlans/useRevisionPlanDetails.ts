@@ -21,8 +21,8 @@ const useGetRevisionPlanDetails = (id: number) => {
 
     const response: RevisionPlansResponse['details'] = await fetch(GraphQL.getRevisionPlanDetails, {id});
 
-    if (response.revision_plans_Details?.status === REQUEST_STATUSES.success) {
-      setRevisionPlanDetails(response.revision_plans_Details.item);
+    if (response.revisionPlans_Details?.status === REQUEST_STATUSES.success) {
+      setRevisionPlanDetails(response.revisionPlans_Details.item);
     }
 
     setLoading(false);

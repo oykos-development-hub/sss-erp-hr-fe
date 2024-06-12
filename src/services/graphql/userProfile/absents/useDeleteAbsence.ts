@@ -16,7 +16,7 @@ const useDeleteAbsence = () => {
 
     const response: AbsentResponse['delete'] = await fetch(GraphQL.deleteAbsence, {id});
 
-    if (response.userProfile_Absent_Delete.status === REQUEST_STATUSES.success) {
+    if (response.userProfileAbsent_Delete.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

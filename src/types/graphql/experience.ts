@@ -39,12 +39,12 @@ export type ProfileExperienceResponse = {
     userProfile_Experience: GetResponse<ProfileExperience>;
   };
   insert: {
-    userProfile_Experience_Insert: InsertResponse<ProfileExperience>;
+    userProfileExperience_Insert: InsertResponse<ProfileExperience>;
   };
   delete: {
-    userProfile_Experience_Delete: DeleteResponse;
+    userProfileExperience_Delete: DeleteResponse;
   };
   insertMultiple: {
-    userProfile_Experiences_Insert: InsertResponse<ProfileExperience[]>;
+    userProfileExperiences_Insert: InsertResponse<ProfileExperience[]>;
   };
 };

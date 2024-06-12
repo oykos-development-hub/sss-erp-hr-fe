@@ -16,7 +16,7 @@ const useDeleteRevisionTip = () => {
 
     const response: RevisionTipsResponse['delete'] = await fetch(GraphQL.deleteRevisionTip, {id});
 
-    if (response.revision_tips_Delete?.status === REQUEST_STATUSES.success) {
+    if (response.revisionTips_Delete?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

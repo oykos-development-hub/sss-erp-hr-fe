@@ -16,10 +16,10 @@ const useInsertAbsence = () => {
 
     const response: AbsentResponse['insert'] = await fetch(GraphQL.insertAbsence, {data});
 
-    if (response.userProfile_Absent_Insert.status === REQUEST_STATUSES.success) {
+    if (response.userProfileAbsent_Insert.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
-      onError && onError(response?.userProfile_Absent_Insert?.message);
+      onError && onError(response?.userProfileAbsent_Insert?.message);
     }
 
     setLoading(false);

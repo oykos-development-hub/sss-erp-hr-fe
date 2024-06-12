@@ -40,16 +40,16 @@ export type RevisionTipsGetParams = {
 
 export type RevisionTipsResponse = {
   get: {
-    revision_tips_Overview: GetResponse<RevisionTip> & {revisors: DropdownDataNumber[]};
+    revisionTips_Overview: GetResponse<RevisionTip> & {revisors: DropdownDataNumber[]};
   };
   details: {
-    revision_tips_Details: DetailsResponse<RevisionTip>;
+    revisionTips_Details: DetailsResponse<RevisionTip>;
   };
   insert: {
-    revision_tips_Insert: InsertResponse<RevisionTip>;
+    revisionTips_Insert: InsertResponse<RevisionTip>;
   };
   delete: {
-    revision_tips_Delete: DeleteResponse;
+    revisionTips_Delete: DeleteResponse;
   };
 };
 

@@ -16,7 +16,7 @@ const useInsertExperience = () => {
 
     const response: ProfileExperienceResponse['insert'] = await fetch(GraphQL.insertExperience, {data});
 
-    if (response.userProfile_Experience_Insert?.status === REQUEST_STATUSES.success) {
+    if (response.userProfileExperience_Insert?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

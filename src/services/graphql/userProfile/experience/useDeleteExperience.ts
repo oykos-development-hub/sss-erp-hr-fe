@@ -16,7 +16,7 @@ const useDeleteExperience = () => {
 
     const response: ProfileExperienceResponse['delete'] = await fetch(GraphQL.deleteExperience, {id});
 
-    if (response.userProfile_Experience_Delete?.status === REQUEST_STATUSES.success) {
+    if (response.userProfileExperience_Delete?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

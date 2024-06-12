@@ -16,7 +16,7 @@ const useInsertVacations = () => {
 
     const response: ProfileVacationResponse['insert'] = await fetch(GraphQL.insertVacations, {data});
 
-    if (response.userProfile_Vacations_Insert?.status === REQUEST_STATUSES.success) {
+    if (response.userProfileVacations_Insert?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

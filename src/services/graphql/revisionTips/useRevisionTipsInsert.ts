@@ -15,7 +15,7 @@ const useInsertRevisionTip = () => {
 
     const response: RevisionTipsResponse['insert'] = await fetch(GraphQL.insertRevisionTip, {data});
 
-    if (response.revision_tips_Insert?.status === 'success') {
+    if (response.revisionTips_Insert?.status === 'success') {
       onSuccess && onSuccess();
     } else {
       onError && onError();

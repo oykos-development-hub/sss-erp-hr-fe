@@ -15,7 +15,7 @@ const useDeleteJobTenderApplication = () => {
     setLoading(true);
 
     const response: JobTenderApplicationResponse['delete'] = await fetch(GraphQL.deleteJobTenderApplication, {id});
-    if (response.jobTender_Applications_Delete.status === REQUEST_STATUSES.success) {
+    if (response.jobTenderApplications_Delete.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

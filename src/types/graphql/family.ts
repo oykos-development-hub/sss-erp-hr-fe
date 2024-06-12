@@ -53,9 +53,9 @@ export type ProfileFamilyResponse = {
     userProfile_Family: GetResponse<ProfileFamily>;
   };
   insert: {
-    userProfile_Family_Insert: InsertResponse<ProfileFamily>;
+    userProfileFamily_Insert: InsertResponse<ProfileFamily>;
   };
   delete: {
-    userProfile_Family_Delete: DeleteResponse;
+    userProfileFamily_Delete: DeleteResponse;
   };
 };

@@ -16,7 +16,7 @@ const useDeleteFamily = () => {
 
     const response: ProfileFamilyResponse['delete'] = await fetch(GraphQL.deleteFamily, {id});
 
-    if (response.userProfile_Family_Delete?.status === REQUEST_STATUSES.success) {
+    if (response.userProfileFamily_Delete?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

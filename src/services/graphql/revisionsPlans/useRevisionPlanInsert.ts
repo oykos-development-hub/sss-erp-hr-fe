@@ -16,7 +16,7 @@ const useInsertRevisionPlan = () => {
 
     const response: RevisionPlansResponse['insert'] = await fetch(GraphQL.insertRevisionPlan, {data});
 
-    if (response.revision_plans_Insert?.status === REQUEST_STATUSES.success) {
+    if (response.revisionPlans_Insert?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

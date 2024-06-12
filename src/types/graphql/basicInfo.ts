@@ -141,7 +141,7 @@ export interface ProfileBasicInfoResponse {
     userProfile_Basic: DetailsResponse<ProfileBasicInfo>;
   };
   insert: {
-    userProfile_Basic_Insert: InsertResponse<ProfileBasicInfo>;
+    userProfileBasic_Insert: InsertResponse<ProfileBasicInfo>;
   };
   update: {
     userProfile_Update: InsertResponse<ProfileBasicInfo>;

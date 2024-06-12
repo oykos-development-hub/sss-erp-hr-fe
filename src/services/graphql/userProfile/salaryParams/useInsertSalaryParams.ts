@@ -15,7 +15,7 @@ const useInsertSalaryParams = () => {
     setLoading(true);
 
     const response: ProfileSalaryParamsResponse['insert'] = await fetch(GraphQL.insertSalaryParams, {data});
-    if (response.userProfile_SalaryParams_Insert?.status === REQUEST_STATUSES.success) {
+    if (response.userProfileSalaryParams_Insert?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

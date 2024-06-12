@@ -51,9 +51,9 @@ export type ProfileEvaluationResponse = {
     userProfile_Evaluation: GetResponse<ProfileEvaluation>;
   };
   insert: {
-    userProfile_Evaluation_Insert: InsertResponse<ProfileEvaluation>;
+    userProfileEvaluation_Insert: InsertResponse<ProfileEvaluation>;
   };
   delete: {
-    userProfile_Evaluation_Delete: DeleteResponse;
+    userProfileEvaluation_Delete: DeleteResponse;
   };
 };

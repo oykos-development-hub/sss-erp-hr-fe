@@ -27,13 +27,13 @@ const useGetRevisionTips = ({page, size, revision_id}: RevisionTipsGetParams) =>
 
     const response: RevisionTipsResponse['get'] = await fetch(GraphQL.getRevisionTips, {revision_id, page, size});
 
-    if (response.revision_tips_Overview?.status === REQUEST_STATUSES.success) {
+    if (response.revisionTips_Overview?.status === REQUEST_STATUSES.success) {
       setRevisionTips({
-        items: response.revision_tips_Overview.items ?? [],
-        revisors: response.revision_tips_Overview.revisors ?? [],
+        items: response.revisionTips_Overview.items ?? [],
+        revisors: response.revisionTips_Overview.revisors ?? [],
       });
 
-      setTotal(response.revision_tips_Overview.total ?? 0);
+      setTotal(response.revisionTips_Overview.total ?? 0);
     }
 
     setLoading(false);

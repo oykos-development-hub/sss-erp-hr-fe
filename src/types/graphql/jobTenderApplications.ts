@@ -58,9 +58,9 @@ export type JobTenderApplicationResponse = {
     jobTender_Applications: GetResponse<JobTenderApplication>;
   };
   insert: {
-    jobTender_Applications_Insert: InsertResponse<JobTenderApplication>;
+    jobTenderApplications_Insert: InsertResponse<JobTenderApplication>;
   };
   delete: {
-    jobTender_Applications_Delete: DeleteResponse;
+    jobTenderApplications_Delete: DeleteResponse;
   };
 };

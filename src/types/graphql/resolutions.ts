@@ -50,9 +50,9 @@ export type ProfileResolutionResponse = {
     userProfile_Resolution: GetResponse<ProfileResolution>;
   };
   insert: {
-    userProfile_Resolution_Insert: InsertResponse<ProfileResolution>;
+    userProfileResolution_Insert: InsertResponse<ProfileResolution>;
   };
   delete: {
-    userProfile_Resolution_Delete: DeleteResponse;
+    userProfileResolution_Delete: DeleteResponse;
   };
 };

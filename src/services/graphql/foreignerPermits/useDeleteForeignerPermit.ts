@@ -15,7 +15,7 @@ const useDeleteForeignerPermit = () => {
 
     const response: ForeignerPermitResponse['delete'] = await fetch(GraphQL.deleteForeignerPermit, {id});
 
-    if (response.userProfile_Foreigner_Delete.status === 'success') {
+    if (response.userProfileForeigner_Delete.status === 'success') {
       onSuccess && onSuccess();
     } else {
       onError && onError();

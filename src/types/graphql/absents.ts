@@ -62,10 +62,10 @@ export type AbsentResponse = {
     userProfile_Absent: GetResponse<Absence> & {summary: AbsenceSummary};
   };
   insert: {
-    userProfile_Absent_Insert: InsertResponse<Absence>;
+    userProfileAbsent_Insert: InsertResponse<Absence>;
   };
   delete: {
-    userProfile_Absent_Delete: DeleteResponse;
+    userProfileAbsent_Delete: DeleteResponse;
   };
 };
 

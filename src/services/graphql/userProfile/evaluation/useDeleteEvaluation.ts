@@ -16,7 +16,7 @@ const useDeleteEvaluation = () => {
 
     const response: ProfileEvaluationResponse['delete'] = await fetch(GraphQL.deleteEvaluation, {id});
 
-    if (response.userProfile_Evaluation_Delete?.status === REQUEST_STATUSES.success) {
+    if (response.userProfileEvaluation_Delete?.status === REQUEST_STATUSES.success) {
       onSuccess && onSuccess();
     } else {
       onError && onError();

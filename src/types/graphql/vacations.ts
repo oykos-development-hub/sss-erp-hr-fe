@@ -29,10 +29,10 @@ export type ProfileVacationResponse = {
     userProfile_Vacation: GetResponse<ProfileVacation>;
   };
   insert: {
-    userProfile_Vacations_Insert: InsertResponse<ProfileVacation>;
+    userProfileVacations_Insert: InsertResponse<ProfileVacation>;
   };
   delete: {
-    userProfile_Resolution_Delete: DeleteResponse;
+    userProfileResolution_Delete: DeleteResponse;
   };
 };
 
