@@ -223,3 +223,11 @@ export const patterns: DropdownDataString[] = [
     title: 'Rješenje o raspoređivanju zaposlenog',
   },
 ];
+
+export enum UserRole {
+  ADMIN = 1,
+  MANAGER_OJ = 2,
+  FINANCE_OFFICIAL = 6,
+}
+
+export const PAGE_SIZE = 10;

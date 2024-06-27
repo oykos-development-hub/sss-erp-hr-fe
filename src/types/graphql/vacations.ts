@@ -1,4 +1,5 @@
 import {DeleteResponse, GetResponse, InsertResponse} from './response';
+import {FileItem} from '../fileUploadType.ts';
 
 export interface ProfileVacation {
   id: number;
@@ -17,11 +18,7 @@ export interface ProfileVacation {
   number_of_days: number;
   created_at: string;
   updated_at: string;
-  file: {
-    id: number;
-    name: string;
-    type: string;
-  };
+  file: FileItem;
 }
 
 export type ProfileVacationResponse = {

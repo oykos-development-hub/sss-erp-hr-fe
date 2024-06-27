@@ -73,3 +73,13 @@ export const tableHeadsVacation: TableHead[] = [
   },
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
 ];
+
+export const tableHeadsTemplates: TableHead[] = [
+  {
+    title: 'Naziv šablona',
+    accessor: 'template',
+    type: 'custom',
+    renderContents: (template: any) => <Typography variant="bodyMedium" content={template?.title} />,
+  },
+  {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
+];

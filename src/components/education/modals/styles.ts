@@ -4,6 +4,7 @@ export const ModalContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: auto;
+  width: 600px;
 `;
 
 export const Row = styled.div`

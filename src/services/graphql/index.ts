@@ -72,6 +72,11 @@ import insertSalaryParams from './userProfile/salaryParams/insertSalaryParams';
 import getVacations from './userProfile/vacation/getVacations';
 import insertVacations from './userProfile/vacation/insertVacations';
 import vacationReport from './vacationReport/vacationReport';
+import getTemplates from './templates/getTemplates.ts';
+import deleteTemplate from './templates/deleteTemplate.ts';
+import insertTemplate from './templates/insertTemplate.ts';
+import updateTemplateAdmin from './templates/updateTemplateAdmin.ts';
+import updateTemplateManager from './templates/updateTemplateManager.ts';
 
 export const BFF_URL = {
   local: 'http://localhost:8080',
@@ -153,4 +158,9 @@ export const GraphQL = {
   insertJobTenderApplication: insertJobTenderApplication,
   vacationReport: vacationReport,
   judgeEvaluationReport: judgeEvaluationReport,
+  getTemplates: getTemplates,
+  deleteTemplate: deleteTemplate,
+  insertTemplate: insertTemplate,
+  updateTemplateAdmin: updateTemplateAdmin,
+  updateTemplateManager: updateTemplateManager,
 };
