@@ -78,13 +78,6 @@ import insertTemplate from './templates/insertTemplate.ts';
 import updateTemplateAdmin from './templates/updateTemplateAdmin.ts';
 import updateTemplateManager from './templates/updateTemplateManager.ts';
 
-export const BFF_URL = {
-  local: 'http://localhost:8080',
-  development: 'https://sss-erp-bff.oykos.me',
-  staging: 'http://localhost:8080',
-  production: 'http://localhost:8080',
-};
-
 export const GraphQL = {
   updateBasicInfo: updateBasicInfo,
   getBasicInfo: getBasicInfo,
