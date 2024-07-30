@@ -32,16 +32,16 @@ const initialValues: ProfileFamilyParams = {
   national_minority: null,
 };
 
-const validateJMBG = (value: string) => {
-  if (!value) return 'Ovo polje je obavezno';
-
-  const regex = /^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[0-2])(\d{3})(2[1-9]|29)\d{3}\d{1}$/;
-  if (!regex.test(value)) return 'Neispravan JMBG format';
-
-  if (value.length !== 13) return 'JMBG mora da ima 13 cifara';
-
-  return true;
-};
+// const validateJMBG = (value: string) => {
+//   if (!value) return 'Ovo polje je obavezno';
+//
+//   const regex = /^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[0-2])(\d{3})(2[1-9]|29)\d{3}\d{1}$/;
+//   if (!regex.test(value)) return 'Neispravan JMBG format';
+//
+//   if (value.length !== 13) return 'JMBG mora da ima 13 cifara';
+//
+//   return true;
+// };
 
 export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
   selectedItem,
@@ -130,24 +130,24 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
     );
   };
 
-  const extractDateOfBirthFromJMBG = (jmbg: any) => {
-    const day = jmbg.substring(0, 2);
-    const month = jmbg.substring(2, 4);
-    const year = jmbg.substring(4, 7);
-
-    const fullYear = `${jmbg[4] < 9 ? '2' : '1'}${year}`;
-
-    return new Date(`${fullYear}-${month}-${day}`);
-  };
-
-  const handleJMBGChange = (event: any) => {
-    const jmbgValue = event.target.value;
-
-    if (jmbgValue.length === 13) {
-      const dateOfBirth = extractDateOfBirthFromJMBG(jmbgValue);
-      setValue('date_of_birth', dateOfBirth);
-    }
-  };
+  // const extractDateOfBirthFromJMBG = (jmbg: any) => {
+  //   const day = jmbg.substring(0, 2);
+  //   const month = jmbg.substring(2, 4);
+  //   const year = jmbg.substring(4, 7);
+  //
+  //   const fullYear = `${jmbg[4] < 9 ? '2' : '1'}${year}`;
+  //
+  //   return new Date(`${fullYear}-${month}-${day}`);
+  // };
+  //
+  // const handleJMBGChange = (event: any) => {
+  //   const jmbgValue = event.target.value;
+  //
+  //   if (jmbgValue.length === 13) {
+  //     const dateOfBirth = extractDateOfBirthFromJMBG(jmbgValue);
+  //     setValue('date_of_birth', dateOfBirth);
+  //   }
+  // };
 
   return (
     <Modal
@@ -378,12 +378,12 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
           <Row>
             <Input
               {...register('official_personal_id', {
-                validate: validateJMBG,
+                // validate: validateJMBG,
               })}
               label="JMBG:"
               error={errors.official_personal_id?.message}
               isRequired
-              onChange={handleJMBGChange}
+              // onChange={handleJMBGChange}
             />
             <Input
               {...register('mother_name', {required: 'Ovo polje je obavezno'})}

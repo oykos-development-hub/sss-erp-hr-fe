@@ -111,14 +111,14 @@ export const basicInfoSchema = yup.object({
       const age = today.getFullYear() - birthDate.getFullYear();
       return age >= 18;
     })
-    .test({
-      name: 'is same as date in jmbg',
-      message: 'Datum rođenja mora da se poklapa sa JMBG-om',
-      test: function (value) {
-        if (!value || !this.parent.official_personal_id) return true;
-        return validateDateOfBirth(this.parent.official_personal_id, value);
-      },
-    })
+    // .test({
+    //   name: 'is same as date in jmbg',
+    //   message: 'Datum rođenja mora da se poklapa sa JMBG-om',
+    //   test: function (value) {
+    //     if (!value || !this.parent.official_personal_id) return true;
+    //     return validateDateOfBirth(this.parent.official_personal_id, value);
+    //   },
+    // })
     .required(requiredError)
     .nullable(),
   birth_last_name: yup.string(),
@@ -143,7 +143,7 @@ export const basicInfoSchema = yup.object({
   personal_id: yup.string(),
   official_personal_id: yup
     .string()
-    .matches(/^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[0-2])(\d{3})(2[1-9]|29)\d{3}\d{1}$/, 'Neispravan JMBG format')
+    // .matches(/^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[0-2])(\d{3})(2[1-9]|29)\d{3}\d{1}$/, 'Neispravan JMBG format')
     .length(13, 'JMBG mora da ima 13 cifara')
     .required(requiredError)
     .default(undefined),
