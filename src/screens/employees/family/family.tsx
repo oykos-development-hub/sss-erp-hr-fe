@@ -8,12 +8,15 @@ import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import useGetFamily from '../../../services/graphql/userProfile/family/useGetFamily';
 import useDeleteFamily from '../../../services/graphql/userProfile/family/useDeleteFamily';
 import {ProfileFamily} from '../../../types/graphql/family';
+import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 
 export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {family, refetch, loading} = useGetFamily(userProfileID);
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
+  const updatePermittedRoutes = checkActionRoutePermissions(context.contextMain?.permissions, 'update');
+  const updatePermission = updatePermittedRoutes.includes('/hr/employees');
 
   const selectedItem = useMemo(() => {
     return family?.find((item: ProfileFamily) => item.id === selectedItemId);
@@ -57,33 +60,34 @@ export const FamilyPage: React.FC<FamilyPageProps> = ({context}) => {
     setSelectedItemId(0);
   };
 
+  const actionItems: any[] = [];
+
+  if (updatePermission) {
+    actionItems.push({
+      name: 'edit',
+      onClick: (item: any) => handleEdit(item),
+      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+    });
+    actionItems.push({
+      name: 'delete',
+      onClick: (item: any) => handleDeleteIconClick(item.id),
+      icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+    });
+  }
+
   return (
     <Container>
-      <span>
-        <Button
-          variant="secondary"
-          content={<Typography variant="bodyMedium" content="Dodajte člana porodice" />}
-          onClick={handleAdd}
-        />
-      </span>
+      {updatePermission && (
+        <span>
+          <Button
+            variant="secondary"
+            content={<Typography variant="bodyMedium" content="Dodajte člana porodice" />}
+            onClick={handleAdd}
+          />
+        </span>
+      )}
       <div>
-        <Table
-          tableHeads={tableHeads}
-          data={family || []}
-          isLoading={loading}
-          tableActions={[
-            {
-              name: 'edit',
-              onClick: item => handleEdit(item),
-              icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            },
-            {
-              name: 'delete',
-              onClick: item => handleDeleteIconClick(item.id),
-              icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-            },
-          ]}
-        />
+        <Table tableHeads={tableHeads} data={family || []} isLoading={loading} tableActions={actionItems} />
       </div>
       {showModal && (
         <FamilyMemberModal

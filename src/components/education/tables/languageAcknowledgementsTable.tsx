@@ -33,7 +33,7 @@ const tableHeads: TableHead[] = [
   },
 ];
 
-export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({alert, navigation}) => {
+export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({alert, navigation, updatePermission}) => {
   const {educationData, refetch, loading} = useGetEducation(
     Number(navigation.location.pathname.split('/')[4]),
     educationTypes.education_language_types,
@@ -91,33 +91,41 @@ export const LanguageAcknowledgmentTable: React.FC<TableProps> = ({alert, naviga
   const title = (
     <TableTitle>
       <TableTitleTypography variant="bodyLarge" content="Poznavanje jezika" />
-      <AddIcon onClick={handleAdd}>
-        <PlusIcon width={'18px'} stroke={Theme?.palette?.primary500} />
-      </AddIcon>
+      {updatePermission && (
+        <AddIcon onClick={handleAdd}>
+          <PlusIcon width={'18px'} stroke={Theme?.palette?.primary500} />
+        </AddIcon>
+      )}
     </TableTitle>
   );
+
+  const actionItems: any[] = [
+    {
+      name: 'showFile',
+      icon: <FileIcon stroke={Theme.palette.gray600} />,
+      onClick: (row: any) => {
+        setFileToView(row?.file);
+      },
+      shouldRender: (row: any) => row?.file?.id,
+    },
+  ];
+
+  if (updatePermission) {
+    actionItems.push({name: 'Izmijeni', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />});
+    actionItems.push({
+      name: 'Obriši',
+      onClick: (item: any) => handleDeleteIconClick(item.id),
+      icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
+    });
+  }
+
   return (
     <div>
       <TableContainer
         tableHeads={tableHeads}
         data={educationData || []}
         isLoading={loading}
-        tableActions={[
-          {
-            name: 'showFile',
-            icon: <FileIcon stroke={Theme.palette.gray600} />,
-            onClick: (row: any) => {
-              setFileToView(row?.file);
-            },
-            shouldRender: (row: any) => row?.file?.id,
-          },
-          {name: 'Izmijeni', onClick: handleEdit, icon: <EditIconTwo stroke={Theme?.palette?.gray800} />},
-          {
-            name: 'Obriši',
-            onClick: item => handleDeleteIconClick(item.id),
-            icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
-          },
-        ]}
+        tableActions={actionItems}
         titleElement={title}></TableContainer>
       {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
       {showModal && (

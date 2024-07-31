@@ -20,6 +20,7 @@ import {ReportsScreen} from './screens/reports/index.tsx';
 import {LandingPage} from './screens/landingPage/landingPage.tsx';
 import {Judges} from './screens/judges/landing.tsx';
 import {JobTenders} from './screens/jobTenders/landing.tsx';
+import {checkActionRoutePermissions, checkRoutePermissions} from './services/checkRoutePermissions.ts';
 
 const employeesRegex = /\/hr\/employees(?!\/add-new)(\/.)?/;
 const systematizationDetailsRegex = /^\/hr\/systematization\/systematization-details(?:\/(\d+))?$/;
@@ -36,30 +37,51 @@ export const Router: React.FC<MicroserviceProps> = props => {
   const context = Object.freeze({
     ...props,
   });
+  const allowedRoutes = checkRoutePermissions(context?.contextMain?.permissions);
+  const createPermittedRoutes = checkActionRoutePermissions(context?.contextMain?.permissions, 'create');
 
   const renderScreen = () => {
-    if (pathname === '/hr') return <LandingPage />;
-    if (employeesRegex.test(pathname)) return <EmployeesScreen context={context} />;
-    if (pathname === '/hr/systematization') return <Systematizations />;
-    if (pathname === '/hr/revision-recommendations') return <RevisionPlansList context={context} />;
-    if (recommendationsRegex.test(pathname)) return <RevisionTips />;
-    if (revisionsRegex.test(pathname)) return <RevisionList context={context} />;
-    // if (pathname === '/hr/job-positions') return <LandingScreen context={context} />;
-    if (JobTendersRegex.test(pathname)) return <JobTendersScreen context={context} />;
-    if (JobTendersDetailsRegex.test(pathname)) return <JobTenderDetailsScreen context={context} />;
-    if (ApplicationsRegex.test(pathname)) return <ApplicationsScreen context={context} />;
-    if (ApplicationsDetailsRegex.test(pathname)) return <ApplicationDetailsScreen context={context} />;
-    if (systematizationDetailsRegex.test(pathname)) return <SystematizationDetails />;
-    if (pathname === '/hr/judges') return <Judges />;
-    // if (pathname === '/hr/judges') return context.navigation.navigate('judges/number-decision');
-    if (pathname === '/hr/judges/number-decision') return <JudgesNumberDecisions context={context} />;
-    if (pathname === '/hr/judges/number-decision/new-decision') return <JudgesNumbersDetails isNew={true} />;
-    if (judgesNumberDetailsRegex.test(pathname)) return <JudgesNumbersDetails />;
-    if (pathname === '/hr/judges/overview-judges-presidents') return <JudgeNorms context={context} />;
-    if (pathname === '/hr/job-tenders') return <JobTenders />;
-    // if (pathname === '/hr/job-tenders') return context.navigation.navigate('job-tenders/job-tenders-list');
-    if (pathname === '/hr/employees/add-new') return <AddNewEmployee context={context} />;
-    if (pathname === '/hr/reports') return <ReportsScreen />;
+    if (pathname === '/hr' && allowedRoutes.includes('/hr')) return <LandingPage />;
+    if (employeesRegex.test(pathname) && allowedRoutes.includes('/hr/employees'))
+      return <EmployeesScreen context={context} />;
+    if (
+      pathname === '/hr/employees/add-new' &&
+      allowedRoutes.includes('/hr/employees') &&
+      createPermittedRoutes.includes('/hr/employees')
+    )
+      return <AddNewEmployee context={context} />;
+    if (pathname === '/hr/systematization' && allowedRoutes.includes('/hr/systematization'))
+      return <Systematizations />;
+    if (systematizationDetailsRegex.test(pathname) && allowedRoutes.includes('/hr/systematization'))
+      return <SystematizationDetails />;
+    if (pathname === '/hr/revision-recommendations' && allowedRoutes.includes('/hr/revision-recommendations'))
+      return <RevisionPlansList context={context} />;
+    if (recommendationsRegex.test(pathname) && allowedRoutes.includes('/hr/revision-recommendations'))
+      return <RevisionTips />;
+    if (revisionsRegex.test(pathname) && allowedRoutes.includes('/hr/revision-recommendations'))
+      return <RevisionList context={context} />;
+    if (JobTendersRegex.test(pathname) && allowedRoutes.includes('/hr/job-tenders'))
+      return <JobTendersScreen context={context} />;
+    if (pathname === '/hr/job-tenders' && allowedRoutes.includes('/hr/job-tenders')) return <JobTenders />;
+    if (JobTendersDetailsRegex.test(pathname) && allowedRoutes.includes('/hr/job-tenders'))
+      return <JobTenderDetailsScreen context={context} />;
+    if (ApplicationsRegex.test(pathname) && allowedRoutes.includes('/hr/job-tenders/job-tender-applications'))
+      return <ApplicationsScreen context={context} />;
+    if (ApplicationsDetailsRegex.test(pathname) && allowedRoutes.includes('/hr/job-tenders/job-tender-applications'))
+      return <ApplicationDetailsScreen context={context} />;
+    if (pathname === '/hr/judges' && allowedRoutes.includes('/hr/judges')) return <Judges />;
+    if (pathname === '/hr/judges/number-decision' && allowedRoutes.includes('/hr/judges/number-decision'))
+      return <JudgesNumberDecisions context={context} />;
+    if (pathname === '/hr/judges/number-decision/new-decision' && allowedRoutes.includes('/hr/judges/number-decision'))
+      return <JudgesNumbersDetails isNew={true} />;
+    if (judgesNumberDetailsRegex.test(pathname) && allowedRoutes.includes('/hr/judges/number-decision'))
+      return <JudgesNumbersDetails />;
+    if (
+      pathname === '/hr/judges/overview-judges-presidents' &&
+      allowedRoutes.includes('/hr/judges/overview-judges-presidents')
+    )
+      return <JudgeNorms context={context} />;
+    if (pathname === '/hr/reports' && allowedRoutes.includes('/hr/reports')) return <ReportsScreen />;
 
     return <NotFound404 context={context} />;
   };

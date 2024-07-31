@@ -22,4 +22,5 @@ export interface TableProps {
   languages?: any[];
   alert?: any;
   navigation?: any;
+  updatePermission: boolean;
 }

@@ -78,7 +78,6 @@ export interface ProfileBasicInfoFormValues {
   pin: string;
   password: string;
   middle_name: string;
-  role_id: number;
   contract: BasicInfoUserContractValues;
   personal_id: string;
   number_of_conference: string;

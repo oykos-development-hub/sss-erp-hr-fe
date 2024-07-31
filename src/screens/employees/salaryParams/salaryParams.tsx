@@ -14,6 +14,7 @@ import {Controls, FormColumn, FormContainer, FormFooter, FormItem, FormRow, Form
 import {SalaryParamsPageProps} from './types';
 import {formatData, initialValues} from './utils';
 import useAppContext from '../../../context/useAppContext.ts';
+import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 
 export const SalaryParams: React.FC<SalaryParamsPageProps> = () => {
   const {
@@ -22,6 +23,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = () => {
       navigate,
     },
     alert,
+    contextMain: {permissions},
   } = useAppContext();
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -29,6 +31,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = () => {
   const {salaryParams, refetch} = useGetSalaryParams(userProfileID);
   const {userBasicInfo} = useBasicInfoGet(userProfileID, {skip: !userProfileID});
   const {educationData} = useGetEducation(userProfileID, educationTypes.education_academic_types);
+  const updatePermittedRoutes = checkActionRoutePermissions(permissions, 'update');
 
   const item = useMemo(() => {
     if (salaryParams) {
@@ -274,7 +277,9 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = () => {
       <FormFooter>
         <Controls>
           {isDisabled ? (
-            <Button content="Uredi" variant="secondary" onClick={() => setIsDisabled(false)} />
+            updatePermittedRoutes.includes('/hr/employees') && (
+              <Button content="Uredi" variant="secondary" onClick={() => setIsDisabled(false)} />
+            )
           ) : (
             <>
               <Button

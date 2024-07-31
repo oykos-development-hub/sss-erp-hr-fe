@@ -1,5 +1,5 @@
 import {Button, EditIconTwo, FileIcon, Table, TableHead, Theme, TrashIcon, Typography} from 'client-library';
-import {useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {EvaluationModal} from '../../../components/evaluationModal/evaluationModal';
 import {EvaluationModalForJudge} from '../../../components/evaluationModal/evaluationModalForJudge';
 import FileModalView from '../../../components/fileModalView/fileModalView';
@@ -13,14 +13,18 @@ import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {ProfileEvaluation} from '../../../types/graphql/evaluations';
 import {parseDate} from '../../../utils/dateUtils';
 import {Container} from './styles';
+import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
+import {ForeignersProps} from '../foreigners/types.ts';
 
-export const EvaluationsPage = () => {
+export const EvaluationsPage: React.FC<ForeignersProps> = ({context}) => {
   const {alert, navigation} = useAppContext();
   const userProfileID = navigation.location.pathname.split('/')[4];
   const {evaluations, refetch} = useGetEvaluations(userProfileID);
   const {settingsData, loading} = useGetSettings({entity: 'evaluation_types'});
   const [fileToView, setFileToView] = useState<FileItem>();
   const {userBasicInfo} = useGetBasicInfo(userProfileID, {skip: !userProfileID});
+  const updatePermittedRoutes = checkActionRoutePermissions(context.contextMain?.permissions, 'update');
+  const updatePermission = updatePermittedRoutes.includes('/hr/employees');
 
   const [showModal, setShowModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number>(0);
@@ -106,41 +110,43 @@ export const EvaluationsPage = () => {
     setSelectedItemId(0);
   };
 
+  const actionItems: any[] = [
+    {
+      name: 'showFile',
+      icon: <FileIcon stroke={Theme.palette.gray600} />,
+      onClick: (row: any) => {
+        setFileToView(row?.file);
+      },
+      shouldRender: (row: any) => row?.file?.id,
+    },
+  ];
+
+  if (updatePermission) {
+    actionItems.push({
+      name: 'Izmijeni',
+      onClick: (item: any) => handleEdit(item),
+      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+    });
+    actionItems.push({
+      name: 'Obriši',
+      onClick: (item: any) => handleDeleteIconClick(item.id),
+      icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+    });
+  }
+
   return (
     <Container>
-      <span>
-        <Button
-          variant="secondary"
-          content={<Typography variant="bodyMedium" content="Dodajte ličnu ocjenu" />}
-          onClick={handleAdd}
-        />
-      </span>
+      {updatePermission && (
+        <span>
+          <Button
+            variant="secondary"
+            content={<Typography variant="bodyMedium" content="Dodajte ličnu ocjenu" />}
+            onClick={handleAdd}
+          />
+        </span>
+      )}
       <div>
-        <Table
-          tableHeads={tableHeads}
-          data={evaluations || []}
-          isLoading={loading}
-          tableActions={[
-            {
-              name: 'showFile',
-              icon: <FileIcon stroke={Theme.palette.gray600} />,
-              onClick: (row: any) => {
-                setFileToView(row?.file);
-              },
-              shouldRender: (row: any) => row?.file?.id,
-            },
-            {
-              name: 'Izmijeni',
-              onClick: item => handleEdit(item),
-              icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            },
-            {
-              name: 'Obriši',
-              onClick: item => handleDeleteIconClick(item.id),
-              icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-            },
-          ]}
-        />
+        <Table tableHeads={tableHeads} data={evaluations || []} isLoading={loading} tableActions={actionItems} />
       </div>
       {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
       {showModal && (

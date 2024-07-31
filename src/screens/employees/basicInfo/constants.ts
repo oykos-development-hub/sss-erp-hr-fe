@@ -32,7 +32,6 @@ export const initialValues = {
   pin: '',
   password: '',
   middle_name: '',
-  role_id: 0,
   judge_application_submission_date: '',
   personal_id: '',
   contract: {

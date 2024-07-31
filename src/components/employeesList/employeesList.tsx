@@ -17,6 +17,7 @@ import useInsertVacations from '../../services/graphql/userProfile/vacation/useI
 import {importExperienceExcel} from '../../services/importExcel/importExperienceExcel.ts';
 import useInsertExperiences from '../../services/graphql/userProfile/experience/useInsertExperiences.ts';
 import {ProfileExperience} from '../../types/graphql/experience.ts';
+import {checkActionRoutePermissions} from '../../services/checkRoutePermissions.ts';
 
 export interface EmployeesListProps {
   toggleEmployeeImportModal: () => void;
@@ -52,9 +53,11 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
     },
     alert,
     spreadsheetService: {openImportModal, closeImportModal},
-    contextMain: {token},
+    contextMain: {token, permissions},
   } = useAppContext();
   const isDetails = pathname.split('/').length === 6;
+  const createPermittedRoutes = checkActionRoutePermissions(permissions, 'create');
+  const updatePermittedRoutes = checkActionRoutePermissions(permissions, 'update');
 
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
   const {jobPositions} = useGetJobPositions('');
@@ -222,23 +225,27 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
           />
         </Filters>
         <Controls>
-          {/*  Button should only be visible to HR*/}
-          {/*  that role doesn't exist yet*/}
-          <Button
-            content="Plan godišnjih odmora"
-            variant="secondary"
-            style={{width: 170}}
-            onClick={importAnnualLeave}
-          />
-          <Button content="Radna knjižica" variant="secondary" style={{width: 170}} onClick={importExperience} />
-          <Button
-            content="Dodajte zaposlenog"
-            variant="secondary"
-            style={{width: 170}}
-            onClick={() => {
-              navigate('/hr/employees/add-new');
-            }}
-          />
+          {updatePermittedRoutes.includes('/hr/employees') && (
+            <Button
+              content="Plan godišnjih odmora"
+              variant="secondary"
+              style={{width: 170}}
+              onClick={importAnnualLeave}
+            />
+          )}
+          {updatePermittedRoutes.includes('/hr/employees') && (
+            <Button content="Radna knjižica" variant="secondary" style={{width: 170}} onClick={importExperience} />
+          )}
+          {createPermittedRoutes.includes('/hr/employees') && (
+            <Button
+              content="Dodajte zaposlenog"
+              variant="secondary"
+              style={{width: 170}}
+              onClick={() => {
+                navigate('/hr/employees/add-new');
+              }}
+            />
+          )}
         </Controls>
       </Header>
       <Table

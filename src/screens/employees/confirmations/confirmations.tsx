@@ -1,5 +1,5 @@
 import {Button, Dropdown, EditIconTwo, FileIcon, Table, Theme, TrashIcon, Typography} from 'client-library';
-import {useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {ConfirmationsModal} from '../../../components/confirmationsModal/confirmationsModal';
 import FileModalView from '../../../components/fileModalView/fileModalView';
 import {FileItem} from '../../../components/fileModalView/types';
@@ -11,8 +11,10 @@ import {ProfileResolution} from '../../../types/graphql/resolutions';
 import {yearsForDropdownFilter} from '../../../utils/constants';
 import {tableHeads} from './constants.tsx';
 import {Container, TableHeader, YearWrapper} from './styles';
+import {ForeignersProps} from '../foreigners/types.ts';
+import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 
-export const ConfirmationsPage = () => {
+export const ConfirmationsPage: React.FC<ForeignersProps> = ({context}) => {
   const {
     alert,
     navigation: {location},
@@ -27,6 +29,8 @@ export const ConfirmationsPage = () => {
   const {deleteResolution} = useDeleteResolution();
   const tableData = resolutions;
   const [fileToView, setFileToView] = useState<FileItem>();
+  const updatePermittedRoutes = checkActionRoutePermissions(context.contextMain?.permissions, 'update');
+  const updatePermission = updatePermittedRoutes.includes('/hr/employees');
 
   const selectedItem = useMemo(
     () => tableData?.find((item: ProfileResolution) => item.id === selectedItemId),
@@ -84,6 +88,30 @@ export const ConfirmationsPage = () => {
     shouldRefetch && refetch();
   };
 
+  const actionItems: any[] = [
+    {
+      name: 'showFile',
+      icon: <FileIcon stroke={Theme.palette.gray600} />,
+      onClick: (row: any) => {
+        setFileToView(row?.file);
+      },
+      shouldRender: (row: any) => row?.file?.id,
+    },
+  ];
+
+  if (updatePermission) {
+    actionItems.push({
+      name: 'Izmijeni',
+      onClick: (item: any) => handleEdit(item),
+      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+    });
+    actionItems.push({
+      name: 'Obriši',
+      onClick: (item: any) => handleDeleteIconClick(item.id),
+      icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+    });
+  }
+
   return (
     <Container>
       <TableHeader>
@@ -97,41 +125,19 @@ export const ConfirmationsPage = () => {
             placeholder="Odaberite godinu:"
           />
         </YearWrapper>
-        <div>
-          <Button
-            variant="secondary"
-            content={<Typography variant="bodyMedium" content="Dodajte svrhu" />}
-            onClick={handleAdd}
-          />
-        </div>
+        {updatePermission && (
+          <div>
+            <Button
+              variant="secondary"
+              content={<Typography variant="bodyMedium" content="Dodajte svrhu" />}
+              onClick={handleAdd}
+            />
+          </div>
+        )}
       </TableHeader>
 
       <div>
-        <Table
-          tableHeads={tableHeads}
-          data={filteredTableData || []}
-          isLoading={loading}
-          tableActions={[
-            {
-              name: 'showFile',
-              icon: <FileIcon stroke={Theme.palette.gray600} />,
-              onClick: (row: any) => {
-                setFileToView(row?.file);
-              },
-              shouldRender: (row: any) => row?.file?.id,
-            },
-            {
-              name: 'Izmijeni',
-              onClick: item => handleEdit(item),
-              icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            },
-            {
-              name: 'Obriši',
-              onClick: item => handleDeleteIconClick(item.id),
-              icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-            },
-          ]}
-        />
+        <Table tableHeads={tableHeads} data={filteredTableData || []} isLoading={loading} tableActions={actionItems} />
       </div>
       {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
       {showModal && (

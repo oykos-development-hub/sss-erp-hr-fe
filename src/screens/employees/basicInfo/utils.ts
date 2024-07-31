@@ -57,7 +57,6 @@ export const formatData = (data: any) => {
     payload.pin = data?.pin;
     payload.phone = data?.phone;
     payload.secondary_email = data?.secondary_email;
-    payload.role_id = 2;
   }
 
   return payload;
@@ -188,17 +187,7 @@ export const basicInfoSchema = yup.object({
     is: undefined,
     then: schema => schema.required(requiredError),
   }),
-  secondary_email: yup
-    .string()
-    .email('Nije validan e-mail')
-    .when('id', {is: undefined, then: schema => schema.required(requiredError)}),
-  pin: yup
-    .string()
-    .matches(/^(0|[1-9]\d*)(\.\d+)?$/, 'Ovo polje je obavezno')
-    .min(4, 'PIN mora imati 4 karaktera')
-    .max(4, 'PIN mora imati 4 karaktera')
-    .when('id', {is: undefined, then: schema => schema.required(requiredError)}),
-  password: passwordSchema,
+  secondary_email: yup.string().email('Nije validan e-mail'),
   number_of_conference: yup.string(),
   judge_application_submission_date: yup
     .string()

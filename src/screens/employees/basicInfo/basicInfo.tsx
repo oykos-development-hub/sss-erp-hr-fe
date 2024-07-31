@@ -40,6 +40,7 @@ import {ProfileBasicInfoFormValues} from '../../../types/graphql/basicInfo';
 import useGetSettings from '../../../services/graphql/settings/useGetSettings';
 import {FileUploadWrapper} from '../../../components/absentsModal/styles';
 import {BasicInfoProps} from './types.ts';
+import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 
 export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
   const {
@@ -47,9 +48,11 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
     fileService: {uploadFile},
     navigation,
     countries,
+    contextMain: {permissions},
   } = useAppContext();
   const profileId = Number(navigation.location.pathname.split('/')[4]);
   const {userBasicInfo, refetch} = useGetBasicInfo(profileId, {skip: !profileId});
+  const updatePermittedRoutes = checkActionRoutePermissions(permissions, 'update');
 
   const [creatingChosenJobApplicant, setCreatingChosenJobApplicant] = useState<boolean>(false);
   const isNew = !profileId;
@@ -891,14 +894,6 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
           <TextWrapper>
             <Typography content="KORISNIČKI NALOG" variant="bodyMedium" />
           </TextWrapper>
-          <FormRow style={{paddingBottom: 0}}>
-            <FormColumn style={{flexBasis: 'calc(50% + 23px)'}}>
-              <FormItem>
-                {/* TODO value prop needs to be number also */}
-                <Input {...register('id')} label="SISTEMSKI ID:" disabled={true} />
-              </FormItem>
-            </FormColumn>
-          </FormRow>
           <FormRow style={{padding: 0}}>
             <FormColumn>
               <FormItem>
@@ -913,18 +908,6 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
               </FormItem>
               <FormItem>
                 <Input
-                  {...register('password')}
-                  label="LOZINKA:"
-                  type="password"
-                  placeholder="******"
-                  disabled={isDisabled}
-                  isRequired
-                  error={errors?.password?.message}
-                  autoComplete="new-password"
-                />
-              </FormItem>
-              <FormItem>
-                <Input
                   {...register('phone')}
                   label="BROJ TELEFONA:"
                   disabled={isDisabled}
@@ -935,22 +918,15 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
             </FormColumn>
             <FormColumn>
               <FormItem>
+                {/* TODO value prop needs to be number also */}
+                <Input {...register('id')} label="SISTEMSKI ID:" disabled={true} />
+              </FormItem>
+              <FormItem>
                 <Input
                   {...register('secondary_email')}
                   label="PRIVATNI E-MAIL:"
                   disabled={isDisabled}
-                  isRequired
                   error={errors.secondary_email?.message}
-                />
-              </FormItem>
-              <FormItem>
-                <Input
-                  {...register('pin')}
-                  label="PIN:"
-                  maxLength={4}
-                  disabled={isDisabled}
-                  isRequired
-                  error={errors.pin?.message}
                 />
               </FormItem>
             </FormColumn>
@@ -961,7 +937,9 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
       <FormFooter>
         <Controls>
           {isDisabled ? (
-            <Button content="Uredi" variant="secondary" onClick={() => setIsDisabled(false)} />
+            updatePermittedRoutes.includes('/hr/employees') && (
+              <Button content="Uredi" variant="secondary" onClick={() => setIsDisabled(false)} />
+            )
           ) : !isNew ? (
             <>
               <Button

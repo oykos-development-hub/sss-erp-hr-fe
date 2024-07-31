@@ -11,12 +11,15 @@ import {ExperiencePageProps} from './types';
 import {FileItem} from '../../../components/fileModalView/types';
 import FileModalView from '../../../components/fileModalView/fileModalView';
 import {Container} from './styles';
+import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 
 export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {experience, refetch, loading} = useGetExperience(+userProfileID);
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
   const [fileToView, setFileToView] = useState<FileItem>();
+  const updatePermittedRoutes = checkActionRoutePermissions(context?.contextMain?.permissions, 'update');
+  const updatePermission = updatePermittedRoutes.includes('/hr/employees');
 
   const tableData = useMemo(() => {
     let totalYearsOfInsuredExperience = 0;
@@ -148,43 +151,45 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
     ];
   }, [organizationUnits, tableHeads]);
 
+  const actionItems: any[] = [
+    {
+      name: 'showFile',
+      icon: <FileIcon stroke={Theme.palette.gray600} />,
+      onClick: (row: any) => {
+        setFileToView(row?.file);
+      },
+      shouldRender: (row: any) => row?.file?.id,
+    },
+  ];
+
+  if (updatePermission) {
+    actionItems.push({
+      name: 'Izmijeni',
+      onClick: (item: any) => handleEdit(item),
+      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+      shouldRender: (item: any) => item.id !== ('' as any),
+    });
+    actionItems.push({
+      name: 'Obriši',
+      onClick: (item: any) => handleDeleteIconClick(item.id),
+      icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+      shouldRender: (item: any) => item.id !== ('' as any),
+    });
+  }
+
   return (
     <Container>
-      <span>
-        <Button
-          variant="secondary"
-          content={<Typography variant="bodyMedium" content="Dodajte novo zaposlenje" />}
-          onClick={handleAdd}
-        />
-      </span>
+      {updatePermission && (
+        <span>
+          <Button
+            variant="secondary"
+            content={<Typography variant="bodyMedium" content="Dodajte novo zaposlenje" />}
+            onClick={handleAdd}
+          />
+        </span>
+      )}
       <div>
-        <Table
-          tableHeads={updatedTableHeads}
-          data={tableData || []}
-          isLoading={loading}
-          tableActions={[
-            {
-              name: 'showFile',
-              icon: <FileIcon stroke={Theme.palette.gray600} />,
-              onClick: (row: any) => {
-                setFileToView(row?.file);
-              },
-              shouldRender: (row: any) => row?.file?.id,
-            },
-            {
-              name: 'Izmijeni',
-              onClick: item => handleEdit(item),
-              icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-              shouldRender: item => item.id !== ('' as any),
-            },
-            {
-              name: 'Obriši',
-              onClick: item => handleDeleteIconClick(item.id),
-              icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-              shouldRender: item => item.id !== ('' as any),
-            },
-          ]}
-        />
+        <Table tableHeads={updatedTableHeads} data={tableData || []} isLoading={loading} tableActions={actionItems} />
       </div>
       {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
       {showModal && (

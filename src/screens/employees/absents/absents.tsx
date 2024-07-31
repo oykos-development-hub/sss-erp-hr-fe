@@ -27,6 +27,7 @@ import {
 } from './styles';
 import {FileItem} from '../../../types/fileUploadType';
 import FileModalView from '../../../components/fileModalView/fileModalView';
+import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 
 const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const years = yearsForDropdownFilter();
@@ -45,6 +46,8 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const [editItem, setEditItem] = useState<Absence | undefined>();
   const [showDeleteVacationModal, setShowDeleteVacationModal] = useState<boolean>(false);
   const [fileToView, setFileToView] = useState<FileItem>();
+  const updatePermittedRoutes = checkActionRoutePermissions(context.contextMain?.permissions, 'update');
+  const updatePermission = updatePermittedRoutes.includes('/hr/employees');
 
   const handleAdd = () => {
     setShowModal(true);
@@ -156,6 +159,30 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
     filterSecondTableData();
   }, [absence, vacations]);
 
+  const actionItems: any[] = [
+    {
+      name: 'showFile',
+      icon: <FileIcon stroke={Theme.palette.gray600} />,
+      onClick: (row: any) => {
+        setFileToView(row?.file);
+      },
+      shouldRender: (row: any) => row?.file?.id,
+    },
+  ];
+
+  if (updatePermission) {
+    actionItems.push({
+      name: 'Izmijeni',
+      onClick: (item: any) => handleEdit(item),
+      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+    });
+    actionItems.push({
+      name: 'Obriši',
+      onClick: (item: any) => handleDeleteIconClick(item.id),
+      icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+    });
+  }
+
   return (
     <Container>
       <VacationWrapper>
@@ -196,14 +223,16 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
           </YearContainer>
         </YearWrapper>
 
-        <ButtonWrapper>
-          <Button
-            variant="secondary"
-            content={<Typography variant="bodyMedium" content="Zahtjevi" />}
-            onClick={handleAdd}
-            style={{marginLeft: '10px'}}
-          />
-        </ButtonWrapper>
+        {updatePermission && (
+          <ButtonWrapper>
+            <Button
+              variant="secondary"
+              content={<Typography variant="bodyMedium" content="Zahtjevi" />}
+              onClick={handleAdd}
+              style={{marginLeft: '10px'}}
+            />
+          </ButtonWrapper>
+        )}
       </TableHeader>
 
       <div>
@@ -215,26 +244,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
           tableHeads={tableHeadsVacation}
           data={filteredSecondTableData || []}
           isLoading={loading}
-          tableActions={[
-            {
-              name: 'showFile',
-              icon: <FileIcon stroke={Theme.palette.gray600} />,
-              onClick: (row: any) => {
-                setFileToView(row?.file);
-              },
-              shouldRender: (row: any) => row?.file?.id,
-            },
-            {
-              name: 'Izmijeni',
-              onClick: item => handleEdit(item),
-              icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            },
-            {
-              name: 'Obriši',
-              onClick: item => handleDeleteIconClick(item.id),
-              icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-            },
-          ]}
+          tableActions={actionItems}
         />
       </div>
       <div>
