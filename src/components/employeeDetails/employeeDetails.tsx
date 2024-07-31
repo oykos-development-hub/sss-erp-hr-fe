@@ -48,7 +48,7 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({refetchUsers}) => {
       case 'basic-info':
         return <BasicInfo refetchUsers={refetchUsers} />;
       case 'salary-params':
-        return <SalaryParams context={context} />;
+        return <SalaryParams />;
       case 'education':
         return <EducationPage context={context} />;
       case 'experience':

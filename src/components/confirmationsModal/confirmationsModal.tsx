@@ -22,20 +22,32 @@ import useGetBasicInfo from '../../services/graphql/userProfile/basicInfo/useGet
 
 const confirmationSchema = yup.object().shape({
   resolution_purpose: yup.string(),
-  date_of_start: yup.date().required('Ovo polje je obavezno'),
+  date_of_start: yup.date().test('date_of_start-required', 'Ovo polje je obavezno', function (value) {
+    const resolutionType = this.parent.resolution_type;
+    if (resolutionType && resolutionType.title !== 'Rješenje o godišnjem odmoru') {
+      return !!value;
+    }
+    return true;
+  }),
   resolution_type: yup.object().required('Ovo polje je obavezno'),
   is_affect: yup
     .object()
     .default(undefined)
     .shape({id: yup.string(), title: yup.string()})
-    .required('Ovo polje je obavezno'),
+    .test('is_affect-required', 'Ovo polje je obavezno', function (value) {
+      const resolutionType = this.parent.resolution_type;
+      if (resolutionType && resolutionType.title !== 'Rješenje o godišnjem odmoru') {
+        return !!value?.id;
+      }
+      return true;
+    }),
   year: yup
     .object()
     .shape({id: yup.number(), title: yup.number()})
     .test('year-required', 'Ovo polje je obavezno', function (value) {
       const resolutionType = this.parent.resolution_type;
-      if (resolutionType && resolutionType.id === 248) {
-        return !!value.id;
+      if (resolutionType && resolutionType.title === 'Rješenje o korišćenju I dijela godišnjeg odmora') {
+        return !!value?.id;
       }
       return true;
     }),
@@ -77,7 +89,7 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
   } = useAppContext();
   const {userBasicInfo} = useGetBasicInfo(userProfileId, {skip: !userProfileId});
   const {first_name, last_name, organization_unit, job_position} = userBasicInfo || {};
-  const isResolutionTypeAnnualLeaveIPart = resolutionType?.id === 248;
+  const isResolutionTypeAnnualLeaveIPart = resolutionType?.title === 'Rješenje o korišćenju I dijela godišnjeg odmora';
 
   const vacationForSelectedYear = () => {
     if (!vacations?.length || !year?.id || !isResolutionTypeAnnualLeaveIPart) {
@@ -204,13 +216,15 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
               <Controller
                 name="resolution_type"
                 control={control}
-                render={({field: {onChange, name, value}}) => (
+                render={({field: {name, value}}) => (
                   <Dropdown
                     label="VRSTA:"
                     name={name}
                     options={settingsData}
                     value={value as any}
-                    onChange={onChange}
+                    onChange={value => {
+                      reset({resolution_type: value});
+                    }}
                     error={errors.resolution_type?.message}
                     placeholder="Birajte vrstu"
                     isRequired

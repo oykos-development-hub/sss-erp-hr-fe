@@ -20,6 +20,19 @@ const ApplicationDetailsScreen = (props: ScreenProps) => {
 
   const application = jobTenderApplications[0];
 
+  const getCandidateType = (type?: string): string => {
+    if (!type) return '';
+
+    switch (type) {
+      case 'internal':
+        return 'Interni';
+      case 'external':
+        return 'Eksterni';
+      default:
+        return type;
+    }
+  };
+
   return (
     <ScreenWrapper>
       <SectionBox style={{marginTop: 25}}>
@@ -28,9 +41,9 @@ const ApplicationDetailsScreen = (props: ScreenProps) => {
 
         <Details>
           <Row>
-            <InfoPreview label="Tip Kandidata:" value={application?.type} />
-            <InfoPreview label="JMBG:" value={application?.official_personal_document_number} />
+            <InfoPreview label="Tip Kandidata:" value={getCandidateType(application?.type)} />
           </Row>
+          <InfoPreview label="JMBG:" value={application?.official_personal_document_number} />
           <InfoPreview label="Ime:" value={application?.first_name} />
           <InfoPreview label="Prezime:" value={application?.last_name} />
           <InfoPreview label="Broj lične karte:" value={application?.official_personal_document_number} />

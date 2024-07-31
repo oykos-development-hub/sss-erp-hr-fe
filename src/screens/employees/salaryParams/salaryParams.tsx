@@ -13,10 +13,19 @@ import {insuranceBasis, salaryRanks} from './constants';
 import {Controls, FormColumn, FormContainer, FormFooter, FormItem, FormRow, FormWrapper} from './styles';
 import {SalaryParamsPageProps} from './types';
 import {formatData, initialValues} from './utils';
+import useAppContext from '../../../context/useAppContext.ts';
 
-export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
+export const SalaryParams: React.FC<SalaryParamsPageProps> = () => {
+  const {
+    navigation: {
+      location: {pathname},
+      navigate,
+    },
+    alert,
+  } = useAppContext();
+
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const userProfileID = Number(context.navigation.location.pathname.split('/')[4]);
+  const userProfileID = Number(pathname.split('/')[4]);
   const {salaryParams, refetch} = useGetSalaryParams(userProfileID);
   const {userBasicInfo} = useBasicInfoGet(userProfileID, {skip: !userProfileID});
   const {educationData} = useGetEducation(userProfileID, educationTypes.education_academic_types);
@@ -54,7 +63,7 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
 
   useEffect(() => {
     refetch();
-  }, [context.navigation.location]);
+  }, [pathname]);
 
   useEffect(() => {
     if (item) {
@@ -63,16 +72,16 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
   }, [item]);
 
   useEffect(() => {
-    if (userBasicInfo) {
-      setValue('organization_unit', userBasicInfo.contract.organization_unit);
-      setValue('job_position', userBasicInfo.contract.job_position_in_organization_unit);
-      setValue('date_of_start', parseToDate(userBasicInfo.contract.date_of_start));
-      setValue('contract_type', userBasicInfo.contract.contract_type);
+    if (userBasicInfo && userBasicInfo?.contract) {
+      setValue('organization_unit', userBasicInfo.contract?.organization_unit);
+      setValue('job_position', userBasicInfo?.contract?.job_position_in_organization_unit);
+      setValue('date_of_start', parseToDate(userBasicInfo.contract?.date_of_start));
+      setValue('contract_type', userBasicInfo.contract?.contract_type);
     }
   }, [userBasicInfo]);
 
   useEffect(() => {
-    if (educationData && educationData.length) setValue('education_level', (educationData[0] as any).academic_title);
+    if (educationData && educationData.length) setValue('education_level', (educationData[0] as any)?.academic_title);
   }, [educationData]);
 
   const handleSave = (values: ProfileSalaryFormValues, close: boolean) => {
@@ -84,15 +93,15 @@ export const SalaryParams: React.FC<SalaryParamsPageProps> = ({context}) => {
         () => {
           refetch();
           setIsDisabled(true);
-          context.alert.success('Uspješno sačuvano.');
+          alert.success('Uspješno sačuvano.');
 
           if (close) {
-            const overviewPathname = context.navigation.location.pathname.split('/').slice(0, 3).join('/');
-            context.navigation.navigate(overviewPathname);
+            const overviewPathname = pathname.split('/').slice(0, 3).join('/');
+            navigate(overviewPathname);
           }
         },
         () => {
-          context.alert.error('Greška. Promjene nisu sačuvane.');
+          alert.error('Greška. Promjene nisu sačuvane.');
         },
       );
     }

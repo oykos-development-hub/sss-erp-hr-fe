@@ -179,15 +179,14 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
   };
 
   const userOptions = useMemo(() => {
-    let availableEmployees = userProfiles
-      ?.filter(item => !applicationIds.includes(item.id))
-      .map(item => ({...item, title: `${item.first_name} ${item.last_name}`}));
+    if (!userProfiles) return [];
 
-    if (jobTender?.type?.title !== 'Javni oglas za izbor kandidata za sudije') {
-      availableEmployees = availableEmployees.filter((item: any) => item.is_judge);
-    } else {
-      availableEmployees = availableEmployees.filter((item: any) => !item.is_judge);
-    }
+    const availableEmployees = userProfiles
+      .filter(item => !applicationIds.includes(item.id))
+      .filter(item =>
+        jobTender?.type?.title === 'Javni oglas za izbor kandidata za sudije' ? !item.is_judge : item.is_judge,
+      )
+      .map(item => ({...item, title: `${item.first_name} ${item.last_name}`}));
 
     return availableEmployees || [];
   }, [userProfiles, applicationIds, jobTender]);
