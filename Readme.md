@@ -55,7 +55,7 @@ Example: `fix: changed border radius from 4px to 2px`
 
 **NOTE #1**: When you want to make commit, please run `npm run git:commit` if it's not run automatically by Husky for any reason.
 
-**NOTE #2**: When you want to push the branch, please run `npm run git:push` if it's not run automatically by Husky for any reason.
+**NOTE #2**: When you want to push the branch, please run `npm run git:pull-request` if it's not run automatically by Husky for any reason.
 
 This ensures we use the same style of writing code and thus avoid unnecessary styling changes and merge issues.
 

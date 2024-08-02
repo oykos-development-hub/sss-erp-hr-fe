@@ -9,7 +9,7 @@ import {
   TrashIconTwo,
   Typography,
 } from 'client-library';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import FileList from '../../../components/fileList/fileList.tsx';
 import FileModalView from '../../../components/fileModalView/fileModalView';
@@ -25,13 +25,18 @@ import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {FileResponseItem} from '../../../types/fileUploadType';
 import {FileUploadWrapper, MainTitle, RevisionListContainer, TableHeader} from '../styles';
 import {RevisionTipsTableHeads} from './constants';
+import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 
 const RevisionTips = () => {
   const {
     fileService: {uploadFile},
     alert,
     navigation,
+    contextMain: {permissions},
   } = useAppContext();
+
+  const updatePermittedRoutes = checkActionRoutePermissions(permissions, 'update');
+  const updatePermission = updatePermittedRoutes.includes('/hr/revision-recommendations');
 
   const {handleSubmit} = useForm();
   const [uploadedFile, setUploadedFile] = useState<FileList | null>(null);
@@ -116,17 +121,44 @@ const RevisionTips = () => {
     }
   };
 
+  const actionItems: any[] = [
+    {
+      name: 'showFile',
+      icon: <FileIcon stroke={Theme.palette.gray600} />,
+      onClick: (row: any) => {
+        setFileToView(row?.file);
+      },
+      shouldRender: (row: any) => row?.file?.id,
+    },
+  ];
+
+  if (updatePermission) {
+    actionItems.push({
+      name: 'Izmijeni',
+      onClick: (item: any) => handleEdit(item.id),
+      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+    });
+    actionItems.push({
+      name: 'Obriši',
+      onClick: (item: any) => toggleDeleteModal(item.id),
+      icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
+    });
+  }
+
   return (
     <ScreenWrapper>
       <RevisionListContainer>
         <MainTitle variant="bodyMedium" content="PREPORUKE" />
         <Divider color={Theme?.palette?.gray200} height="1px" />
-        <TableHeader>
-          <Button content="Dodajte preporuku" variant="secondary" onClick={() => toogleRevisionTipsModal(0)} />
-        </TableHeader>
+        {updatePermission && (
+          <TableHeader>
+            <Button content="Dodajte preporuku" variant="secondary" onClick={() => toogleRevisionTipsModal(0)} />
+          </TableHeader>
+        )}
         <FileUploadWrapper>
           <FileUpload
             icon={null}
+            disabled={!updatePermission}
             files={uploadedFile}
             variant="secondary"
             onUpload={handleUpload}
@@ -146,26 +178,7 @@ const RevisionTips = () => {
           data={revisionTips.items || []}
           style={{marginBottom: 22}}
           isLoading={loading}
-          tableActions={[
-            {
-              name: 'showFile',
-              icon: <FileIcon stroke={Theme.palette.gray600} />,
-              onClick: (row: any) => {
-                setFileToView(row?.file);
-              },
-              shouldRender: (row: any) => row?.file?.id,
-            },
-            {
-              name: 'Izmijeni',
-              onClick: item => handleEdit(item.id),
-              icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            },
-            {
-              name: 'Obriši',
-              onClick: item => toggleDeleteModal(item.id),
-              icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
-            },
-          ]}
+          tableActions={actionItems}
         />
 
         <ConfirmModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleConfirm={handleDelete} />

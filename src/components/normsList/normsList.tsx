@@ -13,6 +13,8 @@ interface NormsListProps {
   toggleNormsModal: (item: JudgeNorm) => void;
   handleDeleteIconClick: (id: number) => void;
   loading: boolean;
+  updatePermission: boolean;
+  deletePermission: boolean;
   onFilterChange: (value: any, name: string) => void;
   filters: JudgesListFilters;
 }
@@ -24,6 +26,8 @@ const NormsList: React.FC<NormsListProps> = ({
   loading,
   onFilterChange,
   filters,
+  updatePermission,
+  deletePermission,
 }) => {
   const [topic, setTopic] = useState<DropdownDataString | null>(null);
 
@@ -42,6 +46,24 @@ const NormsList: React.FC<NormsListProps> = ({
       number_of_items: Number(item.title) - Number(item.title) * (Number(item.number_of_norm_decrease) / 100),
     }));
   }, [data, topic]);
+
+  const actionItems: any[] = [];
+
+  if (updatePermission) {
+    actionItems.push({
+      name: 'edit',
+      onClick: (item: any) => toggleNormsModal(item),
+      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+    });
+  }
+
+  if (deletePermission) {
+    actionItems.push({
+      name: 'delete',
+      onClick: (item: any) => handleDeleteIconClick(item.id),
+      icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+    });
+  }
 
   return (
     <OverviewBox>
@@ -69,18 +91,7 @@ const NormsList: React.FC<NormsListProps> = ({
         data={list}
         style={{marginBottom: 22}}
         isLoading={loading}
-        tableActions={[
-          {
-            name: 'edit',
-            onClick: item => toggleNormsModal(item),
-            icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-          },
-          {
-            name: 'delete',
-            onClick: item => handleDeleteIconClick(item.id),
-            icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-          },
-        ]}
+        tableActions={actionItems}
       />
     </OverviewBox>
   );

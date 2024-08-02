@@ -13,6 +13,7 @@ export const Footer: React.FC<FooterProps> = ({
   uploadedFile,
   setError,
   file,
+  disableUpdate,
 }) => {
   // conditions:
   const isOverViewTab = activeTab === 1;
@@ -63,7 +64,7 @@ export const Footer: React.FC<FooterProps> = ({
             control={control}
             render={({field: {onChange, name, value}}) => (
               <DatepickerElement
-                disabled={!!status}
+                disabled={!!status || disableUpdate}
                 onChange={onChange}
                 label="DATUM USVAJANJA SISTEMATIZACIJE:"
                 name={name}
@@ -73,44 +74,48 @@ export const Footer: React.FC<FooterProps> = ({
             )}
           />
 
-          <Controller
-            name="active"
-            control={control}
-            render={({field: {name}}) => (
-              <SwitchWrapper>
-                <Typography content="Aktiviraj sistematizaciju" variant="bodyMedium" />
-                {isDraft && !date_of_activation ? (
-                  <Tooltip
-                    arrow
-                    variant="filled"
-                    position="top"
-                    content="Za aktivaciju sistematizacije neophodno je unijeti datum usvajanja sistematizacije.">
-                    {switchElement(name)}
-                  </Tooltip>
-                ) : uploadedFile === undefined ? (
-                  (setError(true), switchElement(name))
-                ) : (
-                  (setError(false), switchElement(name))
-                )}
-              </SwitchWrapper>
-            )}
-          />
+          {!disableUpdate && (
+            <Controller
+              name="active"
+              control={control}
+              render={({field: {name}}) => (
+                <SwitchWrapper>
+                  <Typography content="Aktiviraj sistematizaciju" variant="bodyMedium" />
+                  {isDraft && !date_of_activation ? (
+                    <Tooltip
+                      arrow
+                      variant="filled"
+                      position="top"
+                      content="Za aktivaciju sistematizacije neophodno je unijeti datum usvajanja sistematizacije.">
+                      {switchElement(name)}
+                    </Tooltip>
+                  ) : uploadedFile === undefined ? (
+                    (setError(true), switchElement(name))
+                  ) : (
+                    (setError(false), switchElement(name))
+                  )}
+                </SwitchWrapper>
+              )}
+            />
+          )}
         </Activation>
       ) : null}
 
-      <Button content={buttonContent} variant="primary" onClick={handleSaveButton} />
+      {!disableUpdate && <Button content={buttonContent} variant="primary" onClick={handleSaveButton} />}
 
-      <Modal
-        open={isModalOpen}
-        content="Da li ste sigurni da želite da aktivirate sistematizaciju? Prethodna sistematizacija će biti deaktivirana!"
-        onClose={() => setIsModalOpen(false)}
-        leftButtonOnClick={() => setIsModalOpen(false)}
-        leftButtonText="Otkaži"
-        rightButtonOnClick={() => {
-          setIsSwitchChecked(!isSwitchChecked), setValue('active', 2), setIsModalOpen(false);
-        }}
-        rightButtonText="Aktiviraj"
-      />
+      {!disableUpdate && (
+        <Modal
+          open={isModalOpen}
+          content="Da li ste sigurni da želite da aktivirate sistematizaciju? Prethodna sistematizacija će biti deaktivirana!"
+          onClose={() => setIsModalOpen(false)}
+          leftButtonOnClick={() => setIsModalOpen(false)}
+          leftButtonText="Otkaži"
+          rightButtonOnClick={() => {
+            setIsSwitchChecked(!isSwitchChecked), setValue('active', 2), setIsModalOpen(false);
+          }}
+          rightButtonText="Aktiviraj"
+        />
+      )}
     </FooterWrapper>
   );
 };

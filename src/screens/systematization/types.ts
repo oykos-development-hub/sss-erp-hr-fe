@@ -14,6 +14,7 @@ export interface DepartmentsProps {
   allEmployees: UserProfile[];
   activeEmployees: ActiveEmployee[];
   isInactive: boolean;
+  disableUpdate: boolean;
 }
 
 export type SystematizationFilters = {
@@ -39,6 +40,7 @@ export interface FooterProps {
   uploadedFile?: FileList;
   file?: number;
   setError: (arg: boolean) => void;
+  disableUpdate: boolean;
 }
 
 export interface SectorModalProps {

@@ -10,6 +10,7 @@ import {ScreenProps} from '../../types/screen-props';
 import {JobTenderApplicationModal} from '../JobTenderApplicationModal/JobTenderApplicationModal';
 import {MicroserviceProps} from '../../types/micro-service-props';
 import {JobTenderApplication} from '../../types/graphql/jobTenderApplications';
+import {checkActionRoutePermissions} from '../../services/checkRoutePermissions.ts';
 
 export interface JobTenderDetailsListProps extends ScreenProps {
   alert: any;
@@ -27,6 +28,8 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
     {page, size: 10, job_tender_id: jobTender?.id},
     {skip: !jobTender?.id},
   );
+  const updatePermittedRoutes = checkActionRoutePermissions(context.contextMain.permissions, 'update');
+  const updatePermission = updatePermittedRoutes.includes('/hr/job-tenders/job-tenders-list');
 
   const {deleteJobTenderApplication} = useDeleteJobTenderApplication();
 
@@ -79,11 +82,31 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
     jobTender?.number_of_vacant_seats >
       tableData.filter((application: JobTenderApplication) => application.status === 'Izabran').length;
 
+  const actionItems: any[] = [];
+
+  if (updatePermission) {
+    actionItems.push({
+      name: 'edit',
+      onClick: (item: any) => toggleApplicationModal(item.id),
+      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+      shouldRender: () => !!canAddNewApplicants,
+    });
+    actionItems.push({
+      name: 'delete',
+      onClick: (item: any) => {
+        setShowDeleteModal(true);
+        setDeleteItemID(item.id);
+      },
+      icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+      shouldRender: () => !!canAddNewApplicants,
+    });
+  }
+
   return (
     <>
       <TableHeader>
         <Typography variant="bodyMedium" content="Kandidati za ovaj oglas" />
-        {canAddNewApplicants === true && (
+        {updatePermission && canAddNewApplicants === true && (
           <PlusButton onClick={() => toggleApplicationModal()}>
             <PlusIcon width="12px" height="12px" stroke={Theme.palette.primary500} />
           </PlusButton>
@@ -95,23 +118,7 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
         style={{marginBottom: 22}}
         isLoading={loading}
         onRowClick={row => toggleApplicationModal(row.id)}
-        tableActions={[
-          {
-            name: 'edit',
-            onClick: item => toggleApplicationModal(item.id),
-            icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            shouldRender: () => !!canAddNewApplicants,
-          },
-          {
-            name: 'delete',
-            onClick: item => {
-              setShowDeleteModal(true);
-              setDeleteItemID(item.id);
-            },
-            icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-            shouldRender: () => !!canAddNewApplicants,
-          },
-        ]}
+        tableActions={actionItems}
       />
       <Pagination
         pageCount={total / 10}
@@ -129,7 +136,7 @@ const JobTenderApplicationsList: React.FC<JobTenderDetailsListProps> = ({alert, 
         }}
         handleConfirm={handleDelete}
       />
-      {showModal && (
+      {updatePermission && showModal && (
         <JobTenderApplicationModal
           context={context}
           countries={context?.countries || []}

@@ -13,6 +13,7 @@ import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import {judgeResolutionTableHeads} from '../judgeNorms/constants';
 import {Controls, CustomTable, Filters, FormFooter} from './styles';
 import {JudgeResolution, JudgeResolutionItem} from '../../../types/graphql/judgeResolutions';
+import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 
 export interface JudgesNumbersDetailsListProps {
   isNew?: boolean;
@@ -37,6 +38,13 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({i
     resolution_id: isNew ? null : +id,
     active: isNew ? true : false,
   });
+
+  const createPermittedRoutes = checkActionRoutePermissions(context?.contextMain?.permissions, 'create');
+  const updatePermittedRoutes = checkActionRoutePermissions(context?.contextMain?.permissions, 'update');
+  const createPermission = createPermittedRoutes.includes('/hr/judges/number-decision');
+  const updatePermission = updatePermittedRoutes.includes('/hr/judges/number-decision');
+
+  const disableUpdate = isNew ? !createPermission : !updatePermission;
 
   const {judgeResolutions, loading: judgeResolutionsLoading} = useGetJudgeResolutions({page: 1, size: 1000});
 
@@ -169,7 +177,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({i
                   },
                 })}
                 value={watch(`resolutions[${resolution?.organization_unit?.id}].available_slots_judges`)}
-                disabled={isDisabled}
+                disabled={isDisabled || disableUpdate}
                 type="number"
                 error={
                   resolutionErrors
@@ -205,13 +213,13 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({i
                 label="REDNI BROJ:"
                 style={{width: 300}}
                 placeholder="Unesite redni broj"
-                disabled={isDisabled}
+                disabled={isDisabled || disableUpdate}
               />
             </Filters>
           }
         />
         <FormFooter>
-          {(resolutionItem?.active || isNew) && (
+          {!disableUpdate && (resolutionItem?.active || isNew) && (
             <Controls>
               {isDisabled ? (
                 <Button content="Uredi" variant="secondary" onClick={() => setIsDisabled(false)} />
@@ -220,7 +228,7 @@ export const JudgesNumbersDetails: React.FC<JudgesNumbersDetailsListProps> = ({i
               )}
             </Controls>
           )}
-          {!resolutionItem?.active && (
+          {(disableUpdate || !resolutionItem?.active) && (
             <Controls>
               <Button
                 content="Nazad"

@@ -11,6 +11,8 @@ import {DropdownDataNumber} from '../../../types/dropdownData';
 import {JudgeNorm} from '../../../types/graphql/judgeNorms';
 import {Judge} from '../../../types/graphql/judges';
 import {ScreenProps} from '../../../types/screen-props';
+import useAppContext from '../../../context/useAppContext.ts';
+import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 
 export interface JudgesListFilters {
   organization_unit: DropdownDataNumber | null;
@@ -31,6 +33,17 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
   const [selectedNormItemId, setSelectedNormItemId] = useState(0);
   const [normsList, setNormsList] = useState<JudgeNorm[]>([]);
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
+
+  const {
+    contextMain: {permissions},
+  } = useAppContext();
+
+  const createPermittedRoutes = checkActionRoutePermissions(permissions, 'create');
+  const deletePermittedRoutes = checkActionRoutePermissions(permissions, 'delete');
+  const updatePermittedRoutes = checkActionRoutePermissions(permissions, 'update');
+  const createPermission = createPermittedRoutes.includes('/hr/judges/overview-judges-presidents');
+  const deletePermission = deletePermittedRoutes.includes('/hr/judges/overview-judges-presidents');
+  const updatePermission = updatePermittedRoutes.includes('/hr/judges/overview-judges-presidents');
 
   const [filters, setFilters] = useState<JudgesListFilters>(initialValues);
 
@@ -119,6 +132,7 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
         loading={loading}
         parentRef={screenWrapperRef}
         isNorm={isNorm}
+        createPermission={createPermission}
       />
 
       {isNorm && (
@@ -129,17 +143,21 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
           loading={loading}
           filters={filters}
           onFilterChange={onFilterChange}
+          updatePermission={updatePermission}
+          deletePermission={deletePermission}
         />
       )}
 
-      <JudgeNormModal
-        alert={context.alert}
-        refetchList={refetch}
-        open={showModal}
-        onClose={handleCloseModal}
-        selectedItem={selectedNormItem}
-        dropdownData={judgeOptions}
-      />
+      {updatePermission && (
+        <JudgeNormModal
+          alert={context.alert}
+          refetchList={refetch}
+          open={showModal}
+          onClose={handleCloseModal}
+          selectedItem={selectedNormItem}
+          dropdownData={judgeOptions}
+        />
+      )}
       <ConfirmModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleConfirm={handleDelete} />
     </ScreenWrapper>
   );

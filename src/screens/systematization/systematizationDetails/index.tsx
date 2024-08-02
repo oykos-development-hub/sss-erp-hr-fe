@@ -31,6 +31,7 @@ import {generateDocxDocument} from './printPage/docx.ts';
 import {saveAs} from 'file-saver';
 import FileModalView from '../../../components/fileModalView/fileModalView.tsx';
 import {FileItem} from '../../../components/fileModalView/types.ts';
+import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 
 const initialValues: any = {
   organization_unit: null,
@@ -53,7 +54,14 @@ export const SystematizationDetails: React.FC = () => {
     contextMain,
   } = useAppContext();
 
+  const createPermittedRoutes = checkActionRoutePermissions(contextMain.permissions, 'create');
+  const updatePermittedRoutes = checkActionRoutePermissions(contextMain.permissions, 'update');
+  const createPermission = createPermittedRoutes.includes('/hr/systematization');
+  const updatePermission = updatePermittedRoutes.includes('/hr/systematization');
+
   const systematizationId = pathname.split('/')[4];
+
+  const disableUpdate = systematizationId ? !updatePermission : !createPermission;
 
   const [activeTab, setActiveTab] = useState(1);
   const [showEditSectorModal, setShowEditSectorModal] = useState(false);
@@ -254,6 +262,7 @@ export const SystematizationDetails: React.FC = () => {
                   {...methods?.register('serial_number', {required: 'Ovo polje je obavezno'})}
                   label="BROJ SISTEMATIZACIJE:"
                   isRequired
+                  disabled={disableUpdate}
                   error={methods?.formState?.errors.serial_number?.message as string}
                 />
                 <Controller
@@ -277,7 +286,7 @@ export const SystematizationDetails: React.FC = () => {
                 />
               </Row>
 
-              {systematizationId && +systematizationId > 0 && !isSystematizationInactive && (
+              {!disableUpdate && systematizationId && +systematizationId > 0 && !isSystematizationInactive && (
                 <Button
                   style={{height: '72px'}}
                   variant="secondary"
@@ -296,6 +305,7 @@ export const SystematizationDetails: React.FC = () => {
                 allEmployees={userProfiles}
                 activeEmployees={systematizationDetails?.active_employees ?? []}
                 isInactive={isSystematizationInactive}
+                disableUpdate={disableUpdate}
               />
 
               <FileUploadWrapper>
@@ -305,7 +315,7 @@ export const SystematizationDetails: React.FC = () => {
                     <Typography content={systematizationDetails.file.name} variant="bodySmall" />
                     <StyledFileIcon stroke={Theme.palette.gray600} />
                   </FileIconButton>
-                ) : (
+                ) : !disableUpdate ? (
                   <FileUpload
                     icon={<></>}
                     disabled={isSystematizationInactive}
@@ -316,6 +326,8 @@ export const SystematizationDetails: React.FC = () => {
                     note="Izaberite datoteku ili je prevucite ovdje"
                     error={showFileUploadError ? 'Morate učitati fajl' : undefined}
                   />
+                ) : (
+                  <div />
                 )}
               </FileUploadWrapper>
             </MainWrapper>
@@ -331,9 +343,10 @@ export const SystematizationDetails: React.FC = () => {
             uploadedFile={uploadedFile}
             setError={handleShowError}
             file={systematizationDetails?.file?.id}
+            disableUpdate={activeTab === 1 && disableUpdate}
           />
         </FormProvider>
-        {showEditSectorModal && (
+        {!disableUpdate && showEditSectorModal && (
           <OrganizationalUnitModal
             refetch={refetch}
             open={showEditSectorModal}

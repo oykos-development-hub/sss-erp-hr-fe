@@ -25,6 +25,7 @@ const Departments: React.FC<DepartmentsProps> = ({
   allEmployees,
   activeEmployees,
   isInactive,
+  disableUpdate,
 }) => {
   const [collapsedSectorId, setCollapsedSectorId] = useState<number>(0);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -111,7 +112,7 @@ const Departments: React.FC<DepartmentsProps> = ({
                         toggleAccordion(sector.id);
                       }}
                     />
-                    {!isInactive && (
+                    {!isInactive && !disableUpdate && (
                       <OptionsIcon
                         onClick={(e: any) => {
                           e.stopPropagation();
@@ -120,7 +121,7 @@ const Departments: React.FC<DepartmentsProps> = ({
                       />
                     )}
                   </AccordionIconsWrapper>
-                  {!isInactive && (
+                  {!isInactive && !disableUpdate && (
                     <Menu open={collapsedSectorId === sector?.id}>
                       <MenuItem
                         onClick={(e: React.MouseEvent) => {
@@ -161,6 +162,7 @@ const Departments: React.FC<DepartmentsProps> = ({
                       activeEmployees={activeEmployees}
                       cancel={cancelJobPosition}
                       isInactive={isInactive}
+                      disableUpdate={disableUpdate}
                     />
                   </JobPositionTableWrapper>
                 ) : (

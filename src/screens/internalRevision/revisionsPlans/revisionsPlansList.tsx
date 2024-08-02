@@ -18,6 +18,7 @@ import {RevisionListContainer, MainTitle, TableHeader, FilterContainer} from '..
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
 import useDeleteRevisionPlan from '../../../services/graphql/revisionsPlans/useRevisionPlanDelete';
 import {getYearOptions} from '../../../utils/constants';
+import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 
 interface RevisionPlanListProps {
   context: MicroserviceProps;
@@ -33,6 +34,13 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
   const [revisionPlanModal, setRevisionPlanModal] = useState(false);
   const [editId, setEditId] = useState(0);
   const [form, setForm] = useState<any>();
+
+  const createPermittedRoutes = checkActionRoutePermissions(context.contextMain.permissions, 'create');
+  const deletePermittedRoutes = checkActionRoutePermissions(context.contextMain.permissions, 'delete');
+  const updatePermittedRoutes = checkActionRoutePermissions(context.contextMain.permissions, 'update');
+  const createPermission = createPermittedRoutes.includes('/hr/revision-recommendations');
+  const deletePermission = deletePermittedRoutes.includes('/hr/revision-recommendations');
+  const updatePermission = updatePermittedRoutes.includes('/hr/revision-recommendations');
 
   const {deleteRevisionPlan} = useDeleteRevisionPlan();
   const {revisionPlans, loading, refetch} = useGetRevisionPlans({page: 1, size: 1000});
@@ -88,6 +96,24 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
     return revisionPlans;
   }, [revisionPlans, form?.year?.id]);
 
+  const actionItems: any[] = [];
+
+  if (updatePermission) {
+    actionItems.push({
+      name: 'edit',
+      onClick: (item: any) => handleEdit(item.id),
+      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+    });
+  }
+
+  if (deletePermission) {
+    actionItems.push({
+      name: 'delete',
+      onClick: (item: any) => toggleDeleteModal(item.id),
+      icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
+    });
+  }
+
   return (
     <ScreenWrapper>
       <RevisionListContainer>
@@ -104,7 +130,9 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
               placeholder="Odaberite godinu:"
             />
           </FilterContainer>
-          <Button content="Dodajte plan" variant="secondary" onClick={() => toogleRevisionPlanModal(0)} />
+          {createPermission && (
+            <Button content="Dodajte plan" variant="secondary" onClick={() => toogleRevisionPlanModal(0)} />
+          )}
         </TableHeader>
         <Table
           tableHeads={TableHeads}
@@ -118,18 +146,7 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
               to: `/hr/revision-recommendations/${row.id}/revision`,
             });
           }}
-          tableActions={[
-            {
-              name: 'edit',
-              onClick: item => handleEdit(item.id),
-              icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            },
-            {
-              name: 'delete',
-              onClick: item => toggleDeleteModal(item.id),
-              icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
-            },
-          ]}
+          tableActions={actionItems}
         />
 
         <ConfirmModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleConfirm={handleDelete} />

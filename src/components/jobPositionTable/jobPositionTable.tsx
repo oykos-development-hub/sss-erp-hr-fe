@@ -37,6 +37,7 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
   activeEmployees = [],
   cancel,
   isInactive,
+  disableUpdate,
 }) => {
   const {mutate: insertJobPosition} = useInsertJobPositionInOrgUnit();
   const {mutate: deleteJobPosition} = useDeleteJobPositionInOrgUnit();
@@ -278,35 +279,44 @@ export const JobPositionTable: React.FC<JobPositionTableProps> = ({
     return tableHeads;
   }, [jobPositionOptions, allEmployees, activeEmployees, errors]);
 
+  const actionItems: any[] = [];
+
+  if (!disableUpdate) {
+    actionItems.push({
+      name: 'edit',
+      onClick: (item: any) => selectRow(item.id),
+      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+      shouldRender: (item: any) => editTableRow !== item.id && !isInactive,
+    });
+    actionItems.push({
+      name: 'save',
+      onClick: handleSave,
+      icon: <CheckIcon />,
+      shouldRender: (item: any) => editTableRow === item.id,
+    });
+    actionItems.push({
+      name: 'delete',
+      onClick: (item: any) => deleteIconClick(item.id),
+      icon: <TrashIcon stroke={Theme?.palette?.gray800} style={{height: 18}} />,
+      shouldRender: (item: any) => editTableRow !== item.id && !isInactive,
+    });
+    actionItems.push({
+      name: 'cancel',
+      onClick: () => {
+        if (cancel) cancel();
+        setEditTableRow(null);
+      },
+      icon: <XIcon />,
+      shouldRender: (item: any) => editTableRow === item.id,
+    });
+  }
+
   return (
     <>
       <StyledTable
         tableHeads={updatedTableHeads}
         data={jobPositions ? Object.values(jobPositions) : []}
-        tableActions={[
-          {
-            name: 'edit',
-            onClick: item => selectRow(item.id),
-            icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            shouldRender: item => editTableRow !== item.id && !isInactive,
-          },
-          {name: 'save', onClick: handleSave, icon: <CheckIcon />, shouldRender: item => editTableRow === item.id},
-          {
-            name: 'delete',
-            onClick: item => deleteIconClick(item.id),
-            icon: <TrashIcon stroke={Theme?.palette?.gray800} style={{height: 18}} />,
-            shouldRender: item => editTableRow !== item.id && !isInactive,
-          },
-          {
-            name: 'cancel',
-            onClick: () => {
-              if (cancel) cancel();
-              setEditTableRow(null);
-            },
-            icon: <XIcon />,
-            shouldRender: item => editTableRow === item.id,
-          },
-        ]}
+        tableActions={actionItems}
       />
       <ConfirmModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} handleConfirm={handleDelete} />
     </>

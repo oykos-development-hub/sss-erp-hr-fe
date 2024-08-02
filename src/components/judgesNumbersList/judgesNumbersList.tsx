@@ -9,6 +9,7 @@ import {Controls, Filters, Header, MainTitle, OverviewBox} from '../judgesList/s
 import {JudgeResolution, JudgeResolutionItem} from '../../types/graphql/judgeResolutions';
 import useOrganizationUintCalculateEmployeeStats from '../../services/graphql/judges/resolutions/useGetCurrentResolutionNumbers';
 import useAppContext from '../../context/useAppContext';
+import {checkActionRoutePermissions} from '../../services/checkRoutePermissions.ts';
 
 export interface JudgesNumbersListProps {
   data: JudgeResolution[];
@@ -41,7 +42,16 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
   const {deleteJudgeResolution} = useDeleteJudgeResolution();
   const {
     reportService: {generatePdf},
+    contextMain: {permissions},
   } = useAppContext();
+
+  const createPermittedRoutes = checkActionRoutePermissions(permissions, 'create');
+  const deletePermittedRoutes = checkActionRoutePermissions(permissions, 'delete');
+  const updatePermittedRoutes = checkActionRoutePermissions(permissions, 'update');
+  const createPermission = createPermittedRoutes.includes('/hr/judges/number-decision');
+  const deletePermission = deletePermittedRoutes.includes('/hr/judges/number-decision');
+  const updatePermission = updatePermittedRoutes.includes('/hr/judges/number-decision');
+
   const list: JudgeResolution[] = useMemo(
     () =>
       data?.map((item: JudgeResolution) => ({
@@ -92,52 +102,61 @@ const JudgesNumbersList: React.FC<JudgesNumbersListProps> = ({
     }
   }, [resolutionId]);
 
+  const actionItems: any[] = [
+    {
+      name: 'Pregled',
+      onClick: (row: any) => navigate(`/hr/judges/number-decision/${row.id}`),
+      icon: <EyeIcon stroke={Theme?.palette?.gray800} />,
+    },
+    {
+      name: 'Preuzmi',
+      onClick: (row: any) => setResolutionId(row.id),
+      icon: <DownloadIcon stroke={Theme.palette.gray800} />,
+      shouldRender: (decision: JudgeResolution) => !!decision.active,
+    },
+  ];
+
+  if (updatePermission) {
+    actionItems.push({
+      name: 'Izmijeni',
+      onClick: (row: any) => navigate(`/hr/judges/number-decision/${row.id}`),
+      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+      shouldRender: (row: any) => row.active,
+    });
+  }
+
+  if (deletePermission) {
+    actionItems.push({
+      name: 'Obriši',
+      onClick: (item: any) => openDeleteModal(item.id),
+      icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+      shouldRender: (decision: JudgeResolution) => !decision.active,
+    });
+  }
+
   return (
     <OverviewBox>
       <MainTitle variant="bodyMedium" content="PREGLED ODLUKA O BROJU SUDIJA I PREDSJEDNIKA" />
       <Divider color="#615959" height="1px" />
       <Header>
         <Filters></Filters>
-        <Controls>
-          <Button
-            content="Dodajte odluku"
-            variant="secondary"
-            style={{width: 130}}
-            onClick={() => navigate('/hr/judges/number-decision/new-decision')}
-          />
-        </Controls>
+        {createPermission && (
+          <Controls>
+            <Button
+              content="Dodajte odluku"
+              variant="secondary"
+              style={{width: 130}}
+              onClick={() => navigate('/hr/judges/number-decision/new-decision')}
+            />
+          </Controls>
+        )}
       </Header>
       <Table
         tableHeads={judgesNumberResolutionTableHeads}
         data={list}
         style={{marginBottom: 22}}
         isLoading={loading}
-        tableActions={[
-          {
-            name: 'Izmijeni',
-            onClick: row => navigate(`/hr/judges/number-decision/${row.id}`),
-            icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            shouldRender: row => row.active,
-          },
-          {
-            name: 'Pregled',
-            onClick: row => navigate(`/hr/judges/number-decision/${row.id}`),
-            icon: <EyeIcon stroke={Theme?.palette?.gray800} />,
-            shouldRender: row => !row.active,
-          },
-          {
-            name: 'Preuzmi',
-            onClick: row => setResolutionId(row.id),
-            icon: <DownloadIcon stroke={Theme.palette.gray800} />,
-            shouldRender: (decision: JudgeResolution) => !!decision.active,
-          },
-          {
-            name: 'Obriši',
-            onClick: item => openDeleteModal(item.id),
-            icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-            shouldRender: (decision: JudgeResolution) => !decision.active,
-          },
-        ]}
+        tableActions={actionItems}
       />
       <Pagination
         pageCount={Math.ceil(total / 10)}

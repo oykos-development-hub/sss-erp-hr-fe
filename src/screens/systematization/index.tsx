@@ -9,6 +9,7 @@ import {ScreenWrapper} from '../../shared/screenWrapper/screenWrapper';
 import {systematizationTableHeads} from './constants';
 import {SystematizationFilters} from './filters/systematizationFilters';
 import {Header} from './styles';
+import {checkActionRoutePermissions} from '../../services/checkRoutePermissions.ts';
 
 const initialValues = {
   search: '',
@@ -29,7 +30,11 @@ const Systematizations: React.FC = () => {
     navigation: {navigate},
     breadcrumbs,
     alert,
+    contextMain: {permissions},
   } = useAppContext();
+
+  const createPermittedRoutes = checkActionRoutePermissions(permissions, 'create');
+  const createPermission = createPermittedRoutes.includes('/hr/systematization');
 
   const handleEdit = (id: number, serial_number: string) => {
     navigate(`/hr/systematization/systematization-details/${id}`);
@@ -80,17 +85,19 @@ const Systematizations: React.FC = () => {
             setFilters={(name, value) => setFilters(prev => ({...prev, [name]: value}))}
             filters={filters}
           />
-          <Button
-            variant="secondary"
-            content="Nova sistematizacija"
-            onClick={() => {
-              navigate('/hr/systematization/systematization-details');
-              breadcrumbs.add({
-                name: 'Nova sistematizacija',
-                to: '/hr/systematization/systematization-details',
-              });
-            }}
-          />
+          {createPermission && (
+            <Button
+              variant="secondary"
+              content="Nova sistematizacija"
+              onClick={() => {
+                navigate('/hr/systematization/systematization-details');
+                breadcrumbs.add({
+                  name: 'Nova sistematizacija',
+                  to: '/hr/systematization/systematization-details',
+                });
+              }}
+            />
+          )}
         </Header>
         <Table
           tableHeads={systematizationTableHeads}

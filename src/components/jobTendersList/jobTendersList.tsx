@@ -1,5 +1,5 @@
 import {Button, Divider, EditIconTwo, Pagination, Table, Theme, TrashIcon} from 'client-library';
-import {FC, useState} from 'react';
+import React, {FC, useState} from 'react';
 import {statusOptions} from '../../constants';
 import useAppContext from '../../context/useAppContext';
 import {JobTendersListFilters} from '../../screens/jobTenders';
@@ -8,6 +8,8 @@ import useDeleteJobTender from '../../services/graphql/jobTenders/useDeleteJobTe
 import {ConfirmModal} from '../../shared/confirmModal/confirmModal';
 import {JobTender} from '../../types/graphql/jobTenders';
 import {Controls, FilterDropdown, Filters, Header, MainTitle, OverviewBox} from './styles';
+import {checkActionRoutePermissions} from '../../services/checkRoutePermissions.ts';
+import {JudgeResolution} from '../../types/graphql/judgeResolutions.ts';
 
 export interface JobTendersListProps {
   navigate: (path: string) => void;
@@ -41,7 +43,18 @@ const JobTendersList: FC<JobTendersListProps> = ({
 
   const {deleteJobTender} = useDeleteJobTender();
 
-  const {alert, breadcrumbs} = useAppContext();
+  const {
+    alert,
+    breadcrumbs,
+    contextMain: {permissions},
+  } = useAppContext();
+
+  const createPermittedRoutes = checkActionRoutePermissions(permissions, 'create');
+  const deletePermittedRoutes = checkActionRoutePermissions(permissions, 'delete');
+  const updatePermittedRoutes = checkActionRoutePermissions(permissions, 'update');
+  const createPermission = createPermittedRoutes.includes('/hr/job-tenders/job-tenders-list');
+  const deletePermission = deletePermittedRoutes.includes('/hr/job-tenders/job-tenders-list');
+  const updatePermission = updatePermittedRoutes.includes('/hr/job-tenders/job-tenders-list');
 
   const handleCloseDeleteModal = () => {
     setDeleteItemID(0);
@@ -62,6 +75,29 @@ const JobTendersList: FC<JobTendersListProps> = ({
       },
     );
   };
+
+  const actionItems: any[] = [];
+
+  if (updatePermission) {
+    actionItems.push({
+      name: 'edit',
+      onClick: (item: any) => toggleJobTenderImportModal(item),
+      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+      shouldRender: (row: any) => row?.active,
+    });
+  }
+
+  if (deletePermission) {
+    actionItems.push({
+      name: 'delete',
+      onClick: (item: any) => {
+        setShowDeleteModal(true);
+        setDeleteItemID(item.id);
+      },
+      icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+      shouldRender: (row: any) => row?.active,
+    });
+  }
 
   return (
     <OverviewBox>
@@ -95,14 +131,16 @@ const JobTendersList: FC<JobTendersListProps> = ({
             placeholder="Odaberite status"
           />
         </Filters>
-        <Controls>
-          <Button
-            content="Dodajte novi oglas"
-            variant="secondary"
-            style={{width: 170}}
-            onClick={() => toggleJobTenderImportModal()}
-          />
-        </Controls>
+        {createPermission && (
+          <Controls>
+            <Button
+              content="Dodajte novi oglas"
+              variant="secondary"
+              style={{width: 170}}
+              onClick={() => toggleJobTenderImportModal()}
+            />
+          </Controls>
+        )}
       </Header>
       <Table
         tableHeads={tableHeads}
@@ -116,23 +154,7 @@ const JobTendersList: FC<JobTendersListProps> = ({
             to: `/hr/job-tenders/job-tenders-list/${item.id}`,
           });
         }}
-        tableActions={[
-          {
-            name: 'edit',
-            onClick: item => toggleJobTenderImportModal(item),
-            icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            shouldRender: (row: any) => row?.active,
-          },
-          {
-            name: 'delete',
-            onClick: item => {
-              setShowDeleteModal(true);
-              setDeleteItemID(item.id);
-            },
-            icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-            shouldRender: (row: any) => row?.active,
-          },
-        ]}
+        tableActions={actionItems}
       />
       <Pagination
         pageCount={total / 10}

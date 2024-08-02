@@ -19,6 +19,7 @@ export interface JudgesListProps {
   loading: boolean;
   parentRef: RefObject<HTMLDivElement>;
   isNorm: boolean;
+  createPermission: boolean;
 }
 
 const JudgesList: React.FC<JudgesListProps> = ({
@@ -34,6 +35,7 @@ const JudgesList: React.FC<JudgesListProps> = ({
   loading,
   parentRef,
   isNorm,
+  createPermission,
 }) => {
   const overviewRef = useRef<HTMLDivElement>(null);
 
@@ -78,9 +80,11 @@ const JudgesList: React.FC<JudgesListProps> = ({
             isSearchable
           />
         </Filters>
-        <Controls>
-          <Button content="Dodajte normu" variant="secondary" style={{width: 130}} onClick={() => addNorm()} />
-        </Controls>
+        {createPermission && (
+          <Controls>
+            <Button content="Dodajte normu" variant="secondary" style={{width: 130}} onClick={() => addNorm()} />
+          </Controls>
+        )}
       </Header>
       <Table
         tableHeads={judgeTableHeads}

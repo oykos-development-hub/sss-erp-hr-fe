@@ -13,6 +13,7 @@ import {FilterContainer, Filters, MainTitle, RevisionListContainer, TableHeader}
 import {RevisionTableHeads} from './constants';
 import FileModalView from '../../../components/fileModalView/fileModalView';
 import {FileItem} from '../../../components/fileModalView/types';
+import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 
 interface RevisionProps {
   context: MicroserviceProps;
@@ -27,6 +28,9 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
   const [revisorId, setRevisorId] = useState<number>(0);
   const [revisonTypeId, setRevisonTypeId] = useState<number>(0);
   const [fileToView, setFileToView] = useState<FileItem>();
+
+  const updatePermittedRoutes = checkActionRoutePermissions(context.contextMain.permissions, 'update');
+  const updatePermission = updatePermittedRoutes.includes('/hr/revision-recommendations');
 
   const [editId, setEditId] = useState(0);
   const {revisions, loading, refetch} = useGetRevisions({
@@ -85,6 +89,30 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
     }),
   ];
 
+  const actionItems: any[] = [
+    {
+      name: 'showFile',
+      icon: <FileIcon stroke={Theme.palette.gray600} />,
+      onClick: (row: any) => {
+        setFileToView(row?.file);
+      },
+      shouldRender: (row: any) => row?.file?.id,
+    },
+  ];
+
+  if (updatePermission) {
+    actionItems.push({
+      name: 'Izmijeni',
+      onClick: (item: any) => handleEdit(item.id),
+      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+    });
+    actionItems.push({
+      name: 'Obriši',
+      onClick: (item: any) => toggleDeleteModal(item.id),
+      icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
+    });
+  }
+
   return (
     <ScreenWrapper>
       <RevisionListContainer>
@@ -124,7 +152,9 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
             </FilterContainer>
           </Filters>
 
-          <Button content="Dodajte reviziju" variant="secondary" onClick={() => toogleRevisionModal(0)} />
+          {updatePermission && (
+            <Button content="Dodajte reviziju" variant="secondary" onClick={() => toogleRevisionModal(0)} />
+          )}
         </TableHeader>
         <Table
           tableHeads={RevisionTableHeads}
@@ -141,26 +171,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
               to: `/hr/revision-recommendations/${row?.plan_id}/revision/${row?.id}/recommendations`,
             });
           }}
-          tableActions={[
-            {
-              name: 'showFile',
-              icon: <FileIcon stroke={Theme.palette.gray600} />,
-              onClick: (row: any) => {
-                setFileToView(row?.file);
-              },
-              shouldRender: (row: any) => row?.file?.id,
-            },
-            {
-              name: 'Izmijeni',
-              onClick: item => handleEdit(item.id),
-              icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-            },
-            {
-              name: 'Obriši',
-              onClick: item => toggleDeleteModal(item.id),
-              icon: <TrashIconTwo stroke={Theme?.palette?.gray800} />,
-            },
-          ]}
+          tableActions={actionItems}
         />
 
         <ConfirmModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleConfirm={handleDelete} />

@@ -12,4 +12,5 @@ export interface JobPositionTableProps {
   activeEmployees: ActiveEmployee[];
   cancel?: () => void;
   isInactive: boolean;
+  disableUpdate: boolean;
 }
