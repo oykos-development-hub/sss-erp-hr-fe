@@ -11,6 +11,12 @@ export const Container = styled.div`
   }
 `;
 
+export const Controls = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
 export const TableHeader = styled.div`
   display: flex;
   align-items: center;

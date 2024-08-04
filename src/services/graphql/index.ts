@@ -73,10 +73,12 @@ import getVacations from './userProfile/vacation/getVacations';
 import insertVacations from './userProfile/vacation/insertVacations';
 import vacationReport from './vacationReport/vacationReport';
 import getTemplates from './templates/getTemplates.ts';
+import getParameters from './templates/getParameters.ts';
 import deleteTemplate from './templates/deleteTemplate.ts';
 import insertTemplate from './templates/insertTemplate.ts';
 import updateTemplateAdmin from './templates/updateTemplateAdmin.ts';
 import updateTemplateManager from './templates/updateTemplateManager.ts';
+import getParameterValues from './templates/getParameterValues.ts';
 
 export const GraphQL = {
   updateBasicInfo: updateBasicInfo,
@@ -152,6 +154,8 @@ export const GraphQL = {
   vacationReport: vacationReport,
   judgeEvaluationReport: judgeEvaluationReport,
   getTemplates: getTemplates,
+  getParameters: getParameters,
+  getParameterValues: getParameterValues,
   deleteTemplate: deleteTemplate,
   insertTemplate: insertTemplate,
   updateTemplateAdmin: updateTemplateAdmin,

@@ -8,6 +8,7 @@ import {TitleWrapper} from './styles';
 import {reportsTabs} from './types';
 import Templates from './templates/templates.tsx';
 import Reports from './reports.tsx';
+import Parameters from './parameters/parameters.tsx';
 
 export const ReportsScreen: React.FC = () => {
   const [activeTab, setActiveTab] = useState(1);
@@ -31,7 +32,7 @@ export const ReportsScreen: React.FC = () => {
           />
         </TitleWrapper>
         <Divider color={Theme?.palette?.gray200} height="1px" style={{margin: 0}} />
-        {activeTab === 1 ? <Reports /> : <Templates />}
+        {activeTab === 1 ? <Reports /> : activeTab === 2 ? <Templates /> : <Parameters />}
       </OverviewBox>
     </ScreenWrapper>
   );

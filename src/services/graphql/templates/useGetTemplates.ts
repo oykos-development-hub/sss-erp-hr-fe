@@ -22,7 +22,7 @@ const useGetTemplates = (data?: any) => {
 
   useEffect(() => {
     fetchTemplates();
-  }, [data.page, data.size]);
+  }, [data?.page ?? 1, data?.size ?? 1000]);
 
   return {templates, loading, total, refetch: fetchTemplates};
 };

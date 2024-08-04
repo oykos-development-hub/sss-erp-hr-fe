@@ -1,12 +1,12 @@
 import {DeleteResponse, GetResponse} from './response.ts';
 import {DropdownDataNumber} from '../dropdownData.ts';
-import {FileItem} from '../fileUploadType.ts';
+import {FileTemplateItem} from '../fileUploadType.ts';
 
 export type Template = {
   id: number;
   template: DropdownDataNumber;
   organization_unit: DropdownDataNumber;
-  file: FileItem;
+  file: FileTemplateItem;
 };
 
 export type TemplateResponse = {

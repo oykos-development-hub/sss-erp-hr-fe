@@ -10,3 +10,9 @@ export type FileResponseItem = {
   created_at: string;
   updated_at: string;
 };
+
+export type FileTemplateItem = {
+  id: number;
+  name: string;
+  type: string;
+};

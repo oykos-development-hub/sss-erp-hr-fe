@@ -10,9 +10,10 @@ import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {ProfileResolution} from '../../../types/graphql/resolutions';
 import {yearsForDropdownFilter} from '../../../utils/constants';
 import {tableHeads} from './constants.tsx';
-import {Container, TableHeader, YearWrapper} from './styles';
+import {Container, TableHeader, YearWrapper, Controls} from './styles';
 import {ForeignersProps} from '../foreigners/types.ts';
 import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
+import {TemplatesModal} from '../../../components/templatesModal/templatesModal.tsx';
 
 export const ConfirmationsPage: React.FC<ForeignersProps> = ({context}) => {
   const {
@@ -22,6 +23,7 @@ export const ConfirmationsPage: React.FC<ForeignersProps> = ({context}) => {
   const years = yearsForDropdownFilter();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
   const [form, setForm] = useState<any>();
   const userProfileID = location.pathname.split('/')[4];
@@ -126,13 +128,18 @@ export const ConfirmationsPage: React.FC<ForeignersProps> = ({context}) => {
           />
         </YearWrapper>
         {updatePermission && (
-          <div>
+          <Controls>
+            <Button
+              variant="primary"
+              content={<Typography variant="bodyMedium" content="Generiši šablon" />}
+              onClick={() => setShowTemplateModal(true)}
+            />
             <Button
               variant="secondary"
               content={<Typography variant="bodyMedium" content="Dodajte svrhu" />}
               onClick={handleAdd}
             />
-          </div>
+          </Controls>
         )}
       </TableHeader>
 
@@ -140,6 +147,14 @@ export const ConfirmationsPage: React.FC<ForeignersProps> = ({context}) => {
         <Table tableHeads={tableHeads} data={filteredTableData || []} isLoading={loading} tableActions={actionItems} />
       </div>
       {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
+      {showTemplateModal && (
+        <TemplatesModal
+          open={showTemplateModal}
+          onClose={() => setShowTemplateModal(false)}
+          userProfileId={userProfileID}
+          alert={alert}
+        />
+      )}
       {showModal && (
         <ConfirmationsModal
           open={showModal}

@@ -1,6 +1,7 @@
 import React from 'react';
 import {TableHead, Typography} from 'client-library';
 import {calculateBusinessDays, parseDate} from '../../../utils/dateUtils';
+import {Parameter} from '../../../types/graphql/parameters.ts';
 
 export const tableHeadsAbsence: TableHead[] = [
   {
@@ -82,4 +83,21 @@ export const tableHeadsTemplates: TableHead[] = [
     renderContents: (template: any) => <Typography variant="bodyMedium" content={template?.title} />,
   },
   {title: '', accessor: 'TABLE_ACTIONS', type: 'tableActions'},
+];
+
+export const tableHeadsParameters: TableHead[] = [
+  {
+    title: 'Parametar',
+    accessor: 'title',
+    type: 'custom',
+    renderContents: (title: string) => (
+      <Typography variant="bodyMedium" style={{fontWeight: 'bold'}} content={`{${title}}`} />
+    ),
+  },
+  {
+    title: 'Opis',
+    accessor: 'description',
+    type: 'custom',
+    renderContents: (description: string) => <Typography variant="bodyMedium" content={description} />,
+  },
 ];

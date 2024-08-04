@@ -1,6 +1,7 @@
 export const reportsTabs = [
   {id: 1, title: 'Izvještaji', routeName: 'reports-tab', disabled: false},
   {id: 2, title: 'Šabloni', routeName: 'patterns-tab', disabled: false},
+  {id: 3, title: 'Parametri', routeName: 'parameters-tab', disabled: false},
 ];
 
 export const reportTypeOptions = [
@@ -20,3 +21,11 @@ export enum HrReportType {
   AgeStructureOfJudges = 4,
   CertificateOfPermanentEmployment = 5,
 }
+
+export type TemplatesModalProps = {
+  open: boolean;
+  alert: any;
+  onClose: (action?: any) => void;
+  userProfileId?: number;
+  key?: string;
+};
