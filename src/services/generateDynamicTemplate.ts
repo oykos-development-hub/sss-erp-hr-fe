@@ -7,7 +7,6 @@ const generateDynamicTemplate = async (
   fileService: any,
 ) => {
   const {getFileBinary, streamToArrayBuffer, replacePlaceholders} = fileService;
-
   return await getFileBinary(
     file.id,
     async (response: Response) => {

@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react';
 import useAppContext from '../../../context/useAppContext';
 import {GraphQL} from '..';
 import {ParameterValuesResponse} from '../../../types/graphql/parameters.ts';
+import {calculateBusinessDays, transformDate} from '../../../utils/dateUtils.ts';
 
 const useGetParameterValues = (userProfileId: number) => {
   const [parameterValues, setParameterValues] = useState<[string: string][]>();
@@ -27,7 +28,11 @@ const useGetParameterValues = (userProfileId: number) => {
     if (response?.dataForTemplate_Overview?.item) {
       const data: any = response.dataForTemplate_Overview.item;
 
-      data['danasnji-datum'] = data['tekuci_datum'];
+      data['danasnji_datum'] = data['tekuci_datum'];
+      data['trajanje_godisnjeg_odmora'] = calculateBusinessDays(
+        transformDate(data['datum_pocetka_godisnjeg_odmora']),
+        transformDate(data['datum_kraja_godisnjeg_odmora']),
+      );
 
       setParameterValues(addKebabCaseKeys(data));
     }

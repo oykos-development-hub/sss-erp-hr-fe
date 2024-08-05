@@ -39,8 +39,30 @@ const AddTemplateModal = ({open, onClose, template, refetch}: AddTemplateModalPr
   const loading = loadingInsert || loadingUpdateAdm || loadingUpdateManager;
 
   const handleFileUpload = (files: FileList) => {
-    setFiles(files);
-    alert.success('Fajl uspješno učitan');
+    const validTypes = [
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      // Add other types here if needed
+    ];
+
+    if (files && files.length > 0) {
+      // Convert FileList to an array
+      const filesArray = Array.from(files);
+      const docxFiles = filesArray.filter(file => validTypes.includes(file.type));
+
+      if (docxFiles.length > 0) {
+        const dataTransfer = new DataTransfer();
+
+        filesArray.forEach(file => {
+          dataTransfer.items.add(file);
+        });
+
+        setFiles(dataTransfer.files);
+        alert.success('Fajl uspješno učitan');
+        return;
+      }
+    }
+
+    alert.error('Odabrani fajlovi nijesu uspješno učitani. Dozvoljeni tip dokumenta za učitavanje je .docx!');
   };
 
   const {
@@ -174,6 +196,7 @@ const AddTemplateModal = ({open, onClose, template, refetch}: AddTemplateModalPr
               <FileUploadWrapper>
                 <FileUpload
                   icon={<></>}
+                  hint="Dozvoljeni format dokumenta je .docx!"
                   style={{width: '100%'}}
                   variant="secondary"
                   onUpload={handleFileUpload}

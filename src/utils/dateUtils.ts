@@ -70,3 +70,10 @@ export const findNextBusinessDay = (inputDate: string | Date): Date => {
 
   return date;
 };
+
+export const transformDate = (dateStr: string): Date => {
+  // Split the date string into components
+  const [day, month, year] = dateStr.split('.').map(Number);
+  // Create and return a new Date object (months are 0-based in JS Date)
+  return new Date(year, month - 1, day);
+};
