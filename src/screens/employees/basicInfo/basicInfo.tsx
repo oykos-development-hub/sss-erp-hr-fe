@@ -59,8 +59,8 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
   // const isJudge = userBasicInfo?.is_judge;
   const isPresident = userBasicInfo?.is_president;
   const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
-  const [openContractEndModal, setOpenCotractEndModal] = useState<boolean>(false);
   const [uploadedFile, setUploadedFile] = useState<FileList>();
+  const [openContractEndModal, setOpenCotractEndModal] = useState<boolean>(false);
 
   const {organizationUnits, departments} = useGetOrganizationUnits(undefined);
   const {options: contractTypes} = useGetSettings({entity: 'contract_types'});
