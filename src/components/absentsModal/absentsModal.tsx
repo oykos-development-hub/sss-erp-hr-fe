@@ -66,8 +66,8 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
 
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
   const {userBasicInfo} = useGetBasicInfo(userProfileId, {skip: !userProfileId});
-  const {first_name, last_name, organization_unit, job_position} = userBasicInfo || {};
   const {insertAbsence, loading: isSaving} = useInsertAbsence();
+  const {first_name, last_name, organization_unit, job_position} = userBasicInfo || {};
 
   const handleAbsenceInsert = (data: any) => {
     insertAbsence(
