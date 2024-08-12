@@ -6,7 +6,7 @@ export const formatSystematization = (data: any) => {
     id: data?.id || 0,
     organization_unit_id: data?.organization_unit?.id,
     date_of_activation: parseDateForBackend(data?.date_of_activation),
-    file_id: data?.file_id || 0,
+    file_id: data?.file?.id || data?.file_id || 0,
   };
 
   delete payload.user_profile;
