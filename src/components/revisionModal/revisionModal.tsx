@@ -13,6 +13,7 @@ import {FormGroupFullWidth} from '../revisionTipsModal/styles';
 import {Column, FileUploadWrapper, FormGroup, ModalForm, ModalSection, Row} from './styles';
 import {RevisionFormValues} from '../../types/graphql/revisions';
 import useAppContext from '../../context/useAppContext';
+import FileList from '../fileList/fileList.tsx';
 
 interface RevisionModalProps {
   open: boolean;
@@ -135,7 +136,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
   const externalSubject = watch('external_revision_subject_id');
 
   useEffect(() => {
-    if (internalSubject) {
+    if (internalSubject.length) {
       setValue('external_revision_subject_id', null);
     }
   }, [internalSubject, setValue]);
@@ -339,6 +340,9 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
               note={<Typography variant="bodySmall" content="Upload dokumenta" />}
               buttonText="Učitaj"
             />
+            {revisionDetails?.file?.id !== 0 && (
+              <FileList files={(revisionDetails?.file && [revisionDetails?.file]) ?? []} />
+            )}
           </FileUploadWrapper>
         </ModalForm>
       }

@@ -42,7 +42,9 @@ export const CheckboxLabel = styled(Typography)`
 
 export const FileUploadWrapper = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
   width: 100%;
 
   > div > div {
