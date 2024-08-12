@@ -514,7 +514,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
             </Row>
           </ModalContentWrapper>
         }
-        title={'DODAJTE NOVOG KANDIDATA'}
+        title={selectedItem ? 'IZMIJENI KANDIDATA' : 'DODAJTE NOVOG KANDIDATA'}
       />
       <Modal
         open={confirmationModal}

@@ -9,6 +9,7 @@ import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import useAppContext from '../../context/useAppContext';
 import useGetOrganizationUnits from '../../services/graphql/organizationUnits/useGetOrganizationUnits';
+import FileList from '../fileList/fileList.tsx';
 
 const jobTenderSchema = yup.object().shape({
   type: yup
@@ -82,7 +83,7 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
         ...selectedItem,
         date_of_end: parseToDate(selectedItem.date_of_end),
         date_of_start: parseToDate(selectedItem.date_of_start),
-        organization_unit_id: organizationUnitsList.find(org => org.id === selectedItem.organization_unit?.id),
+        organization_unit_id: selectedItem.organization_unit,
       });
     }
   }, [selectedItem]);
@@ -250,6 +251,7 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
               note={<Typography variant="bodySmall" content="Dokument oglasa" />}
               buttonText="Učitaj"
             />
+            {selectedItem?.file?.id !== 0 && <FileList files={(selectedItem?.file && [selectedItem?.file]) ?? []} />}
           </FileUploadWrapper>
         </ModalContentWrapper>
       }

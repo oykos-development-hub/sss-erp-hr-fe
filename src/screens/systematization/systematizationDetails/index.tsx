@@ -197,6 +197,7 @@ export const SystematizationDetails: React.FC = () => {
 
   const handleCloseModal = () => {
     setShowEditSectorModal(false);
+    setSelectedSector(undefined);
   };
 
   const handleDeleteSector = (id: number) => {
