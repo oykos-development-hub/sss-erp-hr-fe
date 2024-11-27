@@ -18,7 +18,6 @@ export interface JudgesListProps {
   addNorm: () => void;
   loading: boolean;
   parentRef: RefObject<HTMLDivElement>;
-  isNorm: boolean;
   createPermission: boolean;
 }
 
@@ -34,7 +33,6 @@ const JudgesList: React.FC<JudgesListProps> = ({
   addNorm,
   loading,
   parentRef,
-  isNorm,
   createPermission,
 }) => {
   const overviewRef = useRef<HTMLDivElement>(null);
@@ -48,12 +46,6 @@ const JudgesList: React.FC<JudgesListProps> = ({
       })),
     [data],
   );
-
-  useEffect(() => {
-    if (isNorm) {
-      scrollToTheNextElement(parentRef, overviewRef);
-    }
-  }, [isNorm]);
 
   return (
     <OverviewBox ref={overviewRef}>
@@ -93,7 +85,7 @@ const JudgesList: React.FC<JudgesListProps> = ({
         isLoading={loading}
         onRowClick={item => {
           toggleJudgesNorms(item);
-          isNorm && scrollToTheNextElement(parentRef, overviewRef);
+          scrollToTheNextElement(parentRef, overviewRef);
         }}
       />
       <Pagination

@@ -1,4 +1,4 @@
-import {EditIconTwo, Table, Theme, TrashIcon} from 'client-library';
+import {EditIconTwo, Table, Theme, TrashIcon, TableAction} from 'client-library';
 import React, {useMemo, useState} from 'react';
 import {FilterDropdown, Filters, Header, OverviewBox} from '../judgesList/styles';
 import {DropdownDataString} from '../../types/dropdownData';
@@ -6,7 +6,6 @@ import {judgeNormsTableHeads} from '../../screens/judges/judgeNorms/constants';
 import {topicOptions} from '../../screens/judges/constants';
 import {JudgeNorm} from '../../types/graphql/judgeNorms';
 import {getYearOptions} from '../../utils/constants';
-import {JudgesListFilters} from '../../screens/judges/judgeNorms/judges';
 
 interface NormsListProps {
   data: JudgeNorm[];
@@ -16,7 +15,6 @@ interface NormsListProps {
   updatePermission: boolean;
   deletePermission: boolean;
   onFilterChange: (value: any, name: string) => void;
-  filters: JudgesListFilters;
 }
 
 const NormsList: React.FC<NormsListProps> = ({
@@ -24,46 +22,45 @@ const NormsList: React.FC<NormsListProps> = ({
   toggleNormsModal,
   handleDeleteIconClick,
   loading,
-  onFilterChange,
-  filters,
   updatePermission,
   deletePermission,
 }) => {
   const [topic, setTopic] = useState<DropdownDataString | null>(null);
+  const [targetYear, setTargetYear] = useState<number>(0);
 
-  const onTopicChange = (value: any) => {
-    if (value.id === 'Sve') {
-      setTopic(null);
-      return;
-    }
-    setTopic(value);
-  };
+  const years =  getYearOptions(7, 2, true);
 
-  const list = useMemo(() => {
-    const filteredData = topic ? data?.filter(norm => norm.topic === topic?.id) : data;
-    return filteredData?.map(item => ({
-      ...item,
-      number_of_items: Number(item.title) - Number(item.title) * (Number(item.number_of_norm_decrease) / 100),
-    }));
-  }, [data, topic]);
+  const filteredList = useMemo(() => {
+    if (!data) return [];
 
-  const actionItems: any[] = [];
+    return data
+      .filter(norm => {
+        const startYear = new Date(norm.norm_start_date).getFullYear();
+        const endYear = new Date(norm.norm_end_date).getFullYear();
+        return !targetYear || startYear === targetYear || endYear === targetYear;
+      })
+      .filter(norm => !topic || norm.topic === topic.id)
+      .map(item => ({
+        ...item,
+        number_of_items: Number(item.title) * (1 - Number(item.number_of_norm_decrease) / 100),
+      }));
+  }, [data, topic, targetYear]);
 
-  if (updatePermission) {
-    actionItems.push({
-      name: 'edit',
-      onClick: (item: any) => toggleNormsModal(item),
-      icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
-    });
-  }
-
-  if (deletePermission) {
-    actionItems.push({
-      name: 'delete',
-      onClick: (item: any) => handleDeleteIconClick(item.id),
-      icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
-    });
-  }
+  const actionItems = useMemo(
+    () => [
+      updatePermission && {
+        name: 'edit',
+        onClick: (item: JudgeNorm) => toggleNormsModal(item),
+        icon: <EditIconTwo stroke={Theme?.palette?.gray800} />,
+      },
+      deletePermission && {
+        name: 'delete',
+        onClick: (item: JudgeNorm) => handleDeleteIconClick(item.id),
+        icon: <TrashIcon stroke={Theme?.palette?.gray800} />,
+      },
+    ].filter(Boolean) as TableAction[],
+    [deletePermission, updatePermission, toggleNormsModal, handleDeleteIconClick]
+  );
 
   return (
     <OverviewBox>
@@ -73,22 +70,22 @@ const NormsList: React.FC<NormsListProps> = ({
           options={topicOptions}
           value={topic}
           name="topic"
-          onChange={value => onTopicChange(value)}
+          onChange={value => setTopic(value.id === '' ? null : value as DropdownDataString)}
           placeholder="Odaberite materiju"
         />
 
         <FilterDropdown
           label="GODINA:"
-          options={getYearOptions(10, true, 2)}
-          value={filters?.norm_year}
+          options={years}
           name="norm_year_id"
-          onChange={value => onFilterChange(value, 'norm_year')}
+          value={years.find(year => year.id === targetYear)}
+          onChange={value => setTargetYear(value.id)}
           placeholder="Odaberite godinu"
         />
       </Header>
       <Table
         tableHeads={judgeNormsTableHeads}
-        data={list}
+        data={filteredList}
         style={{marginBottom: 22}}
         isLoading={loading}
         tableActions={actionItems}

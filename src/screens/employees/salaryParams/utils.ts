@@ -1,7 +1,6 @@
 import {ProfileSalaryFormValues, ProfileSalaryInsertParams} from '../../../types/graphql/salaryParams';
 
 export const formatData = (data: ProfileSalaryFormValues) => {
-  console.log(data);
   const payload: ProfileSalaryInsertParams = {
     user_profile_id: data.user_profile_id,
     organization_unit_id: data.organization_unit?.id ?? 0,

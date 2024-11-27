@@ -1,6 +1,6 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import {Checkbox, Datepicker, Dropdown, Input} from 'client-library';
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {cityData} from '../../constants';
@@ -22,7 +22,7 @@ const permitSchema = yup.object().shape({
       is: (value: any) => !value,
       then: schema => schema.required('Ovo polje je obavezno'),
     }),
-  residence_permit_date_of_end: yup.date(),
+  residence_permit_date_of_end: yup.date().optional(),
   residence_permit_number: yup.string().required('Ovo polje je obavezno'),
   country_of_origin: yup.object().default(undefined).shape(dropdownStringSchema).required('Ovo polje je obavezno'),
   user_profile_id: yup.number().required('Ovo polje je obavezno'),
@@ -64,12 +64,28 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
     watch,
     formState: {errors},
     reset,
+    setValue,
+    getValues
   } = useForm({
     defaultValues: {user_profile_id: id ?? 0, residence_permit_indefinite_length: false},
     resolver: yupResolver(permitSchema),
   });
 
   const indefinite = watch('residence_permit_indefinite_length');
+  const [previousEndDate, setPreviousEndDate] = useState<Date | undefined>(undefined);
+
+  useEffect(() => {
+    if (indefinite) {
+      const previous = getValues('work_permit_date_of_end');
+      if (previous) {
+        setPreviousEndDate(previous);
+      }
+      
+      setValue('work_permit_date_of_end', undefined);
+    } else if (previousEndDate) {
+      setValue('work_permit_date_of_end', previousEndDate);
+    }
+  }, [indefinite]);  
 
   const {mutate, loading: isSaving} = useInsertForeignerPermits();
 
@@ -87,6 +103,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
   }, [permitData]);
 
   const onSubmit = async (values: any) => {
+
     if (isSaving) return;
 
     const data = {
@@ -109,6 +126,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
         alert.success('Uspješno sačuvano.');
         onClose();
         reset();
+        setPreviousEndDate(undefined);
       });
     } catch (e) {
       alert.error('Greška. Promjene nisu sačuvane.');
@@ -203,7 +221,7 @@ const PermitEntryModal: React.FC<PermitEntryModalProps> = ({
                 return (
                   <CheckboxContainer>
                     <Checkbox onChange={onChange} name={name} checked={value} />
-                    <CheckboxLabel content="Neograničeno Trajanje" variant="bodySmall" />
+                    <CheckboxLabel content="Neograničeno trajanje" variant="bodySmall" />
                   </CheckboxContainer>
                 );
               }}

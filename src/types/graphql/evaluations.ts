@@ -16,7 +16,7 @@ export type ProfileEvaluation = {
   score: string;
   evaluator: string;
   is_relevant: boolean;
-  file: FileItem;
+  files: FileItem[];
 };
 
 export type ProfileEvaluationParams = {
@@ -28,7 +28,7 @@ export type ProfileEvaluationParams = {
   id: number;
   is_relevant: boolean;
   user_profile_id: number;
-  file_id?: number;
+  file_ids: number[];
 };
 
 export interface ProfileEvaluationFormValues {
@@ -38,7 +38,7 @@ export interface ProfileEvaluationFormValues {
   date_of_evaluation: Date | null;
   is_relevant: DropdownDataString | null;
   reason_for_evaluation?: {
-    id?: number;
+    id?: string;
     title?: string;
   };
   evaluation_period?: string;

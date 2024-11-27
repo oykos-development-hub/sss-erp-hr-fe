@@ -76,8 +76,8 @@ export const nationalMinorities: DropdownDataString[] = [
 
 export const statusOptions = [
   {id: null, title: 'Svi'},
-  {id: true, title: 'Aktivni'},
-  {id: false, title: 'Neaktivni'},
+  {id: true, title: 'U toku'},
+  {id: false, title: 'Okončan'},
 ];
 
 export const yesOrNoOptionsBoolean = [

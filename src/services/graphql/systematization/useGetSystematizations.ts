@@ -14,6 +14,7 @@ const useGetSystematizations = ({page, size, id, organization_unit_id, year, sea
 
   const {fetch, contextMain} = useAppContext();
   const isAdmin = contextMain.role_id === 1;
+
   const fetchSystematizations = async () => {
     setLoading(true);
     const orgUnitID = isAdmin ? organization_unit_id : contextMain.organization_unit.id;

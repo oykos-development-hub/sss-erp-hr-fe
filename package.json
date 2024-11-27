@@ -56,7 +56,7 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
-    "@oykos-development/devkit-react-ts-styled-components": "^1.7.4",
+    "@oykos-development/devkit-react-ts-styled-components": "^1.8.5",
     "@types/file-saver": "^2.0.7",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",

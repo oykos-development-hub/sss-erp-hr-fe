@@ -2,7 +2,7 @@ import {DropdownDataString} from '../../types/dropdownData';
 
 export const topicOptions: DropdownDataString[] = [
   {
-    id: 'Sve',
+    id: '',
     title: 'Sve',
   },
   {

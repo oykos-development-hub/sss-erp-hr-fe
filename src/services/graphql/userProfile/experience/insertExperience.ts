@@ -19,7 +19,11 @@ const insertExperience = `mutation UserProfileExperienceInsert($data: UserProfil
             date_of_end
             created_at
             updated_at
-            reference_file_id
+            files {
+                id
+                name
+                type
+            }
         }
     }
 }`;

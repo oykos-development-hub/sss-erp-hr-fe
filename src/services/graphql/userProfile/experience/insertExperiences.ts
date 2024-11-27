@@ -18,8 +18,7 @@ const insertExperiences = `mutation UserProfileExperiencesInsert($data: [UserPro
             date_of_end
             created_at
             updated_at
-            reference_file_id
-            file {
+            files {
                 id
                 name
                 type

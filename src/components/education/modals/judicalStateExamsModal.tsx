@@ -9,6 +9,8 @@ import {FileUploadWrapper, FormGroup, ModalContentWrapper} from './styles';
 import {parseDateForBackend, parseToDate} from '../../../utils/dateUtils';
 import {ProfileEducationFormValues} from '../../../types/graphql/education';
 import useAppContext from '../../../context/useAppContext';
+import { FileItem } from '../../../types/fileUploadType';
+import FileList from '../../fileList/fileList';
 
 export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   selectedItem,
@@ -20,19 +22,23 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
 }) => {
   const {settingsData} = useGetSettings({entity: educationTypes.education_exam_types});
   const [files, setFiles] = useState<FileList | null>(null);
+  const [initialFiles, setInitialFiles] = useState<FileItem[]>([]);  
+  const [isUploadingFiles, setIsUploadingFiles] = useState<boolean>(false);
+
   const {
-    fileService: {uploadFile},
+    fileService: {uploadFile, deleteFile},
   } = useAppContext();
+
   const item = useMemo(
     () =>
       selectedItem
         ? {
-            ...selectedItem,
-            academic_title: {
-              id: selectedItem?.academic_title,
-              title: selectedItem?.academic_title,
-            },
-          }
+          ...selectedItem,
+          academic_title: {
+            id: selectedItem?.academic_title,
+            title: selectedItem?.academic_title,
+          },
+        }
         : initialValues,
     [selectedItem],
   );
@@ -43,14 +49,16 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
     formState: {errors},
     reset,
     register,
-    setValue,
     watch,
   } = useForm({defaultValues: initialValues});
 
   const {insertEducation, loading: isSaving} = useInsertEducation();
 
   useEffect(() => {
-    item && reset({...item, date_of_certification: parseToDate(item.date_of_certification)});
+    if (item) {
+      reset({...item, date_of_certification: parseToDate(item.date_of_certification)});
+      setInitialFiles(item.files);
+    } 
   }, [item]);
 
   const handleInsertEducation = async (data: any) => {
@@ -70,7 +78,7 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
   };
 
   const onSubmit = async (values: ProfileEducationFormValues) => {
-    if (isSaving) return;
+    if (isSaving || isUploadingFiles) return;
 
     const data = {
       id: values.id,
@@ -87,34 +95,63 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
       type_id: values.type?.id || 0,
       user_profile_id: Number(navigation.location.pathname.split('/')[4]),
       score: values?.score,
+      file_ids: initialFiles.map(file => file.id)
     };
 
-    if (files) {
-      const formData = new FormData();
+    const hasFiles = (files?.length && files.length > 0);
+
+    if (hasFiles) {
       const fileArray = Array.from(files);
 
-      formData.append('file', fileArray[0]);
+      for (const file of fileArray) {
+        setIsUploadingFiles(true);
 
-      await uploadFile(
-        formData,
-        (res: any) => {
-          setFiles(null);
-          setValue('file_id', res[0]?.id);
-          const updatedData = {...data, file_id: res[0]?.id};
-          handleInsertEducation(updatedData);
-        },
-        () => {
-          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
-        },
-      );
-    } else {
-      handleInsertEducation(data);
+        const formData = new FormData();
+
+        formData.append('file', file);
+
+        await uploadFile(
+          formData,
+          (res: any) => {
+            data.file_ids.push(res[0]?.id);
+            setIsUploadingFiles(false);
+          },
+          () => {
+            setIsUploadingFiles(false);
+            alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+          },
+        );
+      }
+
+      setFiles(null);
     }
+
+    handleInsertEducation(data);
+    
+    reset();
+    deleteFiles();
   };
 
   const handleFileUpload = (files: FileList) => {
     setFiles(files);
-    alert.success('Fajlovi uspješno učitani');
+    if (files.length > 0) {
+      alert.success('Fajlovi uspješno učitani');
+    }
+  };
+
+  const onFileRemove = (id: number) => {
+    setInitialFiles(files => files.filter(file => file.id !== id));
+  };
+
+  const deleteFiles = async () => {
+    for (const file of (selectedItem?.files) || []) {
+      const fileDeleted = !initialFiles.some(file2 => file2.id === file.id);
+      if (fileDeleted) {
+        await deleteFile(
+          file.id, 
+        );
+      }
+    }
   };
 
   return (
@@ -177,8 +214,13 @@ export const JudicalAndStateExamsModal: React.FC<ModalProps> = ({
                 onUpload={handleFileUpload}
                 note={<Typography variant="bodySmall" content="Obrazovni sertifikat" />}
                 buttonText="Učitaj"
+                files={files}
+                multiple={true}
               />
             </FileUploadWrapper>
+            {initialFiles && (
+              <FileList onDelete={onFileRemove} files={initialFiles} />
+            )}
           </FormGroup>
         </ModalContentWrapper>
       }

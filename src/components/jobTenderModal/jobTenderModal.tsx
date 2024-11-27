@@ -250,6 +250,7 @@ export const JobTenderModal: React.FC<JobTendersModalProps> = ({
               onUpload={handleUpload}
               note={<Typography variant="bodySmall" content="Dokument oglasa" />}
               buttonText="Učitaj"
+              multiple={true}
             />
             {selectedItem?.file?.id !== 0 && <FileList files={(selectedItem?.file && [selectedItem?.file]) ?? []} />}
           </FileUploadWrapper>

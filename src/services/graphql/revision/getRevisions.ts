@@ -31,12 +31,12 @@ const getRevisions = `query RevisionOverview($page: Int, $size: Int, $internal_r
                 id
                 title
             }
-            file {
+            files {
               id
               name
               type
             }
-            tips_file {
+            tips_files {
                 id
                 name
                 type

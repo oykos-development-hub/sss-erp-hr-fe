@@ -19,12 +19,12 @@ export const SystematizationFilters: React.FC<SystematizationFiltersProps> = ({s
 
   return (
     <FiltersContainer>
-      <Input
-        value={filters.search}
-        name="search"
-        onChange={value => onFilterChange('search', value)}
-        label="BROJ SISTEMATIZACIJE:"
-        rightContent={<SearchIcon style={{marginInline: 10}} stroke={Theme.palette.gray300} />}
+      <Dropdown
+        value={organizationUnits.find(orgUnit => orgUnit.id === filters.organization_unit_id)}
+        name="organization_unit_id"
+        onChange={value => onFilterChange('organization_unit_id', value)}
+        label="ORGANIZACIONA JEDINICA:"
+        options={organizationUnits}
       />
       <Dropdown
         value={yearOptions.find(year => year.id === filters.year)}
@@ -33,12 +33,12 @@ export const SystematizationFilters: React.FC<SystematizationFiltersProps> = ({s
         label="GODINA:"
         options={yearOptions}
       />
-      <Dropdown
-        value={organizationUnits.find(orgUnit => orgUnit.id === filters.organization_unit_id)}
-        name="organization_unit_id"
-        onChange={value => onFilterChange('organization_unit_id', value)}
-        label="ORG. JEDINICA:"
-        options={organizationUnits}
+      <Input
+        value={filters.search}
+        name="search"
+        onChange={value => onFilterChange('search', value)}
+        label="BROJ SISTEMATIZACIJE:"
+        rightContent={<SearchIcon style={{marginInline: 10}} stroke={Theme.palette.gray300} />}
       />
     </FiltersContainer>
   );

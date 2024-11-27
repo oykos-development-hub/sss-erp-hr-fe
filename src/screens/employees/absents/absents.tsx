@@ -26,8 +26,8 @@ import {
   YearWrapper,
 } from './styles';
 import {FileItem} from '../../../types/fileUploadType';
-import FileModalView from '../../../components/fileModalView/fileModalView';
 import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
+import MultiFileModalView from '../../../components/fileModalViewMultiple/fileModalViewMultiple.tsx';
 
 const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const years = yearsForDropdownFilter();
@@ -45,7 +45,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
   const {deleteResolution} = useResolutionDelete();
   const [editItem, setEditItem] = useState<Absence | undefined>();
   const [showDeleteVacationModal, setShowDeleteVacationModal] = useState<boolean>(false);
-  const [fileToView, setFileToView] = useState<FileItem>();
+  const [filesToView, setFilesToView] = useState<FileItem[]>();
   const updatePermittedRoutes = checkActionRoutePermissions(context.contextMain?.permissions, 'update');
   const updatePermission = updatePermittedRoutes.includes('/hr/employees');
 
@@ -164,9 +164,9 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
       name: 'showFile',
       icon: <FileIcon stroke={Theme.palette.gray600} />,
       onClick: (row: any) => {
-        setFileToView(row?.file);
+        setFilesToView(row?.files);
       },
-      shouldRender: (row: any) => row?.file?.id,
+      shouldRender: (row: any) => row?.files?.length > 0,
     },
   ];
 
@@ -261,9 +261,9 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
               name: 'showFile',
               icon: <FileIcon stroke={Theme.palette.gray600} />,
               onClick: (row: any) => {
-                setFileToView(row?.file);
+                setFilesToView(row?.files);
               },
-              shouldRender: (row: any) => row?.file?.id,
+              shouldRender: (row: any) => row?.files?.length > 0,
             },
             {
               name: 'Izmijeni',
@@ -278,7 +278,7 @@ const Absents: React.FC<{context: MicroserviceProps}> = ({context}) => {
           ]}
         />
       </div>
-      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
+      {filesToView && <MultiFileModalView files={filesToView} onClose={() => setFilesToView(undefined)} />}
       {showModal && (
         <AbsentModal
           open={showModal}

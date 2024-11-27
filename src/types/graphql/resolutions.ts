@@ -10,7 +10,7 @@ export type ProfileResolution = {
   date_of_end?: string;
   created_at?: string;
   updated_at?: string;
-  file: FileItem;
+  files: FileItem[];
   resolution_type: ResolutionType | null;
   is_affect: DropdownDataBoolean;
   year: number;

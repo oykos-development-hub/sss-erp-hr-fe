@@ -1,3 +1,4 @@
+import {yupResolver} from '@hookform/resolvers/yup';
 import {Datepicker, Dropdown, FileUpload, Input, Modal, Typography} from 'client-library';
 import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
@@ -11,9 +12,11 @@ import useGetSuppliers from '../../services/graphql/suppliers/useGetSuppliers';
 import {revisionInsertItem} from '../../types/graphql/revisionInsert';
 import {FormGroupFullWidth} from '../revisionTipsModal/styles';
 import {Column, FileUploadWrapper, FormGroup, ModalForm, ModalSection, Row} from './styles';
-import {RevisionFormValues} from '../../types/graphql/revisions';
 import useAppContext from '../../context/useAppContext';
 import FileList from '../fileList/fileList.tsx';
+import { FileItem } from '../../types/fileUploadType.ts';
+import * as yup from 'yup';
+import { parseDateForBackend } from '../../utils/dateUtils.ts';
 
 interface RevisionModalProps {
   open: boolean;
@@ -24,24 +27,63 @@ interface RevisionModalProps {
   planId: number;
 }
 
-const initialValues: RevisionFormValues = {
-  id: null,
-  title: '',
-  plan_id: 0,
-  serial_number: '',
-  date_of_revision: '',
-  revision_priority: '',
-  revision_quartal: null,
-  internal_revision_subject_id: [],
-  external_revision_subject_id: null,
-  revisor_id: [],
-  revision_type_id: null,
-};
+const confirmationSchema = yup.object().shape({
+  id: yup.number().default(undefined).optional(),
+  title: yup.string().required('Ovo polje je obavezno').default(undefined),
+  serial_number: yup.string().required('Ovo polje je obavezno').default(undefined),
+  plan_id: yup.number().required('Ovo polje je obavezno').default(undefined),
+  date_of_revision: yup.date().required('Ovo polje je obavezno').default(undefined),
+  revisor_id: yup
+    .array()
+    .of(
+      yup.object().shape({
+        value: yup.number().required(),
+        label: yup.string().required(),
+      })
+    )
+    .min(1, 'Obavezno polje')
+    .default([])
+    .required('Ovo polje je obavezno'),
+  revision_quartal: yup.object().shape({
+    id: yup.string().required(),
+    title: yup.string().required(),
+  }).default(undefined).required('Ovo polje je obavezno'),
+  revision_type_id: yup.object().shape({
+    id: yup.number().required(),
+    title: yup.string().required(),
+  }).default(undefined).required('Ovo polje je obavezno'),
+  internal_revision_subject_id: yup.array()
+    .of(
+      yup.object().shape({
+        value: yup.number(),
+        label: yup.string().required(),
+      })
+    )
+    .default([]),
+  external_revision_subject_id: yup.object().shape({
+    id: yup.number().required(),
+    title: yup.string().required(),
+  })
+    .default(undefined)
+    .optional(),
+}).test(
+  'at-least-one',
+  'Jedno od polja `internal_revision_subject_id` ili `external_revision_subject_id` mora biti popunjeno',
+  function (values) {
+    if (
+      (!values.internal_revision_subject_id || values.internal_revision_subject_id.length === 0) &&
+      !values.external_revision_subject_id
+    ) {
+      return this.createError({ path: 'internal_revision_subject_id', message: 'Jedno od polja mora biti popunjeno' });
+    }
+    return true;
+  }
+);
 
 export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, alert, refetchList, id, planId}) => {
-  const {revisionDetails} = useGetRevisionDetails(id);
+  const {revisionDetails, loading} = useGetRevisionDetails(id);
   const {insertRevision, loading: isSaving} = useInsertRevision();
-  const {suppliers} = useGetSuppliers();
+  const {suppliers, loading: loadingSuppliers} = useGetSuppliers();
   const {organizationUnits} = useGetOrganizationUnits(undefined);
   const {revisions} = useGetRevisions({
     page: 1,
@@ -52,8 +94,10 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
     revisor_id: 0,
   });
   const [files, setFiles] = useState<FileList | null>(null);
+  const [initialFiles, setInitialFiles] = useState<FileItem[]>([]);
+
   const {
-    fileService: {uploadFile},
+    fileService: {uploadFile, deleteFile},
   } = useAppContext();
 
   const {settingsData} = useGetSettings({entity: 'revision_types'});
@@ -73,7 +117,10 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
     reset,
     watch,
     setValue,
-  } = useForm<RevisionFormValues>({defaultValues: initialValues});
+    clearErrors,
+  } = useForm({
+    resolver: yupResolver(confirmationSchema),
+  });
 
   const handleInsertRevision = (data: any) => {
     insertRevision(
@@ -81,7 +128,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
       () => {
         refetchList();
         onClose();
-        reset(initialValues);
+        reset();
         alert.success(revisionDetails?.id ? 'Revizija uspješno sačuvan.' : 'Revizija je uspešno dodat.');
       },
       () => {
@@ -98,63 +145,72 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
     if (isSaving) return;
 
     const data: revisionInsertItem = {
-      id: values?.id,
-      title: values?.title || null,
-      plan_id: planId,
-      serial_number: values?.serial_number || null,
-      date_of_revision: values?.date_of_revision || null,
-      revision_quartal: values?.revision_quartal.id || null,
+      id: values?.id || 0,
+      title: values.title,
+      plan_id: values.plan_id,
+      serial_number: values.serial_number ,
+      date_of_revision: parseDateForBackend(values.date_of_revision) || '',
+      revision_quartal: values.revision_quartal.id,
       internal_revision_subject_id: values?.internal_revision_subject_id?.map((item: any) => item.value),
       external_revision_subject_id: values?.external_revision_subject_id?.id || null,
       revisor_id: values?.revisor_id?.map((item: any) => item.value),
       revision_type_id: values?.revision_type_id.id || null,
+      file_ids: initialFiles.map(file => file.id)
     };
 
-    if (files) {
-      const formData = new FormData();
+    const hasFiles = (files?.length && files.length > 0);
+
+    if (hasFiles) {
       const fileArray = Array.from(files);
 
-      formData.append('file', fileArray[0]);
+      for (const file of fileArray) {
+        const formData = new FormData();
 
-      await uploadFile(
-        formData,
-        (res: any) => {
-          setFiles(null);
-          const updatedData = {...data, file_id: res[0]?.id};
-          handleInsertRevision(updatedData);
-        },
-        () => {
-          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
-        },
-      );
-    } else {
-      handleInsertRevision(data);
+        formData.append('file', file);
+
+        await uploadFile(
+          formData,
+          (res: any) => {
+            data.file_ids.push(res[0]?.id);
+            setFiles(null);
+          },
+          () => {
+            alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+          },
+        );
+      }
     }
+
+    handleInsertRevision(data);
+
+    deleteFiles();
   };
 
   const internalSubject = watch('internal_revision_subject_id');
   const externalSubject = watch('external_revision_subject_id');
 
   useEffect(() => {
-    if (internalSubject.length) {
-      setValue('external_revision_subject_id', null);
+    if (internalSubject && internalSubject.length > 0) {
+      clearErrors('external_revision_subject_id');
+      setValue('external_revision_subject_id', undefined);
     }
-  }, [internalSubject, setValue]);
+  }, [internalSubject]);
 
   useEffect(() => {
     if (externalSubject) {
+      clearErrors('internal_revision_subject_id');
       setValue('internal_revision_subject_id', []);
     }
   }, [externalSubject, setValue]);
 
   useEffect(() => {
-    if (revisionDetails && revisionDetails && id) {
+    if (revisionDetails && id && !loading && !loadingSuppliers) {
       reset({
         id: revisionDetails.id,
         title: revisionDetails.title,
         plan_id: revisionDetails.plan_id,
         serial_number: revisionDetails.serial_number,
-        date_of_revision: revisionDetails.date_of_revision,
+        date_of_revision: new Date(revisionDetails.date_of_revision),
         revision_quartal: quarterOptions.find(
           (quarterOptions: any) => quarterOptions.id === revisionDetails.revision_quartal,
         ),
@@ -163,21 +219,40 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
           label: item.title,
         })),
         external_revision_subject_id: suppliers.find(
-          (suppliers: any) => suppliers.id === revisionDetails.external_revision_subject?.id,
+          (supplier) => supplier.id === revisionDetails.external_revision_subject?.id,
         ),
         revisor_id: revisionDetails.revisor?.map((item: any) => ({
           value: item.id,
           label: item.title,
         })),
-        revision_type_id: revisionsList?.find(
-          (revisionsList: any) => revisionsList.title === revisionDetails.revision_type?.title,
-        ),
+        revision_type_id: revisionDetails.revision_type ?? undefined
       });
-    }
-  }, [revisionDetails]);
 
-  const handleUpload = (files: FileList) => {
+      setInitialFiles(revisionDetails.files);
+    }
+
+    setValue('plan_id', planId);
+  }, [revisionDetails, suppliers]);
+
+  const onFileRemove = (id: number) => {
+    setInitialFiles(files => files.filter(file => file.id !== id));
+  };
+
+  const deleteFiles = async () => {
+    for (const file of revisionDetails?.files || []) {
+      const fileDeleted = !initialFiles.some(file2 => file2.id === file.id);
+      if (fileDeleted) {
+        await deleteFile(
+          file.id, 
+        );
+      }
+    }
+  };
+
+  const handleFileUpload = (files: FileList) => {
     setFiles(files);
+    
+    alert.success('Fajlovi uspješno učitani');
   };
 
   return (
@@ -303,7 +378,7 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
                       onChange={onChange}
                       label="DATUM REVIZIJE:"
                       name={name}
-                      selected={value ? new Date(value) : ''}
+                      selected={value}
                       isRequired
                       error={errors.date_of_revision?.message as string}
                     />
@@ -336,12 +411,13 @@ export const RevisionModal: React.FC<RevisionModalProps> = ({open, onClose, aler
               icon={<></>}
               style={{width: '100%'}}
               variant="secondary"
-              onUpload={handleUpload}
+              onUpload={handleFileUpload}
               note={<Typography variant="bodySmall" content="Upload dokumenta" />}
               buttonText="Učitaj"
+              multiple={true}
             />
-            {revisionDetails?.file?.id !== 0 && (
-              <FileList files={(revisionDetails?.file && [revisionDetails?.file]) ?? []} />
+            {initialFiles && (
+              <FileList onDelete={onFileRemove} files={initialFiles} />
             )}
           </FileUploadWrapper>
         </ModalForm>

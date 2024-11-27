@@ -13,11 +13,11 @@ export type Absence = {
   description: string;
   created_at: string;
   updated_at: string;
-  file: {
+  files: [{
     id: number;
     name: string;
     type: string;
-  };
+  }];
 };
 
 export type AbsenceSummary = {

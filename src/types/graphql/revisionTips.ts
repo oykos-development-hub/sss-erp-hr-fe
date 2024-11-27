@@ -11,14 +11,13 @@ export type RevisionTip = {
   date_of_execution: string;
   recommendation: string;
   status: string;
-  documents: string;
-  reasons_for_non_executing: string;
   user_profile: DropdownDataNumber;
-  file: FileItem;
+  files: FileItem[];
   created_at: string;
   updated_at: string;
   revision_priority: string;
   end_date: string;
+  responsible_person: string;
 };
 
 export type RevisionTipInsertParams = {
@@ -64,4 +63,36 @@ export type RevisionTipForm = {
   recommendation: string;
   revision_priority: DropdownDataString | null;
   new_due_date: DropdownDataNumber | null;
+};
+
+
+export type RevisionTipImplementationsParams = {
+  tip_id?: number;
+  id?: number;
+};
+
+export type RevisionTipImplementationsResponse = {
+  get: {
+    revisionTipImplementations_Overview: GetResponse<RevisionTipImplementation> & {revisors: DropdownDataNumber[]};
+  };
+  insert: {
+    revisionTipImplementation_Insert: InsertResponse<RevisionTipImplementation>;
+  };
+  delete: {
+    revisionTipImplementation_Delete: DeleteResponse;
+  };
+};
+
+export type RevisionTipImplementation = {
+  id: number;
+  tip_id: number;
+  status: string;
+  new_due_date: number;
+  new_date_of_execution: string;
+  reasons_for_non_executing: string;
+  revisor: DropdownDataNumber;
+  documents: string;
+  files: FileItem[];
+  created_at: string;
+  updated_at: string;
 };

@@ -79,6 +79,9 @@ import insertTemplate from './templates/insertTemplate.ts';
 import updateTemplateAdmin from './templates/updateTemplateAdmin.ts';
 import updateTemplateManager from './templates/updateTemplateManager.ts';
 import getParameterValues from './templates/getParameterValues.ts';
+import getRevisionTipsImplementations from './revisionTipImplementation/getRevisionTipsImplementations.ts';
+import deleteRevisionTipImplementation from './revisionTipImplementation/deleteRevisionTipImplementation.ts';
+import insertRevisionTipImplementation from './revisionTipImplementation/insertRevisionTipImplementation.ts';
 
 export const GraphQL = {
   updateBasicInfo: updateBasicInfo,
@@ -141,6 +144,9 @@ export const GraphQL = {
   getRevisionTipDetails: getRevisionTipDetails,
   insertRevisionTip: insertRevisionTip,
   deleteRevisionTip: deleteRevisionTip,
+  getRevisionTipsImplementations: getRevisionTipsImplementations,
+  insertRevisionTipImplementation: insertRevisionTipImplementation,
+  deleteRevisionTipImplementation: deleteRevisionTipImplementation,
   terminateEmployment: terminateEmployment,
   getJobPositions: getJobPositions,
   getAvailableJobPositions: getAvailableJobPositions,

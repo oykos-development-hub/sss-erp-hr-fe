@@ -80,10 +80,10 @@ export const LandingPage: React.FC = () => {
             <ContentBox
               onClick={() => {
                 navigate('/hr/revision-recommendations');
-                breadcrumbs.add({name: 'Preporuke interne revizije', path: '/hr/revision-recommendations'});
+                breadcrumbs.add({name: 'Interne revizije', path: '/hr/revision-recommendations'});
               }}>
               <TitleWrapper>
-                <Title variant="bodyLarge" content="Preporuke interne revizije" />
+                <Title variant="bodyLarge" content="Interne revizije" />
               </TitleWrapper>
               <IconWrapper>
                 <BookIcon />

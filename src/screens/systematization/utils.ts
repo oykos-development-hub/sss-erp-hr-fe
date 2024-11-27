@@ -6,7 +6,6 @@ export const formatSystematization = (data: any) => {
     id: data?.id || 0,
     organization_unit_id: data?.organization_unit?.id,
     date_of_activation: parseDateForBackend(data?.date_of_activation),
-    file_id: data?.file?.id || data?.file_id || 0,
   };
 
   delete payload.user_profile;
@@ -16,6 +15,7 @@ export const formatSystematization = (data: any) => {
   delete payload.updated_at;
   delete payload.active_employees;
   delete payload.file;
+  delete payload.files;
 
   return payload;
 };

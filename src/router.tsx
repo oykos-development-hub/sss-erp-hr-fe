@@ -21,6 +21,7 @@ import {LandingPage} from './screens/landingPage/landingPage.tsx';
 import {Judges} from './screens/judges/landing.tsx';
 import {JobTenders} from './screens/jobTenders/landing.tsx';
 import {checkActionRoutePermissions, checkRoutePermissions} from './services/checkRoutePermissions.ts';
+import RevisionTipImplementations from './screens/internalRevision/revisionTipImplementations/revisionTipImplementations.tsx';
 
 const employeesRegex = /\/hr\/employees(?!\/add-new)(\/.)?/;
 const systematizationDetailsRegex = /^\/hr\/systematization\/systematization-details(?:\/(\d+))?$/;
@@ -31,6 +32,7 @@ const ApplicationsDetailsRegex = /^\/hr\/job-tenders\/job-tender-applications\/\
 const judgesNumberDetailsRegex = /^\/hr\/judges\/number-decision\/\d+/;
 const revisionsRegex = /^\/hr\/revision-recommendations\/\d+\/revision/;
 const recommendationsRegex = /^\/hr\/revision-recommendations\/\d+\/revision\/\d+\/recommendations/;
+const recommendationImplementationsRegex = /^\/hr\/revision-recommendations\/\d+\/revision\/\d+\/recommendations\/\d+\/implementation/;
 
 export const Router: React.FC<MicroserviceProps> = props => {
   const pathname = props?.navigation?.location?.pathname;
@@ -56,8 +58,10 @@ export const Router: React.FC<MicroserviceProps> = props => {
       return <SystematizationDetails />;
     if (pathname === '/hr/revision-recommendations' && allowedRoutes.includes('/hr/revision-recommendations'))
       return <RevisionPlansList context={context} />;
+    if (recommendationImplementationsRegex.test(pathname) && allowedRoutes.includes('/hr/revision-recommendations'))
+      return <RevisionTipImplementations />;
     if (recommendationsRegex.test(pathname) && allowedRoutes.includes('/hr/revision-recommendations'))
-      return <RevisionTips />;
+      return <RevisionTips context={context} />;
     if (revisionsRegex.test(pathname) && allowedRoutes.includes('/hr/revision-recommendations'))
       return <RevisionList context={context} />;
     if (JobTendersRegex.test(pathname) && allowedRoutes.includes('/hr/job-tenders'))

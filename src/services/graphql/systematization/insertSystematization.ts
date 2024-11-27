@@ -16,7 +16,11 @@ const insertSystematization = `mutation($data: SystematizationInsertMutation!) {
               serial_number 
               active 
               date_of_activation 
-              file_id
+              files {
+                id
+                name
+                type
+              }
               created_at 
               updated_at 
               sectors {

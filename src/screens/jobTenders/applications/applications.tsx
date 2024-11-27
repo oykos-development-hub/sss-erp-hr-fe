@@ -68,16 +68,16 @@ const ApplicationsScreen = (props: ScreenProps) => {
           <FilterDropdown
             label="TIP OGLASA:"
             name="type_id"
-            onChange={(value: any) => onFilterChange(value, 'type_id')}
-            value={filters.type_id}
+            onChange={(value: any) => onFilterChange(value.id, 'type_id')}
+            value={options.find(val => val.id === filters.type_id)}
             options={options}
             placeholder="Tip oglasa:"
           />
           <FilterDropdown
             label="ORGANIZACIONA JEDINICA:"
             name="organization_unit_id"
-            onChange={(value: any) => onFilterChange(value, 'organization_unit_id')}
-            value={filters.organization_unit_id}
+            onChange={(value: any) => onFilterChange(value.id, 'organization_unit_id')}
+            value={organizationUnits.find(val => val.id === filters.organization_unit_id)}
             options={organizationUnits}
             placeholder="Odaberite organizacionu jedinicu"
           />

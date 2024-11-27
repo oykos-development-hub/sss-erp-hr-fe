@@ -19,7 +19,7 @@ const insertAbsence = `mutation UserProfileAbsentInsert($data: UserProfileAbsent
             description
             created_at
             updated_at
-            file {
+            files {
                 id
                 name
                 type

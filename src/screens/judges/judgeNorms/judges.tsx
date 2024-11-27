@@ -29,7 +29,7 @@ const initialValues: JudgesListFilters = {
 const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
   const [showModal, setShowModal] = useState(false);
   const [page, setPage] = useState(1);
-  const [selectedItemId, setSelectedItemId] = useState(0);
+  const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
   const [selectedNormItemId, setSelectedNormItemId] = useState(0);
   const [normsList, setNormsList] = useState<JudgeNorm[]>([]);
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
@@ -53,13 +53,20 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
 
   const screenWrapperRef = useRef<HTMLDivElement>(null);
 
-  const isNorm = normsList.length > 0;
+  useEffect(() => {
+    if (!judges?.find(judge => judge.id == selectedItemId)) {
+      setSelectedItemId(null);
+    }
+  
+  }, [judges]);
+  
 
   const selectedNormItem = useMemo(() => {
     return normsList?.find((item: JudgeNorm) => item.id === selectedNormItemId);
   }, [selectedNormItemId]);
 
-  const normsListSet = () => {
+
+  useEffect(() => {
     const item = judges?.find((item: Judge) => item.id === selectedItemId);
     setNormsList([
       ...(item?.norms || []).map(norm => ({
@@ -67,10 +74,6 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
         full_name: item?.full_name,
       })),
     ]);
-  };
-
-  useEffect(() => {
-    normsListSet();
   }, [judges, selectedItemId]);
 
   const {deleteJudgeNorm} = useDeleteJudgeNorm();
@@ -81,7 +84,7 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
   };
 
   const toggleJudgesNorms = (item?: Judge) => {
-    setSelectedItemId(item?.id || 0);
+    setSelectedItemId(item?.id || null);
   };
 
   const onPageChange = (page: number) => {
@@ -131,17 +134,14 @@ const JudgeNorms: React.FC<ScreenProps> = ({context}) => {
         addNorm={() => openNormModal()}
         loading={loading}
         parentRef={screenWrapperRef}
-        isNorm={isNorm}
         createPermission={createPermission}
       />
-
-      {isNorm && (
+      {normsList.length > 0 && selectedItemId && (
         <NormsList
           data={normsList}
           toggleNormsModal={item => openNormModal(item)}
           handleDeleteIconClick={handleDeleteIconClick}
           loading={loading}
-          filters={filters}
           onFilterChange={onFilterChange}
           updatePermission={updatePermission}
           deletePermission={deletePermission}

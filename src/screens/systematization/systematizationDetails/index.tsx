@@ -24,14 +24,14 @@ import {formatSystematization} from '../utils';
 import Departments from './departments/departments';
 import {Footer} from './footer/footer';
 import {PrintPage} from './printPage/printPage';
-import {FileUploadWrapper, MainWrapper, Row, TitleWrapper, StyledFileIcon, FileIconButton} from './styles';
+import {FileUploadWrapper, MainWrapper, Row, TitleWrapper, StyledFileIcon, FileIconButton, Controls} from './styles';
 import useGetJobPositions from '../../../services/graphql/jobPositions/useGetJobPositions';
 import {JobPositionOrgUnitTableData, SystematizationDocumentProps, TableData} from './printPage/types.ts';
 import {generateDocxDocument} from './printPage/docx.ts';
 import {saveAs} from 'file-saver';
-import FileModalView from '../../../components/fileModalView/fileModalView.tsx';
 import {FileItem} from '../../../components/fileModalView/types.ts';
 import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
+import FileList from '../../../components/fileList/fileList.tsx';
 
 const initialValues: any = {
   organization_unit: null,
@@ -40,7 +40,7 @@ const initialValues: any = {
   active: 0,
   date_of_activation: null,
   sectors: [],
-  file_id: 0,
+  file_ids: [],
   user_profile_id: 0,
 };
 
@@ -67,6 +67,10 @@ export const SystematizationDetails: React.FC = () => {
   const [showEditSectorModal, setShowEditSectorModal] = useState(false);
   const [selectedSector, setSelectedSector] = useState<SectorType>();
 
+  const [files, setFiles] = useState<FileList | null>(null);
+  const [initialFiles, setInitialFiles] = useState<FileItem[]>([]);  
+  const [showFileUploadError, setShowFileUploadError] = useState<boolean>(false);
+
   const {alert} = useAppContext();
 
   const {systematizationDetails, refetch} = useGetSystematizationDetails(+systematizationId);
@@ -91,20 +95,9 @@ export const SystematizationDetails: React.FC = () => {
   });
   const organizationUnit = methods?.watch('organization_unit');
 
-  const [uploadedFile, setUploadedFile] = useState<FileList>();
-  const [showFileUploadError, setShowFileUploadError] = useState<boolean>(false);
-  const handleUpload = (files: FileList) => {
-    setUploadedFile(files);
-    setShowFileUploadError(false);
-  };
-
-  const handleShowError = (errorMessage: boolean) => {
-    setShowFileUploadError(errorMessage);
-  };
   const {
-    fileService: {uploadFile},
+    fileService: {uploadFile, deleteFile},
   } = useAppContext();
-  const [fileToView, setFileToView] = useState<FileItem>();
 
   const handleMutate = (data: InsertSystematizationParams) => {
     const payload = formatSystematization(data);
@@ -141,28 +134,36 @@ export const SystematizationDetails: React.FC = () => {
 
   const handleSave = async (data: InsertSystematizationParams) => {
     if (activeTab === 1) {
-      if (uploadedFile) {
+      data.file_ids = initialFiles.map(file => file.id);
+      
+      const hasFiles = (files?.length && files.length > 0);
+
+      if (hasFiles) {
         setShowFileUploadError(false);
 
-        const formData = new FormData();
-        const fileArray = Array.from(uploadedFile);
+        const fileArray = Array.from(files);
 
-        formData.append('file', fileArray[0]);
+        for (const file of fileArray) {
+          const formData = new FormData();
 
-        await uploadFile(
-          formData,
-          (res: any) => {
-            setUploadedFile(undefined);
-            data.file_id = res[0]?.id;
-            handleMutate(data);
-          },
-          () => {
-            alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
-          },
-        );
-      } else {
-        handleMutate(data);
+          formData.append('file', file);
+
+          await uploadFile(
+            formData,
+            (res: any) => {
+              data.file_ids.push(res[0]?.id);
+            },
+            () => {
+              alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+            },
+          );
+        }
+
+        setFiles(null);
+        deleteFiles();
       }
+      
+      handleMutate(data);
     } else if (systematizationDetails?.sectors?.length) {
       const tableData = (): TableData[] => {
         return systematizationDetails?.sectors.map((sector: SectorType) => {
@@ -226,6 +227,28 @@ export const SystematizationDetails: React.FC = () => {
     setActiveTab(tab.id as number);
   };
 
+  const handleFileUpload = (files: FileList) => {
+    setFiles(files);
+    if (files.length > 0) {
+      alert.success('Fajlovi uspješno učitani');
+    }
+  };
+
+  const onFileRemove = (id: number) => {
+    setInitialFiles(files => files.filter(file => file.id !== id));
+  };
+
+  const deleteFiles = async () => {
+    for (const file of (systematizationDetails?.files) || []) {
+      const fileDeleted = !initialFiles.some(file2 => file2.id === file.id);
+      if (fileDeleted) {
+        await deleteFile(
+          file.id, 
+        );
+      }
+    }
+  };
+
   useEffect(() => {
     if (systematizationDetails) {
       methods.reset({
@@ -233,9 +256,16 @@ export const SystematizationDetails: React.FC = () => {
         date_of_activation: parseToDate(systematizationDetails.date_of_activation),
         user_profile_id: contextMain?.id,
       });
+
       refetchEmployees();
+
+      setInitialFiles(systematizationDetails.files);
     }
   }, [systematizationDetails]);
+
+  const handleShowError = (errorMessage: boolean) => {
+    setShowFileUploadError(errorMessage);
+  };
 
   return (
     <ScreenWrapper>
@@ -277,7 +307,7 @@ export const SystematizationDetails: React.FC = () => {
                         value={value}
                         name={name}
                         label="ORGANIZACIONA JEDINICA:"
-                        options={organizationUnits}
+                        options={organizationUnits.slice(1)}
                         isDisabled={!!systematizationDetails?.organization_unit?.id}
                         isRequired
                         error={methods?.formState?.errors.organization_unit?.message as string}
@@ -309,28 +339,25 @@ export const SystematizationDetails: React.FC = () => {
                 disableUpdate={disableUpdate}
               />
 
-              <FileUploadWrapper>
-                <Typography content="dokument o usvajanju sistematizacije" variant="bodySmall" />
-                {systematizationDetails?.file?.id ? (
-                  <FileIconButton onClick={() => setFileToView(systematizationDetails.file)}>
-                    <Typography content={systematizationDetails.file.name} variant="bodySmall" />
-                    <StyledFileIcon stroke={Theme.palette.gray600} />
-                  </FileIconButton>
-                ) : !disableUpdate ? (
+              {!disableUpdate && (
+                <FileUploadWrapper>
                   <FileUpload
                     icon={<></>}
-                    disabled={isSystematizationInactive}
-                    style={{width: '100%', marginRight: 10}}
+                    style={{width: '100%'}}
                     variant="secondary"
-                    onUpload={handleUpload}
-                    buttonText="Dodajte dokument"
-                    note="Izaberite datoteku ili je prevucite ovdje"
-                    error={showFileUploadError ? 'Morate učitati fajl' : undefined}
+                    onUpload={handleFileUpload}
+                    note={<Typography variant="bodySmall" content="Dokument o usvajanju sistematizacije" />}
+                    buttonText="Učitaj"
+                    files={files}
+                    multiple={true}
                   />
-                ) : (
-                  <div />
-                )}
-              </FileUploadWrapper>
+                </FileUploadWrapper>
+              )}
+              {initialFiles && (
+                <div style={{alignSelf: 'start'}}>
+                  <FileList onDelete={onFileRemove} files={initialFiles} />
+                </div>
+              )}
             </MainWrapper>
           ) : (
             <PrintPage sectorDetails={systematizationDetails?.sectors ?? []} />
@@ -341,9 +368,9 @@ export const SystematizationDetails: React.FC = () => {
             handleSaveButton={methods?.handleSubmit(handleSave)}
             status={systematizationDetails?.active}
             id={+systematizationId}
-            uploadedFile={uploadedFile}
+            uploadedFile={files || undefined}
             setError={handleShowError}
-            file={systematizationDetails?.file?.id}
+            file={systematizationDetails?.files?.[0]?.id}
             disableUpdate={activeTab === 1 && disableUpdate}
           />
         </FormProvider>
@@ -357,7 +384,6 @@ export const SystematizationDetails: React.FC = () => {
           />
         )}
       </OverviewBox>
-      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
     </ScreenWrapper>
   );
 };

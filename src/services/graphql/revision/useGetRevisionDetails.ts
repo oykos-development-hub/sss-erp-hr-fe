@@ -16,7 +16,8 @@ const initialValues = {
   external_revision_subject: null,
   revisor: [],
   revision_type: null,
-  file: {id: 0, name: '', type: ''},
+  files: [],
+  tips_files: [],
   year: '',
 };
 

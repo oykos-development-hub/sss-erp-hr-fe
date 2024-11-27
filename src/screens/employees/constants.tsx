@@ -36,10 +36,10 @@ export const tableHeads: TableHead[] = [
           row.is_judge && row.is_judge_president
             ? 'Predsjednik suda'
             : row.is_judge
-            ? 'Sudija'
-            : row.is_judge_president
-            ? 'Predsjednik suda'
-            : job_position?.title
+              ? 'Sudija'
+              : row.is_judge_president
+                ? 'Predsjednik suda'
+                : job_position?.title
         }
         variant="bodyMedium"
       />

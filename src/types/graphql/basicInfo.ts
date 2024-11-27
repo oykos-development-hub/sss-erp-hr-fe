@@ -37,11 +37,6 @@ export interface ProfileBasicInfo {
   contract: UserContract;
   national_minority: string;
   personal_id: string;
-  file: {
-    id: number;
-    name: string;
-    type: string;
-  };
   number_of_conference: string;
   judge_application_submission_date: string;
 }
@@ -81,7 +76,6 @@ export interface ProfileBasicInfoFormValues {
   contract: BasicInfoUserContractValues;
   personal_id: string;
   number_of_conference: string;
-  file_id: number;
   judge_application_submission_date: string;
 }
 
@@ -103,13 +97,15 @@ export interface UserContract {
   date_of_eligibility: string;
   date_of_start: string;
   date_of_end: string;
-  file: {
-    id: number;
-    name: string;
-    type: string;
-  };
+  files: FileItem[]
   number_of_conference: string;
 }
+
+export type FileItem = {
+  id: number;
+  name: string;
+  type: string;
+};
 
 export interface BasicInfoUserContractValues {
   contract_type_id: DropdownDataNumber | null;
@@ -118,7 +114,7 @@ export interface BasicInfoUserContractValues {
   date_of_start: Date | null;
   date_of_end: Date | null;
   date_of_eligibility: Date | null;
-  file_id: number | null;
+  files: FileItem[];
   job_position_in_organization_unit_id: DropdownDataNumber | null;
   user_profile_id: DropdownDataNumber | null;
   active: boolean;

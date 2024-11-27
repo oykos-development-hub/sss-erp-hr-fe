@@ -36,7 +36,7 @@ import {
 import useInsertJobTenderApplication from '../../../services/graphql/jobTenderApplications/useInsertJobTenderApplication';
 import {basicInfoSchema, booleanToYesOrNo, formatData} from './utils';
 import {ContractEndModal} from '../../../components/contractEndModal/contractEndModal';
-import {ProfileBasicInfoFormValues} from '../../../types/graphql/basicInfo';
+import {FileItem, ProfileBasicInfoFormValues} from '../../../types/graphql/basicInfo';
 import useGetSettings from '../../../services/graphql/settings/useGetSettings';
 import {FileUploadWrapper} from '../../../components/absentsModal/styles';
 import {BasicInfoProps} from './types.ts';
@@ -45,7 +45,7 @@ import {checkActionRoutePermissions} from '../../../services/checkRoutePermissio
 export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
   const {
     alert,
-    fileService: {uploadFile},
+    fileService: {uploadFile, deleteFile},
     navigation,
     countries,
     contextMain: {permissions},
@@ -57,9 +57,9 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
   const [creatingChosenJobApplicant, setCreatingChosenJobApplicant] = useState<boolean>(false);
   const isNew = !profileId;
   // const isJudge = userBasicInfo?.is_judge;
-  const isPresident = userBasicInfo?.is_president;
   const [isDisabled, setIsDisabled] = useState<boolean>(!isNew);
-  const [uploadedFile, setUploadedFile] = useState<FileList>();
+  const [files, setFiles] = useState<FileList | null>(null);
+  const [contractFiles, setContractFiles] = useState<FileItem[]>([]);
   const [openContractEndModal, setOpenCotractEndModal] = useState<boolean>(false);
 
   const {organizationUnits, departments} = useGetOrganizationUnits(undefined);
@@ -85,16 +85,25 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
     },
   });
 
-  const countryOptions = useMemo(() => {
+  const nationalityOptions = useMemo(() => {
     const options = countries?.map((country: any) => ({
       id: country.alpha3,
       title: country.name,
     }));
 
     options.unshift({
-      id: 'unspecified',
+      id: '',
       title: 'Ne želim da se izjasnim',
     });
+
+    return options;
+  }, [countries]);
+
+  const countryOptions = useMemo(() => {
+    const options = countries?.map((country: any) => ({
+      id: country.alpha3,
+      title: country.name,
+    }));
 
     return options;
   }, [countries]);
@@ -119,8 +128,8 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
     }
   }, [organization_unit_id, organizationUnits]);
 
-  const handleUpload = (files: FileList) => {
-    setUploadedFile(files);
+  const handleUpload = (newFiles: FileList) => {
+    setFiles(newFiles);
   };
 
   const handleSaveUser = (values: ProfileBasicInfoFormValues, close: boolean) => {
@@ -186,53 +195,92 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
     );
   };
 
+  const removeFiles = () => {
+    for (const file of (userBasicInfo?.contract?.files) || []) {
+      const fileExistsInContractFiles = contractFiles.some(file2 => file2.id === file.id);
+      if (!fileExistsInContractFiles) {
+        deleteFile(
+          file.id, 
+          () => {
+            alert.success('Uspješno obrisani fajlovi.');
+          },
+          () => {
+            alert.error('Greška. Fajlovi nisu ocisceni.');
+          },
+        );
+      }
+    }
+  };
+
   const onSubmit = async (values: ProfileBasicInfoFormValues, close: boolean) => {
     if (isValid) {
+      values.contract = values.contract || {};
+
       if (!userBasicInfo?.id) {
         if (isCreating) return;
+        
+        const isNewFileUploaded = files?.length && files.length > 0;
+        let filesToInsert = contractFiles;
 
-        if (uploadedFile) {
-          const formData = new FormData();
-          const fileArray = Array.from(uploadedFile);
+        if (isNewFileUploaded) {
+          const fileArray = Array.from(files);
 
-          formData.append('file', fileArray[0]);
+          for (const file of fileArray) {
+            const formData = new FormData();
 
-          await uploadFile(
-            formData,
-            (res: any) => {
-              setUploadedFile(undefined);
-              const updatedData = {...values, contract: {...values.contract, file_id: res[0]?.id}};
-              handleSaveUser(updatedData, close);
-            },
-            () => {
-              alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
-            },
-          );
-        } else {
-          handleSaveUser(values, close);
+            formData.append('file', file);
+  
+            await uploadFile(
+              formData,
+              (res: any) => {
+                filesToInsert =  [...filesToInsert, {id: res[0]?.id, name: res[0]?.name, type: res[0]?.type}];
+              },
+              () => {
+                alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+              },
+            );
+          }
+
+          values.contract.files = filesToInsert;
+
+          setFiles(null);
         }
+
+        handleSaveUser(values, close);
       } else {
         if (isUpdating) return;
-        if (uploadedFile) {
-          const formData = new FormData();
-          const fileArray = Array.from(uploadedFile);
+        
+        const hasFiles = (files?.length && files.length > 0);
 
-          formData.append('file', fileArray[0]);
+        let updatedFileList = contractFiles;
 
-          await uploadFile(
-            formData,
-            (res: any) => {
-              const updatedData = {...values, contract: {...values.contract, file_id: res[0]?.id}};
-              handleUpdateUser(updatedData, close);
-              setUploadedFile(undefined);
-            },
-            () => {
-              alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
-            },
-          );
-        } else {
-          handleUpdateUser(values, close);
+        if (hasFiles) {
+          const fileArray = Array.from(files);
+
+          for (const file of fileArray) {
+            const formData = new FormData();
+
+            formData.append('file', file);
+
+            await uploadFile(
+              formData,
+              (res: any) => {
+                updatedFileList =  [...updatedFileList, {id: res[0]?.id, name: res[0]?.name, type: res[0]?.type}];
+              },
+              () => {
+                alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+              },
+            );
+          }
+
+          setFiles(null);
         }
+
+        removeFiles();
+
+        values.contract.files = updatedFileList;
+        
+        handleUpdateUser(values, close);
       }
     }
   };
@@ -243,6 +291,10 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
       navigation.navigate('/hr/job-tenders/job-tenders-list');
       navigation.location.state = {};
     });
+  };
+
+  const onFileRemove = (id: number) => {
+    setContractFiles(files => files.filter(file => file.id !== id));
   };
 
   useEffect(() => {
@@ -259,7 +311,7 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
     if (userBasicInfo) {
       reset({
         ...userBasicInfo,
-        nationality: countryOptions.find((opt: DropdownDataString) => opt.id === userBasicInfo.nationality),
+        nationality: nationalityOptions.find((opt: DropdownDataString) => opt.id === userBasicInfo.nationality) || nationalityOptions[0],
         citizenship: countryOptions.find((opt: DropdownDataString) => opt.id === userBasicInfo.citizenship),
         date_of_birth: parseToDate(userBasicInfo?.date_of_birth),
         date_of_becoming_judge: parseToDate(userBasicInfo?.date_of_becoming_judge),
@@ -281,12 +333,19 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
         job_position_in_organization_unit_id: userBasicInfo?.contract?.job_position_in_organization_unit ?? undefined,
         contract_type_id: userBasicInfo?.contract?.contract_type ?? undefined,
         date_of_end: parseToDate(userBasicInfo?.contract?.date_of_end),
-        date_of_start: parseToDate(userBasicInfo?.contract?.date_of_start),
+        date_of_start: parseToDate(userBasicInfo?.contract?.date_of_start) ?? undefined,
         date_of_eligibility: parseToDate(userBasicInfo?.contract?.date_of_eligibility),
         user_profile_id: userBasicInfo?.id,
         active: userBasicInfo?.contract?.active,
         number_of_conference: userBasicInfo?.contract?.number_of_conference,
       });
+
+      if (is_judge || is_president) {
+        clearErrors('department_id');
+        setValue('department_id', null);
+        setValue('job_position_in_organization_unit_id', null);
+      }
+      setContractFiles(userBasicInfo?.contract?.files || []);
     }
   }, [userBasicInfo]);
 
@@ -339,7 +398,7 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
   const isPresidentSwitchDisabled = (): boolean => {
     if (creatingChosenJobApplicant) return true;
     if (organization_unit_id?.title && organization_unit_id.title?.indexOf('Sudski savjet') > -1) return true;
-    if (isPresident) return false;
+    if (is_president) return false;
     if (judgeAvailablity?.president && is_judge) return false;
 
     return true;
@@ -392,7 +451,6 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
       <FormWrapper>
         <TextWrapper>
           <Typography content="PERSONALNI PODACI" variant="bodyMedium" />
-          {!profileId && <Button content="Uvoz podataka" disabled />}
         </TextWrapper>
         <FormRow>
           <FormColumn>
@@ -596,9 +654,9 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
                   <Dropdown
                     name={name}
                     label="NACIONALNOST:"
-                    value={value}
+                    value={value as DropdownDataString}
                     onChange={onChange}
-                    options={countryOptions}
+                    options={nationalityOptions}
                     isDisabled={isDisabled}
                     isRequired
                     error={errors.nationality?.message}
@@ -809,16 +867,17 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
               <FileUploadWrapper>
                 <FileUpload
                   icon={null}
-                  files={uploadedFile}
+                  files={files}
                   variant="secondary"
                   onUpload={handleUpload}
+                  multiple={true}
                   buttonText="Učitaj"
                   note={<Typography variant="bodySmall" content="Ugovor o radu" />}
                   disabled={isDisabled}
                 />
               </FileUploadWrapper>
-              {userBasicInfo?.contract?.file?.id !== 0 && (
-                <FileList files={(userBasicInfo?.contract?.file && [userBasicInfo?.contract?.file]) ?? []} />
+              {contractFiles && (
+                <FileList disabled={isDisabled} onDelete={onFileRemove} files={contractFiles} />
               )}
             </FormItem>
           </FormColumn>
@@ -831,7 +890,7 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
                   <Datepicker
                     name={name}
                     label="POČETAK RADNOG ODNOSA:"
-                    selected={value ? new Date(value) : ''}
+                    selected={value ? new Date(value) : undefined}
                     onChange={onChange}
                     disabled={isDisabled}
                     isRequired
@@ -943,13 +1002,14 @@ export const BasicInfo: React.FC<BasicInfoProps> = ({refetchUsers}) => {
           ) : !isNew ? (
             <>
               <Button
-                content="Sačuvaj i zatvori"
+                content="Otkaži"
                 variant="secondary"
-                onClick={() => handleSubmit((data: any) => onSubmit(data, true))()}
-                isLoading={isUpdating || isUpdatingApplication}
+                onClick={() => {
+                  setIsDisabled(true);
+                }}
               />
               <Button
-                content="Sačuvaj i nastavi"
+                content="Sačuvaj"
                 variant="primary"
                 onClick={() => handleSubmit((data: any) => onSubmit(data, false))()}
                 isLoading={isUpdating || isUpdatingApplication}

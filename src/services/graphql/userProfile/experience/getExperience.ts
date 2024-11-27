@@ -19,7 +19,7 @@ const getExperience = `query UserProfileExperience($user_profile_id: Int){
             date_of_end
             created_at
             updated_at
-            file {
+            files {
               id
               name
               type

@@ -55,7 +55,7 @@ const tenderApplicationSchema = yup.object().shape({
     .object()
     .default(undefined)
     .shape({id: yup.string(), title: yup.string()})
-    .required('Ovo polje je obavezno'),
+    .optional(),
   user_profile: yup
     .object()
     .default(undefined)
@@ -113,6 +113,8 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
     reset,
     watch,
     setValue,
+    setError,
+    clearErrors
   } = useForm({
     defaultValues: {
       type: {id: 'internal', title: 'Interni'},
@@ -121,7 +123,23 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
     resolver: yupResolver(tenderApplicationSchema),
   });
 
-  const {status, type, user_profile} = watch();
+  const {status, type, user_profile, date_of_application} = watch();
+
+  useEffect(() => {
+    if (
+      jobTender?.date_of_start && 
+      date_of_application && 
+      new Date(jobTender.date_of_start).getTime() > date_of_application.getTime()
+    ) {
+      setError('date_of_application', {
+        type: 'manual',
+        message: 'Datum prijave ne može biti prije početka tendera'
+      });
+    } else {
+      clearErrors('date_of_application');
+    }
+  }, [date_of_application]);
+  
 
   const {insertJobTenderApplication, loading: isSaving} = useInsertJobTenderApplication();
 
@@ -225,7 +243,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
         last_name: userBasicInfo.last_name,
         official_personal_document_number: userBasicInfo.official_personal_document_number,
         date_of_birth: parseToDate(userBasicInfo.date_of_birth) ?? undefined,
-        citizenship: countryOptions?.find(c => c.id === userBasicInfo.citizenship) || undefined,
+        citizenship: countryOptions?.find(c => c.id === userBasicInfo.nationality) || undefined,
         user_profile: {id: userBasicInfo.id, title: `${userBasicInfo.first_name} ${userBasicInfo.last_name}`},
         evaluation: userBasicInfo.evaluation,
       });
@@ -296,7 +314,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
         title: country.name,
       };
     });
-  }, [countries]);
+  }, [{id: 0, title: ''}, countries]);
 
   return (
     <>
@@ -394,7 +412,8 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                     isRequired
                     disabled={type?.id === 'internal'}
                   />
-                )}
+                )
+                }
               />
             </Row>
             <RowFullWidth>
@@ -478,7 +497,7 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                 name="date_of_application"
                 control={control}
                 rules={{required: 'Ovo polje je obavezno'}}
-                render={({field: {onChange, name, value}}) => (
+                render={({field: {onChange, name, value}}) =>  (
                   <Datepicker
                     onChange={onChange}
                     label="DATUM PRIJAVE:"
@@ -488,7 +507,8 @@ export const JobTenderApplicationModal: React.FC<JobTenderApplicationModalModalP
                     error={errors.date_of_application?.message as string}
                     minDate={jobTender?.date_of_start ? new Date(jobTender?.date_of_start) : undefined}
                   />
-                )}
+                )
+                }
               />
 
               {selectedItem?.id && (

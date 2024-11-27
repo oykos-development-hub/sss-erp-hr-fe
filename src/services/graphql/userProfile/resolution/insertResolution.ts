@@ -16,7 +16,7 @@ const insertResolution = `mutation UserProfileResolutionInsert($data: UserProfil
             created_at
             updated_at
             value
-            file {
+            files {
               id
               name
               type

@@ -7,6 +7,7 @@ export const FileList = styled.div`
   gap: 10px;
   min-width: 400px;
   width: fit-content;
+  margin-top: 10px;
 `;
 
 export const Controls = styled.div`
@@ -21,7 +22,7 @@ export const FileItem = styled.div<{viewable: boolean}>`
   border-radius: 4px;
   cursor: ${({viewable}) => (viewable ? 'pointer' : 'default')};
   transition: background-color 0.2s ease;
-  width: 250px;
+  width: fit-content;
   &:hover {
     background-color: ${({viewable}) => (viewable ? Theme.palette.gray100 : 'none')};
   }

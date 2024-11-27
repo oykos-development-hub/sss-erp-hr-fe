@@ -30,9 +30,9 @@ export const tableHeads: TableHead[] = [
     type: 'custom',
     renderContents: (active, row) =>
       row.active === true ? (
-        <Badge style={{width: 150}} content={<Typography content="Aktivan" />} variant="success" />
+        <Badge style={{width: 150}} content={<Typography content="U toku" />} variant="success" />
       ) : (
-        <Badge style={{width: 150}} content={<Typography content="Završen" />} variant="warning" />
+        <Badge style={{width: 150}} content={<Typography content="Okončan" />} variant="warning" />
       ),
   },
   {

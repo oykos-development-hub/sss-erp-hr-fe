@@ -3,33 +3,35 @@ import {
   Divider,
   EditIconTwo,
   FileIcon,
-  FileUpload,
   Table,
   Theme,
   TrashIconTwo,
-  Typography,
 } from 'client-library';
 import React, {useState} from 'react';
-import {useForm} from 'react-hook-form';
-import FileList from '../../../components/fileList/fileList.tsx';
-import FileModalView from '../../../components/fileModalView/fileModalView';
 import {FileItem} from '../../../components/fileModalView/types';
 import {RevisionTipsModal} from '../../../components/revisionTipsModal/revisionTipsModal';
 import useAppContext from '../../../context/useAppContext';
-import useGetRevisionDetails from '../../../services/graphql/revision/useGetRevisionDetails';
-import useInsertRevision from '../../../services/graphql/revision/useInsertRevisions';
 import useDeleteRevisionTip from '../../../services/graphql/revisionTips/useRevisionTipsDelete';
 import useGetRevisionTips from '../../../services/graphql/revisionTips/useRevisionTipsOverview';
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {ScreenWrapper} from '../../../shared/screenWrapper/screenWrapper';
-import {FileResponseItem} from '../../../types/fileUploadType';
-import {FileUploadWrapper, MainTitle, RevisionListContainer, TableHeader} from '../styles';
+import {MainTitle, RevisionListContainer, TableHeader} from '../styles';
 import {RevisionTipsTableHeads} from './constants';
 import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
+import MultiFileModalView from '../../../components/fileModalViewMultiple/fileModalViewMultiple.tsx';
+import { MicroserviceProps } from '../../../types/micro-service-props.ts';
+import useGetRevisionDetails from '../../../services/graphql/revision/useGetRevisionDetails.ts';
+import { Typography } from '@oykos-development/devkit-react-ts-styled-components';
+import { Row } from './styles.ts';
+import FileList from '../../../components/fileList/fileList.tsx';
+import { parseDate, parseToDate } from '../../../utils/dateUtils.ts';
 
-const RevisionTips = () => {
+interface RevisionTipsProps {
+  context: MicroserviceProps;
+}
+
+const RevisionTips: React.FC<RevisionTipsProps> = ({context}) => {
   const {
-    fileService: {uploadFile},
     alert,
     navigation,
     contextMain: {permissions},
@@ -38,27 +40,24 @@ const RevisionTips = () => {
   const updatePermittedRoutes = checkActionRoutePermissions(permissions, 'update');
   const updatePermission = updatePermittedRoutes.includes('/hr/revision-recommendations');
 
-  const {handleSubmit} = useForm();
-  const [uploadedFile, setUploadedFile] = useState<FileList | null>(null);
   const [deleteModal, setDeleteModal] = useState(0);
   const [revisionTipsModal, setRevisionTipsModal] = useState(false);
   const [editId, setEditId] = useState(0);
   const revisionId = navigation?.location?.pathname.split('/')[5];
   const revisionIdNumber = parseInt(revisionId);
+  const planID = navigation?.location?.pathname.split('/')[3];
+  const planIDNumber = parseInt(planID);
+
   const toggleDeleteModal = (id: number) => {
     setDeleteModal(id);
   };
-  const [fileToView, setFileToView] = useState<FileItem>();
+  const [filesToView, setFilesToView] = useState<FileItem[]>();
 
   const {deleteRevisionTip} = useDeleteRevisionTip();
 
   const {revisionTips, loading, refetch} = useGetRevisionTips({page: 1, size: 1000, revision_id: revisionId});
-  const {insertRevision} = useInsertRevision();
-  const {revisionDetails, refetch: refetchDetails} = useGetRevisionDetails(revisionId);
 
-  const handleUpload = (files: FileList) => {
-    setUploadedFile(files);
-  };
+  const {revisionDetails} = useGetRevisionDetails(revisionIdNumber);
 
   const toogleRevisionTipsModal = (id: number) => {
     setEditId(id);
@@ -84,51 +83,14 @@ const RevisionTips = () => {
     );
   };
 
-  const onSubmit = async () => {
-    if (uploadedFile) {
-      const formData = new FormData();
-      formData.append('file', uploadedFile[0]);
-
-      await uploadFile(formData, (files: FileResponseItem[]) => {
-        setUploadedFile(null);
-        const data = {
-          id: revisionDetails?.id,
-          title: revisionDetails?.title,
-          plan_id: revisionDetails?.plan_id,
-          serial_number: revisionDetails?.serial_number,
-          date_of_revision: revisionDetails?.date_of_revision,
-          revision_quartal: revisionDetails?.revision_quartal,
-          internal_revision_subject_id: revisionDetails?.internal_revision_subject?.map((item: any) => item.id),
-          external_revision_subject_id: revisionDetails?.external_revision_subject?.id || null,
-          revisor_id: revisionDetails?.revisor?.map((item: any) => item.id) || null,
-          revision_type_id: revisionDetails?.revision_type?.id || null,
-          tips_file_id: files[0]?.id,
-        };
-
-        insertRevision(
-          data,
-          () => {
-            refetchDetails();
-            alert.success('Fajl uspješno sačuvan.');
-          },
-          () => {
-            alert.error('Došlo je do greške prilikom dodavanja fajla.');
-          },
-        );
-      });
-
-      return;
-    }
-  };
-
   const actionItems: any[] = [
     {
       name: 'showFile',
       icon: <FileIcon stroke={Theme.palette.gray600} />,
       onClick: (row: any) => {
-        setFileToView(row?.file);
+        setFilesToView(row?.files);
       },
-      shouldRender: (row: any) => row?.file?.id,
+      shouldRender: (row: any) => row?.files?.length > 0,
     },
   ];
 
@@ -147,30 +109,58 @@ const RevisionTips = () => {
 
   return (
     <ScreenWrapper>
-      <RevisionListContainer>
+      <RevisionListContainer>        
+        <MainTitle variant="bodyMedium" content="REVIZIJA" />
+        <Divider color={Theme?.palette?.gray200} height="1px" />
+
+        <Row>
+          <Typography style={{fontWeight: 'bold'}} content="Naziv:" />
+          <Typography content={revisionDetails.title} />
+        </Row>
+        <Row>
+          <Typography style={{fontWeight: 'bold'}} content="Vrsta:" />
+          <Typography content={revisionDetails.revision_type?.title} />
+        </Row>
+        {!revisionDetails.external_revision_subject?.title && (
+          <Row>
+            <Typography style={{fontWeight: 'bold'}} content="Subjekt (interna):" />
+            <Typography content={revisionDetails.internal_revision_subject.map(subject => subject.title).join(', ')} />
+          </Row>
+        )}
+        {revisionDetails.external_revision_subject?.title && (
+          <Row>
+            <Typography style={{fontWeight: 'bold'}} content="Subjekt (eksterna):" />
+            <Typography content={revisionDetails.external_revision_subject?.title} />
+          </Row>
+        )}
+        <Row>
+          <Typography style={{fontWeight: 'bold'}} content="Revizori:" />
+          <Typography content={revisionDetails.revisor.map(revisor => revisor.title.trim()).join(', ')} />
+        </Row>
+        <Row>
+          <Typography style={{fontWeight: 'bold'}} content="Datum:" />
+          <Typography content={parseDate(parseToDate(revisionDetails.date_of_revision))} />
+        </Row>
+        <Row>
+          <Typography style={{fontWeight: 'bold'}} content="Kvartal za sprovođenje:" />
+          <Typography content={revisionDetails.revision_quartal} />
+        </Row>
+        <Row>
+          <Typography style={{fontWeight: 'bold'}} content="Fajlovi:" />
+        </Row>
+        {revisionDetails.files.length > 0 && (
+          <FileList files={revisionDetails.files} />
+        )}
+      </RevisionListContainer>        
+
+      <RevisionListContainer>        
         <MainTitle variant="bodyMedium" content="PREPORUKE" />
         <Divider color={Theme?.palette?.gray200} height="1px" />
+
         {updatePermission && (
           <TableHeader>
             <Button content="Dodajte preporuku" variant="secondary" onClick={() => toogleRevisionTipsModal(0)} />
           </TableHeader>
-        )}
-        <FileUploadWrapper>
-          <FileUpload
-            icon={null}
-            disabled={!updatePermission}
-            files={uploadedFile}
-            variant="secondary"
-            onUpload={handleUpload}
-            note={<Typography variant="bodySmall" content="Preporuka" />}
-            buttonText="Učitaj"
-          />
-        </FileUploadWrapper>
-
-        {uploadedFile && <Button content="Sačuvajte fajl" variant="primary" onClick={handleSubmit(onSubmit)} />}
-
-        {revisionDetails?.tips_file?.id !== 0 && (
-          <FileList files={(revisionDetails?.tips_file && [revisionDetails?.tips_file]) ?? []} />
         )}
 
         <Table
@@ -179,12 +169,20 @@ const RevisionTips = () => {
           style={{marginBottom: 22}}
           isLoading={loading}
           tableActions={actionItems}
+          onRowClick={row => {
+            context.navigation.navigate(
+              `/hr/revision-recommendations/${planIDNumber}/revision/${revisionIdNumber}/recommendations/${row.id}/implementations`,
+            );
+            context.breadcrumbs.add({
+              name: `Sprovođenje preporuke za ${row.recommendation}`,
+              to: `/hr/revision-recommendations/${planIDNumber}/revision/${revisionIdNumber}/recommendations/${row.id}/implementations`,
+            });
+          }}
         />
 
         <ConfirmModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleConfirm={handleDelete} />
       </RevisionListContainer>
-      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
-
+      {filesToView && <MultiFileModalView files={filesToView} onClose={() => setFilesToView(undefined)} />}
       {revisionTipsModal && (
         <RevisionTipsModal
           open={revisionTipsModal}

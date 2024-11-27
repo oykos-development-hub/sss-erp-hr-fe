@@ -5,7 +5,7 @@ import useGetRevisionPlanDetails from '../../services/graphql/revisionsPlans/use
 import useInsertRevisionPlan from '../../services/graphql/revisionsPlans/useRevisionPlanInsert';
 import {RevisionPlanForm} from '../../types/graphql/revisionPlans';
 import {FormGroup, ModalForm, ModalSection, RevisionModal} from './styles';
-import {DropdownDataString} from '../../types/dropdownData';
+import {DropdownDataNumber} from '../../types/dropdownData';
 
 interface RevisionPlanProps {
   open: boolean;
@@ -13,7 +13,7 @@ interface RevisionPlanProps {
   refetchList: () => void;
   alert: any;
   id: number;
-  yearsWithRevisionPlans: DropdownDataString[];
+  yearsWithRevisionPlans: DropdownDataNumber[];
 }
 
 const initialValues: RevisionPlanForm = {

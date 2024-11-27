@@ -13,6 +13,9 @@ import {calculateExperience, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormWrapper, Row} from './styles';
 import useAppContext from '../../context/useAppContext';
 import {formatExperienceForModal} from '../../screens/employees/experience/constants';
+import { FileItem } from '../fileModalView/types';
+import FileList from '../fileList/fileList';
+import { ProfileExperience } from '../../types/graphql/experience';
 
 const experienceSchema = yup.object().shape({
   relevant: yup
@@ -46,7 +49,7 @@ const experienceSchema = yup.object().shape({
     .string()
     .nullable()
     .matches(
-      /^$|^0?\d{1,2}-(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01])$/,
+      /^\d{2}-(0[0-9]|1[0-2])-(0[0-9]|[1-2][0-9]|3[0-1])$/,
       'Pogrešan format. Ispravan format je GG-MM-DD, MM ne moze biti broj preko 12, a DD preko 31.',
     ),
 });
@@ -69,19 +72,17 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     setValue,
   } = useForm({resolver: yupResolver(experienceSchema), defaultValues: {user_profile_id: userProfileId}});
   const [files, setFiles] = useState<FileList | null>(null);
-  const [inputValue, setInputValue] = React.useState('');
+  const [initialFiles, setInitialFiles] = useState<FileItem[]>([]);
 
   const {
-    fileService: {uploadFile},
+    fileService: {uploadFile, deleteFile},
   } = useAppContext();
+
   const {insertExperience, loading: isSaving} = useInsertExperience();
+
   const {organizationUnits} = useGetOrganizationUnits({disable_filters: true});
 
   const {relevant, date_of_start, date_of_end, organization_unit, organization_unit_id} = watch();
-
-  const addDashes = (input: string) => {
-    return input.replace(/\D/g, '').replace(/(\d{2})(?=\d)/g, '$1-');
-  };
 
   const handleInsertExperience = async (data: any) => {
     await insertExperience(
@@ -97,31 +98,60 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     );
   };
 
+  const onFileRemove = (id: number) => {
+    setInitialFiles(files => files.filter(file => file.id !== id));
+  };
+
+  const deleteFiles = async () => {
+    for (const file of (selectedItem?.files) || []) {
+      const fileDeleted = !initialFiles.some(file2 => file2.id === file.id);
+      if (fileDeleted) {
+        await deleteFile(
+          file.id, 
+        );
+      }
+    }
+  };
+
+  const handleFileUpload = (files: FileList) => {
+    setFiles(files);
+    
+    alert.success('Fajlovi uspješno učitani');
+  };
+
   const onSubmit = async (data: any) => {
     if (isSaving) return;
 
     const payload = formatData(data, !selectedItem);
 
-    if (files) {
-      const formData = new FormData();
+    payload.file_ids = initialFiles.map(file => file.id);
+
+    const hasFiles = (files?.length && files.length > 0);
+
+    if (hasFiles) {
       const fileArray = Array.from(files);
 
-      formData.append('file', fileArray[0]);
+      for (const file of fileArray) {
+        const formData = new FormData();
 
-      await uploadFile(
-        formData,
-        (res: any) => {
-          setFiles(null);
-          const updatedData = {...payload, reference_file_id: res[0]?.id};
-          handleInsertExperience(updatedData);
-        },
-        () => {
-          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
-        },
-      );
-    } else {
-      handleInsertExperience(payload);
+        formData.append('file', file);
+
+        await uploadFile(
+          formData,
+          (res: any) => {
+            payload.file_ids.push(res[0]?.id);
+            setFiles(null);
+          },
+          () => {
+            alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+          },
+        );
+      }
     }
+
+    handleInsertExperience(payload);
+
+    deleteFiles();
   };
 
   const isOrgUnitDisabled = relevant?.id === 'Da' || !relevant;
@@ -141,23 +171,24 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
     }
   }, [date_of_end, date_of_start, isOrgUnitDisabled]);
 
-  const handleFileUpload = (files: FileList) => {
-    setFiles(files);
-    alert.success('Fajlovi uspješno učitani');
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(addDashes(e.target.value));
+    let input = e.target.value.replace(/\D/g, '').slice(0, 6);
+    if (input.length > 4) {
+      input = input.replace(/(\d{2})(\d{2})(\d{2})?/, '$1-$2-$3');
+    } else if (input.length > 2) {
+      input = input.replace(/(\d{2})(\d{2})?/, '$1-$2');
+    }
+
+    setValue('amount_of_insured_experience', input);
   };
 
   useEffect(() => {
     if (selectedItem) {
       const formattedExperience = formatExperienceForModal(
-        selectedItem.years_of_insured_experience,
-        selectedItem.months_of_insured_experience,
-        selectedItem.days_of_insured_experience,
+        selectedItem.years_of_insured_experience + '',
+        selectedItem.months_of_insured_experience + '',
+        selectedItem.days_of_insured_experience + '',
       );
-      setInputValue(formattedExperience);
 
       reset({
         ...selectedItem,
@@ -166,16 +197,19 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
           selectedItem?.relevant === 'Ne'
             ? organizationUnits.find(orgUnit => orgUnit.id === selectedItem?.organization_unit_id)
             : {
-                id: selectedItem.organization_unit_id,
-                title: selectedItem.organization_unit_title,
-              },
+              id: selectedItem.organization_unit_id,
+              title: selectedItem.organization_unit_title,
+            },
         date_of_start: parseToDate(selectedItem?.date_of_start),
         date_of_end: parseToDate(selectedItem?.date_of_end),
         user_profile_id: userProfileId,
+        amount_of_insured_experience: formattedExperience
       });
+
+      setInitialFiles(selectedItem.files);
     } else {
-      setInputValue('');
-    }
+      setValue('amount_of_insured_experience', '');
+    }   
   }, [selectedItem]);
   return (
     <Modal
@@ -269,7 +303,6 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
               {...register('amount_of_insured_experience')}
               label="PRIJAVLJENI STAŽ (GG-MM-DD):"
               error={errors.amount_of_insured_experience?.message}
-              value={inputValue}
               onChange={handleChange}
             />
           </Row>
@@ -279,11 +312,16 @@ export const ExperienceModal: React.FC<ExperienceModalProps> = ({
               icon={<></>}
               style={{width: '100%'}}
               variant="secondary"
+              files={files}
+              multiple={true}
               onUpload={handleFileUpload}
               note={<Typography variant="bodySmall" content="Dokaz o zaposlenju" />}
               buttonText="Učitaj"
             />
           </FileUploadWrapper>
+          {initialFiles && (
+            <FileList onDelete={onFileRemove} files={initialFiles} />
+          )}
         </FormWrapper>
       }
       title={'DODAJTE NOVO ZAPOSLENJE'}

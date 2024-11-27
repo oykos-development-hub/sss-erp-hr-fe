@@ -10,8 +10,8 @@ import {educationTypes} from '../modals/constants';
 import {JudicalAndStateExamsModal} from '../modals/judicalStateExamsModal';
 import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './styles';
 import {ProfileEducation, ProfileEducationItem} from '../../../types/graphql/education';
-import FileModalView from '../../fileModalView/fileModalView';
 import {FileItem} from '../../fileModalView/types';
+import MultiFileModalView from '../../fileModalViewMultiple/fileModalViewMultiple';
 
 const tableHeads: TableHead[] = [
   {
@@ -47,7 +47,7 @@ export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert, navigati
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
-  const [fileToView, setFileToView] = useState<FileItem>();
+  const [filesToView, setFilesToView] = useState<FileItem[]>();
 
   const {deleteEducation} = useDeleteEducation();
 
@@ -116,9 +116,9 @@ export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert, navigati
       name: 'showFile',
       icon: <FileIcon stroke={Theme.palette.gray600} />,
       onClick: (row: any) => {
-        setFileToView(row?.file);
+        setFilesToView(row?.files);
       },
-      shouldRender: (row: any) => row?.file?.id,
+      shouldRender: (row: any) => row?.files?.length > 0,
     },
   ];
 
@@ -139,7 +139,7 @@ export const JudicalAndStateExamsTable: React.FC<TableProps> = ({alert, navigati
         isLoading={loading}
         tableActions={actionItems}
         titleElement={title}></TableContainer>
-      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
+      {filesToView && <MultiFileModalView files={filesToView} onClose={() => setFilesToView(undefined)} />}
       {showModal && (
         <JudicalAndStateExamsModal
           open={showModal}

@@ -81,7 +81,7 @@ const insertBasicInfo = `mutation($data: UserProfileBasicInsertMutation!) {
                 date_of_eligibility
                 date_of_start
                 date_of_end
-                file {
+                files {
                   id 
                   name
                   type

@@ -15,8 +15,8 @@ export type Revision = {
   external_revision_subject: DropdownDataNumber | null;
   revisor: DropdownDataNumber[];
   revision_type: DropdownDataNumber | null;
-  file: FileItem;
-  tips_file?: FileItem;
+  files: FileItem[];
+  tips_files: FileItem[];
 };
 
 export type RevisionInsertParams = {
@@ -54,15 +54,14 @@ export type RevisionResponse = {
 };
 
 export type RevisionFormValues = {
-  id: null | number;
+  id?: number;
   title: string;
   plan_id: number;
   serial_number: string;
-  date_of_revision: string;
-  revision_priority: string;
-  revision_quartal: DropdownDataString | null;
+  date_of_revision: Date;
+  revision_quartal: DropdownDataString;
   internal_revision_subject_id: ValueType[];
-  external_revision_subject_id: DropdownDataNumber | null;
+  external_revision_subject_id: DropdownDataNumber;
   revisor_id: ValueType[];
-  revision_type_id: DropdownDataNumber | null;
+  revision_type_id: DropdownDataNumber;
 };

@@ -15,7 +15,7 @@ export const evaluationSchema = yup.object().shape({
   user_profile_id: yup.number().required('Ovo polje je obavezno'),
   evaluation_period: yup.string(),
   reason_for_evaluation: yup.object().shape({
-    id: yup.number(),
+    id: yup.string(),
     title: yup.string(),
   }),
   file_id: yup.number(),

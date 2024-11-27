@@ -19,6 +19,8 @@ import useAppContext from '../../context/useAppContext.ts';
 import {AnnualLeavePartIDecisionDocumentProps} from './types.ts';
 import {generateDocumentSerialNumber} from '../../utils/documentGenerationUtils.ts';
 import useGetBasicInfo from '../../services/graphql/userProfile/basicInfo/useGetBasicInfo.ts';
+import { FileItem } from '../../types/fileUploadType.ts';
+import FileList from '../fileList/fileList.tsx';
 
 const confirmationSchema = yup.object().shape({
   resolution_purpose: yup.string(),
@@ -72,20 +74,20 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
     resolver: yupResolver(confirmationSchema),
   });
 
-  const {settingsData} = useGetSettings({entity: resolutionTypes.resolution_types});
   const [files, setFiles] = useState<FileList | null>(null);
+  const [initialFiles, setInitialFiles] = useState<FileItem[]>([]);
+  const [isUploadingFiles, setIsUploadingFiles] = useState<boolean>(false);
+
+  const {settingsData} = useGetSettings({entity: resolutionTypes.resolution_types});
   const resolutionType = watch('resolution_type') as DropdownDataNumber;
   const year = watch('year');
   const yearOptions = useMemo(() => [...yearsForDropdown().map(year => ({id: +year.id, title: +year.title}))], []);
-  const handleUpload = (files: FileList) => {
-    setFiles(files);
-  };
 
   const {insertResolution, loading: isSaving} = useInsertResolution();
   const {vacations} = useGetVacations(userProfileId);
   const {
     contextMain: {first_name: current_user_first_name, last_name: current_user_last_name},
-    fileService: {uploadFile},
+    fileService: {uploadFile, deleteFile},
   } = useAppContext();
   const {userBasicInfo} = useGetBasicInfo(userProfileId, {skip: !userProfileId});
   const {first_name, last_name, organization_unit, job_position} = userBasicInfo || {};
@@ -142,47 +144,59 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
   };
 
   const handleSave = async (value: any) => {
-    if (isSaving || (isResolutionTypeAnnualLeaveIPart && !vacationForSelectedYear())) return;
+    if (isSaving || isUploadingFiles || (isResolutionTypeAnnualLeaveIPart && !vacationForSelectedYear())) return;
     const payload = {
       ...value,
       id: value?.id || 0,
       user_profile_id: Number(userProfileId),
       date_of_start: parseDateForBackend(value?.date_of_start),
       date_of_end: null,
-      file_id: value?.file_id || 0,
       resolution_purpose: value?.resolution_purpose || '',
       resolution_type_id: value?.resolution_type.id || null,
       is_affect: value?.is_affect?.id === 'Da',
       year: value?.year?.id || 0,
       value: value?.value,
+      file_ids: initialFiles.map(file => file.id)
     };
 
     delete payload.created_at;
     delete payload.updated_at;
     delete payload.resolution_type;
     delete payload.user_profile;
-    delete payload.file;
+    delete payload.files;
 
-    if (files) {
-      const formData = new FormData();
+    const hasFiles = (files?.length && files.length > 0);
+
+    if (hasFiles) {
       const fileArray = Array.from(files);
 
-      formData.append('file', fileArray[0]);
+      for (const file of fileArray) {
+        setIsUploadingFiles(true);
 
-      await uploadFile(
-        formData,
-        (res: any) => {
-          setFiles(null);
-          const updatedData = {...payload, file_id: res[0]?.id};
-          handleInsertResolution(updatedData);
-        },
-        () => {
-          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
-        },
-      );
-    } else {
-      handleInsertResolution(payload);
+        const formData = new FormData();
+
+        formData.append('file', file);
+
+        await uploadFile(
+          formData,
+          (res: any) => {
+            payload.file_ids.push(res[0]?.id);
+            setIsUploadingFiles(false);
+          },
+          () => {
+            setIsUploadingFiles(false);
+            alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+          },
+        );
+      }
+
+      setFiles(null);
     }
+
+    handleInsertResolution(payload);
+
+    reset();
+    deleteFiles();
   };
 
   useEffect(() => {
@@ -195,8 +209,32 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
         year: {id: selectedItem?.year, title: selectedItem?.year},
         value: selectedItem?.value,
       });
+
+      setInitialFiles(selectedItem.files);
     }
   }, [selectedItem]);
+
+  const handleFileUpload = (files: FileList) => {
+    setFiles(files);
+    if (files.length > 0) {
+      alert.success('Fajlovi uspješno učitani');
+    }
+  };
+
+  const onFileRemove = (id: number) => {
+    setInitialFiles(files => files.filter(file => file.id !== id));
+  };
+
+  const deleteFiles = async () => {
+    for (const file of (selectedItem?.files) || []) {
+      const fileDeleted = !initialFiles.some(file2 => file2.id === file.id);
+      if (fileDeleted) {
+        await deleteFile(
+          file.id, 
+        );
+      }
+    }
+  };
 
   return (
     <Modal
@@ -307,11 +345,16 @@ export const ConfirmationsModal: React.FC<ConfirmationsModalProps> = ({
               icon={<></>}
               style={{width: '100%'}}
               variant="secondary"
-              onUpload={handleUpload}
-              note={<Typography variant="bodySmall" content="Validacija" />}
+              onUpload={handleFileUpload}
+              note={<Typography variant="bodySmall" content="Funkcionalni sertifikat" />}
               buttonText="Učitaj"
+              files={files}
+              multiple={true}
             />
           </FileUploadWrapper>
+          {initialFiles && (
+            <FileList onDelete={onFileRemove} files={initialFiles} />
+          )}
         </ModalContentWrapper>
       }
       title={'SVRHA POTVRDE I RJEŠENJA'}

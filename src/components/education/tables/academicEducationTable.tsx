@@ -10,7 +10,7 @@ import {DropdownDataNumber} from '../../../types/dropdownData';
 import {educationTypes} from '../modals/constants';
 import {ProfileEducation, ProfileEducationItem} from '../../../types/graphql/education';
 import {FileItem} from '../../fileModalView/types';
-import FileModalView from '../../fileModalView/fileModalView';
+import MultiFileModalView from '../../fileModalViewMultiple/fileModalViewMultiple';
 
 const tableHeads: TableHead[] = [
   {
@@ -44,7 +44,7 @@ export const AcademicEducationTable: React.FC<TableProps> = ({alert, navigation,
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
-  const [fileToView, setFileToView] = useState<FileItem>();
+  const [filesToView, setFilesToView] = useState<FileItem[]>();
 
   const {deleteEducation} = useDeleteEducation();
 
@@ -108,9 +108,9 @@ export const AcademicEducationTable: React.FC<TableProps> = ({alert, navigation,
       name: 'showFile',
       icon: <FileIcon stroke={Theme.palette.gray600} />,
       onClick: (row: any) => {
-        setFileToView(row?.file);
+        setFilesToView(row?.files);
       },
-      shouldRender: (row: any) => row?.file?.id,
+      shouldRender: (row: any) => row?.files?.length > 0,
     },
   ];
 
@@ -131,7 +131,7 @@ export const AcademicEducationTable: React.FC<TableProps> = ({alert, navigation,
         isLoading={loading}
         tableActions={actionItems}
         titleElement={title}></TableContainer>
-      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
+      {filesToView && <MultiFileModalView files={filesToView} onClose={() => setFilesToView(undefined)} />}
       {showModal && (
         <AcademicEducationModal
           open={showModal}

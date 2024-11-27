@@ -29,12 +29,12 @@ const getRevisionDetails = `query RevisionDetails($id: Int!){
                     id
                     title
                 }
-                file {
+                files {
                   id
                   name
                   type
                 }
-                tips_file {
+                tips_files {
                     id
                     name
                     type

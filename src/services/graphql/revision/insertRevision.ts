@@ -26,12 +26,12 @@ const insertRevision = `mutation($data: RevisionsInsertMutation!) {
                     id
                     title
                 }
-                file {
+                files {
                   id
                   name
                   type
                 }
-                tips_file {
+                tips_files {
                     id
                     name
                     type

@@ -18,7 +18,7 @@ const insertVacations = `mutation UserProfileVacationsInsert($data: UserProfileV
             number_of_days
             created_at
             updated_at
-            file {
+            files {
                 id
                 name
                 type

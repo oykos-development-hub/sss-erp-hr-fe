@@ -78,24 +78,26 @@ export const Footer: React.FC<FooterProps> = ({
             <Controller
               name="active"
               control={control}
-              render={({field: {name}}) => (
-                <SwitchWrapper>
-                  <Typography content="Aktiviraj sistematizaciju" variant="bodyMedium" />
-                  {isDraft && !date_of_activation ? (
-                    <Tooltip
-                      arrow
-                      variant="filled"
-                      position="top"
-                      content="Za aktivaciju sistematizacije neophodno je unijeti datum usvajanja sistematizacije.">
-                      {switchElement(name)}
-                    </Tooltip>
-                  ) : uploadedFile === undefined ? (
-                    (setError(true), switchElement(name))
-                  ) : (
-                    (setError(false), switchElement(name))
-                  )}
-                </SwitchWrapper>
-              )}
+              render={({field: {name}}) => {
+                return (
+                  <SwitchWrapper>
+                    <Typography content="Aktiviraj sistematizaciju" variant="bodyMedium" />
+                    {isDraft && !date_of_activation ? (
+                      <Tooltip
+                        arrow
+                        variant="filled"
+                        position="top"
+                        content="Za aktivaciju sistematizacije neophodno je unijeti datum usvajanja sistematizacije.">
+                        {switchElement(name)}
+                      </Tooltip>
+                    ) : uploadedFile === undefined ? (
+                      (setError(true), switchElement(name))
+                    ) : (
+                      (setError(false), switchElement(name))
+                    )}
+                  </SwitchWrapper>
+                );
+              }}
             />
           )}
         </Activation>

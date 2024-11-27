@@ -2,7 +2,6 @@ import {Button, EditIconTwo, FileIcon, Table, TableHead, Theme, TrashIcon, Typog
 import React, {useMemo, useState} from 'react';
 import {EvaluationModal} from '../../../components/evaluationModal/evaluationModal';
 import {EvaluationModalForJudge} from '../../../components/evaluationModal/evaluationModalForJudge';
-import FileModalView from '../../../components/fileModalView/fileModalView';
 import {FileItem} from '../../../components/fileModalView/types';
 import useAppContext from '../../../context/useAppContext';
 import useGetSettings from '../../../services/graphql/settings/useGetSettings';
@@ -15,13 +14,14 @@ import {parseDate} from '../../../utils/dateUtils';
 import {Container} from './styles';
 import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 import {ForeignersProps} from '../foreigners/types.ts';
+import MultiFileModalView from '../../../components/fileModalViewMultiple/fileModalViewMultiple.tsx';
 
 export const EvaluationsPage: React.FC<ForeignersProps> = ({context}) => {
   const {alert, navigation} = useAppContext();
   const userProfileID = navigation.location.pathname.split('/')[4];
   const {evaluations, refetch} = useGetEvaluations(userProfileID);
   const {settingsData, loading} = useGetSettings({entity: 'evaluation_types'});
-  const [fileToView, setFileToView] = useState<FileItem>();
+  const [filesToView, setFilesToView] = useState<FileItem[]>();
   const {userBasicInfo} = useGetBasicInfo(userProfileID, {skip: !userProfileID});
   const updatePermittedRoutes = checkActionRoutePermissions(context.contextMain?.permissions, 'update');
   const updatePermission = updatePermittedRoutes.includes('/hr/employees');
@@ -115,9 +115,9 @@ export const EvaluationsPage: React.FC<ForeignersProps> = ({context}) => {
       name: 'showFile',
       icon: <FileIcon stroke={Theme.palette.gray600} />,
       onClick: (row: any) => {
-        setFileToView(row?.file);
+        setFilesToView(row?.files);
       },
-      shouldRender: (row: any) => row?.file?.id,
+      shouldRender: (row: any) => row?.files?.length > 0,
     },
   ];
 
@@ -148,8 +148,8 @@ export const EvaluationsPage: React.FC<ForeignersProps> = ({context}) => {
       <div>
         <Table tableHeads={tableHeads} data={evaluations || []} isLoading={loading} tableActions={actionItems} />
       </div>
-      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
-      {showModal && (
+      {filesToView && <MultiFileModalView files={filesToView} onClose={() => setFilesToView(undefined)} />}
+      {showModal && !userBasicInfo?.is_judge && (
         <EvaluationModal
           alert={alert}
           refetchList={refetch}

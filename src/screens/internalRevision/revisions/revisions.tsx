@@ -11,9 +11,11 @@ import {DropdownDataNumber} from '../../../types/dropdownData';
 import {MicroserviceProps} from '../../../types/micro-service-props';
 import {FilterContainer, Filters, MainTitle, RevisionListContainer, TableHeader} from '../styles';
 import {RevisionTableHeads} from './constants';
-import FileModalView from '../../../components/fileModalView/fileModalView';
 import {FileItem} from '../../../components/fileModalView/types';
 import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
+import MultiFileModalView from '../../../components/fileModalViewMultiple/fileModalViewMultiple.tsx';
+import { Typography } from '@oykos-development/devkit-react-ts-styled-components';
+import useGetRevisionPlanDetails from '../../../services/graphql/revisionsPlans/useRevisionPlanDetails.ts';
 
 interface RevisionProps {
   context: MicroserviceProps;
@@ -27,7 +29,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
   const [unitID, setUnitID] = useState(0);
   const [revisorId, setRevisorId] = useState<number>(0);
   const [revisonTypeId, setRevisonTypeId] = useState<number>(0);
-  const [fileToView, setFileToView] = useState<FileItem>();
+  const [filesToView, setFilesToView] = useState<FileItem[]>();
 
   const updatePermittedRoutes = checkActionRoutePermissions(context.contextMain.permissions, 'update');
   const updatePermission = updatePermittedRoutes.includes('/hr/revision-recommendations');
@@ -41,6 +43,8 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
     revision_type_id: revisonTypeId,
     revisor_id: revisorId,
   });
+
+  const {revisionPlanDetails} = useGetRevisionPlanDetails(planId);
 
   const {deleteRevision} = useDeleteRevision();
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
@@ -94,9 +98,9 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
       name: 'showFile',
       icon: <FileIcon stroke={Theme.palette.gray600} />,
       onClick: (row: any) => {
-        setFileToView(row?.file);
+        setFilesToView(row?.files);
       },
-      shouldRender: (row: any) => row?.file?.id,
+      shouldRender: (row: any) => row?.files?.length > 0,
     },
   ];
 
@@ -117,6 +121,8 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
     <ScreenWrapper>
       <RevisionListContainer>
         <MainTitle variant="bodyMedium" content="REVIZIJE" />
+        <Typography variant="bodyMedium" content={`Naziv plana: ${revisionPlanDetails.name}`} />
+        <Typography variant="bodyMedium" content={`Godina: ${revisionPlanDetails.year}`} />
         <Divider color={Theme?.palette?.gray200} height="1px" />
         <TableHeader>
           <Filters>
@@ -177,7 +183,7 @@ const RevisionList: React.FC<RevisionProps> = ({context}) => {
         <ConfirmModal open={!!deleteModal} onClose={() => toggleDeleteModal(0)} handleConfirm={handleDelete} />
       </RevisionListContainer>
 
-      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
+      {filesToView && <MultiFileModalView files={filesToView} onClose={() => setFilesToView(undefined)} />}
       {revisionModalShow && (
         <RevisionModal
           open={revisionModalShow}

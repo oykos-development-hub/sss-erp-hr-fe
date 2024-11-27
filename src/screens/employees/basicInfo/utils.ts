@@ -46,7 +46,7 @@ export const formatData = (data: any) => {
       active: data?.active === false ? false : true,
       date_of_eligibility: parseDateForBackend(data?.date_of_eligibility),
       number_of_conference: data?.number_of_conference,
-      file_id: data?.contract?.file_id ?? null,
+      file_ids: data?.contract?.files.map((file: any) => file.id) || [],
     },
   };
 
@@ -132,7 +132,7 @@ export const basicInfoSchema = yup.object({
         return yup.object(dropdownStringSchema).default(undefined);
     }
   }),
-  nationality: yup.object(dropdownStringSchema).default(undefined),
+  nationality: yup.object({id: yup.string(), title: yup.string().required()}).default(undefined),
   citizenship: yup.object(dropdownStringSchema).required(requiredError).default(undefined),
   national_minority: yup.object(dropdownStringSchema).nullable().default(undefined),
   address: yup.string().required(requiredError),

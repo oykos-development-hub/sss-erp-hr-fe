@@ -20,7 +20,7 @@ export const RevisionTableHeads: TableHead[] = [
     renderContents: (_, row) => {
       let subject;
 
-      if (row.internal_revision_subject) {
+      if (row.internal_revision_subject.length > 0) {
         subject = (
           <div>
             {row.internal_revision_subject.map((org: DropdownDataNumber) => (

@@ -11,15 +11,13 @@ const getRevisionTipDetails = `query RevisionTipsDetails($id: Int!){
             date_of_execution
             recommendation
             status
-            documents
-            reasons_for_non_executing
             user_profile {
                 id
                 title
             }
             revision_priority
             end_date
-            file {
+            files {
               id
               name
               type
@@ -27,8 +25,6 @@ const getRevisionTipDetails = `query RevisionTipsDetails($id: Int!){
             created_at
             updated_at
             responsible_person
-            new_due_date 
-            new_date_of_execution
         }
     }
  }`;

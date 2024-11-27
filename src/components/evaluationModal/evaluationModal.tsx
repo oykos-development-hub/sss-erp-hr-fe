@@ -11,6 +11,8 @@ import {ProfileEvaluationFormValues, ProfileEvaluationParams} from '../../types/
 import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormWrapper, Row} from './styles';
 import useAppContext from '../../context/useAppContext';
+import { FileItem } from '../fileModalView/types';
+import FileList from '../fileList/fileList';
 
 const evaluationSchema = yup.object().shape({
   date_of_evaluation: yup.date().required('Ovo polje je obavezno'),
@@ -38,8 +40,10 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
 }) => {
   const [evaluationTypesOption, setEvaluationTypesOption] = useState<DropdownDataNumber[]>([]);
   const [files, setFiles] = useState<FileList | null>(null);
+  const [initialFiles, setInitialFiles] = useState<FileItem[]>([]);
+
   const {
-    fileService: {uploadFile},
+    fileService: {uploadFile, deleteFile},
   } = useAppContext();
 
   const {
@@ -61,7 +65,7 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
 
   const {insertEvaluation, loading: isSaving} = useEvaluationInsert();
 
-  const handleInsertEvaluation = async (data: any) => {
+  const handleInsertEvaluation = async (data: ProfileEvaluationParams) => {
     await insertEvaluation(
       data,
       () => {
@@ -85,28 +89,36 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
       evaluation_type_id: data.evaluation_type_id?.id ?? 0,
       is_relevant: data.is_relevant?.id === 'Da' ? true : false,
       date_of_evaluation: parseDateForBackend(data?.date_of_evaluation),
+      file_ids: initialFiles.map(file => file.id)
     };
 
-    if (files) {
-      const formData = new FormData();
+    const hasFiles = (files?.length && files.length > 0);
+
+    if (hasFiles) {
       const fileArray = Array.from(files);
 
-      formData.append('file', fileArray[0]);
+      for (const file of fileArray) {
+        const formData = new FormData();
 
-      await uploadFile(
-        formData,
-        (res: any) => {
-          setFiles(null);
-          const updatedData = {...payload, file_id: res[0]?.id};
-          handleInsertEvaluation(updatedData);
-        },
-        () => {
-          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
-        },
-      );
-    } else {
-      handleInsertEvaluation(payload);
+        formData.append('file', file);
+
+        await uploadFile(
+          formData,
+          (res: any) => {
+            payload.file_ids.push(res[0]?.id);
+          },
+          () => {
+            alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+          },
+        );
+      }
+
+      setFiles(null);
     }
+
+    handleInsertEvaluation(payload);
+
+    deleteFiles();
   };
 
   useEffect(() => {
@@ -114,16 +126,34 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
       reset({
         ...selectedItem,
         is_relevant: {id: selectedItem?.is_relevant ? 'Da' : 'Ne', title: selectedItem?.is_relevant ? 'Da' : 'Ne'},
-        date_of_evaluation: parseToDate(selectedItem?.date_of_evaluation),
+        date_of_evaluation: parseToDate(selectedItem?.date_of_evaluation) ?? undefined,
         evaluation_type_id: {id: selectedItem?.evaluation_type.id, title: selectedItem?.evaluation_type.title},
         user_profile_id: Number(userProfileId),
       });
+
+      setInitialFiles(selectedItem.files);
     }
   }, [selectedItem]);
 
   const handleFileUpload = (files: FileList) => {
     setFiles(files);
+
     alert.success('Fajlovi uspješno učitani');
+  };
+
+  const onFileRemove = (id: number) => {
+    setInitialFiles(files => files.filter(file => file.id !== id));
+  };
+
+  const deleteFiles = async () => {
+    for (const file of (selectedItem?.files) || []) {
+      const fileDeleted = !initialFiles.some(file2 => file2.id === file.id);
+      if (fileDeleted) {
+        await deleteFile(
+          file.id, 
+        );
+      }
+    }
   };
 
   return (
@@ -196,10 +226,15 @@ export const EvaluationModal: React.FC<EvaluationModalProps> = ({
                 style={{width: '100%'}}
                 variant="secondary"
                 onUpload={handleFileUpload}
+                files={files}
+                multiple={true}
                 note={<Typography variant="bodySmall" content="Validacija" />}
                 buttonText="Učitaj"
               />
             </FileUploadWrapper>
+            {initialFiles && (
+              <FileList onDelete={onFileRemove} files={initialFiles} />
+            )}
           </Row>
         </FormWrapper>
       }

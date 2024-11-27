@@ -9,7 +9,7 @@ export type revisionInsertItem = {
   external_revision_subject_id: number | null;
   revisor_id: number[];
   revision_type_id: number | null;
-  tips_file_id?: number;
+  file_ids: number[];
 };
 
 export type revisionInsertResponse = {

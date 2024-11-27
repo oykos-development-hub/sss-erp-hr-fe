@@ -20,6 +20,8 @@ import {AnnualLeaveDecisionDocumentProps} from './types.ts';
 import {generateDocumentSerialNumber} from '../../utils/documentGenerationUtils.ts';
 import {saveAs} from 'file-saver';
 import useGetBasicInfo from '../../services/graphql/userProfile/basicInfo/useGetBasicInfo.ts';
+import { FileItem } from '../../types/fileUploadType.ts';
+import FileList from '../fileList/fileList';
 
 const initialValues: any = {
   id: null,
@@ -29,7 +31,7 @@ const initialValues: any = {
   date_of_start: null,
   date_of_end: null,
   description: '',
-  file_id: null,
+  file_ids: [],
 };
 
 export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
@@ -41,17 +43,39 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
   alert,
 }) => {
   const {
-    fileService: {uploadFile},
+    fileService: {uploadFile, deleteFile},
     contextMain: {first_name: current_user_first_name, last_name: current_user_last_name},
   } = useAppContext();
 
-  const [uploadedFile, setUploadedFile] = useState<FileList>();
   const [absenceChildTypes, setAbsenceChildTypes] = useState<AbsenceType[]>([]);
   const [isVacation, setIsVacation] = useState<boolean | null>(null);
   const [selectedAbsenceTypeId, setSelectedAbsenceTypeId] = useState(null);
 
-  const handleUpload = (files: FileList) => {
-    setUploadedFile(files);
+  const [files, setFiles] = useState<FileList | null>(null);
+  const [initialFiles, setInitialFiles] = useState<FileItem[]>([]);
+  const [isUploadingFiles, setIsUploadingFiles] = useState<boolean>(false);
+
+  const handleFileUpload = (files: FileList) => {
+    setFiles(files);
+
+    if (files.length > 0) {
+      alert.success('Fajlovi uspješno učitani');
+    }
+  };
+
+  const onFileRemove = (id: number) => {
+    setInitialFiles(files => files.filter(file => file.id !== id));
+  };
+
+  const deleteFiles = async () => {
+    for (const file of (selectedItem?.files) || []) {
+      const fileDeleted = !initialFiles.some(file2 => file2.id === file.id);
+      if (fileDeleted) {
+        await deleteFile(
+          file.id, 
+        );
+      }
+    }
   };
 
   const handleTypeChange = (selectedValue: any) => {
@@ -107,7 +131,7 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
   };
 
   const handleSave = async (values: any) => {
-    if (isSaving) return;
+    if (isSaving || isUploadingFiles) return;
 
     const payload = {
       id: values?.id,
@@ -117,28 +141,39 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
       absent_type_id: isVacation ? absenceChildTypes[0]?.id : values?.absent_type?.id,
       description: values?.description,
       target_organization_unit_id: values?.target_organization_unit?.id,
+      file_ids: initialFiles.map(file => file.id)
     };
 
-    if (uploadedFile) {
-      const formData = new FormData();
-      const fileArray = Array.from(uploadedFile);
+    const hasFiles = (files?.length && files.length > 0);
 
-      formData.append('file', fileArray[0]);
+    if (hasFiles) {
+      const fileArray = Array.from(files);
 
-      await uploadFile(
-        formData,
-        (res: any) => {
-          setUploadedFile(undefined);
-          const updatedData = {...payload, file_id: res[0]?.id};
-          handleAbsenceInsert(updatedData);
-        },
-        () => {
-          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
-        },
-      );
-    } else {
-      handleAbsenceInsert(payload);
+      for (const file of fileArray) {
+        setIsUploadingFiles(true);
+
+        const formData = new FormData();
+
+        formData.append('file', file);
+
+        await uploadFile(
+          formData,
+          (res: any) => {
+            payload.file_ids.push(res[0]?.id);
+            setIsUploadingFiles(false);
+          },
+          () => {
+            setIsUploadingFiles(false);
+            alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+          },
+        );
+      }
+
+      setFiles(null);
     }
+
+    handleAbsenceInsert(payload);
+    deleteFiles();
   };
 
   const {
@@ -166,6 +201,8 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
           setIsVacation(false);
         }
       }
+
+      setInitialFiles(selectedItem.files);
     }
   }, [selectedItem, reset]);
 
@@ -291,13 +328,17 @@ export const AbsentModal: React.FC<AbsenceTypeModalProps> = ({
           <FileUploadWrapper>
             <FileUpload
               icon={null}
-              files={uploadedFile}
+              files={files}
               variant="secondary"
-              onUpload={handleUpload}
+              onUpload={handleFileUpload}
+              multiple={true}
               note={<Typography variant="bodySmall" content="Zahtjevi" />}
               buttonText="Učitaj"
             />
           </FileUploadWrapper>
+          {initialFiles && (
+            <FileList onDelete={onFileRemove} files={initialFiles} />
+          )}
         </ModalContentWrapper>
       }
       title={'ZAHTJEVI'}

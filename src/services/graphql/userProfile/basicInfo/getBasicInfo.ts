@@ -82,7 +82,7 @@ const getBasicInfo = `query UserProfileOverview($user_profile_id: Int!){
                 date_of_eligibility
                 date_of_start
                 date_of_end
-                file {
+                files {
                     id
                     name
                     type

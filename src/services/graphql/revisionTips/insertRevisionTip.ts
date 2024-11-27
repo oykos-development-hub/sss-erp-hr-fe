@@ -12,15 +12,13 @@ const insertRevisionTip = `mutation($data: RevisionTipsInsertMutation!) {
             date_of_execution
             recommendation
             status
-            documents
-            reasons_for_non_executing
             revision_priority
             end_date
             user_profile {
                 id
                 title
             }
-            file {
+            files {
               id
               name
               type
@@ -28,8 +26,6 @@ const insertRevisionTip = `mutation($data: RevisionTipsInsertMutation!) {
             created_at
             updated_at
             responsible_person
-            new_due_date 
-            new_date_of_execution
         }
     }
 }`;

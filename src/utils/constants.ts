@@ -1,4 +1,4 @@
-import {DropdownDataString} from '../types/dropdownData';
+import {DropdownDataNumber} from '../types/dropdownData';
 
 export const employeeRelationshipDropdownData = [
   {id: 'Ćerka', title: 'Ćerka'},
@@ -64,14 +64,20 @@ export const yearsForDropdownFilter = (numYearsToAdd?: number) => {
   return allYears;
 };
 
-export const getYearOptions = (maxOffset = 10, isFilter = true, nextYears = 0): DropdownDataString[] => {
-  const thisYear = new Date().getFullYear() + nextYears;
-  const allYears: DropdownDataString[] = isFilter ? [{id: '', title: 'Sve'}] : [];
-  allYears.push(
-    ...Array.from({length: maxOffset}, (_, index) => {
-      const yearValue = thisYear - index;
-      return {id: yearValue.toString(), title: yearValue.toString()};
-    }),
-  );
+export const getYearOptions = (yearsBefore = 0, yearsAfter = 0, isFilter = true, asc = false): DropdownDataNumber[] => {
+  const currentYear = new Date().getFullYear();
+  let allYears: DropdownDataNumber[] = [];
+
+  for (let i = yearsBefore; i >= -yearsAfter; i--) {
+    const yearValue = currentYear - i;
+    allYears.push({id: yearValue, title: yearValue.toString()});
+  }
+
+  allYears = asc ? allYears.sort((a, b) => a.id - b.id) : allYears.sort((a, b) => b.id - a.id);
+
+  if (isFilter) {
+    allYears.unshift({id: 0, title: 'Sve'});
+  }
+
   return allYears;
 };

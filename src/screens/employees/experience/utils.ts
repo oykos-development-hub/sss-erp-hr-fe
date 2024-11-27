@@ -11,7 +11,6 @@ export const formatData = (data: any, newExperience?: boolean) => {
     date_of_start: parseDateForBackend(data?.date_of_start),
     date_of_end: parseDateForBackend(data?.date_of_end),
     amount_of_experience: data?.amount_of_experience,
-    reference_file_id: data?.reference_file_id,
     years_of_insured_experience: +insuredExperience[0],
     months_of_insured_experience: +insuredExperience[1],
     days_of_insured_experience: +insuredExperience[2],
@@ -30,7 +29,7 @@ export const formatData = (data: any, newExperience?: boolean) => {
   delete payload.selectedOrganizationUnit;
   delete payload.created_at;
   delete payload.updated_at;
-  delete payload.file;
+  delete payload.files;
   delete payload.amount_of_insured_experience;
   delete payload.amount_of_experience;
   delete payload.organization_unit_title;

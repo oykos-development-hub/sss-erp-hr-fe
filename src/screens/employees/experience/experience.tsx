@@ -9,15 +9,15 @@ import {ProfileExperience} from '../../../types/graphql/experience';
 import {tableHeads} from './constants';
 import {ExperiencePageProps} from './types';
 import {FileItem} from '../../../components/fileModalView/types';
-import FileModalView from '../../../components/fileModalView/fileModalView';
 import {Container} from './styles';
 import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
+import MultiFileModalView from '../../../components/fileModalViewMultiple/fileModalViewMultiple.tsx';
 
 export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
   const userProfileID = context.navigation.location.pathname.split('/')[4];
   const {experience, refetch, loading} = useGetExperience(+userProfileID);
   const {organizationUnits} = useGetOrganizationUnits(undefined, {allOption: true});
-  const [fileToView, setFileToView] = useState<FileItem>();
+  const [filesToView, setFilesToView] = useState<FileItem[]>();
   const updatePermittedRoutes = checkActionRoutePermissions(context?.contextMain?.permissions, 'update');
   const updatePermission = updatePermittedRoutes.includes('/hr/employees');
 
@@ -156,9 +156,9 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
       name: 'showFile',
       icon: <FileIcon stroke={Theme.palette.gray600} />,
       onClick: (row: any) => {
-        setFileToView(row?.file);
+        setFilesToView(row?.files);
       },
-      shouldRender: (row: any) => row?.file?.id,
+      shouldRender: (row: any) => row?.files?.length > 0,
     },
   ];
 
@@ -191,7 +191,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({context}) => {
       <div>
         <Table tableHeads={updatedTableHeads} data={tableData || []} isLoading={loading} tableActions={actionItems} />
       </div>
-      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
+      {filesToView && <MultiFileModalView files={filesToView} onClose={() => setFilesToView(undefined)} />}
       {showModal && (
         <ExperienceModal
           alert={context.alert}

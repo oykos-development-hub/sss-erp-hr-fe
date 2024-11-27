@@ -73,6 +73,11 @@ const Systematizations: React.FC = () => {
     return inputDate.getTime() > currentDate.getTime();
   };
 
+  const handleFilters = (name: string, value: string |  number) => {
+    setPage(0);
+    setFilters(prev => ({...prev, [name]: value}));
+  };
+
   const onPageChange = (page: number) => setPage(page + 1);
 
   return (
@@ -82,7 +87,7 @@ const Systematizations: React.FC = () => {
         <Divider color={Theme?.palette?.gray200} height="1px" />
         <Header>
           <SystematizationFilters
-            setFilters={(name, value) => setFilters(prev => ({...prev, [name]: value}))}
+            setFilters={(name, value) => handleFilters(name, value)}
             filters={filters}
           />
           {createPermission && (

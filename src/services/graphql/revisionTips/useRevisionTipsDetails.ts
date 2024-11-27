@@ -1,11 +1,11 @@
 import {useEffect, useState} from 'react';
 import {GraphQL} from '..';
 import useAppContext from '../../../context/useAppContext';
-import {RevisionTipsResponse} from '../../../types/graphql/revisionTips';
+import {RevisionTip, RevisionTipsResponse} from '../../../types/graphql/revisionTips';
 import {REQUEST_STATUSES} from '../../constants';
 
 const useGetRevisionTipDetails = (id: number) => {
-  const [revisionTipDetails, setRevisionTipDetails] = useState<any>();
+  const [revisionTipDetails, setRevisionTipDetails] = useState<RevisionTip>();
   const [loading, setLoading] = useState(true);
 
   const {fetch} = useAppContext();

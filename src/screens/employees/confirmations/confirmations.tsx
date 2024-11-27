@@ -1,7 +1,6 @@
 import {Button, Dropdown, EditIconTwo, FileIcon, Table, Theme, TrashIcon, Typography} from 'client-library';
 import React, {useMemo, useState} from 'react';
 import {ConfirmationsModal} from '../../../components/confirmationsModal/confirmationsModal';
-import FileModalView from '../../../components/fileModalView/fileModalView';
 import {FileItem} from '../../../components/fileModalView/types';
 import useAppContext from '../../../context/useAppContext';
 import useDeleteResolution from '../../../services/graphql/userProfile/resolution/useDeleteResolution';
@@ -14,6 +13,7 @@ import {Container, TableHeader, YearWrapper, Controls} from './styles';
 import {ForeignersProps} from '../foreigners/types.ts';
 import {checkActionRoutePermissions} from '../../../services/checkRoutePermissions.ts';
 import {TemplatesModal} from '../../../components/templatesModal/templatesModal.tsx';
+import MultiFileModalView from '../../../components/fileModalViewMultiple/fileModalViewMultiple.tsx';
 
 export const ConfirmationsPage: React.FC<ForeignersProps> = ({context}) => {
   const {
@@ -30,7 +30,7 @@ export const ConfirmationsPage: React.FC<ForeignersProps> = ({context}) => {
   const {resolutions, refetch, loading} = useGetResolutions(userProfileID);
   const {deleteResolution} = useDeleteResolution();
   const tableData = resolutions;
-  const [fileToView, setFileToView] = useState<FileItem>();
+  const [filesToView, setFilesToView] = useState<FileItem[]>();
   const updatePermittedRoutes = checkActionRoutePermissions(context.contextMain?.permissions, 'update');
   const updatePermission = updatePermittedRoutes.includes('/hr/employees');
 
@@ -95,9 +95,9 @@ export const ConfirmationsPage: React.FC<ForeignersProps> = ({context}) => {
       name: 'showFile',
       icon: <FileIcon stroke={Theme.palette.gray600} />,
       onClick: (row: any) => {
-        setFileToView(row?.file);
+        setFilesToView(row?.files);
       },
-      shouldRender: (row: any) => row?.file?.id,
+      shouldRender: (row: any) => row?.files?.length > 0,
     },
   ];
 
@@ -146,7 +146,7 @@ export const ConfirmationsPage: React.FC<ForeignersProps> = ({context}) => {
       <div>
         <Table tableHeads={tableHeads} data={filteredTableData || []} isLoading={loading} tableActions={actionItems} />
       </div>
-      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
+      {filesToView && <MultiFileModalView files={filesToView} onClose={() => setFilesToView(undefined)} />}
       {showTemplateModal && (
         <TemplatesModal
           open={showTemplateModal}

@@ -18,8 +18,7 @@ const getEvaluations = `query UserProfileEvaluation($user_profile_id: Int!){
             reason_for_evaluation
             created_at
             updated_at
-            file_id
-            file {
+            files {
                 id
                 name
                 type

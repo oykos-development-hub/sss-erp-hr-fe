@@ -19,7 +19,7 @@ const getEducation = `query UserProfileOverview($user_profile_id: Int!, $educati
             description
             created_at
             updated_at
-            file {
+            files {
               id
               name
               type

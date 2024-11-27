@@ -26,7 +26,7 @@ const getAbsence = `query UserProfileAbsent($user_profile_id: Int){
             description
             created_at
             updated_at
-            file {
+            files {
                 id
                 name
                 type

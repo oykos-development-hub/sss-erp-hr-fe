@@ -5,8 +5,10 @@ import {ModalProps} from '../../../screens/employees/education/types';
 import useGetSettings from '../../../services/graphql/settings/useGetSettings';
 import useInsertEducation from '../../../services/graphql/userProfile/education/useInsertEducation';
 import {educationTypes, initialValues, languageAcknowledgmentLevels} from './constants';
-import {ModalContentWrapper, Row} from './styles';
+import {FileUploadWrapper, ModalContentWrapper, Row} from './styles';
 import useAppContext from '../../../context/useAppContext';
+import { FileItem } from '../../../types/fileUploadType';
+import FileList from '../../fileList/fileList';
 
 export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
   selectedItem,
@@ -18,20 +20,23 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
 }) => {
   const {settingsData} = useGetSettings({entity: educationTypes.education_language_types});
   const [files, setFiles] = useState<FileList | null>(null);
+  const [initialFiles, setInitialFiles] = useState<FileItem[]>([]);  
+  const [isUploadingFiles, setIsUploadingFiles] = useState<boolean>(false);
+
   const {
-    fileService: {uploadFile},
+    fileService: {uploadFile, deleteFile},
   } = useAppContext();
 
   const item = useMemo(
     () =>
       selectedItem
         ? {
-            ...selectedItem,
-            expertise_level: {
-              id: selectedItem.expertise_level || '',
-              title: selectedItem?.expertise_level || '',
-            },
-          }
+          ...selectedItem,
+          expertise_level: {
+            id: selectedItem.expertise_level || '',
+            title: selectedItem?.expertise_level || '',
+          },
+        }
         : initialValues,
     [selectedItem],
   );
@@ -41,7 +46,6 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
     control,
     formState: {errors},
     reset,
-    setValue,
   } = useForm({defaultValues: item});
 
   const {insertEducation, loading: isSaving} = useInsertEducation();
@@ -62,7 +66,7 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
   };
 
   const onSubmit = async (values: any) => {
-    if (isSaving) return;
+    if (isSaving || isUploadingFiles) return;
 
     const data = {
       id: values.id,
@@ -79,45 +83,77 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
       type_id: values.type?.id || 0,
       user_profile_id: Number(navigation.location.pathname.split('/')[4]),
       score: '',
+      file_ids: initialFiles.map(file => file.id)
     };
 
-    if (files) {
-      const formData = new FormData();
+    const hasFiles = (files?.length && files.length > 0);
+
+    if (hasFiles) {
       const fileArray = Array.from(files);
 
-      formData.append('file', fileArray[0]);
+      for (const file of fileArray) {
+        setIsUploadingFiles(true);
 
-      await uploadFile(
-        formData,
-        (res: any) => {
-          setFiles(null);
-          setValue('file_id', res[0]?.id);
-          const updatedData = {...data, file_id: res[0]?.id};
-          handleInsertEducation(updatedData);
-        },
-        () => {
-          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
-        },
-      );
-    } else {
-      handleInsertEducation(data);
+        const formData = new FormData();
+
+        formData.append('file', file);
+
+        await uploadFile(
+          formData,
+          (res: any) => {
+            data.file_ids.push(res[0]?.id);
+            setIsUploadingFiles(false);
+          },
+          () => {
+            setIsUploadingFiles(false);
+            alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+          },
+        );
+      }
+
+      setFiles(null);
     }
+
+    handleInsertEducation(data);
+    
+    reset();
+    deleteFiles();
   };
 
   const handleFileUpload = (files: FileList) => {
     setFiles(files);
-    alert.success('Fajlovi uspješno učitani');
+    if (files.length > 0) {
+      alert.success('Fajlovi uspješno učitani');
+    }
+  };
+
+  const onFileRemove = (id: number) => {
+    setInitialFiles(files => files.filter(file => file.id !== id));
+  };
+
+  const deleteFiles = async () => {
+    for (const file of (selectedItem?.files) || []) {
+      const fileDeleted = !initialFiles.some(file2 => file2.id === file.id);
+      if (fileDeleted) {
+        await deleteFile(
+          file.id, 
+        );
+      }
+    }
   };
 
   useEffect(() => {
-    item && reset(item);
+    if (item) {
+      reset(item);
+      setInitialFiles(item.files);
+    } 
   }, [item]);
 
   return (
     <Modal
       open={open}
       onClose={onClose}
-      style={{width: '560px'}}
+      style={{'minWidth': 'fit-content'}}
       leftButtonText="Otkaži"
       rightButtonText="Sačuvaj"
       rightButtonOnClick={handleSubmit(onSubmit)}
@@ -159,16 +195,21 @@ export const LanguageAcknowledgmentModal: React.FC<ModalProps> = ({
               )}
             />
           </Row>
-          <Row>
+          <FileUploadWrapper>
             <FileUpload
-              icon={null}
-              style={{width: '510px'}}
-              note={<Typography variant="bodySmall" content={''} />}
+              icon={<></>}
+              style={{width: '100%'}}
               variant="secondary"
               onUpload={handleFileUpload}
+              note={<Typography variant="bodySmall" content="Sertifikat" />}
               buttonText="Učitaj"
+              files={files}
+              multiple={true}
             />
-          </Row>
+          </FileUploadWrapper>
+          {initialFiles && (
+            <FileList onDelete={onFileRemove} files={initialFiles} />
+          )}
         </ModalContentWrapper>
       }
       title={'DODAJTE NOVI JEZIK'}

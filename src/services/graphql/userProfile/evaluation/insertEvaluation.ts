@@ -17,8 +17,7 @@ const insertEvaluation = `mutation UserProfileEvaluationInsert($data: UserProfil
             is_relevant
             created_at
             updated_at
-            file_id
-            file {
+            files {
                 id
                 name
                 type

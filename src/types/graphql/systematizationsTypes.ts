@@ -1,4 +1,5 @@
 import {DropdownDataNumber} from '../dropdownData';
+import { FileItem } from '../fileUploadType';
 import {DeleteResponse, DetailsResponse, GetResponse, InsertResponse} from './response';
 
 export type SystematizationType = {
@@ -11,11 +12,7 @@ export type SystematizationType = {
   date_of_activation: string;
   created_at: string;
   updated_at: string;
-  file?: {
-    id: number;
-    name: string;
-    type: string;
-  };
+  files: FileItem[];
 };
 
 export type SectorJobPosition = {
@@ -67,7 +64,7 @@ export type InsertSystematizationParams = {
   serial_number: string;
   active: number;
   date_of_activation: string;
-  file_id: number;
+  file_ids: number[];
 };
 
 export interface SystematizationsResponse {

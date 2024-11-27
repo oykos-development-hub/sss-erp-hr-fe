@@ -70,10 +70,10 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
 
   const userProfileList = data.items
     ? data?.items?.map((item: UserProfile) => ({
-        full_name: `${item.first_name} ${item.last_name}`,
-        ...item,
-        active: item.active ? 'Aktivan' : 'Neaktivan',
-      }))
+      full_name: `${item.first_name} ${item.last_name}`,
+      ...item,
+      active: item.active ? 'Aktivan' : 'Neaktivan',
+    }))
     : [];
 
   const jobPositionOptions = [

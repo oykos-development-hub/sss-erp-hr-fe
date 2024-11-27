@@ -55,6 +55,7 @@ const FileModalView = ({onClose, file}: FileModalViewProps) => {
       onClose={handleClose}
       customModalContent={<iframe src={fileUrl} width={'100%'} height={'100%'} style={{marginTop: 10}} />}
       style={{width: '80vw', height: '80vh'}}
+      priority={2}
     />
   );
 };

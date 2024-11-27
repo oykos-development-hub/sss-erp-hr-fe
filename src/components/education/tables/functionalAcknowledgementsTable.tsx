@@ -6,12 +6,13 @@ import useGetEducation from '../../../services/graphql/userProfile/education/use
 import {ConfirmModal} from '../../../shared/confirmModal/confirmModal';
 import {DropdownDataNumber} from '../../../types/dropdownData';
 import {parseDate} from '../../../utils/dateUtils';
+import {formatCurrency} from '../../../utils/currencies';
 import {educationTypes} from '../modals/constants';
 import {FunctionalAcknowledgmentModal} from '../modals/functionalAcknowledgmentsModal';
 import {AddIcon, TableContainer, TableTitle, TableTitleTypography} from './styles';
 import {ProfileEducation, ProfileEducationItem} from '../../../types/graphql/education';
-import FileModalView from '../../fileModalView/fileModalView';
 import {FileItem} from '../../fileModalView/types';
+import MultiFileModalView from '../../fileModalViewMultiple/fileModalViewMultiple';
 
 const tableHeads: TableHead[] = [
   {
@@ -29,8 +30,8 @@ const tableHeads: TableHead[] = [
   {
     title: 'Kotizacija',
     accessor: 'price',
-    sortable: true,
-    type: 'text',
+    type: 'custom',
+    renderContents: (item: string) => <Typography content={formatCurrency(item)}></Typography>
   },
   {
     title: 'Početak',
@@ -68,7 +69,7 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navi
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(0);
-  const [fileToView, setFileToView] = useState<FileItem>();
+  const [filesToView, setFilesToView] = useState<FileItem[]>();
 
   const {deleteEducation} = useDeleteEducation();
 
@@ -132,9 +133,9 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navi
       name: 'showFile',
       icon: <FileIcon stroke={Theme.palette.gray600} />,
       onClick: (row: any) => {
-        setFileToView(row?.file);
+        setFilesToView(row?.files);
       },
-      shouldRender: (row: any) => row?.file?.id,
+      shouldRender: (row: any) => row?.files?.length > 0,
     },
   ];
 
@@ -156,8 +157,7 @@ export const FunctionalAcknowledgmentTable: React.FC<TableProps> = ({alert, navi
         tableActions={actionItems}
         titleElement={title}
       />
-      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
-
+      {filesToView && <MultiFileModalView files={filesToView} onClose={() => setFilesToView(undefined)} />}
       <FunctionalAcknowledgmentModal
         open={showModal}
         onClose={handleCloseModal}

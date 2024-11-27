@@ -11,6 +11,8 @@ import {parseDateForBackend, parseToDate} from '../../utils/dateUtils';
 import {FileUploadWrapper, FormWrapper, Row} from './styles';
 import useAppContext from '../../context/useAppContext';
 import {ReasonForAssessment, evaluationSchema} from './constants';
+import { FileItem } from '../fileModalView/types';
+import FileList from '../fileList/fileList';
 
 export const EvaluationModalForJudge: React.FC<EvaluationModalProps> = ({
   alert,
@@ -24,9 +26,11 @@ export const EvaluationModalForJudge: React.FC<EvaluationModalProps> = ({
 }) => {
   const [evaluationTypesOption, setEvaluationTypesOption] = useState<DropdownDataNumber[]>([]);
   const [files, setFiles] = useState<FileList | null>(null);
+  const [initialFiles, setInitialFiles] = useState<FileItem[]>([]);
+
   const {
-    fileService: {uploadFile},
-  } = useAppContext();
+    fileService: {uploadFile, deleteFile},
+  } = useAppContext();;
 
   const {
     handleSubmit,
@@ -48,7 +52,7 @@ export const EvaluationModalForJudge: React.FC<EvaluationModalProps> = ({
 
   const {insertEvaluation, loading: isSaving} = useEvaluationInsert();
 
-  const handleInsertEvaluation = async (data: any) => {
+  const handleInsertEvaluation = async (data: ProfileEvaluationParams) => {
     await insertEvaluation(
       data,
       () => {
@@ -63,6 +67,21 @@ export const EvaluationModalForJudge: React.FC<EvaluationModalProps> = ({
     );
   };
 
+  const onFileRemove = (id: number) => {
+    setInitialFiles(files => files.filter(file => file.id !== id));
+  };
+
+  const deleteFiles = async () => {
+    for (const file of (selectedItem?.files) || []) {
+      const fileDeleted = !initialFiles.some(file2 => file2.id === file.id);
+      if (fileDeleted) {
+        await deleteFile(
+          file.id, 
+        );
+      }
+    }
+  };
+
   const onSubmit = async (data: ProfileEvaluationFormValues) => {
     if (isSaving) return;
 
@@ -75,29 +94,35 @@ export const EvaluationModalForJudge: React.FC<EvaluationModalProps> = ({
       reason_for_evaluation: data?.reason_for_evaluation?.title || '',
       evaluation_period: data.evaluation_period,
       decision_number: data.decision_number,
-      file_id: data.file_id,
+      file_ids: initialFiles.map(file => file.id)
     };
 
-    if (files) {
-      const formData = new FormData();
+    const hasFiles = (files?.length && files.length > 0);
+
+    if (hasFiles) {
       const fileArray = Array.from(files);
 
-      formData.append('file', fileArray[0]);
+      for (const file of fileArray) {
+        const formData = new FormData();
 
-      await uploadFile(
-        formData,
-        (res: any) => {
-          setFiles(null);
-          const updatedData = {...payload, file_id: res[0]?.id};
-          handleInsertEvaluation(updatedData);
-        },
-        () => {
-          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
-        },
-      );
-    } else {
-      handleInsertEvaluation(payload);
+        formData.append('file', file);
+
+        await uploadFile(
+          formData,
+          (res: any) => {
+            payload.file_ids.push(res[0]?.id);
+            setFiles(null);
+          },
+          () => {
+            alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+          },
+        );
+      }
     }
+
+    handleInsertEvaluation(payload);
+
+    deleteFiles();
   };
 
   useEffect(() => {
@@ -105,7 +130,7 @@ export const EvaluationModalForJudge: React.FC<EvaluationModalProps> = ({
       reset({
         ...selectedItem,
         is_relevant: {id: selectedItem?.is_relevant ? 'Da' : 'Ne', title: selectedItem?.is_relevant ? 'Da' : 'Ne'},
-        date_of_evaluation: parseToDate(selectedItem?.date_of_evaluation),
+        date_of_evaluation: parseToDate(selectedItem?.date_of_evaluation) ?? undefined,
         evaluation_type_id: {id: selectedItem?.evaluation_type.id, title: selectedItem?.evaluation_type.title},
         user_profile_id: Number(userProfileId),
         reason_for_evaluation: {
@@ -113,17 +138,22 @@ export const EvaluationModalForJudge: React.FC<EvaluationModalProps> = ({
           title: selectedItem?.reason_for_evaluation,
         },
       });
-    }
-  }, [selectedItem]);
 
+      setInitialFiles(selectedItem.files);
+    }
+
+  }, [selectedItem]);
+  
   const handleFileUpload = (files: FileList) => {
     setFiles(files);
+
     alert.success('Fajlovi uspješno učitani');
   };
 
   const filteredOptions = isPresident
     ? evaluationTypesOption.filter(option => option.title === 'Dobar' || option.title === 'Nezadovoljava')
     : evaluationTypesOption;
+
 
   return (
     <Modal
@@ -210,20 +240,26 @@ export const EvaluationModalForJudge: React.FC<EvaluationModalProps> = ({
               }}
             />
           </Row>
-
+  
           <FileUploadWrapper>
             <FileUpload
               icon={<></>}
               style={{width: '100%'}}
               variant="secondary"
               onUpload={handleFileUpload}
+              files={files}
+              multiple={true}
               note={<Typography variant="bodySmall" content="Validacija" />}
               buttonText="Učitaj"
             />
           </FileUploadWrapper>
+          {initialFiles && (
+            <FileList onDelete={onFileRemove} files={initialFiles} />
+          )}
         </FormWrapper>
       }
       title={'DODAJTE LIČNU OCJENU'}
     />
   );
+  
 };

@@ -32,16 +32,40 @@ const initialValues: ProfileFamilyParams = {
   national_minority: null,
 };
 
-// const validateJMBG = (value: string) => {
-//   if (!value) return 'Ovo polje je obavezno';
-//
-//   const regex = /^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[0-2])(\d{3})(2[1-9]|29)\d{3}\d{1}$/;
-//   if (!regex.test(value)) return 'Neispravan JMBG format';
-//
-//   if (value.length !== 13) return 'JMBG mora da ima 13 cifara';
-//
-//   return true;
-// };
+const validateJMBG = (value: string, formValues: ProfileFamilyParams) => {
+  if (!value) return 'Ovo polje je obavezno';
+
+  const regex = /^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[0-2])(\d{3})(2[1-9]|29)\d{3}\d{1}$/;
+  if (!regex.test(value)) return 'Neispravan JMBG format';
+
+  if (value.length !== 13) return 'JMBG mora da ima 13 cifara';
+
+  if (formValues.date_of_birth) {
+    const day = +(value.substring(0, 2));
+    const month = +(value.substring(2, 4)) - 1;
+    let year = +(value.substring(4, 7));
+
+    year = year < 100 ? 2000 + year : 1900 + year;
+
+    const dob = formValues.date_of_birth;
+
+    if (dob.getDate() !== day || dob.getMonth() !== month || dob.getFullYear() !== year) {
+      return 'JMBG ne odgovara unijetom datumu rođenja.';
+    }
+  }
+
+  return true;
+};
+
+const extractDateOfBirthFromJMBG = (jmbg: any) => {
+  const day = jmbg.substring(0, 2);
+  const month = jmbg.substring(2, 4);
+  const year = jmbg.substring(4, 7);
+
+  const fullYear = `${jmbg[4] < 9 ? '2' : '1'}${year}`;
+
+  return new Date(`${fullYear}-${month}-${day}`);
+};
 
 export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
   selectedItem,
@@ -79,6 +103,35 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
     );
   }, [countries]);
 
+  const onSubmit = (data: any) => {
+    if (isSaving) return;
+
+    const payload = formatData(data);
+    insertFamily(
+      {...payload, user_profile_id: userProfileId || 0},
+      () => {
+        alert.success('Uspješno sačuvano.');
+        refetch();
+        onClose();
+      },
+      () => {
+        alert.error('Greška. Promjene nisu sačuvane.');
+        onClose();
+      },
+    );
+  };
+  
+  const handleJMBGChange = (event: any) => {
+    const jmbgValue = event.target.value;
+  
+    if (jmbgValue.length === 13) {
+      const dateOfBirth = extractDateOfBirthFromJMBG(jmbgValue);
+      setValue('date_of_birth', dateOfBirth);
+    }
+
+    setValue('official_personal_id', jmbgValue);
+  };
+
   useEffect(() => {
     if (selectedItem) {
       reset({
@@ -111,43 +164,6 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
       resetField('city_of_birth', {defaultValue: ''});
     }
   }, [country_of_birth]);
-
-  const onSubmit = (data: any) => {
-    if (isSaving) return;
-
-    const payload = formatData(data);
-    insertFamily(
-      {...payload, user_profile_id: userProfileId || 0},
-      () => {
-        alert.success('Uspješno sačuvano.');
-        refetch();
-        onClose();
-      },
-      () => {
-        alert.error('Greška. Promjene nisu sačuvane.');
-        onClose();
-      },
-    );
-  };
-
-  // const extractDateOfBirthFromJMBG = (jmbg: any) => {
-  //   const day = jmbg.substring(0, 2);
-  //   const month = jmbg.substring(2, 4);
-  //   const year = jmbg.substring(4, 7);
-  //
-  //   const fullYear = `${jmbg[4] < 9 ? '2' : '1'}${year}`;
-  //
-  //   return new Date(`${fullYear}-${month}-${day}`);
-  // };
-  //
-  // const handleJMBGChange = (event: any) => {
-  //   const jmbgValue = event.target.value;
-  //
-  //   if (jmbgValue.length === 13) {
-  //     const dateOfBirth = extractDateOfBirthFromJMBG(jmbgValue);
-  //     setValue('date_of_birth', dateOfBirth);
-  //   }
-  // };
 
   return (
     <Modal
@@ -378,12 +394,12 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
           <Row>
             <Input
               {...register('official_personal_id', {
-                // validate: validateJMBG,
+                validate: validateJMBG
               })}
               label="JMBG:"
               error={errors.official_personal_id?.message}
               isRequired
-              // onChange={handleJMBGChange}
+              onChange={handleJMBGChange}
             />
             <Input
               {...register('mother_name', {required: 'Ovo polje je obavezno'})}
@@ -402,7 +418,7 @@ export const FamilyMemberModal: React.FC<FamilyMemberModalProps> = ({
                   onChange={onChange}
                   label="DATUM ROĐENJA:"
                   name={name}
-                  selected={value ? new Date(value) : ''}
+                  selected={value}
                   error={errors.date_of_birth?.message}
                   isRequired
                 />

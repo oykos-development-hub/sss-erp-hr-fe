@@ -46,7 +46,7 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
   const {revisionPlans, loading, refetch} = useGetRevisionPlans({page: 1, size: 1000});
 
   const yearsWithRevisionPlans = useMemo(() => {
-    const years = getYearOptions(8, false, 8);
+    const years = getYearOptions(0, 8, false, true);
 
     const existingYears = revisionPlans?.map(item => item.year) || [];
     const filteredYears = years.filter(year => !existingYears.includes(year.title));
@@ -123,8 +123,8 @@ const RevisionPlansList: React.FC<RevisionPlanListProps> = ({context}) => {
           <FilterContainer>
             <Dropdown
               label="GODINA:"
-              options={getYearOptions(10, true, 5)}
-              name="year"
+              options={getYearOptions(4, 5, true)}
+              name="year" 
               value={form?.year || null}
               onChange={handleChange}
               placeholder="Odaberite godinu:"

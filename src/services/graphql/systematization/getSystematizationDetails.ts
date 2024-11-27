@@ -12,7 +12,7 @@ const getSystematizationDetails = `query SystematizationDetails($id: Int) {
                 id 
                 title
             }
-            file {
+            files {
                 id
                 name
                 type

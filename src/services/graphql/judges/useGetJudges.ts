@@ -17,14 +17,14 @@ const ueGetJudges = (
 
   const judgeOptions = useMemo(() => {
     const optionList = [
-      {id: 0, title: 'Sve sudije'},
+      {id: null, title: 'Sve sudije'},
       ...(judges ?? []).map((unit: Judge) => {
         return {id: unit.id, title: `${unit.first_name} ${unit.last_name}`};
       }),
     ];
 
     if (options?.allOption) {
-      optionList.unshift({id: 0, title: 'Sve sudije'});
+      optionList.unshift({id: null, title: 'Sve sudije'});
     }
 
     return optionList;

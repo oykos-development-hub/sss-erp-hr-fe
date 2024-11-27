@@ -18,7 +18,7 @@ const getVacations = `query UserProfileVacation($user_profile_id: Int){
             number_of_days
             created_at
             updated_at
-            file {
+            files {
                 id
                 name
                 type

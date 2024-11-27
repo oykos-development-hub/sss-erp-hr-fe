@@ -52,6 +52,8 @@ export interface JudgeNorm {
   full_name?: string;
   file_id?: number;
   evaluation_id?: number | null;
+  norm_start_date: string;
+  norm_end_date: string;
 }
 
 export interface RelocationNorm {

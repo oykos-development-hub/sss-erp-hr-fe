@@ -18,6 +18,8 @@ import {
   RevisionModal,
   Row,
 } from './styles';
+import { FileItem } from '../../types/fileUploadType';
+import FileList from '../fileList/fileList';
 
 interface RevisionTipModalProps {
   open: boolean;
@@ -36,7 +38,6 @@ const initialValues: any = {
   date_of_execution: null,
   recommendation: '',
   revision_priority: '',
-  new_due_date: null,
 };
 
 export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
@@ -51,10 +52,11 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
   const {insertRevisionTip, loading: isSaving} = useInsertRevisionTip();
   const {revisionTips} = useGetRevisionTips({page: 1, size: 1000, revision_id: revisionId});
   const [dateOfImplementation, setDateOfImplementation] = useState<any>();
-  const [secondDateOfImplementation, setSecondDateOfImplementation] = useState<any>();
   const [files, setFiles] = useState<FileList | null>(null);
+  const [initialFiles, setInitialFiles] = useState<FileItem[]>([]);
+
   const {
-    fileService: {uploadFile},
+    fileService: {uploadFile, deleteFile},
   } = useAppContext();
 
   const {
@@ -67,9 +69,28 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
   } = useForm({defaultValues: initialValues});
 
   const implementationMonthSpan = watch('due_date');
-  const secondMonthSpan = watch('new_due_date');
-  const revisionStatusConducted = watch('status')?.id === 'Sprovedena';
   const dateOfAccept = watch('date_of_accept');
+
+  const handleFileUpload = (files: FileList) => {
+    setFiles(files);
+
+    alert.success('Fajlovi uspješno učitani');
+  };
+
+  const onFileRemove = (id: number) => {
+    setInitialFiles(files => files.filter(file => file.id !== id));
+  };
+
+  const deleteFiles = async () => {
+    for (const file of (revisionTipDetails?.files) || []) {
+      const fileDeleted = !initialFiles.some(file2 => file2.id === file.id);
+      if (fileDeleted) {
+        await deleteFile(
+          file.id, 
+        );
+      }
+    }
+  };
 
   const handleInsertRevisionTips = (data: any) => {
     insertRevisionTip(
@@ -78,11 +99,11 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
         refetchList();
         onClose();
         reset(initialValues);
-        alert.success(revisionTipDetails.id ? 'Preporuka uspješno sačuvana.' : 'Preporuka je uspešno dodata.');
+        alert.success(revisionTipDetails?.id ? 'Preporuka uspješno sačuvana.' : 'Preporuka je uspešno dodata.');
       },
       () => {
         alert.error(
-          revisionTipDetails.id
+          revisionTipDetails?.id
             ? 'Došlo je do greške prilikom izmjene preporuke.'
             : 'Došlo je do greške prilikom dodavanja preporuke.',
         );
@@ -100,38 +121,41 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
       due_date: values?.due_date.id ?? undefined,
       date_of_reject: parseDateForBackend(values?.date_of_reject) ?? undefined,
       date_of_execution: parseDateForBackend(dateOfImplementation) ?? undefined,
-      new_date_of_execution: parseDateForBackend(secondDateOfImplementation) ?? undefined,
       recommendation: values?.recommendation || '',
       revision_id: revisionId,
       status: values.status?.id || '',
-      documents: values.documents || '',
-      reasons_for_non_executing: values.reasons_for_non_executing || '',
       user_profile_id: values?.user_profile_id?.id || null,
-      new_due_date: values?.new_due_date?.id,
       revision_priority: values?.revision_priority.id || null,
-      end_date: parseDateForBackend(values?.end_date) ?? undefined,
+      file_ids: initialFiles.map(file => file.id)
     };
 
-    if (files) {
-      const formData = new FormData();
+    const hasFiles = (files?.length && files.length > 0);
+
+    if (hasFiles) {
       const fileArray = Array.from(files);
 
-      formData.append('file', fileArray[0]);
+      for (const file of fileArray) {
+        const formData = new FormData();
 
-      await uploadFile(
-        formData,
-        (res: any) => {
-          setFiles(null);
-          const updatedData = {...data, file_id: res[0]?.id};
-          handleInsertRevisionTips(updatedData);
-        },
-        () => {
-          alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
-        },
-      );
-    } else {
-      handleInsertRevisionTips(data);
+        formData.append('file', file);
+
+        await uploadFile(
+          formData,
+          (res: any) => {
+            data.file_ids.push(res[0]?.id);
+          },
+          () => {
+            alert.error('Greška pri čuvanju! Fajlovi nisu učitani.');
+          },
+        );
+      }
+
+      setFiles(null);
     }
+    
+    handleInsertRevisionTips(data);
+
+    deleteFiles();
   };
 
   useEffect(() => {
@@ -145,16 +169,10 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
         ),
         date_of_reject: revisionTipDetails.date_of_reject,
         date_of_execution: revisionTipDetails.date_of_execution,
-        new_date_of_execution: revisionTipDetails.new_date_of_execution,
         recommendation: revisionTipDetails.recommendation,
         revision_id: revisionTipDetails.revision_id,
         status: revisionStatusOptions.find(
           (revisionStatusOptions: any) => revisionStatusOptions.id === revisionTipDetails.status,
-        ),
-        documents: revisionTipDetails.documents,
-        reasons_for_non_executing: revisionTipDetails.reasons_for_non_executing,
-        new_due_date: revisionDeadlineOptions.find(
-          (revisionDeadlineOptions: any) => revisionDeadlineOptions.id === revisionTipDetails.new_due_date,
         ),
         user_profile_id: revisionTips.revisors.find(
           (revisorsList: any) => revisorsList.id === revisionTipDetails.user_profile.id,
@@ -162,8 +180,9 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
         revision_priority: revisionPriorityOptions.find(
           (revisionPriorityOptions: any) => revisionPriorityOptions.id === revisionTipDetails.revision_priority,
         ),
-        end_date: revisionTipDetails.end_date,
       });
+
+      setInitialFiles(revisionTipDetails.files);
     }
   }, [revisionTipDetails]);
 
@@ -180,16 +199,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
       setDateOfImplementation(formattedDate);
     }
 
-    if (implementationMonthSpan && secondMonthSpan) {
-      const currentDate = new Date();
-      const formattedSecondDate = calculateDateOfImplementation(currentDate, secondMonthSpan.id);
-      setSecondDateOfImplementation(formattedSecondDate);
-    }
-  }, [dateOfAccept, implementationMonthSpan, secondMonthSpan]);
-
-  const handleUpload = (files: FileList) => {
-    setFiles(files);
-  };
+  }, [dateOfAccept, implementationMonthSpan]);
 
   return (
     <RevisionModal
@@ -212,7 +222,7 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                   })}
                   error={errors.responsible_person?.message as string}
                   placeholder="Unesite odgovorno lice"
-                  label="ODGOVORNO LICE ZA PROVOĐENJE PREPORUKE:"
+                  label="ODGOVORNO LICE ZA SPROVOĐENJE PREPORUKE:"
                   isRequired
                 />
               </FormGroup>
@@ -250,27 +260,10 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                       placeholder="Izaberite rok"
                       label="ROK SPROVOĐENJA PREPORUKE:"
                       isRequired
-                      isDisabled={revisionTipDetails?.new_due_date && true}
                     />
                   )}
                 />
               </FormGroup>
-              <FormGroup>
-                <Controller
-                  name="date_of_reject"
-                  control={control}
-                  render={({field: {onChange, name, value}}) => (
-                    <Datepicker
-                      onChange={onChange}
-                      label="DATUM NEPRIHVATANJA PREPORUKE:"
-                      name={name}
-                      selected={value ? new Date(value) : ''}
-                    />
-                  )}
-                />
-              </FormGroup>
-            </Row>
-            <Row>
               <FormGroup>
                 <Controller
                   control={control}
@@ -290,6 +283,8 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                   )}
                 />
               </FormGroup>
+            </Row>
+            <Row>
               <FormGroup>
                 <Input
                   {...register('date_of_execution')}
@@ -298,6 +293,15 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                   disabled
                 />
               </FormGroup>
+              {id > 0 && (
+                <FormGroup>
+                  <Input
+                    {...register('date_of_reject')}
+                    label="DATUM NEPRIHVATANJA PREPORUKE:"
+                    disabled
+                  />
+                </FormGroup>
+              )}
             </Row>
 
             <FormGroupFullWidth>
@@ -312,110 +316,23 @@ export const RevisionTipsModal: React.FC<RevisionTipModalProps> = ({
                 error={errors.recommendation?.message as string}
               />
             </FormGroupFullWidth>
-          </ModalSection>
 
-          {id > 0 && (
-            <>
-              <ModalSectionTitle content="SPROVOĐENJE PREPORUKE:" variant="bodyMedium" />
-              <Row>
-                <FormGroup>
-                  <Controller
-                    control={control}
-                    name="status"
-                    render={({field: {name, value, onChange}}) => (
-                      <Dropdown
-                        name={name}
-                        value={value}
-                        onChange={onChange}
-                        options={revisionStatusOptions}
-                        label="STATUS SPROVOĐENJA:"
-                      />
-                    )}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Input {...register('documents')} label="REF. DOKUMENTA:" />
-                </FormGroup>
-              </Row>
-              <Row>
-                <FormGroup>
-                  <Controller
-                    control={control}
-                    name="user_profile_id"
-                    render={({field: {name, value, onChange}}) => (
-                      <Dropdown
-                        name={name}
-                        value={value}
-                        onChange={onChange}
-                        options={revisionTips.revisors || []}
-                        placeholder="Izaberite revizora"
-                        label="IMPLEMENTACIJU PREPORUKE POTVRDIO:"
-                        isDisabled={!revisionStatusConducted}
-                      />
-                    )}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Controller
-                    control={control}
-                    name="new_due_date"
-                    render={({field: {name, value, onChange}}) => (
-                      <Dropdown
-                        name={name}
-                        value={value}
-                        onChange={onChange}
-                        options={revisionDeadlineOptions}
-                        label="NOVI ROK SPROVOĐENJA PREPORUKE:"
-                        isDisabled={revisionStatusConducted}
-                      />
-                    )}
-                  />
-                </FormGroup>
-              </Row>
-              <Row>
-                <FormGroup>
-                  <Input
-                    {...register('new_date_of_execution')}
-                    label="NOVI DATUM:"
-                    value={secondDateOfImplementation && parseDate(secondDateOfImplementation)}
-                    disabled
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Controller
-                    name="end_date"
-                    control={control}
-                    render={({field: {onChange, name, value}}) => (
-                      <Datepicker
-                        onChange={onChange}
-                        label="PREPORUKA SPROVEDENA:"
-                        name={name}
-                        selected={value ? new Date(value) : ''}
-                        disabled={!revisionStatusConducted}
-                      />
-                    )}
-                  />
-                </FormGroup>
-              </Row>
-              <FormGroupFullWidth>
-                <Input
-                  {...register('reasons_for_non_executing')}
-                  label="RAZLOZI NESPROVOĐENJA:"
-                  disabled={revisionStatusConducted}
-                />
-              </FormGroupFullWidth>
-              <FileUploadWrapper>
-                <FileUpload
-                  icon={<></>}
-                  style={{width: '100%'}}
-                  variant="secondary"
-                  onUpload={handleUpload}
-                  note={<Typography variant="bodySmall" content="Upload dokumenta" />}
-                  buttonText="Učitaj"
-                />
-              </FileUploadWrapper>
-            </>
-          )}
+            <FileUploadWrapper>
+              <FileUpload
+                icon={<></>}
+                style={{width: '100%'}}
+                variant="secondary"
+                onUpload={handleFileUpload}
+                files={files}
+                multiple={true}
+                note={<Typography variant="bodySmall" content="Upload dokumenta" />}
+                buttonText="Učitaj"
+              />
+            </FileUploadWrapper>
+            {initialFiles && (
+              <FileList onDelete={onFileRemove} files={initialFiles} />
+            )}
+          </ModalSection>
         </ModalForm>
       }
     />

@@ -5,7 +5,7 @@ import FileModalView from '../fileModalView/fileModalView';
 import {useState} from 'react';
 import {FileItem} from '../../types/fileUploadType';
 
-const allowedTypes = ['.pdf', '.jpg', '.png'];
+export const allowedTypes = ['.pdf', '.jpg', '.png', '.webp'];
 
 type FileListProps = {
   files: FileItem[] | null;
@@ -14,13 +14,14 @@ type FileListProps = {
   // Once the contract is saved, it can be deleted from the server
   onDelete?: (id: number) => void;
   isInModal?: boolean;
+  disabled?: boolean
 };
 
-const FileList = ({files, onDelete, isInModal}: FileListProps) => {
+const FileList = ({files, onDelete, isInModal, disabled = false}: FileListProps) => {
   const [fileToView, setFileToView] = useState<FileItem>();
 
   const {
-    fileService: {downloadFile, deleteFile},
+    fileService: {downloadFile},
     alert,
   } = useAppContext();
 
@@ -42,10 +43,6 @@ const FileList = ({files, onDelete, isInModal}: FileListProps) => {
     }
   };
 
-  const toggleModal = () => {
-    setFileToView(undefined);
-  };
-
   return (
     <List>
       {files &&
@@ -62,6 +59,7 @@ const FileList = ({files, onDelete, isInModal}: FileListProps) => {
                 <FileIconButton
                   onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
+                    e.preventDefault();
                     handleDownload(file);
                   }}>
                   <DownloadFileIcon stroke={Theme.palette.gray700} />
@@ -69,6 +67,7 @@ const FileList = ({files, onDelete, isInModal}: FileListProps) => {
               )}
               {onDelete && (
                 <FileIconButton
+                  disabled={disabled}
                   onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
                     e.preventDefault();
@@ -81,7 +80,7 @@ const FileList = ({files, onDelete, isInModal}: FileListProps) => {
           </File>
         ))}
 
-      {fileToView && <FileModalView file={fileToView} onClose={toggleModal} />}
+      {fileToView && <FileModalView file={fileToView} onClose={() => setFileToView(undefined)} />}
     </List>
   );
 };

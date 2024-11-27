@@ -20,6 +20,12 @@ export const MainWrapper = styled.div`
   gap: 1.5em;
 `;
 
+export const Controls = styled.div`
+  margin-top: 1em;
+  display: flex;
+  gap: 10px;
+`;
+
 export const FileUploadWrapper = styled.div`
   display: flex;
   align-self: flex-start;
